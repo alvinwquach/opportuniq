@@ -1,3 +1,5 @@
+"use client";
+
 import { Section, AnimatedElement } from "./shared";
 import { Badge } from "@/components/ui/badge";
 import {

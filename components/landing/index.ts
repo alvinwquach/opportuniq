@@ -1,3 +1,5 @@
+"use client";
+
 export { Navbar as Navigation } from "./Navbar";
 export { HeroSection } from "./HeroSection";
 export { ProblemSolutionSection } from "./ProblemSolutionSection";
