@@ -17,8 +17,64 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Opportuniq - AI-Powered Household Decisions",
-  description: "Stop guessing. Start deciding. AI tells you when to DIY, when to hire, and when to wait — based on your actual budget.",
+  title: "OpportuniQ - Smart Home & Auto Repair Decision Platform",
+  description: "Track expenses, manage budgets, and make informed repair decisions. Know when to DIY, when to hire, or when to wait — solo or with your group.",
+  keywords: [
+    "home repair decisions",
+    "budget tracking",
+    "DIY vs hire",
+    "expense management",
+    "repair cost calculator",
+    "household budget",
+    "group expense tracking",
+    "maintenance planning",
+    "auto repair decisions",
+    "collaborative budgeting"
+  ],
+  authors: [{ name: "OpportuniQ" }],
+  creator: "OpportuniQ",
+  publisher: "OpportuniQ",
+  metadataBase: new URL("https://opportuniq.app"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "OpportuniQ - Smart Home & Auto Repair Decision Platform",
+    description: "Track expenses, manage budgets, and make informed repair decisions. Know when to DIY, when to hire, or when to wait — solo or with your group.",
+    url: "https://opportuniq.app",
+    siteName: "OpportuniQ",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "OpportuniQ - Smart Repair Decisions",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OpportuniQ - Smart Home & Auto Repair Decision Platform",
+    description: "Track expenses, manage budgets, and make informed repair decisions. Know when to DIY, when to hire, or when to wait.",
+    images: ["/og-image.png"],
+    creator: "@opportuniq",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "your-google-verification-code",
+  },
 };
 
 export default function RootLayout({
