@@ -1,94 +1,92 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Home, ArrowRight, Sun, Moon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
+import Link from "next/link";
+import { Github, Twitter, Linkedin, LucideIcon } from "lucide-react";
 
-const links = [
-  { href: "#features", label: "Features" },
-  { href: "#compare", label: "Compare" },
-  { href: "#faq", label: "FAQ" },
-  { href: "/privacy", label: "Privacy Policy" },
-  { href: "/terms", label: "Terms of Use" },
+interface FooterLink {
+  label: string;
+  href: string;
+  icon?: LucideIcon;
+}
+
+interface FooterSection {
+  title: string;
+  links: FooterLink[];
+}
+
+const footerSections: FooterSection[] = [
+  {
+    title: "Product",
+    links: [
+      { label: "How It Works", href: "#how-it-works" },
+      { label: "Pricing", href: "#pricing" },
+      { label: "Demo", href: "#demo" },
+    ],
+  },
+  {
+    title: "Support",
+    links: [
+      { label: "Help Center", href: "#" },
+      { label: "FAQ", href: "/faq" },
+      { label: "Contact", href: "#contact" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "/privacy-policy" },
+      { label: "Terms of Service", href: "/terms-of-service" },
+    ],
+  },
+  {
+    title: "Connect",
+    links: [
+      { label: "Twitter", href: "#", icon: Twitter },
+      { label: "GitHub", href: "#", icon: Github },
+      { label: "LinkedIn", href: "#", icon: Linkedin },
+    ],
+  },
 ];
 
 export function Footer() {
-  const [email, setEmail] = useState("");
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    // Check system preference on mount
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const htmlElement = document.documentElement;
-    const isDarkMode = htmlElement.classList.contains("dark");
-    setIsDark(isDarkMode || prefersDark);
-  }, []);
-
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-    document.documentElement.classList.toggle("dark");
-  };
+  const isInternalRoute = (href: string) => href.startsWith("/");
 
   return (
-    <footer className="relative bg-card">
-      <div className="h-px bg-linear-to-r from-transparent via-primary/50 to-transparent" />
-      <div className="mx-auto max-w-6xl px-6 py-16">
-        <div className="flex justify-center mb-12">
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border">
-            <Sun className="h-4 w-4 text-muted-foreground" />
-            <Switch
-              checked={isDark}
-              onCheckedChange={toggleTheme}
-              aria-label="Toggle theme"
-            />
-            <Moon className="h-4 w-4 text-muted-foreground" />
-          </div>
-        </div>
-        <div className="grid md:grid-cols-2 gap-12 mb-12">
-          <div>
-            <a href="/" className="flex items-center gap-2.5 mb-6 group">
-              <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center group-hover:shadow-lg group-hover:shadow-primary/20 transition-all">
-                <Home className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <span className="font-display font-semibold text-xl text-foreground">Opportuniq</span>
-            </a>
-            <p className="text-foreground mb-6 max-w-sm">
-              Smart decisions for household expenses with tariff intelligence. Know when to DIY, when to hire, and when to wait.
-            </p>
-            <div className="flex gap-2 max-w-sm">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Get product updates"
-                className="flex-1 h-11 px-4 rounded-lg bg-muted/50 border border-border/50 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
-              />
-              <Button size="sm" className="h-11 px-4 rounded-lg">
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+    <footer className="relative bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+      <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+          {footerSections.map((section) => (
+            <div key={section.title}>
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">
+                {section.title}
+              </h3>
+              <ul className="space-y-3">
+                {section.links.map((link) => {
+                  const linkClass = `text-sm text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors ${link.icon ? "flex items-center gap-2" : ""}`;
+
+                  return (
+                    <li key={link.label}>
+                      {isInternalRoute(link.href) ? (
+                        <Link href={link.href} className={linkClass}>
+                          {link.icon && <link.icon className="h-4 w-4" />}
+                          {link.label}
+                        </Link>
+                      ) : (
+                        <a href={link.href} className={linkClass}>
+                          {link.icon && <link.icon className="h-4 w-4" />}
+                          {link.label}
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
-          </div>
-          <div className="flex flex-col md:items-end">
-            <nav className="flex flex-wrap gap-6">
-              {links.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="text-sm text-foreground hover:text-primary transition-colors"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
-          </div>
+          ))}
         </div>
-        <div className="pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-foreground">
-            &copy; {new Date().getFullYear()} Opportuniq. All rights reserved.
-          </p>
-          <p className="text-xs text-foreground/70">
-            Helping homeowners make smarter decisions with tariff intelligence.
+        <div className="pt-8 border-t border-slate-200 dark:border-slate-800">
+          <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
+            &copy; {new Date().getFullYear()} OpportuniQ. All rights reserved.
           </p>
         </div>
       </div>

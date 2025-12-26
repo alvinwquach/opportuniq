@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -37,14 +38,14 @@ export function Navbar() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <a href="/" className="flex items-center gap-2.5 group">
+        <Link href="/" className="flex items-center gap-2.5 group">
           <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/20">
             <Home className="h-4 w-4 text-primary-foreground" />
           </div>
           <span className="font-display font-semibold text-lg tracking-tight text-foreground">
-            Opportuniq
+            OpportuniQ
           </span>
-        </a>
+        </Link>
         <div className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
             <a

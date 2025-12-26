@@ -45,75 +45,75 @@
   --radius-2xl: calc(var(--radius) + 8px);
 }
 
-/* Light Theme - Warm & Inviting */
+/* Light Theme - Professional & Trustworthy */
 :root {
   --radius: 0.625rem;
-  --background: #FFFBF7;
-  --foreground: #2D2A26;
+  --background: #FAFAF9;
+  --foreground: #0A0A0A;
   --card: #FFFFFF;
-  --card-foreground: #2D2A26;
+  --card-foreground: #0A0A0A;
   --popover: #FFFFFF;
-  --popover-foreground: #2D2A26;
-  --primary: #E07A5F;
+  --popover-foreground: #0A0A0A;
+  --primary: #0D9488;
   --primary-foreground: #FFFFFF;
-  --secondary: #F5F0EB;
-  --secondary-foreground: #2D2A26;
-  --muted: #F5F0EB;
-  --muted-foreground: #6B6560;
-  --accent: #FEF3F0;
-  --accent-foreground: #C25A42;
+  --secondary: #F5F5F4;
+  --secondary-foreground: #0A0A0A;
+  --muted: #F5F5F4;
+  --muted-foreground: #737373;
+  --accent: #ECFDF5;
+  --accent-foreground: #0D9488;
   --destructive: #DC2626;
-  --border: #E8E2DC;
-  --input: #E8E2DC;
-  --ring: #E07A5F;
-  --chart-1: #E07A5F;
-  --chart-2: #F2A07B;
-  --chart-3: #81B29A;
-  --chart-4: #3D405B;
-  --chart-5: #F4D35E;
+  --border: #E7E5E4;
+  --input: #E7E5E4;
+  --ring: #0D9488;
+  --chart-1: #0D9488;
+  --chart-2: #14B8A6;
+  --chart-3: #2DD4BF;
+  --chart-4: #5EEAD4;
+  --chart-5: #99F6E4;
   --sidebar: #FFFFFF;
-  --sidebar-foreground: #2D2A26;
-  --sidebar-primary: #E07A5F;
+  --sidebar-foreground: #0A0A0A;
+  --sidebar-primary: #0D9488;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F5F0EB;
-  --sidebar-accent-foreground: #2D2A26;
-  --sidebar-border: #E8E2DC;
-  --sidebar-ring: #E07A5F;
+  --sidebar-accent: #F5F5F4;
+  --sidebar-accent-foreground: #0A0A0A;
+  --sidebar-border: #E7E5E4;
+  --sidebar-ring: #0D9488;
 }
 
-/* Dark Theme - Warm Dark */
+/* Dark Theme - Professional Dark */
 .dark {
-  --background: #1A1816;
-  --foreground: #F5F0EB;
-  --card: #242220;
-  --card-foreground: #F5F0EB;
-  --popover: #242220;
-  --popover-foreground: #F5F0EB;
-  --primary: #F09A7D;
-  --primary-foreground: #1A1816;
-  --secondary: #2E2B28;
-  --secondary-foreground: #F5F0EB;
-  --muted: #2E2B28;
-  --muted-foreground: #A8A099;
-  --accent: #3D2E28;
-  --accent-foreground: #F4B8A6;
+  --background: #0A0A0A;
+  --foreground: #FAFAF9;
+  --card: #171717;
+  --card-foreground: #FAFAF9;
+  --popover: #171717;
+  --popover-foreground: #FAFAF9;
+  --primary: #14B8A6;
+  --primary-foreground: #0A0A0A;
+  --secondary: #262626;
+  --secondary-foreground: #FAFAF9;
+  --muted: #262626;
+  --muted-foreground: #A3A3A3;
+  --accent: #134E4A;
+  --accent-foreground: #5EEAD4;
   --destructive: #EF4444;
-  --border: #3D3A36;
-  --input: #3D3A36;
-  --ring: #F09A7D;
-  --chart-1: #F09A7D;
-  --chart-2: #F4C4A8;
-  --chart-3: #A8D4BE;
-  --chart-4: #8B8FA3;
-  --chart-5: #F7E08A;
-  --sidebar: #242220;
-  --sidebar-foreground: #F5F0EB;
-  --sidebar-primary: #F09A7D;
-  --sidebar-primary-foreground: #1A1816;
-  --sidebar-accent: #2E2B28;
-  --sidebar-accent-foreground: #F5F0EB;
-  --sidebar-border: #3D3A36;
-  --sidebar-ring: #F09A7D;
+  --border: #404040;
+  --input: #404040;
+  --ring: #14B8A6;
+  --chart-1: #14B8A6;
+  --chart-2: #2DD4BF;
+  --chart-3: #5EEAD4;
+  --chart-4: #99F6E4;
+  --chart-5: #CCFBF1;
+  --sidebar: #171717;
+  --sidebar-foreground: #FAFAF9;
+  --sidebar-primary: #14B8A6;
+  --sidebar-primary-foreground: #0A0A0A;
+  --sidebar-accent: #262626;
+  --sidebar-accent-foreground: #FAFAF9;
+  --sidebar-border: #404040;
+  --sidebar-ring: #14B8A6;
 }
 
 /* Custom animations */
@@ -132,8 +132,36 @@
   animation: fadeUp 0.8s ease-out forwards;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+.gradient-text-teal {
+  background: linear-gradient(135deg, #0D9488 0%, #14B8A6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Alias for consistency - both point to teal gradient */
 .gradient-text-coral {
-  background: linear-gradient(135deg, #E07A5F 0%, #F4A07D 100%);
+  background: linear-gradient(135deg, #0D9488 0%, #14B8A6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-primary {
+  background: linear-gradient(135deg, #0D9488 0%, #14B8A6 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -146,3 +174,241 @@
 .stagger-4 { animation-delay: 400ms; }
 .stagger-5 { animation-delay: 500ms; }
 .stagger-6 { animation-delay: 600ms; }
+
+/* Infinite scroll animations for testimonials */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-100% / 3));
+  }
+}
+
+@keyframes scroll-right {
+  0% {
+    transform: translateX(calc(-100% / 3));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-scroll-left {
+  animation: scroll-left 40s linear infinite;
+}
+
+.animate-scroll-right {
+  animation: scroll-right 40s linear infinite;
+}
+
+.pause-animation {
+  animation-play-state: paused !important;
+}
+
+/* ===== PREMIUM POLISH ADDITIONS ===== */
+
+/* 1. Micro-interactions - Smooth hover states */
+@keyframes subtle-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.hover-float:hover {
+  animation: subtle-float 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 8s linear infinite;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  background-size: 1000px 100%;
+}
+
+/* 2. Premium typography - Stripe-level precision */
+
+/* Display typography - For massive headlines */
+.font-display {
+  font-variation-settings: 'wght' 700;
+  letter-spacing: -0.04em; /* Tighter tracking like Stripe */
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Professional typography scale */
+.headline-xl {
+  font-size: clamp(2.25rem, 5vw, 3.5rem); /* 36-56px */
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.headline-lg {
+  font-size: clamp(2rem, 4vw, 3rem); /* 32-48px */
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.headline-md {
+  font-size: clamp(1.5rem, 3vw, 2rem); /* 24-32px */
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.headline-sm {
+  font-size: clamp(1.25rem, 2vw, 1.5rem); /* 20-24px */
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+}
+
+/* Subhead typography */
+.subhead-lg {
+  font-size: clamp(1.125rem, 2vw, 1.5rem); /* 18-24px */
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.subhead-md {
+  font-size: clamp(1rem, 1.5vw, 1.25rem); /* 16-20px */
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: -0.008em;
+}
+
+/* Body typography */
+.body-xl {
+  font-size: clamp(1rem, 1.25vw, 1.125rem); /* 16-18px */
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.003em;
+}
+
+.body-lg {
+  font-size: clamp(0.9375rem, 1.125vw, 1rem); /* 15-16px */
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.002em;
+}
+
+.body-md {
+  font-size: 1rem; /* 16px */
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.body-sm {
+  font-size: 0.875rem; /* 14px */
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Category labels - like Stripe's purple labels */
+.label-category {
+  font-size: 0.8125rem; /* 13px */
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* Dark navy text (Stripe's signature) */
+.text-navy {
+  color: #0a2540;
+}
+
+.dark .text-navy {
+  color: #f7fafc;
+}
+
+/* 3. Pattern overlays - Subtle grid backgrounds */
+.dot-pattern {
+  background-image: radial-gradient(circle at 1px 1px, rgb(148 163 184 / 0.15) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.dark .dot-pattern {
+  background-image: radial-gradient(circle at 1px 1px, rgb(71 85 105 / 0.2) 1px, transparent 0);
+}
+
+.grid-pattern {
+  background-image:
+    linear-gradient(rgb(148 163 184 / 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(148 163 184 / 0.1) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.dark .grid-pattern {
+  background-image:
+    linear-gradient(rgb(71 85 105 / 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(71 85 105 / 0.15) 1px, transparent 1px);
+}
+
+/* 4. Improved spacing rhythm - Professional & compact */
+.section-spacing {
+  padding-top: clamp(3rem, 6vw, 4.5rem);
+  padding-bottom: clamp(3rem, 6vw, 4.5rem);
+}
+
+.section-spacing-sm {
+  padding-top: clamp(2rem, 4vw, 3rem);
+  padding-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+/* 5. Premium shadows - Layered depth */
+.shadow-premium {
+  box-shadow:
+    0 1px 2px 0 rgb(0 0 0 / 0.05),
+    0 4px 6px -1px rgb(0 0 0 / 0.05),
+    0 10px 15px -3px rgb(0 0 0 / 0.05);
+}
+
+.shadow-premium-lg {
+  box-shadow:
+    0 2px 4px 0 rgb(0 0 0 / 0.05),
+    0 8px 12px -2px rgb(0 0 0 / 0.08),
+    0 20px 30px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(23, 23, 23, 0.8);
+  border: 1px solid rgba(64, 64, 64, 0.3);
+}
+
+/* Gradient backgrounds for sections */
+.gradient-radial {
+  background: radial-gradient(circle at 50% 0%, rgba(13, 148, 136, 0.05) 0%, transparent 50%);
+}
+
+.dark .gradient-radial {
+  background: radial-gradient(circle at 50% 0%, rgba(20, 184, 166, 0.08) 0%, transparent 50%);
+}
+
+/* Smooth transitions */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
