@@ -1,270 +1,156 @@
 "use client";
 
-import { useState } from "react";
-import { Section, AnimatedElement } from "./shared";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
-  Brain,
-  Search,
-  TrendingUp,
-  Users,
-  Wrench,
-  HardHat,
-  Timer,
-  Star,
-  Mail,
-  AlertTriangle,
-  Vote,
-  Crown,
-  UserCheck,
-  LucideIcon,
-} from "lucide-react";
+  IoGitBranch,
+  IoShield,
+  IoTime,
+  IoPeople,
+  IoBook,
+  IoWallet,
+} from "react-icons/io5";
 
-// Data
-const vendors = [
-  { name: "ABC Plumbing", rating: 4.9, reviews: 234, price: "$$", best: true },
-  { name: "QuickFix Pro", rating: 4.7, reviews: 156, price: "$", best: false },
-  { name: "HomeServe", rating: 4.5, reviews: 89, price: "$$", best: false },
-];
-
-const householdMembers = [
-  { initials: "AL", colorClass: "bg-primary/10 text-primary" },
-  { initials: "JM", colorClass: "bg-blue-500/10 text-blue-500" },
-  { initials: "SK", colorClass: "bg-purple-500/10 text-purple-500" },
-];
-
-const priceTimeline = [
-  { label: "Now", price: "$1,400", colorClass: "bg-primary/10 border-primary/20 text-primary" },
-  { label: "March", price: "$1,650", colorClass: "bg-yellow-500/10 border-yellow-500/20 text-yellow-600 dark:text-yellow-500" },
-  { label: "June", price: "$1,500", colorClass: "bg-muted/50 border-transparent text-foreground" },
-];
-
-const features: {
-  id: string;
-  label: string;
-  icon: LucideIcon;
-  title: string;
-  description: string;
-}[] = [
-  {
-    id: "decisions",
-    label: "Smart Decisions",
-    icon: Brain,
-    title: "DIY, hire, or wait?",
-    description: "Every recommendation considers your budget, skill level, and time. No more guessing.",
-  },
-  {
-    id: "vendors",
-    label: "Find Contractors",
-    icon: Search,
-    title: "Vetted pros, instantly",
-    description: "We search Yelp, Google, Angi, and more. You get a curated list with ratings and pricing.",
-  },
-  {
-    id: "pricing",
-    label: "Price Intelligence",
-    icon: TrendingUp,
-    title: "Buy now or wait?",
-    description: "Tariff tracking, seasonal trends, and rebate deadlines. Know the best time to buy.",
-  },
-  {
-    id: "household",
-    label: "Household",
-    icon: Users,
-    title: "Decide together",
-    description: "Invite family members with role-based permissions. Vote on big decisions.",
-  },
-];
-
-// Visual Components
-function DecisionsVisual() {
-  return (
-    <div className="space-y-3">
-      <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Wrench className="h-5 w-5 text-primary" />
-          <div>
-            <p className="font-semibold">DIY</p>
-            <p className="text-xs text-muted-foreground">Recommended</p>
-          </div>
-        </div>
-        <div className="text-right">
-          <p className="font-semibold">$8</p>
-          <p className="text-xs text-muted-foreground">30 min</p>
-        </div>
-      </div>
-      <div className="p-4 rounded-xl border border-border/50 flex items-center justify-between opacity-60">
-        <div className="flex items-center gap-3">
-          <HardHat className="h-5 w-5 text-muted-foreground" />
-          <p className="font-medium">Hire pro</p>
-        </div>
-        <p className="font-semibold">$150</p>
-      </div>
-      <div className="p-4 rounded-xl border border-border/50 flex items-center justify-between opacity-60">
-        <div className="flex items-center gap-3">
-          <Timer className="h-5 w-5 text-muted-foreground" />
-          <p className="font-medium">Wait</p>
-        </div>
-        <p className="text-sm text-destructive">Not recommended</p>
-      </div>
-    </div>
-  );
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
 }
 
-function VendorsVisual() {
-  return (
-    <div className="space-y-3">
-      {vendors.map((vendor, i) => (
-        <div
-          key={i}
-          className={cn(
-            "p-3 rounded-xl border flex items-center justify-between",
-            vendor.best ? "border-primary/30 bg-primary/5" : "border-border/50"
-          )}
-        >
-          <div>
-            <div className="flex items-center gap-2">
-              <p className="font-medium text-sm">{vendor.name}</p>
-              {vendor.best && (
-                <span className="text-xs bg-primary text-primary-foreground px-1.5 py-0.5 rounded">
-                  Best
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-              <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
-              {vendor.rating} ({vendor.reviews}) · {vendor.price}
-            </div>
-          </div>
-          <Mail className="h-4 w-4 text-muted-foreground" />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function PricingVisual() {
-  return (
-    <div className="space-y-4">
-      <div className="p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
-        <div className="flex items-start gap-3">
-          <AlertTriangle className="h-5 w-5 text-yellow-500 shrink-0" />
-          <div>
-            <p className="font-semibold text-sm">Price increase coming</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Steel tariffs effective March 1
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-2 text-center">
-        {priceTimeline.map((item, i) => (
-          <div key={i} className={cn("p-3 rounded-lg border", item.colorClass)}>
-            <p className="text-xs text-muted-foreground">{item.label}</p>
-            <p className="font-bold">{item.price}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function HouseholdVisual() {
-  return (
-    <div className="space-y-3">
-      <div className="flex items-center gap-2">
-        {householdMembers.map((member, i) => (
-          <div
-            key={i}
-            className={cn(
-              "h-10 w-10 rounded-full flex items-center justify-center text-sm font-medium",
-              member.colorClass
-            )}
-          >
-            {member.initials}
-          </div>
-        ))}
-        <div className="h-10 w-10 rounded-full border-2 border-dashed border-border flex items-center justify-center text-muted-foreground text-lg">
-          +
-        </div>
-      </div>
-      <div className="p-3 rounded-xl bg-muted/30 border border-border/50">
-        <div className="flex items-center justify-between mb-2">
-          <p className="font-medium text-sm">Replace HVAC?</p>
-          <span className="text-xs text-muted-foreground flex items-center gap-1">
-            <Vote className="h-3 w-3" /> 2/3 voted
-          </span>
-        </div>
-        <div className="flex gap-2">
-          <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded flex items-center gap-1">
-            <Crown className="h-3 w-3" /> Buy now
-          </span>
-          <span className="text-xs bg-muted px-2 py-1 rounded flex items-center gap-1">
-            <UserCheck className="h-3 w-3" /> Wait
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const featureVisuals: Record<string, React.ReactNode> = {
-  decisions: <DecisionsVisual />,
-  vendors: <VendorsVisual />,
-  pricing: <PricingVisual />,
-  household: <HouseholdVisual />,
-};
+const features = [
+  {
+    icon: IoGitBranch,
+    title: "Decision Frames, Not Recommendations",
+    description:
+      "We don't tell you what to do. We show you DIY vs. hire vs. defer, with clear tradeoffs for each path. You make the call.",
+  },
+  {
+    icon: IoShield,
+    title: "Safety & Risk Analysis",
+    description:
+      "What PPE do you need? Can you make this worse? When should you stop and call a pro? We surface what you might overlook.",
+  },
+  {
+    icon: IoTime,
+    title: "Opportunity Cost Awareness",
+    description:
+      "If your time is worth $50/hour and a repair takes 4 hours, the 'savings' might not be savings. We help you see the real math.",
+  },
+  {
+    icon: IoWallet,
+    title: "Budget Tracking",
+    description:
+      "Personal or shared. Track what you spend on repairs, contractors, and projects. See patterns. Make better future decisions.",
+  },
+  {
+    icon: IoPeople,
+    title: "Solo or Shared",
+    description:
+      "Use it alone or collaborate with family, roommates, or partners. Shared budgets, shared decisions, shared accountability.",
+  },
+  {
+    icon: IoBook,
+    title: "Permanent Decision Ledger",
+    description:
+      "Every decision is logged: what you chose, why, and what happened. Revisit past choices. Learn from outcomes. Build judgment.",
+  },
+];
 
 export function Features() {
-  const [activeTab, setActiveTab] = useState("decisions");
-  const activeFeature = features.find((f) => f.id === activeTab)!;
+  const sectionRef = useRef<HTMLElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!sectionRef.current || !mounted) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from(".features-heading", {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+        },
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        ease: "power3.out",
+      });
+
+      gsap.from(".features-subheading", {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+        },
+        opacity: 0,
+        y: 20,
+        duration: 0.6,
+        delay: 0.2,
+        ease: "power3.out",
+      });
+
+      const cards = sectionRef.current!.querySelectorAll(".feature-card");
+      gsap.from(cards, {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 60%",
+        },
+        opacity: 0,
+        y: 40,
+        stagger: 0.1,
+        duration: 0.6,
+        ease: "power3.out",
+      });
+
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [mounted]);
+
+  if (!mounted) return null;
 
   return (
-    <Section background="muted">
-      <AnimatedElement>
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Everything you need
+    <section
+      ref={sectionRef}
+      className="relative py-24 lg:py-32 bg-black overflow-hidden"
+    >
+      <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/30 to-black" />
+
+      <div className="container mx-auto px-4 sm:px-6 max-w-5xl relative z-10">
+        {/* Section header */}
+        <div className="text-center mb-16">
+          <h2 className="features-heading text-3xl sm:text-4xl lg:text-5xl font-semibold text-white mb-4">
+            What Makes This Different
           </h2>
-          <p className="text-lg text-muted-foreground">
-            One app for smarter household decisions
+          <p className="features-subheading text-lg text-neutral-400 max-w-2xl mx-auto">
+            Decision intelligence, not task tracking. We help you think through choices,
+            not manage projects.
           </p>
         </div>
-      </AnimatedElement>
-      <AnimatedElement delay={100}>
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
-            {features.map((feature) => (
-              <button
-                key={feature.id}
-                onClick={() => setActiveTab(feature.id)}
-                className={cn(
-                  "flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all",
-                  activeTab === feature.id
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                    : "bg-card border border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/30"
-                )}
-              >
-                <feature.icon className="h-4 w-4" />
-                {feature.label}
-              </button>
-            ))}
-          </div>
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div>
-              <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                {activeFeature.title}
+
+        {/* Features grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className="feature-card group p-6 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-neutral-700 transition-colors"
+            >
+              <div className="w-11 h-11 rounded-lg bg-neutral-800 border border-neutral-700 flex items-center justify-center mb-5">
+                <feature.icon className="w-5 h-5 text-neutral-300" />
+              </div>
+
+              <h3 className="text-lg font-medium text-white mb-2">
+                {feature.title}
               </h3>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                {activeFeature.description}
+
+              <p className="text-sm text-neutral-500 leading-relaxed">
+                {feature.description}
               </p>
             </div>
-            <div className="rounded-2xl border border-border/50 bg-card p-6 shadow-lg">
-              {featureVisuals[activeTab]}
-            </div>
-          </div>
+          ))}
         </div>
-      </AnimatedElement>
-    </Section>
+      </div>
+    </section>
   );
 }

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, DM_Sans } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/landing/Navbar";
-import { Footer } from "@/components/landing";
+import { Providers } from "./providers";
+import { Amplitude } from '@/amplitude';
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -17,32 +17,40 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "OpportuniQ - Smart Home & Auto Repair Decision Platform",
-  description: "Track expenses, manage budgets, and make informed repair decisions. Know when to DIY, when to hire, or when to wait — solo or with your group.",
+  title: "OpportunIQ - Every Decision Made Simple. For Everyone.",
+  description: "Expert guidance for every home and auto decision. Know if it's safe, risky, or urgent. Compare costs, find pros, track projects with family. Photo diagnosis, risk analysis, budget planning—in any language. 100+ languages.",
   keywords: [
-    "home repair decisions",
+    "multilingual repair help",
+    "photo diagnosis",
+    "smart repair decisions",
+    "DIY vs professional comparison",
+    "home repair assistant",
     "budget tracking",
-    "DIY vs hire",
-    "expense management",
-    "repair cost calculator",
-    "household budget",
-    "group expense tracking",
-    "maintenance planning",
+    "risk analysis",
+    "vendor discovery",
+    "family collaboration",
+    "household decisions",
+    "multilingual support",
+    "Vietnamese repair help",
+    "Spanish repair help",
+    "Chinese repair help",
     "auto repair decisions",
-    "collaborative budgeting"
+    "appliance repair guide",
+    "cost comparison tool",
+    "local contractor finder"
   ],
-  authors: [{ name: "OpportuniQ" }],
-  creator: "OpportuniQ",
-  publisher: "OpportuniQ",
+  authors: [{ name: "OpportunIQ" }],
+  creator: "OpportunIQ",
+  publisher: "OpportunIQ",
   metadataBase: new URL("https://opportuniq.app"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "OpportuniQ - Smart Home & Auto Repair Decision Platform",
-    description: "Track expenses, manage budgets, and make informed repair decisions. Know when to DIY, when to hire, or when to wait — solo or with your group.",
+    title: "OpportunIQ - Every Decision Made Simple. For Everyone.",
+    description: "Expert guidance for every home and auto decision. Know if it's safe, risky, or urgent. Compare costs, find pros, track with family—in any language.",
     url: "https://opportuniq.app",
-    siteName: "OpportuniQ",
+    siteName: "OpportunIQ",
     locale: "en_US",
     type: "website",
     images: [
@@ -50,14 +58,14 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "OpportuniQ - Smart Repair Decisions",
+        alt: "OpportunIQ - Smart Decisions in Any Language",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "OpportuniQ - Smart Home & Auto Repair Decision Platform",
-    description: "Track expenses, manage budgets, and make informed repair decisions. Know when to DIY, when to hire, or when to wait.",
+    title: "OpportunIQ - Every Decision Made Simple. For Everyone.",
+    description: "Expert guidance for every home and auto decision. Know if it's safe, risky, or urgent. Compare costs, find pros—in any language.",
     images: ["/og-image.png"],
     creator: "@opportuniq",
   },
@@ -83,13 +91,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <Amplitude />
       <body
         className={`${spaceGrotesk.variable} ${dmSans.variable} font-sans antialiased`}
       >
-        <Navbar />
-        {children}
-        <Footer />
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

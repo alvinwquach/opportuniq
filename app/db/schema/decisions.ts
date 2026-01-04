@@ -17,7 +17,7 @@
  * 5. Sourcing (productRecommendations, vendorContacts) → Where to buy/who to hire
  */
 
-import { pgTable, uuid, text, timestamp, pgEnum, jsonb, boolean, decimal, integer } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, pgEnum, jsonb, boolean, decimal, integer, real } from "drizzle-orm/pg-core";
 import { issues } from "./issues";
 import { groupMembers } from "./groups";
 
@@ -31,6 +31,13 @@ export const optionTypeEnum = pgEnum("option_type", [
   "hire",
   "defer",
   "replace",
+]);
+
+// PPE priority levels: how critical is this safety item?
+export const ppePriorityEnum = pgEnum("ppe_priority", [
+  "required",      // Do NOT proceed without this - hard stop
+  "recommended",   // Real risk without it, strongly advised
+  "suggested",     // Nice to have, comfort/convenience
 ]);
 
 // Voting: approve (yes), reject (no), abstain (pass)
@@ -112,6 +119,29 @@ export const decisionOptions = pgTable("decision_options", {
 
   // AI's certainty (0-100) - higher is more reliable cost/time estimates
   confidenceScore: integer("confidence_score"),
+
+  // ============================================
+  // SAFETY - Stored for reference & analytics
+  // ============================================
+
+  // PPE with priority levels - what protection is needed
+  // AI generates full details; we store the essentials
+  ppe: jsonb("ppe").$type<{
+    item: string;
+    priority: "required" | "recommended" | "suggested";
+    reason: string;
+  }[]>(),
+
+  // Hard stops - user cannot proceed without these (subset of PPE where priority = "required")
+  // Example: ["N95 respirator", "Voltage tester"]
+  doNotProceedWithout: jsonb("do_not_proceed_without").$type<string[]>(),
+
+  // Main hazards present - for display and analytics
+  // Example: ["Electrical shock", "Lead dust", "Fall risk"]
+  hazards: jsonb("hazards").$type<string[]>(),
+
+  // Where is this work performed?
+  workLocation: text("work_location").$type<"indoor" | "outdoor" | "both">(),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -268,11 +298,19 @@ export const productRecommendations = pgTable("product_recommendations", {
   // Distance from user's ZIP code - e.g., "2.3 miles"
   storeDistance: text("store_distance"),
 
+  // Distance in miles (numeric for calculations)
+  distanceMiles: real("distance_miles"),
+
   // Link to product page or store locator
   storeUrl: text("store_url"),
 
   // Availability status - true (in stock), false (out), null (unknown)
   inStock: boolean("in_stock"),
+
+  // Geocoded store coordinates for map display
+  storeLatitude: real("store_latitude"),
+  storeLongitude: real("store_longitude"),
+  geocodedAt: timestamp("geocoded_at"),
 
   // When AI searched for this product
   searchedAt: timestamp("searched_at").defaultNow().notNull(),
@@ -332,11 +370,25 @@ export const vendorContacts = pgTable("vendor_contacts", {
   // Distance from user - e.g., "5.2 miles"
   distance: text("distance"),
 
+  // Distance in miles (numeric for calculations)
+  distanceMiles: real("distance_miles"),
+
+  // Physical address scraped from Angi/Yelp
+  address: text("address"),
+
+  // Geocoded coordinates for map display
+  latitude: real("latitude"),
+  longitude: real("longitude"),
+  geocodedAt: timestamp("geocoded_at"),
+
   // Has user reached out?
   contacted: boolean("contacted").default(false).notNull(),
 
   // AI-generated email template customized for issue
   emailDraft: text("email_draft"),
+
+  // Primary specialty for map marker display
+  specialty: text("specialty"),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

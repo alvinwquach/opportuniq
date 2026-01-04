@@ -55,12 +55,31 @@ export const evidenceTypeEnum = pgEnum("evidence_type", [
   "observation",
 ]);
 
-// Safety/damage risk: low (safe DIY), medium (requires care), high (hire pro), catastrophic (emergency)
+// Safety/damage risk: low (safe DIY), medium (requires care), high (hire pro), critical (emergency)
 export const riskLevelEnum = pgEnum("risk_level", [
   "low",
   "medium",
   "high",
-  "catastrophic",
+  "critical",
+]);
+
+// Assessment severity: how bad is this problem?
+export const severityEnum = pgEnum("severity", [
+  "cosmetic",      // Purely aesthetic, no functional impact
+  "minor",         // Small issue, easy fix, no risk if delayed
+  "moderate",      // Should address soon, could worsen
+  "serious",       // Significant problem, address promptly
+  "critical",      // Major issue, structural/safety concern
+]);
+
+// Assessment urgency: when does this need attention?
+export const urgencyEnum = pgEnum("urgency", [
+  "monitor",       // Watch and wait, check periodically
+  "this_month",    // Address within 30 days
+  "this_week",     // Address within 7 days
+  "today",         // Address within 24 hours
+  "now",           // Drop everything, do this immediately
+  "emergency",     // Life safety - call 911 / evacuate / shut off utilities
 ]);
 
 // High-level problem categories for filtering and AI model selection
@@ -126,6 +145,47 @@ export const issues = pgTable("projects", {
   // AI's confidence in its diagnosis (0-100)
   // 90-100: very confident, 70-89: confident, 50-69: moderate, <50: low
   confidenceLevel: integer("confidence_level"),
+
+  // ============================================
+  // ASSESSMENT FIELDS - "What am I looking at?"
+  // ============================================
+
+  // AI's diagnosis of what this is
+  // Example: "Hairline crack from normal settling" or "Active roof leak from damaged flashing"
+  diagnosis: text("diagnosis"),
+
+  // How bad is this? See severityEnum
+  severity: severityEnum("severity"),
+
+  // How urgent? See urgencyEnum
+  urgency: urgencyEnum("urgency"),
+
+  // What happens if user ignores this?
+  // Example: "Crack may widen slightly but remains cosmetic" or "Water damage will spread to insulation and drywall"
+  ignoreRisk: text("ignore_risk"),
+
+  // Signs that indicate the problem is getting worse
+  // Example: ["Crack widening beyond 1/8 inch", "Stair-step crack pattern appearing", "Doors or windows sticking"]
+  warningSignsToWatch: jsonb("warning_signs_to_watch").$type<string[]>(),
+
+  // When user should escalate to professional / call for help
+  // Example: "If crack exceeds 1/4 inch or you notice doors not closing properly, consult a structural engineer"
+  whenToEscalate: text("when_to_escalate"),
+
+  // ============================================
+  // EMERGENCY HANDLING
+  // ============================================
+
+  // Is this a life-safety emergency? If true, skip all other assessment and show emergencyInstructions
+  isEmergency: boolean("is_emergency").default(false).notNull(),
+
+  // Immediate actions for emergencies - shown prominently
+  // Example: "Gas smell detected: 1) Do NOT flip any switches 2) Leave house immediately 3) Call 911 from outside 4) Call gas company"
+  emergencyInstructions: text("emergency_instructions"),
+
+  // What type of emergency (for proper routing/response)
+  // Example: "gas_leak", "electrical_fire", "water_main_burst", "structural_collapse"
+  emergencyType: text("emergency_type"),
 
   // Which household member created this issue
   // Relation: Many issues → One groupMember

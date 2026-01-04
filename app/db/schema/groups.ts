@@ -33,6 +33,14 @@ export const memberRoleEnum = pgEnum("member_role", [
   "member",
 ]);
 
+// Membership status for group members
+// pending = invited but not yet accepted, active = accepted and participating, inactive = left or removed
+export const memberStatusEnum = pgEnum("member_status", [
+  "pending",
+  "active",
+  "inactive",
+]);
+
 // Risk tolerance for AI decision recommendations
 export const riskToleranceEnum = pgEnum("risk_tolerance", [
   "very_low",
@@ -99,6 +107,9 @@ export const groupMembers = pgTable("group_members", {
 
   // Member's permission level - organizer (full control), admin, or member
   role: memberRoleEnum("role").notNull().default("member"),
+
+  // Membership status - pending (invited), active (accepted), inactive (left/removed)
+  status: memberStatusEnum("status").notNull().default("pending"),
 
   // When invitation was sent
   invitedAt: timestamp("invited_at").defaultNow().notNull(),

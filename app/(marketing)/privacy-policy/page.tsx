@@ -1,87 +1,110 @@
-export default function PrivacyPage() {
+import Link from "next/link";
+
+/**
+ * Privacy Policy Page
+ * Light mode design for readability
+ */
+
+export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-4xl px-6 py-24">
-        <h1 className="font-display text-4xl md:text-5xl font-bold mb-8">Privacy Policy</h1>
-        <div className="prose prose-lg max-w-none space-y-6 [&_p]:text-foreground [&_li]:text-foreground [&_ul]:text-foreground [&_h2]:text-foreground [&_strong]:text-foreground">
-          <p className="text-sm text-muted-foreground">
-            Last updated: {new Date().toLocaleDateString()}
-          </p>
-          <section>
-            <h2 className="font-display text-2xl font-semibold mb-4">
+    <div className="min-h-screen bg-white">
+      <div className="mx-auto max-w-4xl px-6 pt-32 pb-24">
+        {/* Breadcrumb */}
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-teal-600 mb-8 transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to home
+        </Link>
+
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-neutral-900">Privacy Policy</h1>
+        <p className="text-sm text-neutral-500 mb-12">
+          Last updated: {new Date().toLocaleDateString()}
+        </p>
+
+        <div className="prose prose-lg prose-neutral max-w-none">
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold mb-4 text-neutral-900">
               Introduction
             </h2>
-            <p>
-              Opportuniq ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our home maintenance decision-making platform.
+            <p className="text-neutral-600 leading-relaxed">
+              OpportunIQ (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our decision-support platform.
             </p>
           </section>
-          <section>
-            <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
+
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Information We Collect
             </h2>
-            <p>We collect information that you provide directly to us, including:</p>
-            <ul className="list-disc pl-6 space-y-2">
+            <p className="text-neutral-600 mb-4">We collect information that you provide directly to us, including:</p>
+            <ul className="list-disc pl-6 space-y-2 text-neutral-600">
               <li>Account information (name, email address, password)</li>
-              <li>Home maintenance issues and related photos/videos you upload</li>
-              <li>Budget and household member information</li>
+              <li>Issues and related photos/videos you upload</li>
+              <li>Your time value and decision preferences</li>
               <li>Email integration data (when you connect Gmail or Outlook)</li>
-              <li>Communication with contractors through our platform</li>
+              <li>Decision history and outcomes you log</li>
               <li>Usage data and analytics</li>
             </ul>
           </section>
-          <section>
-            <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
+
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               How We Use Your Information
             </h2>
-            <p>We use the information we collect to:</p>
-            <ul className="list-disc pl-6 space-y-2">
+            <p className="text-neutral-600 mb-4">We use the information we collect to:</p>
+            <ul className="list-disc pl-6 space-y-2 text-neutral-600">
               <li>Provide and improve our services</li>
-              <li>Diagnose home maintenance issues using AI</li>
-              <li>Generate cost estimates and recommendations</li>
-              <li>Connect you with qualified contractors</li>
+              <li>Frame decisions and calculate opportunity costs</li>
+              <li>Generate cost and time estimates</li>
+              <li>Store and organize your decision history</li>
               <li>Draft emails and communications on your behalf</li>
-              <li>Process household voting and decision-making</li>
-              <li>Provide tariff and pricing intelligence</li>
+              <li>Process household collaboration features</li>
               <li>Send you updates and notifications</li>
             </ul>
           </section>
-          <section>
-            <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
+
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Email Integration
             </h2>
-            <p>
-              When you connect your Gmail or Outlook account, we access your email to draft and send messages to contractors on your behalf. We only access emails related to home maintenance and contractor communications. You can revoke email access at any time from your account settings.
+            <p className="text-neutral-600 leading-relaxed">
+              When you connect your Gmail or Outlook account, we access your email to draft and send messages on your behalf. We only access emails related to your decision-making activities. You can revoke email access at any time from your account settings.
             </p>
           </section>
-          <section>
-            <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
+
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Data Storage and Security
             </h2>
-            <p>
+            <p className="text-neutral-600 leading-relaxed">
               We implement appropriate technical and organizational measures to protect your personal information. Your data is encrypted in transit and at rest. We store your information on secure servers and restrict access to authorized personnel only.
             </p>
           </section>
-          <section>
-            <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
+
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Sharing Your Information
             </h2>
-            <p>We may share your information with:</p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Contractors you choose to contact</li>
+            <p className="text-neutral-600 mb-4">We may share your information with:</p>
+            <ul className="list-disc pl-6 space-y-2 text-neutral-600">
               <li>Service providers who assist in operating our platform</li>
-              <li>Other household members you've added to your account</li>
+              <li>Other household members you&apos;ve added to your account</li>
               <li>Law enforcement when required by law</li>
             </ul>
-            <p className="mt-4">
+            <p className="mt-4 text-neutral-600">
               We do not sell your personal information to third parties.
             </p>
           </section>
-          <section>
-            <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
+
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Your Rights
             </h2>
-            <p>You have the right to:</p>
-            <ul className="list-disc pl-6 space-y-2">
+            <p className="text-neutral-600 mb-4">You have the right to:</p>
+            <ul className="list-disc pl-6 space-y-2 text-neutral-600">
               <li>Access your personal information</li>
               <li>Correct inaccurate data</li>
               <li>Delete your account and data</li>
@@ -90,39 +113,45 @@ export default function PrivacyPage() {
               <li>Revoke email integration permissions</li>
             </ul>
           </section>
-          <section>
-            <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
+
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Cookies and Tracking
             </h2>
-            <p>
+            <p className="text-neutral-600 leading-relaxed">
               We use cookies and similar technologies to improve your experience, analyze usage, and personalize content. You can control cookie settings through your browser preferences.
             </p>
           </section>
-          <section>
-            <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
-              Children's Privacy
+
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
+              Children&apos;s Privacy
             </h2>
-            <p>
+            <p className="text-neutral-600 leading-relaxed">
               Our service is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13.
             </p>
           </section>
-          <section>
-            <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
+
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Changes to This Policy
             </h2>
-            <p>
-              We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date.
+            <p className="text-neutral-600 leading-relaxed">
+              We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the &quot;Last updated&quot; date.
             </p>
           </section>
-          <section>
-            <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
+
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Contact Us
             </h2>
-            <p>
+            <p className="text-neutral-600 leading-relaxed">
               If you have questions about this Privacy Policy, please contact us at:
             </p>
             <p className="mt-2">
-              Email: privacy@opportuniq.com
+              <a href="mailto:privacy@opportuniq.com" className="text-teal-600 hover:text-teal-700 transition-colors">
+                privacy@opportuniq.com
+              </a>
             </p>
           </section>
         </div>
