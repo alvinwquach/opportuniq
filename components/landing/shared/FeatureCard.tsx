@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { LucideIcon } from "lucide-react";
+import { IconType } from "react-icons";
 
 interface FeatureCardProps {
-  icon: LucideIcon;
+  icon: IconType;
   title: string;
   description: string;
   className?: string;

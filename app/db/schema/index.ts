@@ -1,5 +1,6 @@
 // Export all schemas
 export * from "./users";
+export * from "./chat";
 export * from "./groups";
 export * from "./issues";
 export * from "./income";
@@ -7,3 +8,5 @@ export * from "./encryption";
 export * from "./decisions";
 export * from "./outcomes";
 export * from "./guides";
+export * from "./waitlist";
+export * from "./referrals";

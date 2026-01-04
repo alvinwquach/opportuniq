@@ -1,110 +1,120 @@
 "use client";
 
-import { Upload, ArrowRight, DollarSign, CheckCircle } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+const steps = [
+  {
+    step: "01",
+    title: "Capture",
+    description: "Photo, video, or voice note.",
+    color: "#00F0FF",
+  },
+  {
+    step: "02",
+    title: "Frame",
+    description: "DIY, outsource, or defer.",
+    color: "#00FF88",
+  },
+  {
+    step: "03",
+    title: "Decide",
+    description: "Logged to your Decision Hub.",
+    color: "#FF8800",
+  },
+];
 
 export function HowItWorks() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!sectionRef.current || !mounted) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from(".hiw-heading", {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+        },
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        ease: "power3.out",
+      });
+
+      const stepCards = sectionRef.current!.querySelectorAll(".step-card");
+      gsap.from(stepCards, {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+        },
+        opacity: 0,
+        y: 30,
+        stagger: 0.12,
+        duration: 0.6,
+        ease: "power3.out",
+      });
+
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [mounted]);
+
+  if (!mounted) return null;
+
   return (
-    <section id="how-it-works" className="relative section-spacing overflow-hidden bg-linear-to-b from-white via-slate-50 to-white dark:from-slate-900 dark:via-slate-900/50 dark:to-slate-900">
-      <div className="absolute inset-0 grid-pattern opacity-30" />
-      <div className="relative mx-auto max-w-7xl px-6">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 label-category mb-6">
-            <Upload className="h-4 w-4" />
-            How it works
+    <section
+      ref={sectionRef}
+      className="relative py-16 lg:py-20 bg-black"
+    >
+      <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
+        <h2 className="hiw-heading text-2xl sm:text-3xl font-semibold text-white text-center mb-12">
+          Three Steps
+        </h2>
+        <div className="relative">
+          <div className="hidden md:block absolute top-8 left-[16%] right-[16%] h-px bg-gradient-to-r from-[#00F0FF] via-[#00FF88] to-[#FF8800]" />
+          <div className="grid md:grid-cols-3 gap-8">
+            {steps.map((step, index) => (
+              <div
+                key={index}
+                className="step-card relative flex flex-col items-center text-center"
+              >
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center mb-4 border-2 bg-black relative z-10"
+                  style={{
+                    borderColor: step.color,
+                    boxShadow: `0 0 20px ${step.color}40`
+                  }}
+                >
+                  <span
+                    className="text-lg font-bold font-mono"
+                    style={{ color: step.color }}
+                  >
+                    {step.step}
+                  </span>
+                </div>
+                <h3
+                  className="text-lg font-medium mb-1"
+                  style={{ color: step.color }}
+                >
+                  {step.title}
+                </h3>
+                <p className="text-sm text-neutral-500">
+                  {step.description}
+                </p>
+              </div>
+            ))}
           </div>
-          <h2 className="headline-lg font-display text-navy dark:text-white text-balance mb-4">
-            Everything you need to <span className="gradient-text-primary">make the right call</span>
-          </h2>
-          <p className="body-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            Upload your problem, see all options, and act immediately.
-          </p>
-        </div>
-        <div className="grid lg:grid-cols-3 gap-8 lg:gap-6 max-w-6xl mx-auto">
-          <div className="relative group">
-            <div className="flex flex-col items-center text-center">
-              <div className="mb-6 relative h-24 w-24 rounded-2xl bg-white dark:bg-slate-800 shadow-premium border border-slate-100 dark:border-slate-700 flex items-center justify-center group-hover:shadow-premium-lg group-hover:-translate-y-1 transition-all duration-300">
-                <Upload className="h-12 w-12 text-blue-600" />
-              </div>
-              <h3 className="headline-sm font-display text-navy dark:text-white mb-4">
-                Share your problem
-              </h3>
-              <p className="body-lg text-slate-600 dark:text-slate-400 mb-6">
-                Upload a photo, video, or describe what you want to fix, build, or maintain.
-              </p>
-              <div className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                <div className="aspect-video rounded-lg bg-slate-200 dark:bg-slate-700 flex items-center justify-center mb-3">
-                  <Upload className="h-8 w-8 text-slate-400" />
-                </div>
-                <div className="text-xs text-slate-500 dark:text-slate-400 text-center">
-                  Photo, video, or description
-                </div>
-              </div>
-            </div>
-            <div className="hidden lg:block absolute top-32 -right-4 text-slate-300 dark:text-slate-700">
-              <ArrowRight className="h-8 w-8" />
-            </div>
-          </div>
-          <div className="relative group">
-            <div className="flex flex-col items-center text-center">
-              <div className="mb-6 relative h-24 w-24 rounded-2xl bg-white dark:bg-slate-800 shadow-premium border border-slate-100 dark:border-slate-700 flex items-center justify-center group-hover:shadow-premium-lg group-hover:-translate-y-1 transition-all duration-300">
-                <DollarSign className="h-12 w-12 text-emerald-600" />
-              </div>
-              <h3 className="headline-sm font-display text-navy dark:text-white mb-4">
-                See your options
-              </h3>
-              <p className="body-lg text-slate-600 dark:text-slate-400 mb-6">
-                See DIY and professional options side-by-side with costs, risks, and trade-offs for each.
-              </p>
-              <div className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-3">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">DIY</span>
-                  <span className="text-emerald-600 font-bold">$45-120</span>
-                </div>
-                <div className="h-px bg-slate-200 dark:bg-slate-700" />
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Hire Pro</span>
-                  <span className="text-slate-600 dark:text-slate-400 font-bold">$200-400</span>
-                </div>
-                <div className="mt-3 p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900">
-                  <div className="text-xs text-emerald-700 dark:text-emerald-400 font-medium text-center">
-                    Trade-offs explained
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="hidden lg:block absolute top-32 -right-4 text-slate-300 dark:text-slate-700">
-              <ArrowRight className="h-8 w-8" />
-            </div>
-          </div>
-          <div className="group">
-            <div className="flex flex-col items-center text-center">
-              <div className="mb-6 relative h-24 w-24 rounded-2xl bg-white dark:bg-slate-800 shadow-premium border border-slate-100 dark:border-slate-700 flex items-center justify-center group-hover:shadow-premium-lg group-hover:-translate-y-1 transition-all duration-300">
-                <CheckCircle className="h-12 w-12 text-green-600" />
-              </div>
-              <h3 className="headline-sm font-display text-navy dark:text-white mb-4">
-                Make your decision
-              </h3>
-              <p className="body-lg text-slate-600 dark:text-slate-400 mb-6">
-                Get step-by-step DIY guides or vetted professionals near you. Start immediately.
-              </p>
-              <div className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-2">
-                <div className="p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-xs font-medium text-center">
-                  Step-by-step guide
-                </div>
-                <div className="p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-xs font-medium text-center">
-                  Find parts nearby
-                </div>
-                <div className="p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-xs font-medium text-center">
-                  Contact contractors
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="mt-20 text-center">
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Works for automotive repairs, home maintenance, DIY projects, electronics, and more
-          </p>
         </div>
       </div>
     </section>
