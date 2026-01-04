@@ -12,7 +12,6 @@ import { CalendarPreview } from "./CalendarPreview";
 import { SearchCommand } from "./SearchCommand";
 import { InlineIncomeSetup } from "./InlineIncomeSetup";
 import { Breadcrumbs } from "./Breadcrumbs";
-import { LiveChatWidget } from "@/components/chat/LiveChatWidget";
 import { AmplitudeIdentify } from "./AmplitudeIdentify";
 
 interface DashboardContentProps {
@@ -161,15 +160,6 @@ export function DashboardContent({
         onOpenChange={setIncomeOpen}
         userId={user.id}
       />
-      {user.accessTier && user.role && (
-        <LiveChatWidget
-          userId={user.id}
-          userEmail={user.email}
-          userName={user.name}
-          accessTier={user.accessTier}
-          role={user.role}
-        />
-      )}
       <AmplitudeIdentify
         userId={user.id}
         email={user.email}
