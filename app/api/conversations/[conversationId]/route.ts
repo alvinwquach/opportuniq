@@ -50,6 +50,7 @@ export async function GET(
         role: aiMessages.role,
         content: aiMessages.content,
         attachments: aiMessages.attachments,
+        metadata: aiMessages.metadata,
         createdAt: aiMessages.createdAt,
       })
       .from(aiMessages)

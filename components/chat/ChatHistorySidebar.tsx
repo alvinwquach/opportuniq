@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IoAdd, IoTrash, IoEllipsisVertical, IoCheckmark } from "react-icons/io5";
+import { IoAdd, IoTrash, IoEllipsisVertical, IoCheckmark, IoChevronForward } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import {
   useConversations,
@@ -167,13 +167,22 @@ export function ChatHistorySidebar({
   return (
     <aside className="relative flex flex-col h-full bg-[#0c0c0c] border-l border-[#1f1f1f] overflow-hidden">
       <div className="p-3 border-b border-[#1f1f1f] flex-shrink-0">
-        <button
-          onClick={onNewChat}
-          className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-[#5eead4] text-black font-medium text-sm hover:bg-[#4fd1c5] transition-colors"
-        >
-          <IoAdd className="w-5 h-5" />
-          New Diagnosis
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onToggleCollapse}
+            className="p-2 rounded-lg text-[#888] hover:text-white hover:bg-[#1a1a1a] transition-colors"
+            title="Hide history"
+          >
+            <IoChevronForward className="w-4 h-4" />
+          </button>
+          <button
+            onClick={onNewChat}
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#5eead4] text-black font-medium text-sm hover:bg-[#4fd1c5] transition-colors"
+          >
+            <IoAdd className="w-5 h-5" />
+            New Diagnosis
+          </button>
+        </div>
       </div>
       <div className="flex-1 overflow-y-auto p-2 space-y-1 min-h-0 scrollbar-dark">
         {isLoading ? (

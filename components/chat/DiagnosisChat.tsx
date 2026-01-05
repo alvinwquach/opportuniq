@@ -1,18 +1,21 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { IoSend, IoImage, IoClose, IoStop, IoCheckmarkCircle, IoLockClosed } from "react-icons/io5";
+import { IoSend, IoImage, IoStop, IoCheckmarkCircle, IoLockClosed } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import { useConversation } from "@/hooks/useConversations";
 import { Progress } from "@/components/ui/progress";
 import { trackDiagnosisStarted, trackDiagnosisCompleted, trackFollowUpSent } from "@/lib/analytics";
-import { MessageContent } from "./MessageContent";
-import { EncryptedImage } from "./EncryptedImage";
 import { DiagnosisForm } from "./DiagnosisForm";
+import { ChatMessageList } from "./ChatMessageList";
 import { useEncryptedAttachments } from "@/hooks/useEncryptedAttachments";
 import { useMediaUpload } from "@/hooks/useMediaUpload";
+import { useChatState, Message } from "@/hooks/useChatState";
+import { VoiceMicButton } from "@/components/voice/VoiceMicButton";
 import type { DiagnosisRequest } from "@/lib/schemas/diagnosis";
+import type { TranscriptionResult } from "@/lib/schemas/voice";
+import { getLanguageName } from "@/lib/schemas/voice";
 
 interface DiagnosisChatProps {
   userId: string;
@@ -24,20 +27,6 @@ interface DiagnosisChatProps {
   onTitleUpdated?: (conversationId: string, title: string) => void;
 }
 
-interface MessageAttachment {
-  type: string;
-  mediaType: string;
-  url?: string;
-  attachmentId?: string;
-}
-
-interface Message {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  attachments?: MessageAttachment[] | null;
-}
-
 export function DiagnosisChat({
   userId,
   userName,
@@ -47,15 +36,34 @@ export function DiagnosisChat({
   onConversationCreated,
   onTitleUpdated,
 }: DiagnosisChatProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [followUpInput, setFollowUpInput] = useState("");
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(
-    initialConversationId || null
-  );
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [streamingContent, setStreamingContent] = useState("");
-  const [error, setError] = useState<Error | null>(null);
-  const [decryptedUrls, setDecryptedUrls] = useState<Map<string, string>>(new Map());
+  const {
+    state,
+    setMessages,
+    addMessage,
+    setFollowUpInput,
+    setConversationId,
+    resetConversation,
+    startStreaming,
+    updateStreamingContent,
+    finishStreaming,
+    stopStreaming,
+    setError,
+    addDecryptedUrl,
+    setDetectedLanguage,
+    setTranslation,
+  } = useChatState(initialConversationId || null);
+
+  const {
+    messages,
+    followUpInput,
+    activeConversationId,
+    isStreaming,
+    streamingContent,
+    error,
+    decryptedUrls,
+    detectedLanguage,
+    translatedMessages,
+  } = state;
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const dropZoneRef = useRef<HTMLDivElement>(null);
@@ -96,7 +104,7 @@ export function DiagnosisChat({
   // Load existing conversation
   const { data: existingConversation } = useConversation(initialConversationId || null);
 
-  // Load existing messages
+  // Load existing messages and extract language from metadata
   useEffect(() => {
     if (existingConversation?.messages && existingConversation.messages.length > 0) {
       const loadedMessages: Message[] = existingConversation.messages.map((m) => ({
@@ -106,18 +114,48 @@ export function DiagnosisChat({
         attachments: m.attachments,
       }));
       setMessages(loadedMessages);
-    }
-  }, [existingConversation]);
 
-  // Reset when conversation changes
-  useEffect(() => {
-    setActiveConversationId(initialConversationId || null);
-    if (!initialConversationId) {
-      setMessages([]);
-      setStreamingContent("");
-      setError(null);
+      // Extract detected language from the first user message's metadata
+      const firstUserMessage = existingConversation.messages.find((m) => m.role === "user");
+      if (firstUserMessage?.metadata?.detectedLanguage) {
+        setDetectedLanguage(firstUserMessage.metadata.detectedLanguage);
+      }
     }
-  }, [initialConversationId]);
+  }, [existingConversation, setMessages, setDetectedLanguage]);
+
+  // Track if this is the first render to avoid resetting on initial mount
+  const isFirstRender = useRef(true);
+  const prevInitialConversationIdRef = useRef(initialConversationId);
+
+  // Sync conversationId when prop changes from parent (e.g., navigating between conversations)
+  useEffect(() => {
+    // Skip the first render - initial state is already set by the reducer
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    const prevId = prevInitialConversationIdRef.current;
+    prevInitialConversationIdRef.current = initialConversationId;
+
+    // Check if prop actually changed
+    if (initialConversationId === prevId) return;
+
+    // Parent is navigating to a different conversation
+    if (initialConversationId) {
+      // Loading an existing conversation - reset and let existingConversation useEffect populate
+      if (initialConversationId !== activeConversationId) {
+        setConversationId(initialConversationId);
+        resetConversation();
+      }
+    } else {
+      // Navigating to "new diagnosis" - only reset if we had a previous conversation
+      if (prevId) {
+        setConversationId(null);
+        resetConversation();
+      }
+    }
+  }, [initialConversationId, activeConversationId, setConversationId, resetConversation]);
 
   // Scroll to bottom
   useEffect(() => {
@@ -138,14 +176,14 @@ export function DiagnosisChat({
       }
       try {
         const url = await decryptAttachment(attachmentId);
-        setDecryptedUrls((prev) => new Map(prev).set(attachmentId, url));
+        addDecryptedUrl(attachmentId, url);
         return url;
       } catch (err) {
         console.error("[Chat] Failed to decrypt:", attachmentId, err);
         return null;
       }
     },
-    [decryptAttachment, decryptedUrls]
+    [decryptAttachment, decryptedUrls, addDecryptedUrl]
   );
 
   // Stream response from API
@@ -155,17 +193,17 @@ export function DiagnosisChat({
     isInitialDiagnosis: boolean = false,
     hadPhotos: boolean = false
   ) => {
+    console.log("[Chat] Starting stream response");
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
     abortControllerRef.current = new AbortController();
 
-    setMessages((prev) => [...prev, userMessage]);
-    setIsStreaming(true);
-    setStreamingContent("");
-    setError(null);
+    addMessage(userMessage);
+    startStreaming();
 
     try {
+      console.log("[Chat] Fetching /api/chat");
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -173,25 +211,32 @@ export function DiagnosisChat({
         signal: abortControllerRef.current.signal,
       });
 
+      console.log("[Chat] Response status:", response.status);
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+        const errorText = await response.text();
+        console.error("[Chat] Error response:", errorText);
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
       }
 
       const conversationId = response.headers.get("X-Conversation-Id");
       if (conversationId && conversationId !== activeConversationId) {
-        setActiveConversationId(conversationId);
+        setConversationId(conversationId);
         onConversationCreated?.(conversationId);
       }
 
       const reader = response.body?.getReader();
       if (!reader) throw new Error("No response body");
 
+      console.log("[Chat] Starting to read stream");
       const decoder = new TextDecoder();
       let fullContent = "";
 
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {
+          console.log("[Chat] Stream complete, content length:", fullContent.length);
+          break;
+        }
 
         const chunk = decoder.decode(value, { stream: true });
         const lines = chunk.split("\n");
@@ -202,7 +247,7 @@ export function DiagnosisChat({
               const textContent = JSON.parse(line.slice(2));
               if (typeof textContent === "string") {
                 fullContent += textContent;
-                setStreamingContent(fullContent);
+                updateStreamingContent(fullContent);
               }
             } catch {
               // Skip malformed
@@ -212,21 +257,22 @@ export function DiagnosisChat({
       }
 
       // Add assistant message
+      console.log("[Chat] Creating assistant message with content:", fullContent.substring(0, 100) + "...");
       const assistantMessage: Message = {
         id: `assistant-${Date.now()}`,
         role: "assistant",
         content: fullContent,
       };
-      setMessages((prev) => [...prev, assistantMessage]);
-      setStreamingContent("");
+      finishStreaming(assistantMessage);
+      console.log("[Chat] Called finishStreaming");
 
       // Track diagnosis completion (only for initial diagnosis)
       if (isInitialDiagnosis && conversationId) {
         trackDiagnosisCompleted({
           conversationId,
-          messageCount: 2, // user + assistant
+          messageCount: 2,
           hadPhotos,
-          toolsUsed: [], // Tool info not available client-side
+          toolsUsed: [],
         });
       }
 
@@ -244,12 +290,11 @@ export function DiagnosisChat({
       }
     } catch (err) {
       if ((err as Error).name === "AbortError") {
-        setStreamingContent("");
+        stopStreaming();
         return;
       }
       setError(err instanceof Error ? err : new Error(String(err)));
     } finally {
-      setIsStreaming(false);
       clearMedia();
     }
   };
@@ -260,7 +305,6 @@ export function DiagnosisChat({
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
-        // Remove data URL prefix (e.g., "data:image/jpeg;base64,")
         const base64 = result.split(",")[1];
         resolve(base64);
       };
@@ -270,24 +314,25 @@ export function DiagnosisChat({
   };
 
   // Handle structured diagnosis form submission
-  const handleDiagnosisSubmit = async (diagnosis: DiagnosisRequest) => {
+  const handleDiagnosisSubmit = async (diagnosis: DiagnosisRequest, language?: string) => {
     trackDiagnosisStarted({
       conversationId: null,
       hasPhoto: !!imageFile,
+      hasVoice: !!language,
       isNewConversation: true,
+      detectedLanguage: language,
     });
+
+    if (language) {
+      setDetectedLanguage(language);
+    }
 
     let attachments: DiagnosisRequest["attachments"] | undefined;
 
-    // Handle image upload
     if (imageFile && selectedImage) {
       try {
         startEncrypting();
-
-        // Get base64 for AI vision (before encryption)
         const base64Data = await fileToBase64(imageFile);
-
-        // Upload encrypted version for storage
         const uploadResult = await uploadEncryptedImage(imageFile);
         attachments = [
           {
@@ -296,7 +341,6 @@ export function DiagnosisChat({
             iv: uploadResult.iv,
             mimeType: uploadResult.mimeType,
             originalSize: uploadResult.originalSize,
-            // Include base64 for GPT-4o vision analysis
             base64Data,
           },
         ];
@@ -323,58 +367,103 @@ export function DiagnosisChat({
         type: "structured",
         diagnosis: {
           ...diagnosis,
-          // Ensure postal code uses the server-provided value if available
           property: {
             ...diagnosis.property,
             postalCode: userPostalCode || diagnosis.property.postalCode,
           },
           attachments,
+          language: language ? { detected: language } : undefined,
         },
       },
       userMessage,
-      true, // isInitialDiagnosis
-      !!imageFile // hadPhotos
+      true,
+      !!imageFile
     );
   };
 
-  // Handle follow-up message
+  // Handle follow-up message (with optional image)
   const handleFollowUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const text = followUpInput.trim();
-    if (!text || !activeConversationId) return;
+    const hasImage = imageFile && selectedImage;
 
-    // Track follow-up sent
+    // Require either text or image
+    if ((!text && !hasImage) || !activeConversationId) return;
+
     trackFollowUpSent({
       conversationId: activeConversationId,
       messageLength: text.length,
+      hasPhoto: hasImage,
+      hasVoice: !!detectedLanguage,
+      detectedLanguage,
     });
 
     setFollowUpInput("");
 
+    let attachments: DiagnosisRequest["attachments"] | undefined;
+
+    // Handle image upload for follow-up
+    if (hasImage) {
+      try {
+        startEncrypting();
+        const base64Data = await fileToBase64(imageFile);
+        const uploadResult = await uploadEncryptedImage(imageFile);
+        attachments = [
+          {
+            attachmentId: uploadResult.attachmentId,
+            storagePath: uploadResult.storagePath,
+            iv: uploadResult.iv,
+            mimeType: uploadResult.mimeType,
+            originalSize: uploadResult.originalSize,
+            base64Data,
+          },
+        ];
+      } catch (err) {
+        console.error("[Chat] Failed to encrypt follow-up image:", err);
+      } finally {
+        finishEncrypting();
+      }
+    }
+
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       role: "user",
-      content: text,
+      content: text || "(Photo attached)",
+      attachments: attachments?.map((a) => ({
+        type: "image",
+        mediaType: a.mimeType,
+        attachmentId: a.attachmentId,
+      })),
     };
 
     await streamResponse(
       {
         type: "followup",
         conversationId: activeConversationId,
-        message: text,
+        message: text || "Please analyze this image.",
         postalCode: userPostalCode,
+        language: detectedLanguage ? { detected: detectedLanguage } : undefined,
+        attachments,
       },
       userMessage
     );
   };
 
-  const stop = () => {
+  // Handle voice input for follow-up messages
+  const handleFollowUpVoiceTranscription = (result: TranscriptionResult) => {
+    const newInput = followUpInput ? `${followUpInput}\n${result.text}` : result.text;
+    setFollowUpInput(newInput);
+    if (result.language) {
+      setDetectedLanguage(result.language);
+    }
+  };
+
+  const handleStop = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
-    setIsStreaming(false);
-    setStreamingContent("");
+    stopStreaming();
   };
 
   const isLoading = isStreaming || mediaState.isEncrypting || isEncryptedUploading;
@@ -420,7 +509,6 @@ export function DiagnosisChat({
                 </p>
               </div>
 
-              {/* Hidden file input */}
               <input
                 ref={fileInputRef}
                 type="file"
@@ -429,7 +517,6 @@ export function DiagnosisChat({
                 className="hidden"
               />
 
-              {/* Structured diagnosis form */}
               <DiagnosisForm
                 userId={userId}
                 userPostalCode={userPostalCode}
@@ -441,85 +528,26 @@ export function DiagnosisChat({
                 onImageRemove={clearMedia}
                 isEncrypting={mediaState.isEncrypting || isEncryptedUploading}
                 uploadProgress={isEncryptedUploading ? encryptedUploadProgress : mediaState.uploadProgress}
+                detectedLanguage={detectedLanguage}
+                onLanguageDetected={setDetectedLanguage}
               />
             </div>
           </div>
         )}
 
-        {/* Messages */}
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={cn("flex", message.role === "user" ? "justify-end" : "justify-start")}
-          >
-            <div
-              className={cn(
-                "max-w-[80%] rounded-2xl px-4 py-3",
-                message.role === "user" ? "bg-[#5eead4] text-black" : "bg-[#1a1a1a] text-white"
-              )}
-            >
-              {/* Attachments */}
-              {message.attachments?.map((att, index) => (
-                <EncryptedImage
-                  key={`${message.id}-${index}`}
-                  attachmentId={att.attachmentId}
-                  url={att.url}
-                  mimeType={att.mediaType}
-                  alt="Uploaded"
-                  onDecrypt={decryptAndCacheImage}
-                  cachedUrl={att.attachmentId ? decryptedUrls.get(att.attachmentId) : undefined}
-                />
-              ))}
-
-              {/* Content */}
-              {message.role === "assistant" ? (
-                <MessageContent content={message.content} conversationId={activeConversationId} />
-              ) : (
-                <div className="whitespace-pre-wrap text-sm">{message.content}</div>
-              )}
-            </div>
-          </div>
-        ))}
-
-        {/* Streaming response */}
-        {streamingContent && (
-          <div className="flex justify-start">
-            <div className="max-w-[80%] rounded-2xl px-4 py-3 bg-[#1a1a1a] text-white">
-              <MessageContent content={streamingContent} conversationId={activeConversationId} />
-            </div>
-          </div>
-        )}
-
-        {/* Loading indicator */}
-        {isStreaming && !streamingContent && (
-          <div className="flex justify-start">
-            <div className="bg-[#1a1a1a] rounded-2xl px-4 py-3">
-              <div className="flex items-center gap-2">
-                <div
-                  className="w-2 h-2 bg-[#5eead4] rounded-full animate-bounce"
-                  style={{ animationDelay: "0ms" }}
-                />
-                <div
-                  className="w-2 h-2 bg-[#5eead4] rounded-full animate-bounce"
-                  style={{ animationDelay: "150ms" }}
-                />
-                <div
-                  className="w-2 h-2 bg-[#5eead4] rounded-full animate-bounce"
-                  style={{ animationDelay: "300ms" }}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Error */}
-        {error && (
-          <div className="flex justify-center">
-            <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">
-              <p className="text-red-400 text-sm">Something went wrong. Please try again.</p>
-            </div>
-          </div>
-        )}
+        {/* Message list */}
+        <ChatMessageList
+          messages={messages}
+          streamingContent={streamingContent}
+          isStreaming={isStreaming}
+          error={error}
+          activeConversationId={activeConversationId}
+          decryptedUrls={decryptedUrls}
+          detectedLanguage={detectedLanguage}
+          translatedMessages={translatedMessages}
+          onDecrypt={decryptAndCacheImage}
+          onTranslationChange={setTranslation}
+        />
 
         <div ref={messagesEndRef} />
       </div>
@@ -570,15 +598,68 @@ export function DiagnosisChat({
           </div>
         )}
 
-      {/* Follow-up input (only shown after initial diagnosis) */}
+      {/* Follow-up input */}
       {hasConversation && (
         <form onSubmit={handleFollowUpSubmit} className="p-4 border-t border-[#1f1f1f]">
+          {/* Language indicator */}
+          {detectedLanguage && detectedLanguage !== "en" && (
+            <div className="flex items-center gap-2 mb-2 text-xs">
+              <span className="text-[#5eead4] bg-[#5eead4]/10 px-2 py-1 rounded-full">
+                🌐 Language detected: {getLanguageName(detectedLanguage)}
+              </span>
+              <span className="text-[#666]">
+                Responses will be in {getLanguageName(detectedLanguage)}
+              </span>
+            </div>
+          )}
+
+          {/* Image preview for follow-up */}
+          {selectedImage && (
+            <div className="mb-2 relative inline-block">
+              <Image
+                src={selectedImage}
+                alt="Attached"
+                width={80}
+                height={80}
+                className="rounded-lg object-cover border border-[#2a2a2a]"
+                unoptimized
+              />
+              <button
+                type="button"
+                onClick={clearMedia}
+                className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600"
+              >
+                <span className="text-xs">×</span>
+              </button>
+            </div>
+          )}
+
           <div className="flex items-center gap-2">
+            {/* Voice input button */}
+            <VoiceMicButton
+              onTranscription={handleFollowUpVoiceTranscription}
+              disabled={isStreaming}
+              size="md"
+              conversationId={activeConversationId}
+              source="follow_up"
+            />
+
+            {/* Image upload button */}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isStreaming || !!selectedImage}
+              className="flex-shrink-0 w-10 h-10 rounded-full bg-[#1a1a1a] text-[#888888] flex items-center justify-center hover:bg-[#2a2a2a] hover:text-[#5eead4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Attach photo"
+            >
+              <IoImage className="w-5 h-5" />
+            </button>
+
             <div className="flex-1 relative">
               <textarea
                 value={followUpInput}
                 onChange={(e) => setFollowUpInput(e.target.value)}
-                placeholder="Ask a follow-up question..."
+                placeholder={selectedImage ? "Add a message (optional)..." : "Ask a follow-up question..."}
                 rows={1}
                 className="w-full bg-[#1a1a1a] text-white rounded-2xl px-4 py-2.5 pr-12 resize-none focus:outline-none focus:ring-2 focus:ring-[#5eead4]/50 placeholder-[#666666] text-sm"
                 style={{ minHeight: "44px", maxHeight: "120px" }}
@@ -593,7 +674,7 @@ export function DiagnosisChat({
             {isStreaming ? (
               <button
                 type="button"
-                onClick={stop}
+                onClick={handleStop}
                 className="flex-shrink-0 w-10 h-10 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
               >
                 <IoStop className="w-5 h-5" />
@@ -601,7 +682,7 @@ export function DiagnosisChat({
             ) : (
               <button
                 type="submit"
-                disabled={!followUpInput.trim() || isLoading}
+                disabled={(!followUpInput.trim() && !selectedImage) || isLoading}
                 className="flex-shrink-0 w-10 h-10 rounded-full bg-[#5eead4] text-black flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#4fd1c5] transition-colors"
               >
                 <IoSend className="w-5 h-5" />

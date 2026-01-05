@@ -116,6 +116,16 @@ export const diagnosisRequestSchema = z.object({
       })
     )
     .optional(),
+
+  // Language context from voice input (for multilingual support)
+  language: z
+    .object({
+      // Detected language from Whisper transcription (ISO 639-1 code)
+      detected: z.string().optional(),
+      // User's preferred language (for future use)
+      preferred: z.string().optional(),
+    })
+    .optional(),
 });
 
 export type DiagnosisRequest = z.infer<typeof diagnosisRequestSchema>;
@@ -136,6 +146,12 @@ export const followUpMessageSchema = z.object({
         originalSize: z.number(),
       })
     )
+    .optional(),
+  // Language context from voice input
+  language: z
+    .object({
+      detected: z.string().optional(),
+    })
     .optional(),
 });
 

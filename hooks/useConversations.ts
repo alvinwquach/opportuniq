@@ -24,6 +24,10 @@ export interface Message {
     url: string;
     mediaType: string;
   }> | null;
+  metadata?: {
+    detectedLanguage?: string;
+    [key: string]: unknown;
+  } | null;
   createdAt: string;
 }
 
