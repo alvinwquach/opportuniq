@@ -1,6 +1,7 @@
 "use client";
 
 import { type ProcessingStage } from "@/lib/video/constants";
+import { type IconType } from "react-icons";
 import {
   IoCheckmarkCircle,
   IoAlertCircle,
@@ -25,7 +26,7 @@ interface VideoProcessingIndicatorProps {
 const STAGE_CONFIG: Record<
   ProcessingStage,
   {
-    icon: React.ElementType;
+    icon: IconType;
     label: string;
     color: string;
   }
