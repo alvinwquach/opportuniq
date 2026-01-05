@@ -393,7 +393,7 @@ export function DiagnosisChat({
     trackFollowUpSent({
       conversationId: activeConversationId,
       messageLength: text.length,
-      hasPhoto: hasImage,
+      hasPhoto: !!hasImage,
       hasVoice: !!detectedLanguage,
       detectedLanguage,
     });
