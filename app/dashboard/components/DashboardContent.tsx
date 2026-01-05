@@ -128,7 +128,7 @@ export function DashboardContent({
           />
         </div>
       </div>
-      <div className="min-h-screen pt-12 lg:pt-0 bg-[#0c0c0c] relative">
+      <div className="min-h-screen pt-12 lg:pt-0 bg-[#0c0c0c] relative scrollbar-dark">
         <div
           className="absolute inset-0 opacity-[0.15] pointer-events-none"
           style={{

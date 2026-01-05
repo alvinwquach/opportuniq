@@ -18,6 +18,7 @@ import {
   IoShield,
   IoPersonAdd,
   IoCamera,
+  IoScan,
 } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import { useSidebar } from "./SidebarContext";
@@ -32,6 +33,7 @@ import { InviteFriendsModal } from "./InviteFriendsModal";
 
 const sidebarLinks = [
   { href: "/dashboard", icon: IoGrid, label: "Dashboard", exact: true },
+  { href: "/dashboard/diagnose", icon: IoScan, label: "Diagnose" },
   { href: "/issues", icon: IoAlertCircle, label: "Issues" },
   { href: "/groups", icon: IoPeople, label: "Groups" },
   { href: "/calendar", icon: IoCalendar, label: "Calendar" },

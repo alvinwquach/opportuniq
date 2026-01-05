@@ -150,6 +150,11 @@ export const users = pgTable("users", {
   // Soft delete timestamp - marks account as deleted without removing data
   // Enables 30-day account recovery window
   deletedAt: timestamp("deleted_at"),
+
+  // Server-stored encryption key for E2E encrypted attachments
+  // Base64-encoded AES-256 key, generated on first login
+  // Stored encrypted at rest by Supabase, fetched on login and cached client-side
+  encryptionKey: text("encryption_key"),
 });
 
 // Type exports for type-safe queries

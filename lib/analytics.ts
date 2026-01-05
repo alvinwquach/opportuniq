@@ -282,3 +282,95 @@ export function trackInputMethodSelected(props: {
 }) {
   amplitude.track("Input Method Selected", props);
 }
+
+// ============================================
+// AI DIAGNOSIS EVENTS
+// ============================================
+
+export function trackDiagnosisStarted(props: {
+  conversationId?: string | null;
+  hasPhoto: boolean;
+  isNewConversation: boolean;
+}) {
+  amplitude.track("Diagnosis Started", props);
+}
+
+export function trackPhotoUploaded(props: {
+  conversationId?: string | null;
+  photoCount: number;
+  uploadMethod: "click" | "drag_drop";
+  fileSizeBytes?: number;
+}) {
+  amplitude.track("Photo Uploaded", props);
+}
+
+export function trackDiagnosisCompleted(props: {
+  conversationId: string;
+  messageCount: number;
+  category?: string | null;
+  severity?: string | null;
+  hadPhotos: boolean;
+  toolsUsed: string[];
+}) {
+  amplitude.track("Diagnosis Completed", props);
+}
+
+export function trackDiagnosisToolCalled(props: {
+  conversationId?: string | null;
+  toolName: string;
+  category?: string | null;
+}) {
+  amplitude.track("Diagnosis Tool Called", props);
+}
+
+export function trackContractorClicked(props: {
+  conversationId?: string | null;
+  contractorName: string;
+  contractorRating?: number;
+  source: "google" | "yelp" | "other";
+  category?: string | null;
+}) {
+  amplitude.track("Contractor Clicked", props);
+}
+
+export function trackFollowUpSent(props: {
+  conversationId: string;
+  messageLength: number;
+}) {
+  amplitude.track("Follow Up Sent", props);
+}
+
+export function trackDIYGuideClicked(props: {
+  conversationId?: string | null;
+  guideTitle: string;
+  guideSource: string; // e.g., "r/DIY", "Reddit", "DIY Stack Exchange", etc.
+  url: string;
+  category?: string | null;
+}) {
+  amplitude.track("DIY Guide Clicked", props);
+}
+
+export function trackProductClicked(props: {
+  conversationId?: string | null;
+  productName: string;
+  productPrice?: number;
+  retailer: string;
+  category?: string | null;
+}) {
+  amplitude.track("Product Clicked", props);
+}
+
+export function trackDiagnosisConversationViewed(props: {
+  conversationId: string;
+  messageCount: number;
+  category?: string | null;
+  severity?: string | null;
+}) {
+  amplitude.track("Diagnosis Conversation Viewed", props);
+}
+
+export function trackDiagnosisSuggestionClicked(props: {
+  suggestion: string;
+}) {
+  amplitude.track("Diagnosis Suggestion Clicked", props);
+}

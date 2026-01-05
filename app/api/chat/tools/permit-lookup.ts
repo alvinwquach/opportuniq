@@ -1,0 +1,73 @@
+/**
+ * Permit Requirements Lookup Tool
+ *
+ * Look up local building permit requirements by city/county.
+ */
+
+import { tool } from "ai";
+import { z } from "zod";
+import type { ToolContext } from "./types";
+import { scrapeWithTimeout } from "./types";
+
+export function createPermitLookupTool(ctx: ToolContext) {
+  return tool({
+    description: "Look up permit requirements for a specific type of work in the user's city/county. Use this when discussing DIY projects that might require permits.",
+    inputSchema: z.object({
+      projectType: z.string().describe("Type of project (e.g., 'water heater replacement', 'deck construction', 'electrical panel upgrade')"),
+      city: z.string().describe("City name"),
+      state: z.string().describe("State abbreviation (e.g., 'CA', 'TX')"),
+    }),
+    execute: async ({ projectType, city, state }) => {
+      console.log(`[checkPermitRequirements] Looking up permits for: ${projectType} in ${city}, ${state}`);
+
+      if (!ctx.firecrawl) {
+        console.log(`[checkPermitRequirements] Firecrawl not available`);
+        return {
+          error: "Permit lookup not available",
+          suggestion: `Search "${city} ${state} building permits ${projectType}" or call your local building department`,
+          generalGuidance: [
+            "Most jurisdictions require permits for: electrical work, plumbing, structural changes, HVAC",
+            "Water heater replacements often require permits in most areas",
+            "Cosmetic work (painting, flooring) typically doesn't need permits",
+            "Unpermitted work can affect home insurance and resale value",
+            "Call your local building department for definitive requirements",
+          ],
+        };
+      }
+
+      // Search for city building department permit info
+      const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(`${city} ${state} building permit ${projectType} requirements`)}`;
+      const result = await scrapeWithTimeout(ctx.firecrawl, searchUrl, 20000);
+
+      if (result?.markdown) {
+        console.log(`[checkPermitRequirements] Success, got ${result.markdown.length} chars`);
+        return {
+          projectType,
+          location: `${city}, ${state}`,
+          searchResults: result.markdown.substring(0, 2000),
+          generalGuidance: [
+            "Most jurisdictions require permits for: electrical work, plumbing, structural changes, HVAC",
+            "Water heater replacements often require permits in most areas",
+            "Cosmetic work (painting, flooring) typically doesn't need permits",
+            "Unpermitted work can affect home insurance and resale value",
+            "Call your local building department for definitive requirements",
+          ],
+          tip: "Even if you DIY, you may need to hire a licensed contractor to pull the permit and have it inspected.",
+        };
+      }
+
+      console.log(`[checkPermitRequirements] Failed or timed out`);
+      return {
+        error: "Permit search timed out or failed",
+        suggestion: `Call ${city} building department directly or search "${city} ${state} building permits"`,
+        generalGuidance: [
+          "Most jurisdictions require permits for: electrical work, plumbing, structural changes, HVAC",
+          "Water heater replacements often require permits in most areas",
+          "Cosmetic work (painting, flooring) typically doesn't need permits",
+          "Unpermitted work can affect home insurance and resale value",
+          "Call your local building department for definitive requirements",
+        ],
+      };
+    },
+  });
+}
