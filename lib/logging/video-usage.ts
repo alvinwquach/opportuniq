@@ -80,7 +80,7 @@ export function buildVideoMetadata(
 ): VideoUsageMetadata {
   return {
     // Merge existing metadata
-    ...(existingMetadata as VideoUsageMetadata),
+    ...(existingMetadata as unknown as Partial<VideoUsageMetadata>),
 
     // Video flags
     usedVideo: true,
