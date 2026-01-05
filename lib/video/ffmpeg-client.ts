@@ -198,8 +198,7 @@ export async function compressVideo(
 
   // Read output file
   const data = await ffmpeg.readFile(outputName);
-  const uint8Data = data as Uint8Array;
-  const blob = new Blob([uint8Data.buffer.slice(uint8Data.byteOffset, uint8Data.byteOffset + uint8Data.byteLength)], { type: "video/mp4" });
+  const blob = new Blob([new Uint8Array(data as Uint8Array)], { type: "video/mp4" });
 
   // Clean up
   await ffmpeg.deleteFile(inputName);
@@ -276,8 +275,7 @@ export async function extractFrames(
     ]);
 
     const frameData = await ffmpeg.readFile(frameName);
-    const frameUint8 = frameData as Uint8Array;
-    const frameBlob = new Blob([frameUint8.buffer.slice(frameUint8.byteOffset, frameUint8.byteOffset + frameUint8.byteLength)], { type: "image/jpeg" });
+    const frameBlob = new Blob([new Uint8Array(frameData as Uint8Array)], { type: "image/jpeg" });
     diagnosticFrameBlobs.push(frameBlob);
     diagnosticFramesBase64.push(await blobToBase64(frameBlob));
 
@@ -291,8 +289,7 @@ export async function extractFrames(
 
   // Read thumbnail
   const thumbnailData = await ffmpeg.readFile(thumbnailName);
-  const thumbnailUint8 = thumbnailData as Uint8Array;
-  const thumbnailBlob = new Blob([thumbnailUint8.buffer.slice(thumbnailUint8.byteOffset, thumbnailUint8.byteOffset + thumbnailUint8.byteLength)], { type: "image/jpeg" });
+  const thumbnailBlob = new Blob([new Uint8Array(thumbnailData as Uint8Array)], { type: "image/jpeg" });
   const thumbnailBase64 = await blobToBase64(thumbnailBlob);
 
   // Clean up
@@ -346,8 +343,7 @@ export async function extractAudio(
     onProgress?.("extracting-audio", 100);
 
     const audioData = await ffmpeg.readFile(outputName);
-    const audioUint8 = audioData as Uint8Array;
-    const blob = new Blob([audioUint8.buffer.slice(audioUint8.byteOffset, audioUint8.byteOffset + audioUint8.byteLength)], { type: `audio/${AUDIO.FORMAT}` });
+    const blob = new Blob([new Uint8Array(audioData as Uint8Array)], { type: `audio/${AUDIO.FORMAT}` });
 
     // Get audio duration
     const audio = document.createElement("audio");
