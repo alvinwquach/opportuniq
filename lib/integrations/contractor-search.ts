@@ -1,12 +1,11 @@
 /**
  * Unified Contractor Search Service
  *
- * Fallback chain: Google Maps → Yelp → Foursquare → Firecrawl
+ * Fallback chain: Yelp → Foursquare → Firecrawl
  *
  * Tries each provider in order until one succeeds with results.
  */
 
-import { findContractorsOnGoogleMaps } from "./google-maps";
 import { findContractorsForIssue as findContractorsOnYelp } from "./yelp";
 import { findContractorsOnFoursquare } from "./foursquare";
 import { scrapeAngiContractors, extractVendorsFromMarkdown } from "./firecrawl";
@@ -21,12 +20,12 @@ export interface ContractorResult {
   rating?: string;
   distance?: string;
   specialties?: string[];
-  source: "google" | "yelp" | "foursquare" | "firecrawl";
+  source: "yelp" | "foursquare" | "firecrawl";
 }
 
 interface SearchResult {
   contractors: ContractorResult[];
-  source: "google" | "yelp" | "foursquare" | "firecrawl";
+  source: "yelp" | "foursquare" | "firecrawl";
   fallbacksUsed: string[];
 }
 
@@ -45,32 +44,7 @@ export async function searchContractors(
 ): Promise<SearchResult> {
   const fallbacksUsed: string[] = [];
 
-  // 1. Try Google Maps first
-  if (process.env.GOOGLE_MAPS_API_KEY) {
-    try {
-      const googleResults = await findContractorsOnGoogleMaps(category, zipCode, radius);
-
-      if (googleResults && googleResults.length > 0) {
-        return {
-          contractors: googleResults.map((r) => ({
-            ...r,
-            source: "google" as const,
-          })),
-          source: "google",
-          fallbacksUsed,
-        };
-      }
-
-      fallbacksUsed.push("google (no results)");
-    } catch (error) {
-      console.error("[ContractorSearch] Google Maps failed:", error);
-      fallbacksUsed.push("google (error)");
-    }
-  } else {
-    fallbacksUsed.push("google (not configured)");
-  }
-
-  // 2. Fall back to Yelp
+  // 1. Try Yelp first
   if (process.env.YELP_API_KEY) {
     try {
       const yelpResults = await findContractorsOnYelp(category, zipCode, radius);
@@ -95,7 +69,7 @@ export async function searchContractors(
     fallbacksUsed.push("yelp (not configured)");
   }
 
-  // 3. Fall back to Foursquare
+  // 2. Fall back to Foursquare
   if (process.env.FOURSQUARE_API_KEY) {
     try {
       const foursquareResults = await findContractorsOnFoursquare(category, zipCode, radius);
@@ -120,7 +94,7 @@ export async function searchContractors(
     fallbacksUsed.push("foursquare (not configured)");
   }
 
-  // 4. Fall back to Firecrawl (scraping Angi)
+  // 3. Fall back to Firecrawl (scraping Angi)
   if (process.env.FIRECRAWL_API_KEY) {
     try {
       const scrapedData = await scrapeAngiContractors(category, zipCode);
@@ -159,7 +133,7 @@ export async function searchContractors(
 
   return {
     contractors: [],
-    source: "google", // Default, though no results
+    source: "yelp", // Default, though no results
     fallbacksUsed,
   };
 }
@@ -170,7 +144,6 @@ export async function searchContractors(
 export function getAvailableProviders(): string[] {
   const providers: string[] = [];
 
-  if (process.env.GOOGLE_MAPS_API_KEY) providers.push("google");
   if (process.env.YELP_API_KEY) providers.push("yelp");
   if (process.env.FOURSQUARE_API_KEY) providers.push("foursquare");
   if (process.env.FIRECRAWL_API_KEY) providers.push("firecrawl");

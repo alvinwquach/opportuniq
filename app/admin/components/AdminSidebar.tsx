@@ -20,6 +20,7 @@ import {
   IoChevronForward,
   IoChatbubble,
   IoHome,
+  IoSparkles,
 } from "react-icons/io5";
 import { MdSlideshow } from "react-icons/md";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,7 @@ const sidebarLinks = [
   { href: "/admin/referrals", icon: IoShare, label: "Referrals" },
   { href: "/admin/waitlist", icon: IoMail, label: "Waitlist" },
   { href: "/admin/analytics", icon: IoBarChart, label: "Analytics" },
+  { href: "/admin/ai-usage", icon: IoSparkles, label: "AI Usage" },
   { href: "/admin/support", icon: IoChatbubble, label: "Support" },
   { href: "/admin/development", icon: IoRocket, label: "Development" },
   { href: "/admin/presentation", icon: MdSlideshow, label: "Presentation" },
