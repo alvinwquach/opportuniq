@@ -3,6 +3,11 @@ import type { DiagnosisRequest } from "@/lib/schemas/diagnosis";
 export function buildDiagnosisPrompt(context: DiagnosisRequest): string {
   const sections: string[] = [];
 
+  // Language instruction - if user spoke in a non-English language
+  if (context.language?.detected && context.language.detected !== "en") {
+    sections.push(buildLanguageInstruction(context.language.detected));
+  }
+
   // Core identity - very brief
   sections.push(IDENTITY);
 
@@ -172,12 +177,20 @@ function formatBudget(range: string): string {
 
 const TOOL_RULES = `## TOOL USAGE
 
-**WHEN to call tools:**
-- AFTER you have enough information to provide accurate guidance
-- If the user's description is vague, ask clarifying questions FIRST
-- If the user provides detailed info or a clear photo, proceed to tools immediately
+**WHEN TO SKIP TOOLS (respond conversationally):**
+- User is just describing symptoms or asking initial questions → ASK CLARIFYING QUESTIONS FIRST
+- User is answering your questions → ACKNOWLEDGE and continue conversation
+- User is chatting casually or asking for explanations → RESPOND DIRECTLY
+- You need more information before you can search for anything useful
 
-**For REPAIR/ISSUE requests:**
+**WHEN TO USE TOOLS:**
+- User has provided ENOUGH DETAIL (photo, specific problem, clear request)
+- User explicitly asks for costs, contractors, products, or tutorials
+- You've finished gathering information and are ready to give a complete answer
+
+**IMPORTANT**: Don't call tools until you understand the problem well enough to search effectively. A vague search wastes time and returns poor results.
+
+**For REPAIR/ISSUE requests (only after you understand the problem):**
 1. \`getCostEstimate\` - Get real pricing from HomeAdvisor/Angi
 2. Then IN PARALLEL:
    - \`searchContractors\` - Local contractors
@@ -421,17 +434,125 @@ const GROUNDING_RULES = `## GROUNDING RULES (CRITICAL)
    - Don't downplay genuine emergencies`;
 
 // ============================================================================
+// LANGUAGE INSTRUCTION (for multilingual support)
+// ============================================================================
+
+const LANGUAGE_NAMES: Record<string, string> = {
+  vi: "Vietnamese",
+  es: "Spanish",
+  zh: "Chinese",
+  ko: "Korean",
+  ja: "Japanese",
+  fr: "French",
+  de: "German",
+  it: "Italian",
+  pt: "Portuguese",
+  ru: "Russian",
+  ar: "Arabic",
+  hi: "Hindi",
+  th: "Thai",
+  id: "Indonesian",
+  ms: "Malay",
+  tl: "Tagalog",
+  nl: "Dutch",
+  pl: "Polish",
+  tr: "Turkish",
+  uk: "Ukrainian",
+  cs: "Czech",
+  el: "Greek",
+  he: "Hebrew",
+  hu: "Hungarian",
+  ro: "Romanian",
+  sv: "Swedish",
+  da: "Danish",
+  fi: "Finnish",
+  no: "Norwegian",
+};
+
+function buildLanguageInstruction(languageCode: string): string {
+  const languageName = LANGUAGE_NAMES[languageCode] || languageCode.toUpperCase();
+
+  // Special handling for Cantonese
+  if (languageCode === "zh-HK") {
+    return `## 🌐 LANGUAGE INSTRUCTION - CRITICAL (CANTONESE)
+
+The user spoke in **Cantonese** (廣東話/粵語). You MUST:
+
+1. **Respond ENTIRELY in written Cantonese** - Use Traditional Chinese characters with Cantonese grammar and vocabulary
+2. **Use Cantonese expressions and particles** - Include natural Cantonese words like 係, 唔係, 嘅, 咗, 啲, 嚟, 喺, 冇, 嗰, 點解, 乜嘢, 邊度, 幾時 etc.
+3. **DO NOT use Mandarin** - Avoid Mandarin-specific expressions, use Cantonese colloquial terms
+4. **Use Traditional Chinese characters** - Never use Simplified Chinese characters
+5. **Keep technical terms clear** - Use Hong Kong terminology for technical concepts
+6. **Maintain a friendly Hong Kong tone** - Be warm and conversational
+
+**EXAMPLES of Cantonese expressions to use:**
+- "係" (is/yes) instead of Mandarin "是"
+- "唔" (not) instead of Mandarin "不"
+- "嘅" (possessive/的) instead of Mandarin "的"
+- "咗" (completed action) instead of Mandarin "了"
+- "點解" (why) instead of Mandarin "為什麼"
+- "乜嘢" (what) instead of Mandarin "什麼"
+
+**IMPORTANT**: Tool results may return in English. Translate the relevant information to Cantonese when presenting it to the user.`;
+  }
+
+  // Special handling for Mandarin
+  if (languageCode === "zh-CN") {
+    return `## 🌐 LANGUAGE INSTRUCTION - CRITICAL (MANDARIN)
+
+The user spoke in **Mandarin Chinese** (普通话). You MUST:
+
+1. **Respond ENTIRELY in Mandarin** - Use Simplified Chinese characters
+2. **Use standard Mandarin expressions** - Write in natural, fluent Mandarin
+3. **Use Simplified Chinese characters** - 使用简体中文字符
+4. **Keep technical terms clear** - Use Mainland China terminology
+5. **Maintain a professional tone** - Be helpful and clear
+
+**IMPORTANT**: Tool results may return in English. Translate the relevant information to Mandarin when presenting it to the user.`;
+  }
+
+  return `## 🌐 LANGUAGE INSTRUCTION - CRITICAL
+
+The user spoke in **${languageName}** (${languageCode}). You MUST:
+
+1. **Respond ENTIRELY in ${languageName}** - Every part of your response must be in ${languageName}
+2. **Use natural, native expressions** - Write as a fluent ${languageName} speaker would
+3. **Keep technical terms clear** - Use common ${languageName} terms for technical concepts, or explain English terms if no good translation exists
+4. **Format appropriately** - Use ${languageName} conventions for numbers, currency, and measurements
+5. **Maintain the same helpful tone** - Be professional and friendly in ${languageName}
+
+**IMPORTANT**: Tool results may return in English. Translate the relevant information to ${languageName} when presenting it to the user.`;
+}
+
+// ============================================================================
 // SIMPLE MESSAGE PROMPT (for follow-up messages)
 // ============================================================================
 
-export function buildFollowUpPrompt(postalCode: string): string {
-  return `You are continuing a conversation. The user's ZIP code is ${postalCode}.
+export function buildFollowUpPrompt(postalCode: string, language?: string): string {
+  const languageInstruction = language && language !== "en"
+    ? buildLanguageInstruction(language) + "\n\n"
+    : "";
 
-Use tools when the user asks about:
+  return `${languageInstruction}You are continuing a conversation. The user's ZIP code is ${postalCode}.
+
+## RESPOND NATURALLY FIRST
+
+**DO NOT use tools when:**
+- User is just describing their problem → Ask clarifying questions
+- User is answering your questions → Acknowledge and continue the conversation
+- User is chatting or asking for explanations → Respond directly
+- You don't have enough info to search effectively
+
+**USE tools only when:**
+- User EXPLICITLY asks for costs, contractors, products, or tutorials
+- You have enough detail to make a useful search
+- User provides a photo with a clear problem
+
+**Available tools (use sparingly):**
 - Costs → getCostEstimate
 - Contractors → searchContractors
 - Products/materials/tools → searchProducts
-- How-to guides/tutorials → searchDIYGuides
+- How-to guides/tutorials → searchReddit
 - Recalls → checkRecalls
 - Rebates → findUtilityRebates
 

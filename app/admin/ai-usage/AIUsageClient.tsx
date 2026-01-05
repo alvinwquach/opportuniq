@@ -10,6 +10,7 @@ import {
   IoChevronDown,
   IoChevronUp,
   IoImage,
+  IoMic,
 } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +22,8 @@ interface Stats {
   totalMessages: number;
   avgLatency: number;
   totalImages: number;
+  totalVoiceInputs: number;
+  totalPhotoInputs: number;
 }
 
 interface Conversation {
@@ -36,6 +39,9 @@ interface Conversation {
   lastMessageAt: string;
   userName: string | null;
   userEmail: string | null;
+  usedVoice: boolean;
+  usedPhoto: boolean;
+  toolCallCount: number;
 }
 
 interface ToolCall {
@@ -151,6 +157,27 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
             {conversation.userName || conversation.userEmail || "Unknown user"}
           </p>
         </div>
+
+        {/* Input type indicators */}
+        <div className="flex items-center gap-1.5">
+          {conversation.usedVoice && (
+            <span className="p-1 rounded bg-blue-500/20 text-blue-400" title="Voice input">
+              <IoMic className="h-3.5 w-3.5" />
+            </span>
+          )}
+          {conversation.usedPhoto && (
+            <span className="p-1 rounded bg-pink-500/20 text-pink-400" title="Photo input">
+              <IoImage className="h-3.5 w-3.5" />
+            </span>
+          )}
+          {conversation.toolCallCount > 0 && (
+            <span className="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 text-[10px] font-medium" title="Tool calls">
+              <IoHammer className="h-3 w-3 inline mr-0.5" />
+              {conversation.toolCallCount}
+            </span>
+          )}
+        </div>
+
         <div className="text-right">
           <p className="text-[12px] text-[#888]">
             {(conversation.totalInputTokens + conversation.totalOutputTokens).toLocaleString()} tokens
@@ -198,6 +225,26 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
             <div>
               <span className="text-[#666]">Output Tokens:</span>{" "}
               {conversation.totalOutputTokens.toLocaleString()}
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-4 pt-2 border-t border-[#1f1f1f] mt-2">
+            <div>
+              <span className="text-[#666]">Voice Input:</span>{" "}
+              <span className={conversation.usedVoice ? "text-blue-400" : "text-[#444]"}>
+                {conversation.usedVoice ? "Yes" : "No"}
+              </span>
+            </div>
+            <div>
+              <span className="text-[#666]">Photo Input:</span>{" "}
+              <span className={conversation.usedPhoto ? "text-pink-400" : "text-[#444]"}>
+                {conversation.usedPhoto ? "Yes" : "No"}
+              </span>
+            </div>
+            <div>
+              <span className="text-[#666]">Tool Calls:</span>{" "}
+              <span className={conversation.toolCallCount > 0 ? "text-purple-400" : "text-[#444]"}>
+                {conversation.toolCallCount}
+              </span>
             </div>
           </div>
         </div>
@@ -278,7 +325,7 @@ export function AIUsageClient({
           Monitor token usage, costs, and tool calls across all AI conversations
         </p>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
         <StatCard
           icon={IoChatbubble}
           label="Conversations"
@@ -311,9 +358,15 @@ export function AIUsageClient({
           color="bg-yellow-500/20 text-yellow-400"
         />
         <StatCard
+          icon={IoMic}
+          label="Voice Inputs"
+          value={stats.totalVoiceInputs.toLocaleString()}
+          color="bg-blue-500/20 text-blue-400"
+        />
+        <StatCard
           icon={IoImage}
-          label="Images Analyzed"
-          value={stats.totalImages.toLocaleString()}
+          label="Photo Inputs"
+          value={stats.totalPhotoInputs.toLocaleString()}
           color="bg-pink-500/20 text-pink-400"
         />
         <StatCard

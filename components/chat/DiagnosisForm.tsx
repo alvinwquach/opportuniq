@@ -20,6 +20,8 @@ import {
 } from "react-icons/io5";
 import { ImSpinner8 } from "react-icons/im";
 import { cn } from "@/lib/utils";
+import { VoiceMicButton } from "@/components/voice/VoiceMicButton";
+import type { TranscriptionResult } from "@/lib/schemas/voice";
 import {
   diagnosisFormSchema,
   type DiagnosisFormValues,
@@ -56,7 +58,7 @@ const categoryIcons: Record<IssueCategory, React.ReactNode> = {
 interface DiagnosisFormProps {
   userId: string;
   userPostalCode?: string | null;
-  onSubmit: (data: ReturnType<typeof formToRequest>) => Promise<void>;
+  onSubmit: (data: ReturnType<typeof formToRequest>, language?: string) => Promise<void>;
   isSubmitting?: boolean;
   selectedImage?: string | null;
   imageFile?: File | null;
@@ -64,6 +66,9 @@ interface DiagnosisFormProps {
   onImageRemove?: () => void;
   isEncrypting?: boolean;
   uploadProgress?: number;
+  // Voice input state
+  detectedLanguage?: string | null;
+  onLanguageDetected?: (language: string) => void;
 }
 
 export function DiagnosisForm({
@@ -77,6 +82,8 @@ export function DiagnosisForm({
   onImageRemove,
   isEncrypting = false,
   uploadProgress = 0,
+  detectedLanguage,
+  onLanguageDetected,
 }: DiagnosisFormProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
@@ -103,7 +110,8 @@ export function DiagnosisForm({
         issueDescription: value.issueDescription.trim() || "What issue do you see in this photo? Please diagnose and provide recommendations.",
       } as DiagnosisFormValues;
       const request = formToRequest(formValue);
-      await onSubmit(request);
+      // Pass detected language from voice input
+      await onSubmit(request, detectedLanguage || undefined);
     },
   });
 
@@ -412,6 +420,23 @@ export function DiagnosisForm({
         >
           <IoImage className="w-5 h-5" />
         </button>
+        <VoiceMicButton
+          onTranscription={(result: TranscriptionResult) => {
+            // Append transcribed text to the description
+            const currentValue = form.state.values.issueDescription;
+            const newValue = currentValue
+              ? `${currentValue}\n${result.text}`
+              : result.text;
+            form.setFieldValue("issueDescription", newValue);
+            // Store detected language
+            if (result.language && onLanguageDetected) {
+              onLanguageDetected(result.language);
+            }
+          }}
+          disabled={isSubmitting || isEncrypting}
+          size="md"
+          source="initial_form"
+        />
         <button
           type="submit"
           disabled={isSubmitting || isEncrypting || (!form.state.values.issueDescription.trim() && !selectedImage)}

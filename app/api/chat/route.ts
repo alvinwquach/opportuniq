@@ -63,6 +63,19 @@ interface FollowUpRequest {
   conversationId: string;
   message: string;
   postalCode?: string | null;
+  // Language context from voice input
+  language?: {
+    detected?: string;
+  };
+  // Optional image attachments for follow-up
+  attachments?: Array<{
+    attachmentId: string;
+    storagePath: string;
+    iv: string;
+    mimeType: string;
+    originalSize: number;
+    base64Data: string;
+  }>;
 }
 
 type RequestBody = StructuredRequest | FollowUpRequest;
@@ -161,6 +174,9 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
       yearBuilt: diagnosis.property.yearBuilt,
       skillLevel: diagnosis.preferences.diySkillLevel,
       urgency: diagnosis.preferences.urgency,
+      detectedLanguage: diagnosis.language?.detected,
+      usedVoice: !!diagnosis.language?.detected, // Voice input detected language
+      usedPhoto: !!attachments?.length,
     },
   });
 
@@ -243,10 +259,10 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
 // ============================================================================
 
 async function handleFollowUpRequest(body: FollowUpRequest, userId: string, startTime: number) {
-  const { conversationId, message, postalCode } = body;
+  const { conversationId, message, postalCode, language, attachments } = body;
 
-  if (!conversationId || !message.trim()) {
-    return new Response("Missing conversationId or message", { status: 400 });
+  if (!conversationId || (!message.trim() && !attachments?.length)) {
+    return new Response("Missing conversationId or message/attachments", { status: 400 });
   }
 
   // Verify conversation belongs to user
@@ -269,12 +285,50 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
     .where(eq(aiMessages.conversationId, conversationId))
     .orderBy(aiMessages.createdAt);
 
+  // Build attachments metadata for storage
+  const attachmentsMeta = attachments?.map((att) => ({
+    type: "image",
+    mediaType: att.mimeType,
+    attachmentId: att.attachmentId,
+    storagePath: att.storagePath,
+    iv: att.iv,
+  }));
+
   // Store user message
   await db.insert(aiMessages).values({
     conversationId,
     role: "user",
-    content: message,
+    content: message || "(Photo attached)",
+    attachments: attachmentsMeta?.length ? attachmentsMeta : null,
+    metadata: {
+      detectedLanguage: language?.detected || null,
+      usedVoice: !!language?.detected,
+      usedPhoto: !!attachments?.length,
+    },
   });
+
+  // Build user message content for model (text + optional images)
+  type MessageContent =
+    | { type: "text"; text: string }
+    | { type: "image"; image: string; mimeType?: string };
+
+  const userMessageContent: MessageContent[] = [
+    { type: "text", text: message || "Please analyze this image." },
+  ];
+
+  // Add images if provided
+  if (attachments?.length) {
+    for (const att of attachments) {
+      if (att.base64Data) {
+        userMessageContent.push({
+          type: "image",
+          image: att.base64Data,
+          mimeType: att.mimeType,
+        });
+        console.log("[Chat API] Follow-up image:", att.mimeType, "size:", att.base64Data.length);
+      }
+    }
+  }
 
   // Build messages for model
   const modelMessages = [
@@ -282,13 +336,15 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
       role: m.role as "user" | "assistant",
       content: m.content,
     })),
-    { role: "user" as const, content: message },
+    { role: "user" as const, content: userMessageContent },
   ];
 
-  // Build prompt
+  // Build prompt with language context
   const systemPrompt = postalCode
-    ? buildFollowUpPrompt(postalCode)
-    : "You are OpportunIQ's diagnostic assistant. Continue helping with the user's issue.";
+    ? buildFollowUpPrompt(postalCode, language?.detected)
+    : language?.detected && language.detected !== "en"
+      ? buildFollowUpPrompt("", language.detected)
+      : "You are OpportunIQ's diagnostic assistant. Continue helping with the user's issue.";
 
   // Create tools
   const tools = createChatTools(firecrawl, userId, conversationId);

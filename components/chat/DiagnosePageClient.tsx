@@ -82,26 +82,20 @@ export function DiagnosePageClient({ userId, userName, userPostalCode }: Diagnos
           onClick={() => setSidebarOpen(false)}
         />
       )}
-      {mounted && createPortal(
+{}
+      {chatSidebarCollapsed && (
         <button
-          onClick={() => setChatSidebarCollapsed(!chatSidebarCollapsed)}
-          className={cn(
-            "hidden lg:flex fixed top-[60px] z-[60] h-[30px] w-[30px] rounded-md items-center justify-center text-[#888] hover:text-white hover:bg-[#1f1f1f] transition-all duration-300",
-            chatSidebarCollapsed ? "right-4 cursor-w-resize" : "right-[272px] cursor-e-resize"
-          )}
-          title={chatSidebarCollapsed ? "Open sidebar" : "Close sidebar"}
+          onClick={() => setChatSidebarCollapsed(false)}
+          className="fixed top-1/2 -translate-y-1/2 right-0 z-[100] py-4 px-1 rounded-l-lg bg-[#1a1a1a] border border-r-0 border-[#2a2a2a] text-[#888] hover:text-[#5eead4] hover:bg-[#2a2a2a] transition-colors"
+          title="Show history"
         >
-          {chatSidebarCollapsed ? (
-            <TbLayoutSidebarRightExpand className="w-[18px] h-[18px]" />
-          ) : (
-            <TbLayoutSidebarRightCollapse className="w-[18px] h-[18px]" />
-          )}
-        </button>,
-        document.body
+          <TbLayoutSidebarRightExpand className="w-4 h-4" />
+        </button>
       )}
+
       <div
         className={cn(
-          "flex-shrink-0 transition-all duration-300 ease-out",
+          "shrink-0 transition-all duration-300 ease-out",
           "fixed top-0 bottom-0 right-0 z-40",
           "lg:top-12 lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "translate-x-full",

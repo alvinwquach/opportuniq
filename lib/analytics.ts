@@ -290,7 +290,9 @@ export function trackInputMethodSelected(props: {
 export function trackDiagnosisStarted(props: {
   conversationId?: string | null;
   hasPhoto: boolean;
+  hasVoice: boolean;
   isNewConversation: boolean;
+  detectedLanguage?: string | null;
 }) {
   amplitude.track("Diagnosis Started", props);
 }
@@ -336,6 +338,9 @@ export function trackContractorClicked(props: {
 export function trackFollowUpSent(props: {
   conversationId: string;
   messageLength: number;
+  hasPhoto?: boolean;
+  hasVoice?: boolean;
+  detectedLanguage?: string | null;
 }) {
   amplitude.track("Follow Up Sent", props);
 }
@@ -373,4 +378,94 @@ export function trackDiagnosisSuggestionClicked(props: {
   suggestion: string;
 }) {
   amplitude.track("Diagnosis Suggestion Clicked", props);
+}
+
+// ============================================
+// VOICE INPUT EVENTS
+// ============================================
+
+export function trackVoiceRecordingStarted(props: {
+  conversationId?: string | null;
+  source: "initial_form" | "follow_up";
+}) {
+  amplitude.track("Voice Recording Started", props);
+}
+
+export function trackVoiceRecordingCompleted(props: {
+  conversationId?: string | null;
+  source: "initial_form" | "follow_up";
+  durationSeconds: number;
+  detectedLanguage: string;
+  transcriptionLength: number;
+}) {
+  amplitude.track("Voice Recording Completed", props);
+}
+
+export function trackVoiceRecordingCancelled(props: {
+  conversationId?: string | null;
+  source: "initial_form" | "follow_up";
+  durationSeconds: number;
+}) {
+  amplitude.track("Voice Recording Cancelled", props);
+}
+
+export function trackVoiceRecordingFailed(props: {
+  conversationId?: string | null;
+  source: "initial_form" | "follow_up";
+  errorType: "permission_denied" | "transcription_failed" | "no_audio" | "timeout" | "unknown";
+  errorMessage?: string;
+}) {
+  amplitude.track("Voice Recording Failed", props);
+}
+
+// ============================================
+// TEXT-TO-SPEECH (TTS) EVENTS
+// ============================================
+
+export function trackTTSPlaybackStarted(props: {
+  conversationId?: string | null;
+  messageId: string;
+  language: string;
+  textLength: number;
+}) {
+  amplitude.track("TTS Playback Started", props);
+}
+
+export function trackTTSPlaybackCompleted(props: {
+  conversationId?: string | null;
+  messageId: string;
+  language: string;
+  durationSeconds?: number;
+}) {
+  amplitude.track("TTS Playback Completed", props);
+}
+
+export function trackTTSPlaybackStopped(props: {
+  conversationId?: string | null;
+  messageId: string;
+  playedPercentage?: number;
+}) {
+  amplitude.track("TTS Playback Stopped", props);
+}
+
+// ============================================
+// TRANSLATION EVENTS
+// ============================================
+
+export function trackTranslationRequested(props: {
+  conversationId?: string | null;
+  messageId: string;
+  fromLanguage: string;
+  toLanguage: string;
+  textLength: number;
+}) {
+  amplitude.track("Translation Requested", props);
+}
+
+export function trackTranslationToggled(props: {
+  conversationId?: string | null;
+  messageId: string;
+  showingTranslation: boolean;
+}) {
+  amplitude.track("Translation Toggled", props);
 }

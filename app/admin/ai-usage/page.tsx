@@ -23,6 +23,8 @@ export default async function AIUsagePage() {
       totalMessages: count(aiMessages.id),
       avgLatency: sql<number>`COALESCE(AVG(${aiMessages.latencyMs}), 0)`,
       totalImages: sql<number>`COALESCE(SUM(jsonb_array_length(${aiMessages.attachments})), 0)`,
+      totalVoiceInputs: sql<number>`COALESCE(SUM(CASE WHEN (${aiMessages.metadata}->>'usedVoice')::boolean = true THEN 1 ELSE 0 END), 0)`,
+      totalPhotoInputs: sql<number>`COALESCE(SUM(CASE WHEN (${aiMessages.metadata}->>'usedPhoto')::boolean = true THEN 1 ELSE 0 END), 0)`,
     })
     .from(aiMessages);
 
@@ -45,8 +47,8 @@ export default async function AIUsagePage() {
     }
   });
 
-  // Get recent conversations with user info
-  const recentConversations = await db
+  // Get recent conversations with user info and input type stats
+  const recentConversationsRaw = await db
     .select({
       id: aiConversations.id,
       title: aiConversations.title,
@@ -65,6 +67,36 @@ export default async function AIUsagePage() {
     .leftJoin(users, eq(aiConversations.userId, users.id))
     .orderBy(desc(aiConversations.lastMessageAt))
     .limit(20);
+
+  // Get voice/photo usage per conversation
+  let recentConversations = recentConversationsRaw.map(c => ({
+    ...c,
+    usedVoice: false,
+    usedPhoto: false,
+    toolCallCount: 0,
+  }));
+
+  if (recentConversationsRaw.length > 0) {
+    const conversationInputTypes = await db
+      .select({
+        conversationId: aiMessages.conversationId,
+        usedVoice: sql<boolean>`bool_or((${aiMessages.metadata}->>'usedVoice')::boolean)`,
+        usedPhoto: sql<boolean>`bool_or((${aiMessages.metadata}->>'usedPhoto')::boolean)`,
+        toolCallCount: sql<number>`COALESCE(SUM(jsonb_array_length(${aiMessages.toolCalls})), 0)`,
+      })
+      .from(aiMessages)
+      .where(sql`${aiMessages.conversationId} IN (${sql.join(recentConversationsRaw.map(c => sql`${c.id}`), sql`, `)})`)
+      .groupBy(aiMessages.conversationId);
+
+    const inputTypeMap = new Map(conversationInputTypes.map(c => [c.conversationId, c]));
+
+    recentConversations = recentConversationsRaw.map(c => ({
+      ...c,
+      usedVoice: inputTypeMap.get(c.id)?.usedVoice || false,
+      usedPhoto: inputTypeMap.get(c.id)?.usedPhoto || false,
+      toolCallCount: Number(inputTypeMap.get(c.id)?.toolCallCount) || 0,
+    }));
+  }
 
   // Get recent messages with tool calls
   const recentToolCalls = await db
@@ -125,6 +157,8 @@ export default async function AIUsagePage() {
         totalMessages: messageStats?.totalMessages || 0,
         avgLatency: Math.round(Number(messageStats?.avgLatency) || 0),
         totalImages: Number(messageStats?.totalImages) || 0,
+        totalVoiceInputs: Number(messageStats?.totalVoiceInputs) || 0,
+        totalPhotoInputs: Number(messageStats?.totalPhotoInputs) || 0,
       }}
       toolUsage={toolUsage}
       recentConversations={recentConversations.map((c) => ({
