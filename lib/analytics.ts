@@ -417,11 +417,6 @@ export function trackVoiceRecordingFailed(props: {
 }) {
   amplitude.track("Voice Recording Failed", props);
 }
-
-// ============================================
-// TEXT-TO-SPEECH (TTS) EVENTS
-// ============================================
-
 export function trackTTSPlaybackStarted(props: {
   conversationId?: string | null;
   messageId: string;
@@ -468,4 +463,67 @@ export function trackTranslationToggled(props: {
   showingTranslation: boolean;
 }) {
   amplitude.track("Translation Toggled", props);
+}
+
+export function trackVideoSelected(props: {
+  conversationId?: string | null;
+  fileSizeBytes: number;
+  durationSeconds: number;
+  mimeType: string;
+  processingStrategy: "client" | "server";
+}) {
+  amplitude.track("Video Selected", props);
+}
+
+export function trackVideoProcessingStarted(props: {
+  conversationId?: string | null;
+  stage: string;
+  processingStrategy: "client" | "server";
+}) {
+  amplitude.track("Video Processing Started", props);
+}
+
+export function trackVideoProcessingCompleted(props: {
+  conversationId?: string | null;
+  durationSeconds: number;
+  frameCount: number;
+  hasAudio: boolean;
+  fileSizeBytes: number;
+  compressedSizeBytes: number;
+  processingStrategy: "client" | "server";
+  processingTimeMs: number;
+  confidenceScore: number;
+}) {
+  amplitude.track("Video Processing Completed", props);
+}
+
+export function trackVideoProcessingFailed(props: {
+  conversationId?: string | null;
+  stage: string;
+  reason: string;
+  processingStrategy: "client" | "server";
+}) {
+  amplitude.track("Video Processing Failed", props);
+}
+
+export function trackVideoTranscribed(props: {
+  conversationId?: string | null;
+  transcriptLength: number;
+  detectedLanguage: string;
+  audioDurationSeconds: number;
+}) {
+  amplitude.track("Video Transcribed", props);
+}
+
+export function trackVideoDiagnosisSubmitted(props: {
+  conversationId: string;
+  hasVideo: boolean;
+  hasImage: boolean;
+  hasText: boolean;
+  videoFrameCount?: number;
+  hasAudioTranscript?: boolean;
+  videoDurationSeconds?: number;
+  confidenceScore?: number;
+}) {
+  amplitude.track("Video Diagnosis Submitted", props);
 }

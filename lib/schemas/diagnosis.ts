@@ -76,7 +76,7 @@ export const diagnosisRequestSchema = z.object({
   // Issue details - what the user is describing
   issue: z.object({
     category: z.enum(issueCategories).optional(),
-    description: z.string().min(1, "Please describe the issue"),
+    description: z.string(), // Can be empty if media is attached
     location: z.string().optional(), // Free text for flexibility
     symptomsObserved: z.array(z.string()).optional(), // e.g., ["water leak", "discoloration", "noise"]
   }),
@@ -102,7 +102,7 @@ export const diagnosisRequestSchema = z.object({
     prefersDIY: z.boolean().optional(), // null = no preference
   }),
 
-  // Attachments - encrypted image references + optional base64 for AI vision
+  // Attachments - encrypted image/video references + optional base64 for AI vision
   attachments: z
     .array(
       z.object({
@@ -113,6 +113,21 @@ export const diagnosisRequestSchema = z.object({
         originalSize: z.number(),
         // Base64 image data for AI vision (decrypted client-side, sent for analysis)
         base64Data: z.string().optional(),
+        // Media type: image or video
+        type: z.enum(["image", "video"]).optional(),
+        // Video-specific fields
+        durationSeconds: z.number().optional(),
+        // For videos: diagnostic frames extracted at 15%, 50%, 85% positions
+        diagnosticFramesBase64: z.array(z.string()).optional(),
+        // Audio transcript from Whisper
+        transcript: z.string().optional(),
+        transcriptLanguage: z.string().optional(),
+        // Processing confidence (0-100)
+        confidenceScore: z.number().min(0).max(100).optional(),
+        // Whether video had audio track
+        hasAudio: z.boolean().optional(),
+        // Base64-encoded audio data for GPT-4o-audio analysis
+        audioBase64: z.string().optional(),
       })
     )
     .optional(),
@@ -144,6 +159,17 @@ export const followUpMessageSchema = z.object({
         iv: z.string(),
         mimeType: z.string(),
         originalSize: z.number(),
+        // Media type: image or video
+        type: z.enum(["image", "video"]).optional(),
+        // Video-specific fields
+        durationSeconds: z.number().optional(),
+        diagnosticFramesBase64: z.array(z.string()).optional(),
+        transcript: z.string().optional(),
+        transcriptLanguage: z.string().optional(),
+        confidenceScore: z.number().min(0).max(100).optional(),
+        hasAudio: z.boolean().optional(),
+        // Base64-encoded audio data for GPT-4o-audio analysis
+        audioBase64: z.string().optional(),
       })
     )
     .optional(),
@@ -164,7 +190,7 @@ export type FollowUpMessage = z.infer<typeof followUpMessageSchema>;
 export const diagnosisFormSchema = z.object({
   // Issue
   issueCategory: z.enum(issueCategories).optional(),
-  issueDescription: z.string().min(1, "Please describe the issue"),
+  issueDescription: z.string(), // Can be empty if media is attached
   issueLocation: z.string().optional(),
 
   // Property

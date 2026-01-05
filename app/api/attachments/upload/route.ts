@@ -19,8 +19,9 @@ import { encryptedAttachments } from "@/app/db/schema";
 import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 
-// Max file size: 50MB
-const MAX_FILE_SIZE = 50 * 1024 * 1024;
+// Max file sizes
+const MAX_IMAGE_SIZE = 50 * 1024 * 1024;   // 50MB for images
+const MAX_VIDEO_SIZE = 100 * 1024 * 1024;  // 100MB for videos
 
 // Allowed storage bucket
 const STORAGE_BUCKET = "encrypted-attachments";
@@ -46,10 +47,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Validate file size
-    if (encryptedFile.size > MAX_FILE_SIZE) {
+    // Get file type early for size validation
+    const type = (formData.get("type") as string) || "image";
+    const maxSize = type === "video" ? MAX_VIDEO_SIZE : MAX_IMAGE_SIZE;
+    const maxSizeMB = type === "video" ? 100 : 50;
+
+    // Validate file size based on type
+    if (encryptedFile.size > maxSize) {
       return NextResponse.json(
-        { error: "File too large (max 50MB)" },
+        { error: `File too large (max ${maxSizeMB}MB)` },
         { status: 400 }
       );
     }
@@ -67,7 +73,6 @@ export async function POST(req: NextRequest) {
     const mimeType = (formData.get("mimeType") as string) || "application/octet-stream";
     const fileName = formData.get("fileName") as string | null;
     const originalSize = parseInt(formData.get("originalSize") as string) || 0;
-    const type = (formData.get("type") as string) || "image";
 
     // Optional: group ID (for group-shared attachments)
     const groupId = formData.get("groupId") as string | null;
@@ -78,9 +83,14 @@ export async function POST(req: NextRequest) {
     // Optional: key version (default 1)
     const keyVersion = parseInt(formData.get("keyVersion") as string) || 1;
 
-    // Optional: image dimensions
+    // Optional: image/video dimensions
     const width = formData.get("width") ? parseInt(formData.get("width") as string) : null;
     const height = formData.get("height") ? parseInt(formData.get("height") as string) : null;
+
+    // Optional: video duration in seconds
+    const durationSeconds = formData.get("durationSeconds")
+      ? parseInt(formData.get("durationSeconds") as string)
+      : null;
 
     // Generate unique storage path
     const fileId = uuidv4();
@@ -123,6 +133,7 @@ export async function POST(req: NextRequest) {
         encryptedSizeBytes: encryptedFile.size,
         width,
         height,
+        durationSeconds,
       })
       .returning({
         id: encryptedAttachments.id,

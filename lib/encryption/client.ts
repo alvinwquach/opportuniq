@@ -389,3 +389,60 @@ export async function decryptImageForDisplay(
 export function revokeImageUrl(url: string): void {
   URL.revokeObjectURL(url);
 }
+
+// ============================================
+// VIDEO ENCRYPTION
+// ============================================
+
+/**
+ * Encrypt a video file for chat upload
+ * Returns encrypted blob ready for Supabase Storage upload
+ */
+export async function encryptVideoForUpload(
+  videoBlob: Blob,
+  masterKey: CryptoKey,
+  metadata?: {
+    mimeType?: string;
+    fileName?: string;
+  }
+): Promise<{
+  encryptedBlob: Blob;
+  iv: string;
+  originalSize: number;
+  encryptedSize: number;
+  mimeType: string;
+  fileName: string;
+}> {
+  const result = await encryptFile(videoBlob, masterKey);
+
+  return {
+    encryptedBlob: result.blob,
+    iv: result.iv,
+    originalSize: result.originalSize,
+    encryptedSize: result.encryptedSize,
+    mimeType: metadata?.mimeType || "video/mp4",
+    fileName: metadata?.fileName || "video.mp4",
+  };
+}
+
+/**
+ * Decrypt a video from Supabase Storage for playback
+ */
+export async function decryptVideoForPlayback(
+  encryptedBlob: Blob,
+  iv: string,
+  mimeType: string,
+  masterKey: CryptoKey
+): Promise<string> {
+  const decryptedBlob = await decryptFile(encryptedBlob, iv, masterKey, mimeType);
+
+  // Create object URL for playback
+  return URL.createObjectURL(decryptedBlob);
+}
+
+/**
+ * Clean up video object URL when done
+ */
+export function revokeVideoUrl(url: string): void {
+  URL.revokeObjectURL(url);
+}

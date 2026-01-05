@@ -45,7 +45,7 @@ const socialLinks = [
   { icon: IoLogoTwitter, href: "https://twitter.com/opportuniq", label: "Twitter" },
   { icon: IoLogoGithub, href: "https://github.com/opportuniq", label: "GitHub" },
   { icon: IoLogoLinkedin, href: "https://linkedin.com/company/opportuniq", label: "LinkedIn" },
-  { icon: IoMail, href: "mailto:support@opportuniq.com", label: "Email" },
+  { icon: IoMail, href: "mailto:support@opportuniq.app", label: "Email" },
 ];
 
 export function Footer() {
