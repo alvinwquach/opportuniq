@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { ChatHistorySidebar } from "./ChatHistorySidebar";
-import { DiagnosisChat } from "./DiagnosisChat";
+import { IssueChat } from "./IssueChat";
 import { useOptimisticConversation } from "@/hooks/useConversations";
 import { useSidebar } from "@/app/dashboard/components/SidebarContext";
 import { IoMenu, IoClose } from "react-icons/io5";
@@ -66,7 +66,7 @@ export function DiagnosePageClient({ userId, userName, userPostalCode }: Diagnos
         "flex-1 min-w-0 h-full overflow-hidden transition-all duration-300",
         chatSidebarCollapsed ? "lg:mr-0" : "lg:mr-64"
       )}>
-        <DiagnosisChat
+        <IssueChat
           key={currentConversationId || "new"}
           userId={userId}
           userName={userName}

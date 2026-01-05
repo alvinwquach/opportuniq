@@ -15,6 +15,9 @@ import {
   encryptImageForUpload,
   decryptImageForDisplay,
   revokeImageUrl,
+  encryptVideoForUpload,
+  decryptVideoForPlayback,
+  revokeVideoUrl,
   importKey,
   base64ToArrayBuffer,
 } from "@/lib/encryption";
@@ -26,6 +29,12 @@ interface UploadResult {
   mimeType: string;
   originalSize: number;
   encryptedSize: number;
+}
+
+interface VideoUploadResult extends UploadResult {
+  durationSeconds?: number;
+  width?: number;
+  height?: number;
 }
 
 interface AttachmentMetadata {
@@ -146,6 +155,89 @@ export function useEncryptedAttachments(userId: string, groupId?: string | null)
   );
 
   /**
+   * Encrypt and upload a video file
+   */
+  const uploadEncryptedVideo = useCallback(
+    async (
+      videoBlob: Blob,
+      metadata: {
+        durationSeconds?: number;
+        width?: number;
+        height?: number;
+        mimeType?: string;
+        fileName?: string;
+      }
+    ): Promise<VideoUploadResult> => {
+      setIsUploading(true);
+      setUploadProgress(0);
+      setError(null);
+
+      try {
+        // Get encryption key
+        setUploadProgress(10);
+        const key = await getEncryptionKey();
+
+        // Encrypt the video
+        setUploadProgress(30);
+        const encrypted = await encryptVideoForUpload(videoBlob, key, {
+          mimeType: metadata.mimeType,
+          fileName: metadata.fileName,
+        });
+
+        // Create form data for upload
+        const formData = new FormData();
+        formData.append("file", encrypted.encryptedBlob);
+        formData.append("iv", encrypted.iv);
+        formData.append("mimeType", encrypted.mimeType);
+        formData.append("fileName", encrypted.fileName);
+        formData.append("originalSize", encrypted.originalSize.toString());
+        formData.append("type", "video");
+
+        if (groupId) {
+          formData.append("groupId", groupId);
+        }
+
+        // Add video-specific metadata
+        if (metadata.durationSeconds !== undefined) {
+          formData.append("durationSeconds", metadata.durationSeconds.toString());
+        }
+        if (metadata.width !== undefined) {
+          formData.append("width", metadata.width.toString());
+        }
+        if (metadata.height !== undefined) {
+          formData.append("height", metadata.height.toString());
+        }
+
+        // Upload to server
+        setUploadProgress(50);
+        const response = await fetch("/api/attachments/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        setUploadProgress(90);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Upload failed");
+        }
+
+        const data = await response.json();
+        setUploadProgress(100);
+
+        return data.attachment as VideoUploadResult;
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Upload failed";
+        setError(errorMessage);
+        throw err;
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [getEncryptionKey, groupId]
+  );
+
+  /**
    * Decrypt and display an attachment
    * Returns an object URL that can be used in <img src>
    */
@@ -194,16 +286,74 @@ export function useEncryptedAttachments(userId: string, groupId?: string | null)
   );
 
   /**
+   * Decrypt a video attachment
+   * Returns an object URL that can be used in <video src>
+   */
+  const decryptVideo = useCallback(
+    async (attachmentId: string): Promise<string> => {
+      setError(null);
+
+      try {
+        // Get attachment metadata and download URL
+        const response = await fetch(`/api/attachments/upload?id=${attachmentId}`);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to get attachment");
+        }
+
+        const { attachment } = (await response.json()) as { attachment: AttachmentMetadata };
+
+        // Download encrypted blob
+        const blobResponse = await fetch(attachment.downloadUrl);
+        if (!blobResponse.ok) {
+          throw new Error("Failed to download attachment");
+        }
+
+        const encryptedBlob = await blobResponse.blob();
+
+        // Get decryption key
+        const key = await getEncryptionKey();
+
+        // Decrypt and create object URL
+        const decryptedUrl = await decryptVideoForPlayback(
+          encryptedBlob,
+          attachment.iv,
+          attachment.mimeType,
+          key
+        );
+
+        return decryptedUrl;
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Decryption failed";
+        setError(errorMessage);
+        throw err;
+      }
+    },
+    [getEncryptionKey]
+  );
+
+  /**
    * Clean up decrypted image URL
    */
   const cleanupDecryptedUrl = useCallback((url: string) => {
     revokeImageUrl(url);
   }, []);
 
+  /**
+   * Clean up decrypted video URL
+   */
+  const cleanupVideoUrl = useCallback((url: string) => {
+    revokeVideoUrl(url);
+  }, []);
+
   return {
     uploadEncryptedImage,
+    uploadEncryptedVideo,
     decryptAttachment,
+    decryptVideo,
     cleanupDecryptedUrl,
+    cleanupVideoUrl,
     isUploading,
     uploadProgress,
     error,

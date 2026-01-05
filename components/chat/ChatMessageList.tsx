@@ -2,6 +2,7 @@
 
 import { MessageContent } from "./MessageContent";
 import { EncryptedImage } from "./EncryptedImage";
+import { EncryptedVideo } from "./EncryptedVideo";
 import { AudioPlayButton } from "@/components/voice/AudioPlayButton";
 import { TranslateButton } from "@/components/voice/TranslateButton";
 import type { Message, TranslationState } from "@/hooks/useChatState";
@@ -98,20 +99,33 @@ function ChatMessage({
           isUser ? "bg-[#5eead4] text-black" : "bg-[#1a1a1a] text-white"
         }`}
       >
-        {/* Attachments */}
-        {message.attachments?.map((att, index) => (
-          <EncryptedImage
-            key={`${message.id}-${index}`}
-            attachmentId={att.attachmentId}
-            url={att.url}
-            mimeType={att.mediaType}
-            alt="Uploaded"
-            onDecrypt={onDecrypt}
-            cachedUrl={att.attachmentId ? decryptedUrls.get(att.attachmentId) : undefined}
-          />
-        ))}
+        {message.attachments?.map((att, index) => {
+          const isVideo = att.type === "video" || att.mediaType?.startsWith("video/");
 
-        {/* Content */}
+          if (isVideo) {
+            return (
+              <EncryptedVideo
+                key={`${message.id}-${index}`}
+                attachmentId={att.attachmentId}
+                mimeType={att.mediaType}
+                onDecrypt={onDecrypt}
+                cachedUrl={att.attachmentId ? decryptedUrls.get(att.attachmentId) : undefined}
+              />
+            );
+          }
+
+          return (
+            <EncryptedImage
+              key={`${message.id}-${index}`}
+              attachmentId={att.attachmentId}
+              url={att.url}
+              mimeType={att.mediaType}
+              alt="Uploaded"
+              onDecrypt={onDecrypt}
+              cachedUrl={att.attachmentId ? decryptedUrls.get(att.attachmentId) : undefined}
+            />
+          );
+        })}
         {message.role === "assistant" ? (
           <AssistantMessageContent
             message={message}

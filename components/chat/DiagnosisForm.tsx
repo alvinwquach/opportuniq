@@ -17,10 +17,15 @@ import {
   IoChevronUp,
   IoSend,
   IoLockClosed,
+  IoVideocam,
 } from "react-icons/io5";
 import { ImSpinner8 } from "react-icons/im";
 import { cn } from "@/lib/utils";
 import { VoiceMicButton } from "@/components/voice/VoiceMicButton";
+import { VideoPreview } from "@/components/video/VideoPreview";
+import { VideoProcessingIndicator } from "@/components/video/VideoProcessingIndicator";
+import { type ProcessingStage, isVideoFeatureEnabled } from "@/lib/video/constants";
+import type { MediaItem } from "@/hooks/useMediaUpload";
 import type { TranscriptionResult } from "@/lib/schemas/voice";
 import {
   diagnosisFormSchema,
@@ -60,13 +65,17 @@ interface DiagnosisFormProps {
   userPostalCode?: string | null;
   onSubmit: (data: ReturnType<typeof formToRequest>, language?: string) => Promise<void>;
   isSubmitting?: boolean;
+  // Image props
   selectedImage?: string | null;
   imageFile?: File | null;
-  onImageSelect?: () => void;
-  onImageRemove?: () => void;
+  selectedVideo?: MediaItem | null;
+  onMediaSelect?: () => void;
+  onMediaRemove?: () => void;
   isEncrypting?: boolean;
+  isProcessingVideo?: boolean;
+  videoProcessingStage?: ProcessingStage;
+  videoProcessingProgress?: number;
   uploadProgress?: number;
-  // Voice input state
   detectedLanguage?: string | null;
   onLanguageDetected?: (language: string) => void;
 }
@@ -78,9 +87,13 @@ export function DiagnosisForm({
   isSubmitting = false,
   selectedImage,
   imageFile,
-  onImageSelect,
-  onImageRemove,
+  selectedVideo,
+  onMediaSelect,
+  onMediaRemove,
   isEncrypting = false,
+  isProcessingVideo = false,
+  videoProcessingStage = "idle",
+  videoProcessingProgress = 0,
   uploadProgress = 0,
   detectedLanguage,
   onLanguageDetected,
@@ -102,15 +115,12 @@ export function DiagnosisForm({
       prefersDIY: undefined as boolean | undefined,
     },
     onSubmit: async ({ value }) => {
-      // If no description but has image, provide a default prompt
       const formValue = {
         ...value,
-        // Always use userPostalCode from props if available (handles hydration timing)
         postalCode: userPostalCode || value.postalCode,
-        issueDescription: value.issueDescription.trim() || "What issue do you see in this photo? Please diagnose and provide recommendations.",
+        issueDescription: value.issueDescription.trim(),
       } as DiagnosisFormValues;
       const request = formToRequest(formValue);
-      // Pass detected language from voice input
       await onSubmit(request, detectedLanguage || undefined);
     },
   });
@@ -122,10 +132,11 @@ export function DiagnosisForm({
     }
   }, [userPostalCode, form]);
 
-  // Determine if it's a vehicle based on category or property type
   const isVehicle =
     form.state.values.propertyType === "vehicle" ||
     form.state.values.issueCategory?.startsWith("auto_");
+
+  const hasMedia = !!selectedImage || !!selectedVideo;
 
   return (
     <form
@@ -148,7 +159,7 @@ export function DiagnosisForm({
           />
           <button
             type="button"
-            onClick={onImageRemove}
+            onClick={onMediaRemove}
             className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600 transition-colors"
           >
             <IoClose className="w-4 h-4" />
@@ -163,19 +174,37 @@ export function DiagnosisForm({
           )}
         </div>
       )}
+      {selectedVideo && (
+        <div className="space-y-2">
+          <VideoPreview
+            thumbnailSrc={selectedVideo.thumbnailPreview || selectedVideo.preview}
+            duration={selectedVideo.durationSeconds || 0}
+            hasAudio={true}
+            onRemove={onMediaRemove}
+            isProcessing={isProcessingVideo}
+            className="w-32"
+          />
+          {isProcessingVideo && (
+            <VideoProcessingIndicator
+              stage={videoProcessingStage}
+              progress={videoProcessingProgress}
+            />
+          )}
+        </div>
+      )}
       <form.Field name="issueDescription">
         {(field) => (
           <div>
             <textarea
               placeholder={
-                selectedImage
-                  ? "Add details (optional) or just click Get Diagnosis..."
-                  : "Describe the issue you're experiencing..."
+                hasMedia
+                  ? "Add details (optional)..."
+                  : "What are you working on?"
               }
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
-              rows={selectedImage ? 2 : 3}
+              rows={hasMedia ? 2 : 3}
               className="w-full px-4 py-3 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] text-white text-sm placeholder:text-[#666] focus:outline-none focus:border-[#5eead4]/50 resize-none transition-colors"
             />
           </div>
@@ -414,12 +443,22 @@ export function DiagnosisForm({
       <div className="flex items-center gap-2">
         <button
           type="button"
-          onClick={onImageSelect}
-          className="flex-shrink-0 w-10 h-10 rounded-full bg-[#1a1a1a] text-[#888] hover:text-[#5eead4] hover:bg-[#2a2a2a] flex items-center justify-center transition-colors border border-[#2a2a2a]"
-          title="Upload photo"
+          onClick={onMediaSelect}
+          className="shrink-0 w-10 h-10 rounded-full bg-[#1a1a1a] text-[#888] hover:text-[#5eead4] hover:bg-[#2a2a2a] flex items-center justify-center transition-colors border border-[#2a2a2a]"
+          title="Add photo"
         >
           <IoImage className="w-5 h-5" />
         </button>
+        {isVideoFeatureEnabled() && (
+          <button
+            type="button"
+            onClick={onMediaSelect}
+            className="shrink-0 w-10 h-10 rounded-full bg-[#1a1a1a] text-[#888] hover:text-[#5eead4] hover:bg-[#2a2a2a] flex items-center justify-center transition-colors border border-[#2a2a2a]"
+            title="Add video"
+          >
+            <IoVideocam className="w-5 h-5" />
+          </button>
+        )}
         <VoiceMicButton
           onTranscription={(result: TranscriptionResult) => {
             // Append transcribed text to the description
@@ -433,24 +472,24 @@ export function DiagnosisForm({
               onLanguageDetected(result.language);
             }
           }}
-          disabled={isSubmitting || isEncrypting}
+          disabled={isSubmitting || isEncrypting || isProcessingVideo}
           size="md"
           source="initial_form"
         />
         <button
           type="submit"
-          disabled={isSubmitting || isEncrypting || (!form.state.values.issueDescription.trim() && !selectedImage)}
+          disabled={isSubmitting || isEncrypting || isProcessingVideo || (!form.state.values.issueDescription.trim() && !hasMedia)}
           className="flex-1 h-10 rounded-full bg-[#5eead4] text-black font-medium text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#4fd1c5] transition-colors"
         >
-          {isSubmitting || isEncrypting ? (
+          {isSubmitting || isEncrypting || isProcessingVideo ? (
             <>
               <ImSpinner8 className="w-4 h-4 animate-spin" />
-              {isEncrypting ? "Encrypting..." : "Analyzing..."}
+              {isProcessingVideo ? "Processing..." : isEncrypting ? "Encrypting..." : "Thinking..."}
             </>
           ) : (
             <>
               <IoSend className="w-4 h-4" />
-              Get Diagnosis
+              Get Help
             </>
           )}
         </button>

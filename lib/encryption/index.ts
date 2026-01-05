@@ -22,6 +22,7 @@ export {
   encryptFile,
   encryptMasterKey,
   encryptImageForUpload,
+  encryptVideoForUpload,
 
   // Decryption
   decrypt,
@@ -29,6 +30,8 @@ export {
   decryptMasterKey,
   decryptImageForDisplay,
   revokeImageUrl,
+  decryptVideoForPlayback,
+  revokeVideoUrl,
 
   // Utilities
   generateIV,

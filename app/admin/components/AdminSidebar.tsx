@@ -64,7 +64,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
     if (exact) {
       return pathname === href;
     }
-    return pathname.startsWith(href);
+    return pathname?.startsWith(href) ?? false;
   };
 
   return (

@@ -1,14 +1,15 @@
 /**
  * Hook for managing media upload state in chat components.
  *
- * Currently supports: images (photos)
- * Future: audio (voice), video (frames extraction)
+ * Supports: images (photos), video (with FFmpeg processing)
+ * Future: audio (voice)
  *
- * Uses useReducer for clean state management.
  */
 
 import { useReducer, useCallback, useRef, RefObject } from "react";
-import { trackPhotoUploaded } from "@/lib/analytics";
+import { trackPhotoUploaded, trackVideoSelected } from "@/lib/analytics";
+import { VIDEO_CONFIG, isVideoFeatureEnabled } from "@/lib/video/constants";
+import { getProcessingStrategy } from "@/lib/video/capabilities";
 
 // ============================================
 // TYPES
@@ -24,6 +25,9 @@ export interface MediaItem {
   mimeType: string;
   fileName: string;
   fileSize: number;
+  // Video-specific fields
+  durationSeconds?: number;
+  thumbnailPreview?: string; // Base64 thumbnail for video
 }
 
 export interface MediaUploadState {
@@ -140,6 +144,74 @@ function readFileAsDataURL(file: File, onProgress?: (progress: number) => void):
   });
 }
 
+/**
+ * Get video duration from a video file
+ */
+function getVideoDuration(file: File): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement("video");
+    video.preload = "metadata";
+
+    video.onloadedmetadata = () => {
+      URL.revokeObjectURL(video.src);
+      resolve(video.duration);
+    };
+
+    video.onerror = () => {
+      URL.revokeObjectURL(video.src);
+      reject(new Error("Failed to load video metadata"));
+    };
+
+    video.src = URL.createObjectURL(file);
+  });
+}
+
+/**
+ * Generate a quick thumbnail from video first frame
+ */
+async function generateVideoThumbnail(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement("video");
+    video.preload = "metadata";
+    video.muted = true;
+    video.playsInline = true;
+
+    video.onloadeddata = () => {
+      video.currentTime = 0;
+    };
+
+    video.onseeked = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) {
+        URL.revokeObjectURL(video.src);
+        reject(new Error("Failed to get canvas context"));
+        return;
+      }
+
+      // Scale to max 256px for thumbnail
+      const maxDim = 256;
+      const scale = Math.min(maxDim / video.videoWidth, maxDim / video.videoHeight, 1);
+      canvas.width = video.videoWidth * scale;
+      canvas.height = video.videoHeight * scale;
+
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+      URL.revokeObjectURL(video.src);
+      resolve(dataUrl);
+    };
+
+    video.onerror = () => {
+      URL.revokeObjectURL(video.src);
+      reject(new Error("Failed to load video for thumbnail"));
+    };
+
+    video.src = URL.createObjectURL(file);
+  });
+}
+
 // ============================================
 // HOOK
 // ============================================
@@ -169,23 +241,41 @@ export interface UseMediaUploadResult {
 export function useMediaUpload({
   conversationId,
   maxSizeBytes = 10 * 1024 * 1024, // 10MB for images
-  maxItems = 1, // Single image for now
+  maxItems = 1, // Single item for now
   acceptedTypes = ["image"],
 }: UseMediaUploadOptions = {}): UseMediaUploadResult {
   const [state, dispatch] = useReducer(mediaUploadReducer, initialState);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Determine effective max size based on media type
+  const getEffectiveMaxSize = useCallback(
+    (mediaType: MediaType) => {
+      if (mediaType === "video") {
+        return VIDEO_CONFIG.MAX_FILE_SIZE_BYTES; // 100MB for video
+      }
+      return maxSizeBytes; // Default for images
+    },
+    [maxSizeBytes]
+  );
+
   const processFile = useCallback(
     async (file: File, uploadMethod: "click" | "drag_drop" = "click") => {
       const mediaType = getMediaType(file.type);
+
+      // Check if video is enabled when trying to upload video
+      if (mediaType === "video" && !isVideoFeatureEnabled()) {
+        alert("Video upload is not currently available");
+        return;
+      }
 
       if (!acceptedTypes.includes(mediaType)) {
         alert(`Please select a valid file type: ${acceptedTypes.join(", ")}`);
         return;
       }
 
-      if (file.size > maxSizeBytes) {
-        alert(`File must be less than ${Math.round(maxSizeBytes / 1024 / 1024)}MB`);
+      const effectiveMaxSize = getEffectiveMaxSize(mediaType);
+      if (file.size > effectiveMaxSize) {
+        alert(`File must be less than ${Math.round(effectiveMaxSize / 1024 / 1024)}MB`);
         return;
       }
 
@@ -194,6 +284,7 @@ export function useMediaUpload({
         dispatch({ type: "CLEAR_ALL" });
       }
 
+      // Track analytics
       if (mediaType === "image") {
         trackPhotoUploaded({
           conversationId,
@@ -201,14 +292,54 @@ export function useMediaUpload({
           uploadMethod,
           fileSizeBytes: file.size,
         });
+      } else if (mediaType === "video") {
+        // Get duration first for video analytics
+        try {
+          const duration = await getVideoDuration(file);
+
+          // Validate video duration
+          if (duration > VIDEO_CONFIG.MAX_DURATION_SECONDS) {
+            alert(`Video must be ${VIDEO_CONFIG.MAX_DURATION_SECONDS} seconds or less`);
+            return;
+          }
+
+          trackVideoSelected({
+            conversationId,
+            fileSizeBytes: file.size,
+            durationSeconds: duration,
+            mimeType: file.type,
+            processingStrategy: getProcessingStrategy(),
+          });
+        } catch (error) {
+          console.error("[useMediaUpload] Failed to get video duration:", error);
+          alert("Failed to load video. Please try a different file.");
+          return;
+        }
       }
 
       dispatch({ type: "START_PROCESSING", status: "Reading file..." });
 
       try {
-        const preview = await readFileAsDataURL(file, (progress) => {
-          dispatch({ type: "SET_PROGRESS", progress });
-        });
+        let preview: string;
+        let durationSeconds: number | undefined;
+        let thumbnailPreview: string | undefined;
+
+        if (mediaType === "video") {
+          // For video, get duration and generate thumbnail
+          dispatch({ type: "SET_STATUS", status: "Getting video info..." });
+          durationSeconds = await getVideoDuration(file);
+
+          dispatch({ type: "SET_STATUS", status: "Generating thumbnail..." });
+          thumbnailPreview = await generateVideoThumbnail(file);
+          preview = thumbnailPreview; // Use thumbnail as preview
+
+          dispatch({ type: "SET_PROGRESS", progress: 100 });
+        } else {
+          // For images, read as data URL
+          preview = await readFileAsDataURL(file, (progress) => {
+            dispatch({ type: "SET_PROGRESS", progress });
+          });
+        }
 
         const item: MediaItem = {
           id: generateId(),
@@ -218,6 +349,8 @@ export function useMediaUpload({
           mimeType: file.type,
           fileName: file.name,
           fileSize: file.size,
+          durationSeconds,
+          thumbnailPreview,
         };
 
         dispatch({ type: "ADD_ITEM", item });
@@ -231,7 +364,7 @@ export function useMediaUpload({
         alert("Failed to process file");
       }
     },
-    [conversationId, maxSizeBytes, maxItems, acceptedTypes, state.items.length]
+    [conversationId, maxSizeBytes, maxItems, acceptedTypes, state.items.length, getEffectiveMaxSize]
   );
 
   const handleFileSelect = useCallback(

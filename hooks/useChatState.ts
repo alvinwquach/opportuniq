@@ -1,14 +1,5 @@
-/**
- * Chat State Management Hook
- *
- * Manages all state for the DiagnosisChat component using useReducer.
- */
-
+"use client"
 import { useReducer, useCallback } from "react";
-
-// ============================================
-// TYPES
-// ============================================
 
 export interface MessageAttachment {
   type: string;
@@ -57,10 +48,6 @@ type ChatAction =
   | { type: "SET_DETECTED_LANGUAGE"; payload: string | null }
   | { type: "SET_TRANSLATION"; payload: { messageId: string; text: string; isTranslated: boolean } }
   | { type: "RESET_CONVERSATION" };
-
-// ============================================
-// REDUCER
-// ============================================
 
 function chatReducer(state: ChatState, action: ChatAction): ChatState {
   switch (action.type) {
@@ -151,23 +138,16 @@ export interface UseChatStateResult {
   // Message actions
   setMessages: (messages: Message[]) => void;
   addMessage: (message: Message) => void;
-  // Input actions
   setFollowUpInput: (input: string) => void;
-  // Conversation actions
   setConversationId: (id: string | null) => void;
   resetConversation: () => void;
-  // Streaming actions
   startStreaming: () => void;
   updateStreamingContent: (content: string) => void;
   finishStreaming: (message: Message) => void;
   stopStreaming: () => void;
-  // Error actions
   setError: (error: Error | null) => void;
-  // Decryption actions
   addDecryptedUrl: (id: string, url: string) => void;
-  // Language actions
   setDetectedLanguage: (language: string | null) => void;
-  // Translation actions
   setTranslation: (messageId: string, text: string, isTranslated: boolean) => void;
 }
 
@@ -178,7 +158,6 @@ export function useChatState(initialConversationId: string | null): UseChatState
     createInitialState
   );
 
-  // Memoized action creators
   const setMessages = useCallback((messages: Message[]) => {
     dispatch({ type: "SET_MESSAGES", payload: messages });
   }, []);

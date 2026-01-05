@@ -50,8 +50,8 @@ function getLabel(segment: string): string {
 export function Breadcrumbs({ className }: { className?: string }) {
   const pathname = usePathname();
 
-  // Don't show on root dashboard
-  if (pathname === "/dashboard") {
+  // Don't show on root dashboard or if pathname is null
+  if (!pathname || pathname === "/dashboard") {
     return null;
   }
 
