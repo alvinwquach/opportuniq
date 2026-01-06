@@ -9,6 +9,7 @@ import {
   approveMember,
   rejectMember,
   cancelInvitation,
+  updateInvitationRole,
 } from "@/app/dashboard/groups/actions";
 import {
   trackMemberInvited,
@@ -16,6 +17,7 @@ import {
   trackMemberRemoved,
   trackMemberApproved,
   trackMemberRejected,
+  trackInvitationRoleChanged,
 } from "@/lib/analytics";
 
 type GroupRole = "coordinator" | "collaborator" | "participant" | "contributor" | "observer";
@@ -41,6 +43,12 @@ interface MemberActionInput {
 interface CancelInvitationInput {
   groupId: string;
   invitationId: string;
+}
+
+interface UpdateInvitationRoleInput {
+  groupId: string;
+  invitationId: string;
+  newRole: GroupRole;
 }
 
 export function useGroupMembers(groupId: string) {
@@ -178,6 +186,31 @@ export function useCancelInvitation() {
       return { ...result, groupId };
     },
     onSuccess: (result, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
+    },
+  });
+}
+
+export function useUpdateInvitationRole() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ groupId, invitationId, newRole }: UpdateInvitationRoleInput) => {
+      const result = await updateInvitationRole(groupId, invitationId, newRole);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to update invitation role");
+      }
+      return { ...result, groupId, invitationId };
+    },
+    onSuccess: (result, variables) => {
+      if (result.oldRole && result.newRole) {
+        trackInvitationRoleChanged({
+          groupId: variables.groupId,
+          invitationId: variables.invitationId,
+          oldRole: result.oldRole,
+          newRole: result.newRole,
+        });
+      }
       queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
     },
   });

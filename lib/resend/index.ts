@@ -17,6 +17,7 @@ export {
   sendGroupRoleChangedEmail,
   sendGroupMemberRemovedEmail,
   sendInvitationSentConfirmationEmail,
+  sendInvitationRoleUpdatedEmail,
 } from "./groups";
 
 // Invite emails

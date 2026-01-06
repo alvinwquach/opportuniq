@@ -6,6 +6,7 @@ import GroupDeletedEmail from "@/emails/GroupDeletedEmail";
 import GroupRoleChangedEmail from "@/emails/GroupRoleChangedEmail";
 import GroupMemberRemovedEmail from "@/emails/GroupMemberRemovedEmail";
 import InvitationSentConfirmationEmail from "@/emails/InvitationSentConfirmationEmail";
+import InvitationRoleUpdatedEmail from "@/emails/InvitationRoleUpdatedEmail";
 import { resend, EMAIL_FROM } from "./client";
 
 /**
@@ -345,6 +346,55 @@ export async function sendInvitationSentConfirmationEmail({
     return { success: true, data };
   } catch (error) {
     console.error("Error sending invitation confirmation email:", error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * Send invitation role updated email when a pending invitation's role is changed
+ */
+export async function sendInvitationRoleUpdatedEmail({
+  email,
+  groupName,
+  changedBy,
+  oldRole,
+  newRole,
+  inviteUrl,
+}: {
+  email: string;
+  groupName: string;
+  changedBy: string;
+  oldRole: string;
+  newRole: string;
+  inviteUrl: string;
+}) {
+  try {
+    const emailHtml = await render(
+      InvitationRoleUpdatedEmail({
+        groupName,
+        changedBy,
+        oldRole,
+        newRole,
+        inviteUrl,
+      })
+    );
+
+    const { data, error } = await resend.emails.send({
+      from: EMAIL_FROM.notifications,
+      to: [email],
+      replyTo: "support@opportuniq.app",
+      subject: `Your invitation role for "${groupName}" has been updated`,
+      html: emailHtml,
+    });
+
+    if (error) {
+      console.error("Failed to send invitation role updated email:", error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error sending invitation role updated email:", error);
     return { success: false, error };
   }
 }
