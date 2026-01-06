@@ -91,10 +91,10 @@ export default async function Groups() {
                     </span>
                   </div>
                   <div className="flex items-center gap-3 text-xs text-[#666]">
-                    {group.zipCode && (
+                    {group.postalCode && (
                       <span className="flex items-center gap-1">
                         <IoLocation className="w-3 h-3" />
-                        {group.zipCode}
+                        {group.postalCode}
                       </span>
                     )}
                     <span>

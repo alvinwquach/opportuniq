@@ -37,7 +37,7 @@ interface GroupDashboardProps {
   group: {
     id: string;
     name: string;
-    zipCode: string | null;
+    postalCode: string | null;
     defaultSearchRadius: number | null;
     createdAt: Date;
   };
@@ -127,10 +127,10 @@ export function GroupDashboard({
                   <span>
                     {memberCount} {pluralize(memberCount, "member", "members")}
                   </span>
-                  {group.zipCode && (
+                  {group.postalCode && (
                     <span className="flex items-center gap-1">
                       <IoLocation className="w-3 h-3" />
-                      {group.zipCode}
+                      {group.postalCode}
                     </span>
                   )}
                 </div>
@@ -335,7 +335,7 @@ export function GroupDashboard({
                 <h2 className="text-sm font-medium text-white">Group Info</h2>
               </div>
               <div className="p-4 space-y-3">
-                {group.zipCode && (
+                {group.postalCode && (
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-[#1f1f1f] flex items-center justify-center">
                       <IoLocation className="w-4 h-4 text-[#9a9a9a]" />
@@ -344,7 +344,7 @@ export function GroupDashboard({
                       <p className="text-[10px] text-[#666]">
                         Location
                       </p>
-                      <p className="text-sm text-white">{group.zipCode}</p>
+                      <p className="text-sm text-white">{group.postalCode}</p>
                     </div>
                   </div>
                 )}
