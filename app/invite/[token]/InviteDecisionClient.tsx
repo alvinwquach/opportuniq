@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,9 +13,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Toast } from "@/components/ui/Toast";
 import { IoCheckmarkCircle, IoCloseCircle, IoPeople, IoMail, IoTime } from "react-icons/io5";
 import { declineInvitation } from "@/app/dashboard/groups/actions";
-import { toast } from "sonner";
 
 interface InviteDecisionClientProps {
   token: string;
@@ -41,6 +41,17 @@ export function InviteDecisionClient({
   const router = useRouter();
   const [isDeclineDialogOpen, setIsDeclineDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [isToastVisible, setIsToastVisible] = useState(false);
+
+  const showToast = useCallback((message: string) => {
+    setToastMessage(message);
+    setIsToastVisible(true);
+  }, []);
+
+  const hideToast = useCallback(() => {
+    setIsToastVisible(false);
+  }, []);
 
   const formatRole = (role: string) => {
     return role.charAt(0).toUpperCase() + role.slice(1);
@@ -64,14 +75,14 @@ export function InviteDecisionClient({
     try {
       const result = await declineInvitation(token);
       if (result.success) {
-        toast.success("Invitation declined");
+        showToast("Invitation declined");
         router.push("/invite/declined");
       } else {
-        toast.error(result.error || "Failed to decline invitation");
+        showToast(result.error || "Failed to decline invitation");
         setIsProcessing(false);
       }
     } catch (error) {
-      toast.error("Failed to decline invitation");
+      showToast("Failed to decline invitation");
       setIsProcessing(false);
     }
     setIsDeclineDialogOpen(false);
@@ -172,6 +183,12 @@ export function InviteDecisionClient({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        <Toast
+          message={toastMessage}
+          isVisible={isToastVisible}
+          onClose={hideToast}
+        />
       </div>
     </div>
   );
