@@ -29,6 +29,7 @@ type InvitationAction =
   | "extended"
   | "revoked"
   | "accepted"
+  | "declined"
   | "expired"
   | "bulk_created";
 
@@ -48,6 +49,8 @@ function getActionIcon(action: InvitationAction) {
       return <IoClose className="w-4 h-4" />;
     case "accepted":
       return <IoCheckmarkCircle className="w-4 h-4" />;
+    case "declined":
+      return <IoClose className="w-4 h-4" />;
     case "expired":
       return <IoTime className="w-4 h-4" />;
     default:
@@ -70,6 +73,8 @@ function getActionColor(action: InvitationAction) {
       return "bg-red-500/10 text-red-400";
     case "accepted":
       return "bg-green-500/10 text-green-500";
+    case "declined":
+      return "bg-red-500/10 text-red-400";
     case "expired":
       return "bg-[#666]/10 text-[#666]";
     default:
@@ -93,6 +98,8 @@ function getActionLabel(action: InvitationAction): string {
       return "Revoked";
     case "accepted":
       return "Accepted";
+    case "declined":
+      return "Declined";
     case "expired":
       return "Expired";
     default:
