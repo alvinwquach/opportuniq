@@ -18,8 +18,12 @@ import {
   IoConstruct,
   IoChatbubbles,
   IoEllipsisHorizontal,
+  IoMailOutline,
+  IoClose,
 } from "react-icons/io5";
 import { EditGroupDialog } from "@/app/dashboard/components/sections/EditGroupDialog";
+import { InviteMemberDialog } from "@/app/dashboard/components/sections/InviteMemberDialog";
+import { useCancelInvitation } from "@/hooks/useGroupMembers";
 
 interface Member {
   id: string;
@@ -32,6 +36,14 @@ interface Member {
     email: string;
     avatarUrl: string | null;
   };
+}
+
+interface PendingInvitation {
+  id: string;
+  email: string;
+  role: string;
+  expiresAt: Date;
+  createdAt: Date;
 }
 
 interface GroupDashboardProps {
@@ -48,6 +60,7 @@ interface GroupDashboardProps {
     joinedAt: Date | null;
   };
   members: Member[];
+  pendingInvitations: PendingInvitation[];
   constraints: {
     monthlyBudget: string | null;
     sharedBalance: string;
@@ -93,12 +106,15 @@ export function GroupDashboard({
   group,
   membership,
   members,
+  pendingInvitations,
   currentUserId,
   isCoordinator,
   isCollaborator,
   sharedBalance,
 }: GroupDashboardProps) {
   const memberCount = members.length;
+  const { mutate: cancelInvitation, isPending: isCancelling } =
+    useCancelInvitation();
 
   return (
     <div className="min-h-[calc(100vh-48px)] lg:min-h-screen">
@@ -139,13 +155,16 @@ export function GroupDashboard({
             </div>
             <div className="flex items-center gap-2">
               {isCollaborator && (
-                <Link
-                  href={`/dashboard/groups/${group.id}/invite`}
-                  className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 text-sm text-[#00D4FF] hover:bg-[#00D4FF]/10 rounded-lg transition-colors"
-                >
-                  <IoPersonAdd className="w-4 h-4" />
-                  Invite
-                </Link>
+                <InviteMemberDialog
+                  groupId={group.id}
+                  groupName={group.name}
+                  trigger={
+                    <button className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 text-sm text-[#00D4FF] hover:bg-[#00D4FF]/10 rounded-lg transition-colors">
+                      <IoPersonAdd className="w-4 h-4" />
+                      Invite
+                    </button>
+                  }
+                />
               )}
               {isCoordinator && (
                 <EditGroupDialog
@@ -237,6 +256,69 @@ export function GroupDashboard({
                 </Link>
               </div>
             </section>
+            {isCollaborator && pendingInvitations.length > 0 && (
+              <section className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
+                  <div className="flex items-center gap-2">
+                    <IoMailOutline className="w-4 h-4 text-amber-500" />
+                    <h2 className="text-sm font-medium text-white">
+                      Pending Invitations ({pendingInvitations.length})
+                    </h2>
+                  </div>
+                </div>
+                <div className="divide-y divide-[#1f1f1f]">
+                  {pendingInvitations.map((invitation) => (
+                    <div
+                      key={invitation.id}
+                      className="flex items-center gap-4 px-4 py-3 hover:bg-[#1a1a1a] transition-colors"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-sm font-medium text-amber-500 shrink-0">
+                        {invitation.email[0].toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-white truncate">
+                          {invitation.email}
+                        </p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span
+                            className={`text-[10px] px-1.5 py-0.5 rounded capitalize ${getRoleColor(invitation.role)}`}
+                          >
+                            {invitation.role}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-xs text-[#666]">
+                          Sent{" "}
+                          {formatDistanceToNow(new Date(invitation.createdAt), {
+                            addSuffix: true,
+                          })}
+                        </p>
+                        <p className="text-xs text-amber-500/80 mt-0.5">
+                          Expires{" "}
+                          {formatDistanceToNow(new Date(invitation.expiresAt), {
+                            addSuffix: true,
+                          })}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() =>
+                          cancelInvitation({
+                            groupId: group.id,
+                            invitationId: invitation.id,
+                          })
+                        }
+                        disabled={isCancelling}
+                        className="p-1.5 text-[#666] hover:text-red-400 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50 shrink-0"
+                        title="Cancel invitation"
+                      >
+                        <IoClose className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
             <section className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
               <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
                 <h2 className="text-sm font-medium text-white">Activity</h2>
@@ -259,13 +341,16 @@ export function GroupDashboard({
                   Members ({memberCount})
                 </h2>
                 {isCollaborator && (
-                  <Link
-                    href={`/dashboard/groups/${group.id}/invite`}
-                    className="flex items-center gap-1 text-xs text-[#00D4FF] hover:text-[#00D4FF]/80 transition-colors"
-                  >
-                    <IoPersonAdd className="w-3.5 h-3.5" />
-                    Invite
-                  </Link>
+                  <InviteMemberDialog
+                    groupId={group.id}
+                    groupName={group.name}
+                    trigger={
+                      <button className="flex items-center gap-1 text-xs text-[#00D4FF] hover:text-[#00D4FF]/80 transition-colors">
+                        <IoPersonAdd className="w-3.5 h-3.5" />
+                        Invite
+                      </button>
+                    }
+                  />
                 )}
               </div>
               <div className="divide-y divide-[#1f1f1f]">
@@ -325,13 +410,16 @@ export function GroupDashboard({
                   <p className="text-xs text-[#666] mb-2">
                     Invite others to collaborate on issues and decisions
                   </p>
-                  <Link
-                    href={`/dashboard/groups/${group.id}/invite`}
-                    className="inline-flex items-center gap-2 text-xs text-[#00D4FF] hover:text-[#00D4FF]/80 transition-colors"
-                  >
-                    <IoPersonAdd className="w-3.5 h-3.5" />
-                    Invite your first member
-                  </Link>
+                  <InviteMemberDialog
+                    groupId={group.id}
+                    groupName={group.name}
+                    trigger={
+                      <button className="inline-flex items-center gap-2 text-xs text-[#00D4FF] hover:text-[#00D4FF]/80 transition-colors">
+                        <IoPersonAdd className="w-3.5 h-3.5" />
+                        Invite your first member
+                      </button>
+                    }
+                  />
                 </div>
               )}
             </section>
@@ -405,20 +493,23 @@ export function GroupDashboard({
                   </div>
                 </Link>
                 {isCollaborator && (
-                  <Link
-                    href={`/dashboard/groups/${group.id}/invite`}
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] transition-colors group"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
-                      <IoPersonAdd className="w-4 h-4 text-purple-400" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-white">Invite Members</p>
-                      <p className="text-xs text-[#666]">
-                        Add people to this group
-                      </p>
-                    </div>
-                  </Link>
+                  <InviteMemberDialog
+                    groupId={group.id}
+                    groupName={group.name}
+                    trigger={
+                      <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] transition-colors group text-left">
+                        <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+                          <IoPersonAdd className="w-4 h-4 text-purple-400" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-white">Invite Members</p>
+                          <p className="text-xs text-[#666]">
+                            Add people to this group
+                          </p>
+                        </div>
+                      </button>
+                    }
+                  />
                 )}
                 {isCoordinator && (
                   <EditGroupDialog

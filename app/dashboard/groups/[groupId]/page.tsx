@@ -29,6 +29,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
       group={result.group}
       membership={result.membership!}
       members={result.members!}
+      pendingInvitations={result.pendingInvitations ?? []}
       constraints={result.constraints ?? null}
       currentUserId={result.currentUserId!}
       isCoordinator={result.isCoordinator!}

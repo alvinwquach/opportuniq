@@ -120,6 +120,36 @@ export function trackGroupDeleted(props: {
   amplitude.track("Group Deleted", props);
 }
 
+export function trackMemberRoleChanged(props: {
+  groupId: string;
+  memberId: string;
+  oldRole: string;
+  newRole: string;
+}) {
+  amplitude.track("Member Role Changed", props);
+}
+
+export function trackMemberRemoved(props: {
+  groupId: string;
+  memberId: string;
+}) {
+  amplitude.track("Member Removed", props);
+}
+
+export function trackMemberApproved(props: {
+  groupId: string;
+  memberId: string;
+}) {
+  amplitude.track("Member Approved", props);
+}
+
+export function trackMemberRejected(props: {
+  groupId: string;
+  memberId: string;
+}) {
+  amplitude.track("Member Rejected", props);
+}
+
 // ============================================
 // INCOME & BUDGET EVENTS
 // ============================================
