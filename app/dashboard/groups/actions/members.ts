@@ -10,6 +10,7 @@ import {
   sendGroupRoleChangedEmail,
   sendGroupMemberRemovedEmail,
 } from "@/lib/resend";
+import { logMemberAction } from "./auditLog";
 
 type GroupRole = "coordinator" | "collaborator" | "participant" | "contributor" | "observer";
 
@@ -105,6 +106,18 @@ export async function updateMemberRole(
         newRole,
         groupUrl,
       }).catch((err) => console.error("[Groups] Failed to send role changed email:", err));
+
+      // Log audit event
+      await logMemberAction({
+        groupId,
+        memberId,
+        action: "role_changed",
+        targetUserId: targetMember.userId,
+        targetEmail: memberUser.email,
+        performedBy: user.id,
+        oldValue: oldRole,
+        newValue: newRole,
+      });
     }
 
     revalidatePath(`/dashboard/groups/${groupId}`);
@@ -201,6 +214,17 @@ export async function removeMember(groupId: string, memberId: string) {
         removedBy: remover?.name || "A coordinator",
         dashboardUrl,
       }).catch((err) => console.error("[Groups] Failed to send member removed email:", err));
+
+      // Log audit event
+      await logMemberAction({
+        groupId,
+        memberId,
+        action: "removed",
+        targetUserId: targetMember.userId,
+        targetEmail: memberUser.email,
+        performedBy: user.id,
+        oldValue: targetMember.role,
+      });
     }
 
     revalidatePath(`/dashboard/groups/${groupId}`);
