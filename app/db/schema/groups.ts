@@ -47,6 +47,15 @@ export const invitationActionEnum = pgEnum("invitation_action", [
   "bulk_created",
 ]);
 
+// Audit log action types for member tracking (post-acceptance)
+export const memberActionEnum = pgEnum("member_action", [
+  "role_changed",
+  "removed",
+  "left",
+  "approved",
+  "rejected",
+]);
+
 // Membership status for group members
 // pending = invited but not yet accepted, active = accepted and participating, inactive = left or removed
 export const memberStatusEnum = pgEnum("member_status", [
@@ -367,3 +376,53 @@ export const groupInvitationAuditLog = pgTable("group_invitation_audit_log", {
 
 export type GroupInvitationAuditLog = typeof groupInvitationAuditLog.$inferSelect;
 export type NewGroupInvitationAuditLog = typeof groupInvitationAuditLog.$inferInsert;
+
+/**
+ * GROUP_MEMBER_AUDIT_LOG TABLE
+ *
+ * Tracks all actions performed on group members after they join.
+ * Provides a complete timeline of membership lifecycle events.
+ * Relation: One group → Many audit logs
+ */
+export const groupMemberAuditLog = pgTable("group_member_audit_log", {
+  id: uuid("id").primaryKey().defaultRandom(),
+
+  // Foreign key to groups - cascade delete removes logs when group deleted
+  groupId: uuid("group_id")
+    .notNull()
+    .references(() => groups.id, { onDelete: "cascade" }),
+
+  // Reference to the member record
+  memberId: uuid("member_id"),
+
+  // The type of action performed
+  action: memberActionEnum("action").notNull(),
+
+  // User ID of the affected member
+  targetUserId: uuid("target_user_id")
+    .notNull()
+    .references(() => users.id),
+
+  // Email of the affected member (for historical reference)
+  targetEmail: text("target_email").notNull(),
+
+  // Who performed this action (coordinator/collaborator)
+  performedBy: uuid("performed_by")
+    .notNull()
+    .references(() => users.id),
+
+  // Optional: Previous value (for role changes)
+  oldValue: text("old_value"),
+
+  // Optional: New value (for role changes)
+  newValue: text("new_value"),
+
+  // Additional context as JSON
+  metadata: text("metadata"),
+
+  // When this action occurred
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type GroupMemberAuditLog = typeof groupMemberAuditLog.$inferSelect;
+export type NewGroupMemberAuditLog = typeof groupMemberAuditLog.$inferInsert;

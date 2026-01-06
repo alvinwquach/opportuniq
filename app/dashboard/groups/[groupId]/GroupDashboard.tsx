@@ -18,7 +18,6 @@ import {
   IoShieldCheckmark,
   IoConstruct,
   IoChatbubbles,
-  IoEllipsisHorizontal,
   IoMailOutline,
   IoClose,
   IoCopyOutline,
@@ -31,6 +30,7 @@ import { InviteMemberDialog } from "@/app/dashboard/components/sections/InviteMe
 import { BulkInviteMemberDialog } from "@/app/dashboard/components/sections/BulkInviteMemberDialog";
 import { ExtendInvitationDialog } from "@/app/dashboard/components/sections/ExtendInvitationDialog";
 import { InvitationHistorySection } from "@/app/dashboard/components/sections/InvitationHistorySection";
+import { MemberActionsMenu } from "@/app/dashboard/components/sections/MemberActionsMenu";
 import { useCancelInvitation, useUpdateInvitationRole, useResendInvitation } from "@/hooks/useGroupMembers";
 import {
   Select,
@@ -388,9 +388,10 @@ export function GroupDashboard({
                       </div>
                     </div>
                     {isCoordinator && member.user.id !== currentUserId && (
-                      <button className="p-1.5 text-[#666] hover:text-white hover:bg-[#2a2a2a] rounded transition-colors">
-                        <IoEllipsisHorizontal className="w-4 h-4" />
-                      </button>
+                      <MemberActionsMenu
+                        groupId={group.id}
+                        member={member}
+                      />
                     )}
                   </div>
                 ))}

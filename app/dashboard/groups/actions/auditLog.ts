@@ -6,6 +6,7 @@ import {
   groups,
   groupMembers,
   groupInvitationAuditLog,
+  groupMemberAuditLog,
   users,
 } from "@/app/db/schema";
 import { eq, and, desc } from "drizzle-orm";
@@ -183,5 +184,61 @@ export async function getInvitationAuditLog(
   } catch (error) {
     console.error("[AuditLog] getInvitationAuditLog error:", error);
     return { success: false, error: "Failed to fetch audit log", entries: [] };
+  }
+}
+
+// ============================================
+// MEMBER AUDIT LOG FUNCTIONS
+// ============================================
+
+type MemberAction =
+  | "role_changed"
+  | "removed"
+  | "left"
+  | "approved"
+  | "rejected";
+
+interface LogMemberActionParams {
+  groupId: string;
+  memberId?: string;
+  action: MemberAction;
+  targetUserId: string;
+  targetEmail: string;
+  performedBy: string;
+  oldValue?: string;
+  newValue?: string;
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Internal function to log a member audit event
+ * Called by member action functions
+ */
+export async function logMemberAction({
+  groupId,
+  memberId,
+  action,
+  targetUserId,
+  targetEmail,
+  performedBy,
+  oldValue,
+  newValue,
+  metadata,
+}: LogMemberActionParams) {
+  try {
+    await db.insert(groupMemberAuditLog).values({
+      groupId,
+      memberId,
+      action,
+      targetUserId,
+      targetEmail,
+      performedBy,
+      oldValue,
+      newValue,
+      metadata: metadata ? JSON.stringify(metadata) : null,
+    });
+  } catch (error) {
+    // Log error but don't fail the main operation
+    console.error("[AuditLog] Failed to log member action:", error);
   }
 }
