@@ -37,7 +37,7 @@ export function NewUserDashboard({ userProfile }: NewUserDashboardProps) {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-3">
               <IoFlash className="h-4 w-4 text-[#00D4FF]" />
-              <span className="text-[10px] font-medium text-[#00D4FF] uppercase tracking-wider">
+              <span className="text-[10px] font-medium text-[#00D4FF] normal-case tracking-wider">
                 Get Started
               </span>
             </div>
@@ -143,7 +143,7 @@ export function NewUserDashboard({ userProfile }: NewUserDashboardProps) {
               textClass: "text-[#00D4FF]",
               additionalIcons: [IoMic, IoVideocam]
             },
-            { step: 2, title: "AI Analyzes", description: "Get instant diagnosis and options", icon: IoFlash, bgClass: "bg-[#00B4D8]/10", textClass: "text-[#00B4D8]" },
+            { step: 2, title: "Analyzes", description: "Get instant diagnosis and options", icon: IoFlash, bgClass: "bg-[#00B4D8]/10", textClass: "text-[#00B4D8]" },
             { step: 3, title: "See Costs", description: "DIY time cost vs hiring cost", icon: IoCash, bgClass: "bg-[#48CAE4]/10", textClass: "text-[#48CAE4]" },
             { step: 4, title: "Decide & Track", description: "Make the call, track outcomes", icon: IoThumbsUp, bgClass: "bg-[#90E0EF]/10", textClass: "text-[#90E0EF]" },
           ].map((item) => (

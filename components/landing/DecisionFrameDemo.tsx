@@ -426,11 +426,9 @@ export function DecisionFrameDemo() {
             See Decision Frames in Action
           </h2>
           <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
-            Watch as AI analyzes risk factors, safety considerations, and potential complications in real-time.
+            Watch as it analyzes risk factors, safety considerations, and potential complications in real-time.
           </p>
         </div>
-
-        {/* Scenario Selector */}
         <div className="flex flex-wrap justify-center gap-3 mb-8">
           {DEMO_SCENARIOS.map((scenario) => (
             <button
@@ -451,12 +449,8 @@ export function DecisionFrameDemo() {
             </button>
           ))}
         </div>
-
-        {/* Main Demo Grid */}
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Left Column - Map & Weather */}
           <div className="space-y-6">
-            {/* Mapbox Map */}
             <div className="bg-neutral-900 rounded-2xl border border-neutral-800 overflow-hidden">
               <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -495,8 +489,6 @@ export function DecisionFrameDemo() {
                 <p className="text-sm text-neutral-400">{selectedScenario.weather.condition}</p>
               </div>
             </div>
-
-            {/* Safety Equipment */}
             {analysisComplete && (
               <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-4">
                 <div className="flex items-center gap-2 mb-4">
@@ -528,10 +520,7 @@ export function DecisionFrameDemo() {
               </div>
             )}
           </div>
-
-          {/* Center Column - Streaming & Risk Chart */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Streaming Analysis */}
             <div className="bg-neutral-900 rounded-2xl border border-neutral-800 overflow-hidden">
               <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -577,8 +566,6 @@ export function DecisionFrameDemo() {
                 )}
               </div>
             </div>
-
-            {/* Risk Severity Chart */}
             <div className="bg-neutral-900 rounded-2xl border border-neutral-800 overflow-hidden">
               <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -610,11 +597,8 @@ export function DecisionFrameDemo() {
                 )}
               </div>
             </div>
-
-            {/* Complications & Summary */}
             {analysisComplete && (
               <div className="grid md:grid-cols-2 gap-6">
-                {/* Potential Complications */}
                 <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-4">
                   <div className="flex items-center gap-2 mb-4">
                     <IoWarning className="w-4 h-4 text-amber-400" />
@@ -635,8 +619,6 @@ export function DecisionFrameDemo() {
                     ))}
                   </div>
                 </div>
-
-                {/* Summary Stats */}
                 <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-4">
                   <div className="flex items-center gap-2 mb-4">
                     <IoTime className="w-4 h-4 text-teal-400" />

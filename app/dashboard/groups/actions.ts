@@ -290,3 +290,45 @@ export async function getGroupDetails(groupId: string) {
     return { success: false, error: "Failed to fetch group details" };
   }
 }
+
+export async function deleteGroup(groupId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  // Verify user is coordinator of this group
+  const [membership] = await db
+    .select({
+      role: groupMembers.role,
+    })
+    .from(groupMembers)
+    .where(
+      and(
+        eq(groupMembers.groupId, groupId),
+        eq(groupMembers.userId, user.id),
+        eq(groupMembers.status, "active")
+      )
+    );
+
+  if (!membership || membership.role !== "coordinator") {
+    return { success: false, error: "Only coordinators can delete groups" };
+  }
+
+  try {
+    // Delete the group - cascade will handle related records
+    await db.delete(groups).where(eq(groups.id, groupId));
+
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/groups");
+
+    return { success: true };
+  } catch (error) {
+    console.error("[Groups] deleteGroup error:", error);
+    return { success: false, error: "Failed to delete group" };
+  }
+}

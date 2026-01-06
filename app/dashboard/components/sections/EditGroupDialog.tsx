@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "@tanstack/react-form";
 import {
   IoReload,
@@ -8,6 +9,8 @@ import {
   IoPeople,
   IoLocation,
   IoSettings,
+  IoTrash,
+  IoWarning,
 } from "react-icons/io5";
 import {
   Dialog,
@@ -16,7 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useUpdateGroup } from "@/hooks/useGroups";
+import { useUpdateGroup, useDeleteGroup } from "@/hooks/useGroups";
 
 interface EditGroupDialogProps {
   group: {
@@ -30,7 +33,10 @@ interface EditGroupDialogProps {
 
 export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
   const [open, setOpen] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const router = useRouter();
   const updateGroup = useUpdateGroup();
+  const deleteGroup = useDeleteGroup();
 
   const form = useForm({
     defaultValues: {
@@ -57,8 +63,19 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
       form.setFieldValue("defaultSearchRadius", group.defaultSearchRadius || 25);
     } else {
       updateGroup.reset();
+      deleteGroup.reset();
+      setShowDeleteConfirm(false);
     }
     setOpen(newOpen);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteGroup.mutateAsync(group.id);
+      setOpen(false);
+      router.push("/dashboard");
+    } catch {
+    }
   };
 
   return (
@@ -210,7 +227,7 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
               {([canSubmit]) => (
                 <button
                   type="submit"
-                  disabled={!canSubmit || updateGroup.isPending}
+                  disabled={!canSubmit || updateGroup.isPending || deleteGroup.isPending}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00D4FF] hover:bg-[#00D4FF]/90 disabled:bg-[#1f1f1f] disabled:text-[#9a9a9a] text-[#0c0c0c] font-medium text-sm transition-colors"
                 >
                   {updateGroup.isPending ? (
@@ -231,6 +248,62 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
             </button>
           </div>
         </form>
+
+        <div className="border-t border-[#1f1f1f] pt-4 mt-4">
+          {!showDeleteConfirm ? (
+            <button
+              type="button"
+              onClick={() => setShowDeleteConfirm(true)}
+              disabled={updateGroup.isPending || deleteGroup.isPending}
+              className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
+            >
+              <IoTrash className="w-4 h-4" />
+              Delete Group
+            </button>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                <IoWarning className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm text-red-400 font-medium">
+                    Delete &quot;{group.name}&quot;?
+                  </p>
+                  <p className="text-xs text-red-400/70 mt-1">
+                    This will permanently delete the group and all associated data including members, expenses, and issues. This action cannot be undone.
+                  </p>
+                </div>
+              </div>
+              {deleteGroup.isError && (
+                <p className="text-[10px] text-red-400">
+                  {deleteGroup.error?.message || "Failed to delete group"}
+                </p>
+              )}
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={deleteGroup.isPending}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 disabled:bg-red-500/50 text-white font-medium text-sm transition-colors"
+                >
+                  {deleteGroup.isPending ? (
+                    <IoReload className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <IoTrash className="w-4 h-4" />
+                  )}
+                  Delete
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={deleteGroup.isPending}
+                  className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-white hover:bg-[#1f1f1f] text-sm transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
