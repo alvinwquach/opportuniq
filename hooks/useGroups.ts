@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUserGroups, createGroup, updateGroup, deleteGroup } from "@/app/dashboard/groups/actions";
+import { trackGroupSettingsUpdated, trackGroupDeleted } from "@/lib/analytics";
 
 interface CreateGroupInput {
   name: string;
@@ -110,7 +111,16 @@ export function useUpdateGroup() {
       if (!result.success) {
         throw new Error(result.error || "Failed to update group");
       }
-      return result;
+      return { ...result, groupId };
+    },
+    onSuccess: (result, variables) => {
+      // Track with Amplitude
+      if (result.changes && result.changes.length > 0) {
+        trackGroupSettingsUpdated({
+          groupId: variables.groupId,
+          settingsChanged: result.changes,
+        });
+      }
     },
     onMutate: async (updatedGroup: UpdateGroupInput) => {
       await queryClient.cancelQueries({ queryKey: ["groups"] });
@@ -161,7 +171,14 @@ export function useDeleteGroup() {
       if (!result.success) {
         throw new Error(result.error || "Failed to delete group");
       }
-      return result;
+      return { ...result, groupId };
+    },
+    onSuccess: (result, groupId) => {
+      // Track with Amplitude
+      trackGroupDeleted({
+        groupId,
+        memberCount: result.memberCount || 1,
+      });
     },
     onMutate: async (groupId: string) => {
       await queryClient.cancelQueries({ queryKey: ["groups"] });
