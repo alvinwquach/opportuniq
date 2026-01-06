@@ -150,6 +150,15 @@ export function trackMemberRejected(props: {
   amplitude.track("Member Rejected", props);
 }
 
+export function trackInvitationRoleChanged(props: {
+  groupId: string;
+  invitationId: string;
+  oldRole: string;
+  newRole: string;
+}) {
+  amplitude.track("Invitation Role Changed", props);
+}
+
 // ============================================
 // INCOME & BUDGET EVENTS
 // ============================================

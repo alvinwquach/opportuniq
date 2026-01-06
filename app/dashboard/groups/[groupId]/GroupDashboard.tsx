@@ -23,7 +23,23 @@ import {
 } from "react-icons/io5";
 import { EditGroupDialog } from "@/app/dashboard/components/sections/EditGroupDialog";
 import { InviteMemberDialog } from "@/app/dashboard/components/sections/InviteMemberDialog";
-import { useCancelInvitation } from "@/hooks/useGroupMembers";
+import { useCancelInvitation, useUpdateInvitationRole } from "@/hooks/useGroupMembers";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type GroupRole = "coordinator" | "collaborator" | "participant" | "contributor" | "observer";
+
+const roleOptions: { value: GroupRole; label: string }[] = [
+  { value: "participant", label: "Participant" },
+  { value: "contributor", label: "Contributor" },
+  { value: "collaborator", label: "Collaborator" },
+  { value: "observer", label: "Observer" },
+];
 
 interface Member {
   id: string;
@@ -115,6 +131,8 @@ export function GroupDashboard({
   const memberCount = members.length;
   const { mutate: cancelInvitation, isPending: isCancelling } =
     useCancelInvitation();
+  const { mutate: updateInvitationRole, isPending: isUpdatingRole } =
+    useUpdateInvitationRole();
 
   return (
     <div className="min-h-[calc(100vh-48px)] lg:min-h-screen">
@@ -266,56 +284,103 @@ export function GroupDashboard({
                     </h2>
                   </div>
                 </div>
-                <div className="divide-y divide-[#1f1f1f]">
-                  {pendingInvitations.map((invitation) => (
-                    <div
-                      key={invitation.id}
-                      className="flex items-center gap-4 px-4 py-3 hover:bg-[#1a1a1a] transition-colors"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-sm font-medium text-amber-500 shrink-0">
-                        {invitation.email[0].toUpperCase()}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white truncate">
-                          {invitation.email}
-                        </p>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span
-                            className={`text-[10px] px-1.5 py-0.5 rounded capitalize ${getRoleColor(invitation.role)}`}
-                          >
-                            {invitation.role}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <p className="text-xs text-[#666]">
-                          Sent{" "}
-                          {formatDistanceToNow(new Date(invitation.createdAt), {
-                            addSuffix: true,
-                          })}
-                        </p>
-                        <p className="text-xs text-amber-500/80 mt-0.5">
-                          Expires{" "}
-                          {formatDistanceToNow(new Date(invitation.expiresAt), {
-                            addSuffix: true,
-                          })}
-                        </p>
-                      </div>
-                      <button
-                        onClick={() =>
-                          cancelInvitation({
-                            groupId: group.id,
-                            invitationId: invitation.id,
-                          })
-                        }
-                        disabled={isCancelling}
-                        className="p-1.5 text-[#666] hover:text-red-400 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50 shrink-0"
-                        title="Cancel invitation"
-                      >
-                        <IoClose className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-[#1f1f1f] text-left">
+                        <th className="px-4 py-3 text-xs font-medium text-[#666]">
+                          Email
+                        </th>
+                        <th className="px-4 py-3 text-xs font-medium text-[#666]">
+                          Role
+                        </th>
+                        <th className="px-4 py-3 text-xs font-medium text-[#666]">
+                          Sent
+                        </th>
+                        <th className="px-4 py-3 text-xs font-medium text-[#666]">
+                          Expires
+                        </th>
+                        <th className="px-4 py-3 text-xs font-medium text-[#666] text-right">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#1f1f1f]">
+                      {pendingInvitations.map((invitation) => (
+                        <tr
+                          key={invitation.id}
+                          className="hover:bg-[#1a1a1a] transition-colors"
+                        >
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center text-xs font-medium text-amber-500 shrink-0">
+                                {invitation.email[0].toUpperCase()}
+                              </div>
+                              <span className="text-sm text-white truncate max-w-[200px]">
+                                {invitation.email}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <Select
+                              value={invitation.role}
+                              onValueChange={(value) =>
+                                updateInvitationRole({
+                                  groupId: group.id,
+                                  invitationId: invitation.id,
+                                  newRole: value as GroupRole,
+                                })
+                              }
+                              disabled={isUpdatingRole}
+                            >
+                              <SelectTrigger
+                                className={`h-7 w-auto min-w-[110px] text-xs px-2 py-1 rounded border-0 capitalize ${getRoleColor(invitation.role)} bg-transparent hover:bg-white/5 focus:ring-1 focus:ring-[#00D4FF]/50`}
+                              >
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#1f1f1f] border-[#2a2a2a]">
+                                {roleOptions.map((option) => (
+                                  <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                    className="text-xs text-white capitalize hover:bg-[#2a2a2a] focus:bg-[#2a2a2a] focus:text-white cursor-pointer"
+                                  >
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </td>
+                          <td className="px-4 py-3 text-xs text-[#9a9a9a] whitespace-nowrap">
+                            {formatDistanceToNow(new Date(invitation.createdAt), {
+                              addSuffix: true,
+                            })}
+                          </td>
+                          <td className="px-4 py-3 text-xs text-amber-500/80 whitespace-nowrap">
+                            {formatDistanceToNow(new Date(invitation.expiresAt), {
+                              addSuffix: true,
+                            })}
+                          </td>
+                          <td className="px-4 py-3 text-right">
+                            <button
+                              onClick={() =>
+                                cancelInvitation({
+                                  groupId: group.id,
+                                  invitationId: invitation.id,
+                                })
+                              }
+                              disabled={isCancelling}
+                              className="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-400 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50"
+                              title="Revoke invitation"
+                            >
+                              <IoClose className="w-3.5 h-3.5" />
+                              Revoke
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </section>
             )}
