@@ -383,3 +383,119 @@ export async function updateInvitationRole(
     return { success: false, error: "Failed to update invitation role" };
   }
 }
+
+export async function resendInvitation(groupId: string, invitationId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  // Verify user is coordinator or collaborator of this group
+  const [membership] = await db
+    .select({
+      role: groupMembers.role,
+    })
+    .from(groupMembers)
+    .where(
+      and(
+        eq(groupMembers.groupId, groupId),
+        eq(groupMembers.userId, user.id),
+        eq(groupMembers.status, "active")
+      )
+    );
+
+  if (!membership || (membership.role !== "coordinator" && membership.role !== "collaborator")) {
+    return { success: false, error: "Only coordinators and collaborators can resend invitations" };
+  }
+
+  try {
+    // Get the invitation
+    const [invitation] = await db
+      .select({
+        id: groupInvitations.id,
+        email: groupInvitations.inviteeEmail,
+        role: groupInvitations.role,
+        token: groupInvitations.token,
+        message: groupInvitations.message,
+        acceptedAt: groupInvitations.acceptedAt,
+      })
+      .from(groupInvitations)
+      .where(
+        and(
+          eq(groupInvitations.id, invitationId),
+          eq(groupInvitations.groupId, groupId)
+        )
+      );
+
+    if (!invitation) {
+      return { success: false, error: "Invitation not found" };
+    }
+
+    if (invitation.acceptedAt) {
+      return { success: false, error: "This invitation has already been accepted" };
+    }
+
+    // Generate new token and reset expiration
+    const newToken = crypto.randomUUID();
+    const newExpiresAt = new Date();
+    newExpiresAt.setDate(newExpiresAt.getDate() + 7); // 7 days expiration
+
+    // Update the invitation with new token and expiration
+    await db
+      .update(groupInvitations)
+      .set({
+        token: newToken,
+        expiresAt: newExpiresAt,
+        createdAt: new Date(),
+      })
+      .where(eq(groupInvitations.id, invitationId));
+
+    // Get group and inviter info for email
+    const [group] = await db
+      .select({ name: groups.name })
+      .from(groups)
+      .where(eq(groups.id, groupId));
+
+    const [inviter] = await db
+      .select({ name: users.name, email: users.email })
+      .from(users)
+      .where(eq(users.id, user.id));
+
+    const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://opportuniq.app"}/invite/${newToken}`;
+
+    // Send invitation email to invitee
+    await sendGroupInvitationEmail({
+      email: invitation.email,
+      inviterName: inviter?.name || "A group member",
+      groupName: group?.name || "a group",
+      inviteUrl,
+      role: invitation.role,
+      message: invitation.message || undefined,
+    });
+
+    // Send confirmation email to inviter
+    if (inviter?.email) {
+      const groupUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://opportuniq.app"}/dashboard/groups/${groupId}`;
+      sendInvitationSentConfirmationEmail({
+        email: inviter.email,
+        inviterName: inviter.name || "You",
+        inviteeEmail: invitation.email,
+        groupName: group?.name || "the group",
+        role: invitation.role,
+        groupUrl,
+        message: invitation.message || undefined,
+      }).catch((err) => console.error("[Groups] Failed to send invitation resent confirmation email:", err));
+    }
+
+    revalidatePath(`/dashboard/groups/${groupId}`);
+
+    return { success: true, email: invitation.email };
+  } catch (error) {
+    console.error("[Groups] resendInvitation error:", error);
+    return { success: false, error: "Failed to resend invitation" };
+  }
+}
