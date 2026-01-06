@@ -7,6 +7,8 @@ import GroupRoleChangedEmail from "@/emails/GroupRoleChangedEmail";
 import GroupMemberRemovedEmail from "@/emails/GroupMemberRemovedEmail";
 import InvitationSentConfirmationEmail from "@/emails/InvitationSentConfirmationEmail";
 import InvitationRoleUpdatedEmail from "@/emails/InvitationRoleUpdatedEmail";
+import InvitationRevokedEmail from "@/emails/InvitationRevokedEmail";
+import InvitationRevokedConfirmationEmail from "@/emails/InvitationRevokedConfirmationEmail";
 import { resend, EMAIL_FROM } from "./client";
 
 /**
@@ -395,6 +397,92 @@ export async function sendInvitationRoleUpdatedEmail({
     return { success: true, data };
   } catch (error) {
     console.error("Error sending invitation role updated email:", error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * Send invitation revoked email to the invitee
+ */
+export async function sendInvitationRevokedEmail({
+  email,
+  groupName,
+  revokedBy,
+}: {
+  email: string;
+  groupName: string;
+  revokedBy: string;
+}) {
+  try {
+    const emailHtml = await render(
+      InvitationRevokedEmail({
+        groupName,
+        revokedBy,
+      })
+    );
+
+    const { data, error } = await resend.emails.send({
+      from: EMAIL_FROM.notifications,
+      to: [email],
+      replyTo: "support@opportuniq.app",
+      subject: `Your invitation to join "${groupName}" has been revoked`,
+      html: emailHtml,
+    });
+
+    if (error) {
+      console.error("Failed to send invitation revoked email:", error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error sending invitation revoked email:", error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * Send confirmation email to the person who revoked an invitation
+ */
+export async function sendInvitationRevokedConfirmationEmail({
+  email,
+  revokerName,
+  inviteeEmail,
+  groupName,
+  groupUrl,
+}: {
+  email: string;
+  revokerName: string;
+  inviteeEmail: string;
+  groupName: string;
+  groupUrl: string;
+}) {
+  try {
+    const emailHtml = await render(
+      InvitationRevokedConfirmationEmail({
+        revokerName,
+        inviteeEmail,
+        groupName,
+        groupUrl,
+      })
+    );
+
+    const { data, error } = await resend.emails.send({
+      from: EMAIL_FROM.notifications,
+      to: [email],
+      replyTo: "support@opportuniq.app",
+      subject: `Invitation to ${inviteeEmail} for "${groupName}" has been revoked`,
+      html: emailHtml,
+    });
+
+    if (error) {
+      console.error("Failed to send invitation revoked confirmation email:", error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error sending invitation revoked confirmation email:", error);
     return { success: false, error };
   }
 }
