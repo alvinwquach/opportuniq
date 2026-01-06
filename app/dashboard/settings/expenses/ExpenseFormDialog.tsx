@@ -32,13 +32,15 @@ const FREQUENCY_OPTIONS: { value: ExpenseFrequency; label: string }[] = [
 
 export interface Expense {
   id: string;
+  userId: string;
   category: string;
   amount: string;
   date: Date;
   description: string | null;
-  isRecurring: boolean;
+  isRecurring: boolean | null;
   recurringFrequency: string | null;
   nextDueDate: Date | null;
+  issueId: string | null;
   createdAt: Date;
 }
 
