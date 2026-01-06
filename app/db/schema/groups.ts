@@ -26,11 +26,13 @@ import { incomeFrequencyEnum } from "./income";
 // ============================================
 
 // Permission levels for group members
-// organizer = full control, admin = can manage, member = regular access
-export const memberRoleEnum = pgEnum("member_role", [
-  "organizer",
-  "admin",
-  "member",
+// coordinator = full control, collaborator = can manage, participant/contributor/observer = varying access
+export const groupRoleEnum = pgEnum("group_role", [
+  "coordinator",
+  "collaborator",
+  "participant",
+  "contributor",
+  "observer",
 ]);
 
 // Membership status for group members
@@ -74,8 +76,9 @@ export const groups = pgTable("groups", {
   // Group display name - e.g., "My Projects", "Johnson Family", "Apartment 4B"
   name: text("name").notNull(),
 
-  // ZIP code for vendor proximity searches
-  zipCode: text("zip_code"),
+  // Postal code for vendor proximity searches
+  // Supports international formats: US (94132), UK (SW1A 1AA), Canada (K1A 0B1), etc.
+  postalCode: text("postal_code"),
 
   // Default search radius in miles for finding contractors
   defaultSearchRadius: integer("default_search_radius").default(25),
@@ -105,8 +108,8 @@ export const groupMembers = pgTable("group_members", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
 
-  // Member's permission level - organizer (full control), admin, or member
-  role: memberRoleEnum("role").notNull().default("member"),
+  // Member's permission level - coordinator (full control), collaborator, participant, contributor, observer
+  role: groupRoleEnum("role").notNull().default("participant"),
 
   // Membership status - pending (invited), active (accepted), inactive (left/removed)
   status: memberStatusEnum("status").notNull().default("pending"),
@@ -116,6 +119,10 @@ export const groupMembers = pgTable("group_members", {
 
   // When user accepted invitation - null if pending
   joinedAt: timestamp("joined_at"),
+
+  // Who invited this member to the group
+  // Relation: Many groupMembers → One user (the inviter)
+  invitedBy: uuid("invited_by").references(() => users.id),
 });
 
 /**

@@ -35,7 +35,7 @@ const sidebarLinks = [
   { href: "/dashboard", icon: IoGrid, label: "Dashboard", exact: true },
   { href: "/dashboard/diagnose", icon: IoScan, label: "Diagnose" },
   { href: "/issues", icon: IoAlertCircle, label: "Issues" },
-  { href: "/groups", icon: IoPeople, label: "Groups" },
+  { href: "/dashboard/groups", icon: IoPeople, label: "Groups" },
   { href: "/calendar", icon: IoCalendar, label: "Calendar" },
   { href: "/guides", icon: IoBook, label: "Guides" },
   { href: "/dashboard/settings", icon: IoSettings, label: "Settings" },
@@ -65,7 +65,7 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
     if (exact) {
       return pathname === href;
     }
-    return pathname.startsWith(href);
+    return pathname?.startsWith(href);
   };
 
   return (

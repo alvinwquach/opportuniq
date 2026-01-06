@@ -1,6 +1,7 @@
 import { getCachedUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { getDashboardData } from "./actions";
+import { getLocationWeatherData } from "./weather-actions";
 import {
   NewUserDashboard,
   DashboardHeader,
@@ -185,6 +186,12 @@ export default async function Dashboard() {
   const isNewUser = !userProfile?.postalCode;
   const firstName = userProfile?.name?.split(" ")[0] || "there";
 
+  // Fetch weather data for the user's location
+  const weatherData = await getLocationWeatherData(
+    userProfile?.latitude ?? null,
+    userProfile?.longitude ?? null
+  );
+
   return (
     <div className="min-h-[calc(100vh-48px)] lg:min-h-screen bg-[#0c0c0c] overflow-x-hidden">
       <div className="max-w-6xl mx-auto px-4 lg:px-6 py-6 overflow-hidden">
@@ -199,73 +206,34 @@ export default async function Dashboard() {
           <NewUserDashboard userProfile={userProfile} />
         ) : (
           <div className="grid lg:grid-cols-[1fr_320px] gap-6">
-            {/* Main Column - Actionable items and key information */}
             <div className="space-y-6 min-w-0">
-              {/* New Issue input - always visible at top like marketing preview */}
               <EmptyStateSection />
-
-              {/* Critical: Safety alerts always visible */}
               <SafetyAlertsSection alerts={safetyAlerts} />
-
-              {/* AI-powered insights */}
               <AIInsightsSection insights={aiInsights} />
-
-              {/* Pipeline overview - quick glance at all issues */}
               <PipelineSummarySection summary={pipelineSummary} />
-
-              {/* Action required: Pending decisions */}
               <PendingDecisionsSection decisions={pendingDecisions} />
-
-              {/* Needs attention: Open issues */}
               <OpenIssuesSection issues={openIssues} />
-
-              {/* Groups overview - shows create prompt when empty */}
-              <GroupsSection groups={activeGroups} />
-
-              {/* Location and weather with setup prompt if needed */}
-              {userProfile && <LocationMapSection userProfile={userProfile} />}
+              <GroupsSection />
+              {userProfile && <LocationMapSection userProfile={userProfile} weatherData={weatherData} />}
             </div>
-
-            {/* Sidebar - At-a-glance cards and quick actions */}
             <div className="space-y-4 min-w-0">
-              {/* Budget at a glance - shows income setup if not configured */}
               <BudgetGlanceCard
                 financials={hasIncomeSetup ? financials : null}
                 pendingDecisionsCount={pendingDecisions.length}
                 userId={user.id}
               />
-
-              {/* This week's schedule with weather */}
               <ThisWeekSection
                 events={calendarEvents}
                 postalCode={userProfile?.postalCode}
               />
-
-              {/* Draft emails to vendors */}
               <DraftEmailCard vendors={pendingVendors} />
-
-              {/* Savings motivation - only shows if user has saved money */}
               <SavingsStatsSection savings={savings} />
-
-              {/* Upcoming reminders */}
               <RemindersSection reminders={upcomingReminders} />
-
-              {/* Deferred decisions to revisit */}
               <DeferredDecisionsSection decisions={deferredDecisions} />
-
-              {/* Group activity feed */}
               <GroupActivitySection activities={groupActivityFeed} />
-
-              {/* Active DIY guides */}
               <ActiveGuidesSection guides={activeGuides} />
-
-              {/* Recent outcomes for learning */}
               <RecentOutcomesSection outcomes={recentOutcomes} />
-
-              {/* Quick actions */}
               <QuickActionsSection />
-
-              {/* Recent activity log */}
               <RecentActivitySection activities={recentActivity} />
             </div>
           </div>

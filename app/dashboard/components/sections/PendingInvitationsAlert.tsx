@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { IoPeople } from "react-icons/io5";
 
@@ -32,7 +30,7 @@ export function PendingInvitationsAlert({ pendingGroups }: PendingInvitationsAle
           </p>
         </div>
         <Link
-          href={`/groups/${pendingGroups[0].group.id}/pending`}
+          href={`/dashboard/groups/${pendingGroups[0].group.id}/pending`}
           className="text-xs text-amber-400 hover:text-amber-300 font-medium"
         >
           View

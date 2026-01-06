@@ -294,12 +294,12 @@ export async function GET(request: Request) {
         if (invitation && !invitation.acceptedAt) {
           // Validate token hasn't expired
           if (new Date() < invitation.expiresAt) {
-            // Add user to the invited group with PENDING status (requires organizer approval)
+            // Add user to the invited group with PENDING status (requires coordinator approval)
             await db.insert(groupMembers).values({
               groupId: invitation.groupId,
               userId: userId,
-              role: "member", // Standard involvement level
-              status: "pending", // Waiting for organizer approval
+              role: "participant", // Standard involvement level
+              status: "pending", // Waiting for coordinator approval
               invitedAt: invitation.createdAt,
               joinedAt: new Date(), // They joined, but not yet approved
             });

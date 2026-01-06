@@ -8,6 +8,7 @@ export default defineConfig({
     url: process.env.DIRECT_URL!,
   },
   schemaFilter: ["public"],
+  extensionsFilters: ["postgis"],
   verbose: true,
   strict: true,
 });
