@@ -19,6 +19,7 @@ import {
   IoChatbubbles,
   IoEllipsisHorizontal,
 } from "react-icons/io5";
+import { EditGroupDialog } from "@/app/dashboard/components/sections/EditGroupDialog";
 
 interface Member {
   id: string;
@@ -147,13 +148,17 @@ export function GroupDashboard({
                 </Link>
               )}
               {isCoordinator && (
-                <Link
-                  href={`/dashboard/groups/${group.id}/settings`}
-                  className="p-2 text-[#9a9a9a] hover:text-white hover:bg-[#1f1f1f] rounded-lg transition-colors"
-                  title="Group Settings"
-                >
-                  <IoSettings className="w-5 h-5" />
-                </Link>
+                <EditGroupDialog
+                  group={group}
+                  trigger={
+                    <button
+                      className="p-2 text-[#9a9a9a] hover:text-white hover:bg-[#1f1f1f] rounded-lg transition-colors"
+                      title="Edit Group"
+                    >
+                      <IoSettings className="w-5 h-5" />
+                    </button>
+                  }
+                />
               )}
             </div>
           </div>
@@ -416,20 +421,22 @@ export function GroupDashboard({
                   </Link>
                 )}
                 {isCoordinator && (
-                  <Link
-                    href={`/dashboard/groups/${group.id}/settings`}
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] transition-colors group"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-[#1f1f1f] flex items-center justify-center group-hover:bg-[#2a2a2a] transition-colors">
-                      <IoSettings className="w-4 h-4 text-[#9a9a9a]" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-white">Group Settings</p>
-                      <p className="text-xs text-[#666]">
-                        Manage preferences and budget
-                      </p>
-                    </div>
-                  </Link>
+                  <EditGroupDialog
+                    group={group}
+                    trigger={
+                      <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] transition-colors group text-left">
+                        <div className="w-8 h-8 rounded-lg bg-[#1f1f1f] flex items-center justify-center group-hover:bg-[#2a2a2a] transition-colors">
+                          <IoSettings className="w-4 h-4 text-[#9a9a9a]" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-white">Edit Group</p>
+                          <p className="text-xs text-[#666]">
+                            Update name, location, and settings
+                          </p>
+                        </div>
+                      </button>
+                    }
+                  />
                 )}
               </div>
             </section>
