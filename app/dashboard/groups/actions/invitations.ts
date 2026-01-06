@@ -12,6 +12,7 @@ import {
   sendInvitationRevokedEmail,
   sendInvitationRevokedConfirmationEmail,
   sendBulkInvitationConfirmationEmail,
+  sendInvitationDeclinedEmail,
 } from "@/lib/resend";
 import { logInvitationAction } from "./auditLog";
 
@@ -903,4 +904,86 @@ export async function inviteMultipleMembers(
       failed: failedCount,
     },
   };
+}
+
+/**
+ * Decline an invitation - can be called by anyone with the token
+ * No authentication required since invitee may not have an account
+ */
+export async function declineInvitation(token: string) {
+  try {
+    // Find the invitation by token
+    const [invitation] = await db
+      .select({
+        id: groupInvitations.id,
+        groupId: groupInvitations.groupId,
+        email: groupInvitations.inviteeEmail,
+        role: groupInvitations.role,
+        expiresAt: groupInvitations.expiresAt,
+        acceptedAt: groupInvitations.acceptedAt,
+        invitedBy: groupInvitations.invitedBy,
+      })
+      .from(groupInvitations)
+      .where(eq(groupInvitations.token, token));
+
+    if (!invitation) {
+      return { success: false, error: "Invitation not found" };
+    }
+
+    if (invitation.acceptedAt) {
+      return { success: false, error: "This invitation has already been accepted" };
+    }
+
+    if (invitation.expiresAt < new Date()) {
+      return { success: false, error: "This invitation has expired" };
+    }
+
+    // Get group and inviter info for email
+    const [group] = await db
+      .select({ name: groups.name })
+      .from(groups)
+      .where(eq(groups.id, invitation.groupId));
+
+    const [inviter] = await db
+      .select({ name: users.name, email: users.email })
+      .from(users)
+      .where(eq(users.id, invitation.invitedBy));
+
+    // Delete the invitation
+    await db
+      .delete(groupInvitations)
+      .where(eq(groupInvitations.id, invitation.id));
+
+    // Send decline notification to inviter
+    if (inviter?.email) {
+      const groupUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://opportuniq.app"}/dashboard/groups/${invitation.groupId}`;
+      sendInvitationDeclinedEmail({
+        email: inviter.email,
+        inviterName: inviter.name || "there",
+        inviteeEmail: invitation.email,
+        groupName: group?.name || "the group",
+        groupUrl,
+      }).catch((err) => console.error("[Groups] Failed to send invitation declined email:", err));
+    }
+
+    // Log audit event - use inviter as performer since invitee may not have an account
+    await logInvitationAction({
+      groupId: invitation.groupId,
+      invitationId: invitation.id,
+      action: "declined",
+      inviteeEmail: invitation.email,
+      performedBy: invitation.invitedBy, // Use inviter since declinee may not exist
+      metadata: {
+        declinedByInvitee: true,
+        role: invitation.role,
+      },
+    });
+
+    revalidatePath(`/dashboard/groups/${invitation.groupId}`);
+
+    return { success: true, groupName: group?.name };
+  } catch (error) {
+    console.error("[Groups] declineInvitation error:", error);
+    return { success: false, error: "Failed to decline invitation" };
+  }
 }

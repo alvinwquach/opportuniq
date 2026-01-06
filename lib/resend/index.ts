@@ -21,6 +21,7 @@ export {
   sendInvitationRevokedEmail,
   sendInvitationRevokedConfirmationEmail,
   sendBulkInvitationConfirmationEmail,
+  sendInvitationDeclinedEmail,
 } from "./groups";
 
 // Invite emails

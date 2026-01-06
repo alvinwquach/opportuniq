@@ -24,6 +24,7 @@ export {
   updateInvitationRole,
   resendInvitation,
   extendInvitation,
+  declineInvitation,
 } from "./invitations";
 
 // Audit log

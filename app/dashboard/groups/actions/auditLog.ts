@@ -18,6 +18,7 @@ type InvitationAction =
   | "extended"
   | "revoked"
   | "accepted"
+  | "declined"
   | "expired"
   | "bulk_created";
 
