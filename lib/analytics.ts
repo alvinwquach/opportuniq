@@ -159,6 +159,37 @@ export function trackInvitationRoleChanged(props: {
   amplitude.track("Invitation Role Changed", props);
 }
 
+export function trackInvitationResent(props: {
+  groupId: string;
+  invitationId: string;
+}) {
+  amplitude.track("Invitation Resent", props);
+}
+
+export function trackInvitationExtended(props: {
+  groupId: string;
+  invitationId: string;
+  newExpiresAt: string;
+}) {
+  amplitude.track("Invitation Extended", props);
+}
+
+export function trackInvitationRevoked(props: {
+  groupId: string;
+  invitationId: string;
+}) {
+  amplitude.track("Invitation Revoked", props);
+}
+
+export function trackBulkMembersInvited(props: {
+  groupId: string;
+  totalCount: number;
+  successCount: number;
+  failedCount: number;
+}) {
+  amplitude.track("Bulk Members Invited", props);
+}
+
 // ============================================
 // INCOME & BUDGET EVENTS
 // ============================================

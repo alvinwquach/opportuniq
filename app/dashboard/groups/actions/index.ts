@@ -19,8 +19,12 @@ export {
 // Invitation management
 export {
   inviteMember,
+  inviteMultipleMembers,
   cancelInvitation,
   updateInvitationRole,
   resendInvitation,
   extendInvitation,
 } from "./invitations";
+
+// Audit log
+export { getInvitationAuditLog, type InvitationAuditLogEntry } from "./auditLog";

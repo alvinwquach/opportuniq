@@ -28,7 +28,9 @@ import {
 } from "react-icons/io5";
 import { EditGroupDialog } from "@/app/dashboard/components/sections/EditGroupDialog";
 import { InviteMemberDialog } from "@/app/dashboard/components/sections/InviteMemberDialog";
+import { BulkInviteMemberDialog } from "@/app/dashboard/components/sections/BulkInviteMemberDialog";
 import { ExtendInvitationDialog } from "@/app/dashboard/components/sections/ExtendInvitationDialog";
+import { InvitationHistorySection } from "@/app/dashboard/components/sections/InvitationHistorySection";
 import { useCancelInvitation, useUpdateInvitationRole, useResendInvitation } from "@/hooks/useGroupMembers";
 import {
   Select,
@@ -194,16 +196,28 @@ export function GroupDashboard({
             </div>
             <div className="flex items-center gap-2">
               {isCollaborator && (
-                <InviteMemberDialog
-                  groupId={group.id}
-                  groupName={group.name}
-                  trigger={
-                    <button className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 text-sm text-[#00D4FF] hover:bg-[#00D4FF]/10 rounded-lg transition-colors">
-                      <IoPersonAdd className="w-4 h-4" />
-                      Invite
-                    </button>
-                  }
-                />
+                <>
+                  <InviteMemberDialog
+                    groupId={group.id}
+                    groupName={group.name}
+                    trigger={
+                      <button className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 text-sm text-[#00D4FF] hover:bg-[#00D4FF]/10 rounded-lg transition-colors">
+                        <IoPersonAdd className="w-4 h-4" />
+                        Invite
+                      </button>
+                    }
+                  />
+                  <BulkInviteMemberDialog
+                    groupId={group.id}
+                    groupName={group.name}
+                    trigger={
+                      <button className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 text-sm text-purple-400 hover:bg-purple-500/10 rounded-lg transition-colors">
+                        <IoPeople className="w-4 h-4" />
+                        Bulk
+                      </button>
+                    }
+                  />
+                </>
               )}
               {isCoordinator && (
                 <EditGroupDialog
@@ -469,23 +483,42 @@ export function GroupDashboard({
                   </div>
                 </Link>
                 {isCollaborator && (
-                  <InviteMemberDialog
-                    groupId={group.id}
-                    groupName={group.name}
-                    trigger={
-                      <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] transition-colors group text-left">
-                        <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
-                          <IoPersonAdd className="w-4 h-4 text-purple-400" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-white">Invite Members</p>
-                          <p className="text-xs text-[#666]">
-                            Add people to this group
-                          </p>
-                        </div>
-                      </button>
-                    }
-                  />
+                  <>
+                    <InviteMemberDialog
+                      groupId={group.id}
+                      groupName={group.name}
+                      trigger={
+                        <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] transition-colors group text-left">
+                          <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+                            <IoPersonAdd className="w-4 h-4 text-purple-400" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-white">Invite Member</p>
+                            <p className="text-xs text-[#666]">
+                              Add a person to this group
+                            </p>
+                          </div>
+                        </button>
+                      }
+                    />
+                    <BulkInviteMemberDialog
+                      groupId={group.id}
+                      groupName={group.name}
+                      trigger={
+                        <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] transition-colors group text-left">
+                          <div className="w-8 h-8 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center group-hover:bg-[#00D4FF]/20 transition-colors">
+                            <IoPeople className="w-4 h-4 text-[#00D4FF]" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-white">Bulk Invite</p>
+                            <p className="text-xs text-[#666]">
+                              Invite multiple people at once
+                            </p>
+                          </div>
+                        </button>
+                      }
+                    />
+                  </>
                 )}
                 {isCoordinator && (
                   <EditGroupDialog
@@ -666,6 +699,14 @@ export function GroupDashboard({
               </table>
             </div>
           </section>
+        )}
+        {isCollaborator && (
+          <div className="mt-6">
+            <InvitationHistorySection
+              groupId={group.id}
+              isCollaborator={isCollaborator}
+            />
+          </div>
         )}
       </div>
     </div>

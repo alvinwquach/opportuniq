@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getGroupMembers,
   inviteMember,
+  inviteMultipleMembers,
   updateMemberRole,
   removeMember,
   approveMember,
@@ -20,6 +21,10 @@ import {
   trackMemberApproved,
   trackMemberRejected,
   trackInvitationRoleChanged,
+  trackInvitationResent,
+  trackInvitationExtended,
+  trackInvitationRevoked,
+  trackBulkMembersInvited,
 } from "@/lib/analytics";
 
 type GroupRole = "coordinator" | "collaborator" | "participant" | "contributor" | "observer";
@@ -65,6 +70,20 @@ interface ExtendInvitationInput {
   newExpiresAt: Date;
 }
 
+interface BulkInviteInput {
+  email: string;
+  role?: GroupRole;
+  message?: string;
+}
+
+interface InviteMultipleMembersInput {
+  groupId: string;
+  invites: BulkInviteInput[];
+  defaultRole?: GroupRole;
+  defaultMessage?: string;
+  expiresAt?: Date;
+}
+
 export function useGroupMembers(groupId: string) {
   return useQuery({
     queryKey: ["groupMembers", groupId],
@@ -95,6 +114,43 @@ export function useInviteMember() {
         groupId: variables.groupId,
         inviteMethod: "email",
       });
+      queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
+    },
+  });
+}
+
+export function useInviteMultipleMembers() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      groupId,
+      invites,
+      defaultRole,
+      defaultMessage,
+      expiresAt,
+    }: InviteMultipleMembersInput) => {
+      const result = await inviteMultipleMembers(
+        groupId,
+        invites,
+        defaultRole,
+        defaultMessage,
+        expiresAt
+      );
+      if (!result.success && result.summary?.successful === 0) {
+        throw new Error(result.error || "Failed to send invitations");
+      }
+      return { ...result, groupId };
+    },
+    onSuccess: (result, variables) => {
+      if (result.summary) {
+        trackBulkMembersInvited({
+          groupId: variables.groupId,
+          totalCount: result.summary.total,
+          successCount: result.summary.successful,
+          failedCount: result.summary.failed,
+        });
+      }
       queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
     },
   });
@@ -197,9 +253,13 @@ export function useCancelInvitation() {
       if (!result.success) {
         throw new Error(result.error || "Failed to cancel invitation");
       }
-      return { ...result, groupId };
+      return { ...result, groupId, invitationId };
     },
     onSuccess: (result, variables) => {
+      trackInvitationRevoked({
+        groupId: variables.groupId,
+        invitationId: variables.invitationId,
+      });
       queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
     },
   });
@@ -239,9 +299,13 @@ export function useResendInvitation() {
       if (!result.success) {
         throw new Error(result.error || "Failed to resend invitation");
       }
-      return { ...result, groupId };
+      return { ...result, groupId, invitationId };
     },
     onSuccess: (result, variables) => {
+      trackInvitationResent({
+        groupId: variables.groupId,
+        invitationId: variables.invitationId,
+      });
       queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
     },
   });
@@ -256,9 +320,14 @@ export function useExtendInvitation() {
       if (!result.success) {
         throw new Error(result.error || "Failed to extend invitation");
       }
-      return { ...result, groupId };
+      return { ...result, groupId, invitationId, newExpiresAt };
     },
     onSuccess: (result, variables) => {
+      trackInvitationExtended({
+        groupId: variables.groupId,
+        invitationId: variables.invitationId,
+        newExpiresAt: variables.newExpiresAt.toISOString(),
+      });
       queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
     },
   });

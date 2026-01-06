@@ -35,6 +35,18 @@ export const groupRoleEnum = pgEnum("group_role", [
   "observer",
 ]);
 
+// Audit log action types for invitation tracking
+export const invitationActionEnum = pgEnum("invitation_action", [
+  "created",
+  "resent",
+  "role_updated",
+  "extended",
+  "revoked",
+  "accepted",
+  "expired",
+  "bulk_created",
+]);
+
 // Membership status for group members
 // pending = invited but not yet accepted, active = accepted and participating, inactive = left or removed
 export const memberStatusEnum = pgEnum("member_status", [
@@ -307,3 +319,51 @@ export type NewBudgetContribution = typeof budgetContributions.$inferInsert;
 
 export type GroupInvitation = typeof groupInvitations.$inferSelect;
 export type NewGroupInvitation = typeof groupInvitations.$inferInsert;
+
+/**
+ * GROUP_INVITATION_AUDIT_LOG TABLE
+ *
+ * Tracks all actions performed on group invitations for history and auditing.
+ * Provides a complete timeline of invitation lifecycle events.
+ * Relation: One group → Many audit logs
+ */
+export const groupInvitationAuditLog = pgTable("group_invitation_audit_log", {
+  id: uuid("id").primaryKey().defaultRandom(),
+
+  // Foreign key to groups - cascade delete removes logs when group deleted
+  // Relation: Many auditLogs → One group
+  groupId: uuid("group_id")
+    .notNull()
+    .references(() => groups.id, { onDelete: "cascade" }),
+
+  // Optional reference to the invitation (null if invitation was deleted)
+  // Using text instead of UUID to preserve history even after invitation deletion
+  invitationId: uuid("invitation_id"),
+
+  // The type of action performed
+  action: invitationActionEnum("action").notNull(),
+
+  // Email address of the invitee
+  inviteeEmail: text("invitee_email").notNull(),
+
+  // Who performed this action (coordinator/collaborator)
+  // Relation: Many auditLogs → One user
+  performedBy: uuid("performed_by")
+    .notNull()
+    .references(() => users.id),
+
+  // Optional: Previous value (for role changes, extensions)
+  oldValue: text("old_value"),
+
+  // Optional: New value (for role changes, extensions)
+  newValue: text("new_value"),
+
+  // Additional context as JSON (e.g., bulk invite batch ID, expiration dates)
+  metadata: text("metadata"),
+
+  // When this action occurred
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type GroupInvitationAuditLog = typeof groupInvitationAuditLog.$inferSelect;
+export type NewGroupInvitationAuditLog = typeof groupInvitationAuditLog.$inferInsert;
