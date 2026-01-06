@@ -71,7 +71,7 @@ export function ExpenseCard({
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}
-            {expense.isRecurring && (
+            {expense.isRecurring && frequencyLabel && (
               <span className="text-xs text-[#666] font-normal ml-1">
                 /{frequencyLabel.toLowerCase().replace("-", " ")}
               </span>
