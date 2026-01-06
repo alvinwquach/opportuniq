@@ -43,6 +43,7 @@ export const invitationActionEnum = pgEnum("invitation_action", [
   "extended",
   "revoked",
   "accepted",
+  "declined",
   "expired",
   "bulk_created",
 ]);

@@ -9,6 +9,7 @@ import InvitationSentConfirmationEmail from "@/emails/InvitationSentConfirmation
 import InvitationRoleUpdatedEmail from "@/emails/InvitationRoleUpdatedEmail";
 import InvitationRevokedEmail from "@/emails/InvitationRevokedEmail";
 import InvitationRevokedConfirmationEmail from "@/emails/InvitationRevokedConfirmationEmail";
+import InvitationDeclinedEmail from "@/emails/InvitationDeclinedEmail";
 import BulkInvitationConfirmationEmail from "@/emails/BulkInvitationConfirmationEmail";
 import { resend, EMAIL_FROM } from "./client";
 
@@ -541,6 +542,52 @@ export async function sendBulkInvitationConfirmationEmail({
     return { success: true, data };
   } catch (error) {
     console.error("Error sending bulk invitation confirmation email:", error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * Send invitation declined email to the inviter
+ */
+export async function sendInvitationDeclinedEmail({
+  email,
+  inviterName,
+  inviteeEmail,
+  groupName,
+  groupUrl,
+}: {
+  email: string;
+  inviterName: string;
+  inviteeEmail: string;
+  groupName: string;
+  groupUrl: string;
+}) {
+  try {
+    const emailHtml = await render(
+      InvitationDeclinedEmail({
+        inviterName,
+        inviteeEmail,
+        groupName,
+        groupUrl,
+      })
+    );
+
+    const { data, error } = await resend.emails.send({
+      from: EMAIL_FROM.notifications,
+      to: [email],
+      replyTo: "support@opportuniq.app",
+      subject: `${inviteeEmail} declined your invitation to "${groupName}"`,
+      html: emailHtml,
+    });
+
+    if (error) {
+      console.error("Failed to send invitation declined email:", error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error sending invitation declined email:", error);
     return { success: false, error };
   }
 }
