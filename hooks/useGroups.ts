@@ -1,9 +1,16 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getUserGroups, createGroup } from "@/app/dashboard/groups/actions";
+import { getUserGroups, createGroup, updateGroup } from "@/app/dashboard/groups/actions";
 
 interface CreateGroupInput {
+  name: string;
+  postalCode?: string;
+  defaultSearchRadius: number;
+}
+
+interface UpdateGroupInput {
+  groupId: string;
   name: string;
   postalCode?: string;
   defaultSearchRadius: number;
@@ -82,6 +89,57 @@ export function useCreateGroup() {
       return { previousGroups };
     },
     onError: (_err, _newGroup, context) => {
+      // Rollback on error
+      if (context?.previousGroups) {
+        queryClient.setQueryData(["groups"], context.previousGroups);
+      }
+    },
+    onSettled: () => {
+      // Refetch to get the real data
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+    },
+  });
+}
+
+export function useUpdateGroup() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ groupId, ...data }: UpdateGroupInput) => {
+      const result = await updateGroup(groupId, data);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to update group");
+      }
+      return result;
+    },
+    onMutate: async (updatedGroup: UpdateGroupInput) => {
+      await queryClient.cancelQueries({ queryKey: ["groups"] });
+
+      const previousGroups = queryClient.getQueryData<GroupsResponse>(["groups"]);
+
+      // Optimistically update the group
+      queryClient.setQueryData<GroupsResponse>(["groups"], (old) => {
+        if (!old) return old;
+        return {
+          groups: old.groups.map((g) =>
+            g.group.id === updatedGroup.groupId
+              ? {
+                  ...g,
+                  group: {
+                    ...g.group,
+                    name: updatedGroup.name,
+                    postalCode: updatedGroup.postalCode || null,
+                    defaultSearchRadius: updatedGroup.defaultSearchRadius,
+                  },
+                }
+              : g
+          ),
+        };
+      });
+
+      return { previousGroups };
+    },
+    onError: (_err, _updatedGroup, context) => {
       // Rollback on error
       if (context?.previousGroups) {
         queryClient.setQueryData(["groups"], context.previousGroups);

@@ -4,7 +4,12 @@ import { createClient } from "@/lib/supabase/server";
 import { db } from "@/app/db/client";
 import { groups, groupMembers, groupConstraints, users } from "@/app/db/schema";
 import { eq, and, count } from "drizzle-orm";
-import { createGroupFormSchema, type CreateGroupFormValues } from "@/lib/schemas/group";
+import {
+  createGroupFormSchema,
+  updateGroupFormSchema,
+  type CreateGroupFormValues,
+  type UpdateGroupFormValues,
+} from "@/lib/schemas/group";
 import { revalidatePath } from "next/cache";
 
 export async function getUserGroups() {
@@ -117,6 +122,71 @@ export async function createGroup(data: CreateGroupFormValues) {
   } catch (error) {
     console.error("[Groups] createGroup error:", error);
     return { success: false, error: "Failed to create group" };
+  }
+}
+
+export async function updateGroup(groupId: string, data: UpdateGroupFormValues) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  // Verify user is coordinator of this group
+  const [membership] = await db
+    .select({
+      role: groupMembers.role,
+    })
+    .from(groupMembers)
+    .where(
+      and(
+        eq(groupMembers.groupId, groupId),
+        eq(groupMembers.userId, user.id),
+        eq(groupMembers.status, "active")
+      )
+    );
+
+  if (!membership || membership.role !== "coordinator") {
+    return { success: false, error: "Only coordinators can update group settings" };
+  }
+
+  const parseResult = updateGroupFormSchema.safeParse(data);
+
+  if (!parseResult.success) {
+    return {
+      success: false,
+      error: "Invalid form data",
+      fieldErrors: parseResult.error.flatten().fieldErrors,
+    };
+  }
+
+  const { name, postalCode, defaultSearchRadius } = parseResult.data;
+
+  try {
+    const [updatedGroup] = await db
+      .update(groups)
+      .set({
+        name,
+        postalCode: postalCode ?? null,
+        defaultSearchRadius,
+        updatedAt: new Date(),
+      })
+      .where(eq(groups.id, groupId))
+      .returning();
+
+    revalidatePath(`/dashboard/groups/${groupId}`);
+    revalidatePath("/dashboard/groups");
+
+    return {
+      success: true,
+      group: updatedGroup,
+    };
+  } catch (error) {
+    console.error("[Groups] updateGroup error:", error);
+    return { success: false, error: "Failed to update group" };
   }
 }
 
