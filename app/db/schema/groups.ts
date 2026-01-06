@@ -268,6 +268,12 @@ export const groupInvitations = pgTable("group_invitations", {
   // Example URL: https://opportuniq.app/invite/abc123def456
   token: text("token").unique().notNull(),
 
+  // Role the invitee will be assigned upon joining
+  role: groupRoleEnum("role").notNull().default("participant"),
+
+  // Optional personalized message from inviter
+  message: text("message"),
+
   // Who sent the invitation
   // Relation: Many groupInvitations → One user
   invitedBy: uuid("invited_by")
