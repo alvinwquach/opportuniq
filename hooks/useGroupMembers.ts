@@ -11,6 +11,7 @@ import {
   cancelInvitation,
   updateInvitationRole,
   resendInvitation,
+  extendInvitation,
 } from "@/app/dashboard/groups/actions";
 import {
   trackMemberInvited,
@@ -28,6 +29,7 @@ interface InviteMemberInput {
   email: string;
   role: GroupRole;
   message?: string;
+  expiresAt?: Date;
 }
 
 interface UpdateRoleInput {
@@ -57,6 +59,12 @@ interface ResendInvitationInput {
   invitationId: string;
 }
 
+interface ExtendInvitationInput {
+  groupId: string;
+  invitationId: string;
+  newExpiresAt: Date;
+}
+
 export function useGroupMembers(groupId: string) {
   return useQuery({
     queryKey: ["groupMembers", groupId],
@@ -75,8 +83,8 @@ export function useInviteMember() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ groupId, email, role, message }: InviteMemberInput) => {
-      const result = await inviteMember(groupId, email, role, message);
+    mutationFn: async ({ groupId, email, role, message, expiresAt }: InviteMemberInput) => {
+      const result = await inviteMember(groupId, email, role, message, expiresAt);
       if (!result.success) {
         throw new Error(result.error || "Failed to send invitation");
       }
@@ -230,6 +238,23 @@ export function useResendInvitation() {
       const result = await resendInvitation(groupId, invitationId);
       if (!result.success) {
         throw new Error(result.error || "Failed to resend invitation");
+      }
+      return { ...result, groupId };
+    },
+    onSuccess: (result, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
+    },
+  });
+}
+
+export function useExtendInvitation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ groupId, invitationId, newExpiresAt }: ExtendInvitationInput) => {
+      const result = await extendInvitation(groupId, invitationId, newExpiresAt);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to extend invitation");
       }
       return { ...result, groupId };
     },

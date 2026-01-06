@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
+import { format } from "date-fns";
 import {
   IoReload,
   IoCheckmark,
@@ -9,6 +10,7 @@ import {
   IoMail,
   IoShieldCheckmark,
   IoClose,
+  IoCalendarOutline,
 } from "react-icons/io5";
 import {
   Dialog,
@@ -17,6 +19,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import { useInviteMember } from "@/hooks/useGroupMembers";
 
 type GroupRole = "coordinator" | "collaborator" | "participant" | "contributor" | "observer";
@@ -54,13 +62,22 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
   const [open, setOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [invitedEmail, setInvitedEmail] = useState("");
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const inviteMember = useInviteMember();
+
+  // Default to 7 days from now
+  const defaultDate = new Date();
+  defaultDate.setDate(defaultDate.getDate() + 7);
+
+  // Disable dates in the past
+  const disabledDays = { before: new Date() };
 
   const form = useForm({
     defaultValues: {
       email: "",
       role: "participant" as GroupRole,
       message: "",
+      expiresAt: undefined as Date | undefined,
     },
     onSubmit: async ({ value }) => {
       try {
@@ -69,6 +86,7 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
           email: value.email,
           role: value.role,
           message: value.message || undefined,
+          expiresAt: value.expiresAt,
         });
         setInvitedEmail(value.email);
         setShowSuccess(true);
@@ -243,6 +261,47 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
                     />
                     <p className="text-[10px] text-[#666] mt-1 text-right">
                       {field.state.value.length}/500
+                    </p>
+                  </div>
+                )}
+              </form.Field>
+
+              <form.Field name="expiresAt">
+                {(field) => (
+                  <div>
+                    <label className="text-xs text-[#9a9a9a] mb-1.5 block">
+                      Invitation Expires <span className="text-[#666]">(optional)</span>
+                    </label>
+                    <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                      <PopoverTrigger asChild>
+                        <button
+                          type="button"
+                          disabled={inviteMember.isPending}
+                          className="w-full h-10 px-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm text-left flex items-center justify-between hover:border-[#3a3a3a] focus:outline-none focus:border-[#00D4FF]/50 transition-colors disabled:opacity-50"
+                        >
+                          <span className={field.state.value ? "text-white" : "text-[#666]"}>
+                            {field.state.value
+                              ? format(field.state.value, "MMMM d, yyyy")
+                              : format(defaultDate, "MMMM d, yyyy") + " (default)"}
+                          </span>
+                          <IoCalendarOutline className="w-4 h-4 text-[#666]" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.state.value}
+                          onSelect={(date) => {
+                            field.handleChange(date);
+                            setCalendarOpen(false);
+                          }}
+                          disabled={disabledDays}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <p className="text-[10px] text-[#666] mt-1">
+                      The invitation link will expire on this date
                     </p>
                   </div>
                 )}
