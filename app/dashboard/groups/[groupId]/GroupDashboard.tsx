@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
+import { useState } from "react";
 import {
   IoPeople,
   IoSettings,
@@ -20,6 +21,8 @@ import {
   IoEllipsisHorizontal,
   IoMailOutline,
   IoClose,
+  IoCopyOutline,
+  IoCheckmark,
 } from "react-icons/io5";
 import { EditGroupDialog } from "@/app/dashboard/components/sections/EditGroupDialog";
 import { InviteMemberDialog } from "@/app/dashboard/components/sections/InviteMemberDialog";
@@ -58,6 +61,7 @@ interface PendingInvitation {
   id: string;
   email: string;
   role: string;
+  token: string;
   expiresAt: Date;
   createdAt: Date;
 }
@@ -129,10 +133,22 @@ export function GroupDashboard({
   sharedBalance,
 }: GroupDashboardProps) {
   const memberCount = members.length;
+  const [copiedInvitationId, setCopiedInvitationId] = useState<string | null>(null);
   const { mutate: cancelInvitation, isPending: isCancelling } =
     useCancelInvitation();
   const { mutate: updateInvitationRole, isPending: isUpdatingRole } =
     useUpdateInvitationRole();
+
+  const copyInviteLink = async (token: string, invitationId: string) => {
+    const inviteUrl = `${window.location.origin}/invite/${token}`;
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      setCopiedInvitationId(invitationId);
+      setTimeout(() => setCopiedInvitationId(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy invite link:", err);
+    }
+  };
 
   return (
     <div className="min-h-[calc(100vh-48px)] lg:min-h-screen">
@@ -274,116 +290,6 @@ export function GroupDashboard({
                 </Link>
               </div>
             </section>
-            {isCollaborator && pendingInvitations.length > 0 && (
-              <section className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
-                <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
-                  <div className="flex items-center gap-2">
-                    <IoMailOutline className="w-4 h-4 text-amber-500" />
-                    <h2 className="text-sm font-medium text-white">
-                      Pending Invitations ({pendingInvitations.length})
-                    </h2>
-                  </div>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-[#1f1f1f] text-left">
-                        <th className="px-4 py-3 text-xs font-medium text-[#666]">
-                          Email
-                        </th>
-                        <th className="px-4 py-3 text-xs font-medium text-[#666]">
-                          Role
-                        </th>
-                        <th className="px-4 py-3 text-xs font-medium text-[#666]">
-                          Sent
-                        </th>
-                        <th className="px-4 py-3 text-xs font-medium text-[#666]">
-                          Expires
-                        </th>
-                        <th className="px-4 py-3 text-xs font-medium text-[#666] text-right">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#1f1f1f]">
-                      {pendingInvitations.map((invitation) => (
-                        <tr
-                          key={invitation.id}
-                          className="hover:bg-[#1a1a1a] transition-colors"
-                        >
-                          <td className="px-4 py-3">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center text-xs font-medium text-amber-500 shrink-0">
-                                {invitation.email[0].toUpperCase()}
-                              </div>
-                              <span className="text-sm text-white truncate max-w-[200px]">
-                                {invitation.email}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-4 py-3">
-                            <Select
-                              value={invitation.role}
-                              onValueChange={(value) =>
-                                updateInvitationRole({
-                                  groupId: group.id,
-                                  invitationId: invitation.id,
-                                  newRole: value as GroupRole,
-                                })
-                              }
-                              disabled={isUpdatingRole}
-                            >
-                              <SelectTrigger
-                                className={`h-7 w-auto min-w-[110px] text-xs px-2 py-1 rounded border-0 capitalize ${getRoleColor(invitation.role)} bg-transparent hover:bg-white/5 focus:ring-1 focus:ring-[#00D4FF]/50`}
-                              >
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent className="bg-[#1f1f1f] border-[#2a2a2a]">
-                                {roleOptions.map((option) => (
-                                  <SelectItem
-                                    key={option.value}
-                                    value={option.value}
-                                    className="text-xs text-white capitalize hover:bg-[#2a2a2a] focus:bg-[#2a2a2a] focus:text-white cursor-pointer"
-                                  >
-                                    {option.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </td>
-                          <td className="px-4 py-3 text-xs text-[#9a9a9a] whitespace-nowrap">
-                            {formatDistanceToNow(new Date(invitation.createdAt), {
-                              addSuffix: true,
-                            })}
-                          </td>
-                          <td className="px-4 py-3 text-xs text-amber-500/80 whitespace-nowrap">
-                            {formatDistanceToNow(new Date(invitation.expiresAt), {
-                              addSuffix: true,
-                            })}
-                          </td>
-                          <td className="px-4 py-3 text-right">
-                            <button
-                              onClick={() =>
-                                cancelInvitation({
-                                  groupId: group.id,
-                                  invitationId: invitation.id,
-                                })
-                              }
-                              disabled={isCancelling}
-                              className="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-400 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50"
-                              title="Revoke invitation"
-                            >
-                              <IoClose className="w-3.5 h-3.5" />
-                              Revoke
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </section>
-            )}
             <section className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
               <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
                 <h2 className="text-sm font-medium text-white">Activity</h2>
@@ -598,6 +504,135 @@ export function GroupDashboard({
             </section>
           </div>
         </div>
+        {isCollaborator && pendingInvitations.length > 0 && (
+          <section className="mt-6 rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
+              <div className="flex items-center gap-2">
+                <IoMailOutline className="w-4 h-4 text-amber-500" />
+                <h2 className="text-sm font-medium text-white">
+                  Pending Invitations ({pendingInvitations.length})
+                </h2>
+              </div>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-[#1f1f1f] text-left">
+                    <th className="px-4 py-3 text-xs font-medium text-[#666]">
+                      Email
+                    </th>
+                    <th className="px-4 py-3 text-xs font-medium text-[#666]">
+                      Role
+                    </th>
+                    <th className="px-4 py-3 text-xs font-medium text-[#666]">
+                      Sent
+                    </th>
+                    <th className="px-4 py-3 text-xs font-medium text-[#666]">
+                      Expires
+                    </th>
+                    <th className="px-4 py-3 text-xs font-medium text-[#666] text-right">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#1f1f1f]">
+                  {pendingInvitations.map((invitation) => (
+                    <tr
+                      key={invitation.id}
+                      className="hover:bg-[#1a1a1a] transition-colors"
+                    >
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center text-xs font-medium text-amber-500 shrink-0">
+                            {invitation.email[0].toUpperCase()}
+                          </div>
+                          <span className="text-sm text-white truncate max-w-[200px]">
+                            {invitation.email}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <Select
+                          value={invitation.role}
+                          onValueChange={(value) =>
+                            updateInvitationRole({
+                              groupId: group.id,
+                              invitationId: invitation.id,
+                              newRole: value as GroupRole,
+                            })
+                          }
+                          disabled={isUpdatingRole}
+                        >
+                          <SelectTrigger
+                            className={`h-7 w-auto min-w-[110px] text-xs px-2 py-1 rounded border-0 capitalize ${getRoleColor(invitation.role)} bg-transparent hover:bg-white/5 focus:ring-1 focus:ring-[#00D4FF]/50`}
+                          >
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-[#1f1f1f] border-[#2a2a2a]">
+                            {roleOptions.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                                className="text-xs text-white capitalize hover:bg-[#2a2a2a] focus:bg-[#2a2a2a] focus:text-white cursor-pointer"
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </td>
+                      <td className="px-4 py-3 text-xs text-[#9a9a9a] whitespace-nowrap">
+                        {formatDistanceToNow(new Date(invitation.createdAt), {
+                          addSuffix: true,
+                        })}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-amber-500/80 whitespace-nowrap">
+                        {formatDistanceToNow(new Date(invitation.expiresAt), {
+                          addSuffix: true,
+                        })}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <div className="inline-flex items-center gap-2">
+                          <button
+                            onClick={() => copyInviteLink(invitation.token, invitation.id)}
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-[#00D4FF] hover:bg-[#00D4FF]/10 rounded transition-colors"
+                            title="Copy invite link"
+                          >
+                            {copiedInvitationId === invitation.id ? (
+                              <>
+                                <IoCheckmark className="w-3.5 h-3.5" />
+                                Copied
+                              </>
+                            ) : (
+                              <>
+                                <IoCopyOutline className="w-3.5 h-3.5" />
+                                Copy Link
+                              </>
+                            )}
+                          </button>
+                          <button
+                            onClick={() =>
+                              cancelInvitation({
+                                groupId: group.id,
+                                invitationId: invitation.id,
+                              })
+                            }
+                            disabled={isCancelling}
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-400 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50"
+                            title="Revoke invitation"
+                          >
+                            <IoClose className="w-3.5 h-3.5" />
+                            Revoke
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

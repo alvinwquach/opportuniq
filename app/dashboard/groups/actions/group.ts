@@ -434,6 +434,7 @@ export async function getGroupDetails(groupId: string) {
       id: string;
       email: string;
       role: string;
+      token: string;
       expiresAt: Date;
       createdAt: Date;
     }[] = [];
@@ -445,6 +446,7 @@ export async function getGroupDetails(groupId: string) {
           id: groupInvitations.id,
           email: groupInvitations.inviteeEmail,
           role: groupInvitations.role,
+          token: groupInvitations.token,
           expiresAt: groupInvitations.expiresAt,
           acceptedAt: groupInvitations.acceptedAt,
           createdAt: groupInvitations.createdAt,
@@ -459,6 +461,7 @@ export async function getGroupDetails(groupId: string) {
           id: inv.id,
           email: inv.email,
           role: inv.role,
+          token: inv.token,
           expiresAt: inv.expiresAt,
           createdAt: inv.createdAt,
         }));
