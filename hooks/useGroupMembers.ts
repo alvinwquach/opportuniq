@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getGroupMembers,
   inviteMember,
+  inviteMultipleMembers,
   updateMemberRole,
   removeMember,
   approveMember,
@@ -65,6 +66,20 @@ interface ExtendInvitationInput {
   newExpiresAt: Date;
 }
 
+interface BulkInviteInput {
+  email: string;
+  role?: GroupRole;
+  message?: string;
+}
+
+interface InviteMultipleMembersInput {
+  groupId: string;
+  invites: BulkInviteInput[];
+  defaultRole?: GroupRole;
+  defaultMessage?: string;
+  expiresAt?: Date;
+}
+
 export function useGroupMembers(groupId: string) {
   return useQuery({
     queryKey: ["groupMembers", groupId],
@@ -95,6 +110,41 @@ export function useInviteMember() {
         groupId: variables.groupId,
         inviteMethod: "email",
       });
+      queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
+    },
+  });
+}
+
+export function useInviteMultipleMembers() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      groupId,
+      invites,
+      defaultRole,
+      defaultMessage,
+      expiresAt,
+    }: InviteMultipleMembersInput) => {
+      const result = await inviteMultipleMembers(
+        groupId,
+        invites,
+        defaultRole,
+        defaultMessage,
+        expiresAt
+      );
+      if (!result.success && result.summary?.successful === 0) {
+        throw new Error(result.error || "Failed to send invitations");
+      }
+      return { ...result, groupId };
+    },
+    onSuccess: (result, variables) => {
+      if (result.summary && result.summary.successful > 0) {
+        trackMemberInvited({
+          groupId: variables.groupId,
+          inviteMethod: "email",
+        });
+      }
       queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
     },
   });

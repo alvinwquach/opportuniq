@@ -11,7 +11,9 @@ import {
   sendInvitationRoleUpdatedEmail,
   sendInvitationRevokedEmail,
   sendInvitationRevokedConfirmationEmail,
+  sendBulkInvitationConfirmationEmail,
 } from "@/lib/resend";
+import { logInvitationAction } from "./auditLog";
 
 type GroupRole = "coordinator" | "collaborator" | "participant" | "contributor" | "observer";
 
@@ -170,6 +172,20 @@ export async function inviteMember(
       }).catch((err) => console.error("[Groups] Failed to send invitation confirmation email:", err));
     }
 
+    // Log audit event
+    await logInvitationAction({
+      groupId,
+      invitationId: invitation.id,
+      action: "created",
+      inviteeEmail: emailLower,
+      performedBy: user.id,
+      newValue: role,
+      metadata: {
+        expiresAt: expiration.toISOString(),
+        hasMessage: !!message,
+      },
+    });
+
     revalidatePath(`/dashboard/groups/${groupId}`);
 
     return { success: true, invitation };
@@ -265,6 +281,15 @@ export async function cancelInvitation(groupId: string, invitationId: string) {
         groupUrl,
       }).catch((err) => console.error("[Groups] Failed to send invitation revoked confirmation email:", err));
     }
+
+    // Log audit event
+    await logInvitationAction({
+      groupId,
+      invitationId,
+      action: "revoked",
+      inviteeEmail: invitation.email,
+      performedBy: user.id,
+    });
 
     revalidatePath(`/dashboard/groups/${groupId}`);
 
@@ -387,6 +412,17 @@ export async function updateInvitationRole(
       }).catch((err) => console.error("[Groups] Failed to send invitation role update confirmation email:", err));
     }
 
+    // Log audit event
+    await logInvitationAction({
+      groupId,
+      invitationId,
+      action: "role_updated",
+      inviteeEmail: invitation.email,
+      performedBy: user.id,
+      oldValue: oldRole,
+      newValue: newRole,
+    });
+
     revalidatePath(`/dashboard/groups/${groupId}`);
 
     return { success: true, oldRole, newRole, email: invitation.email };
@@ -493,6 +529,19 @@ export async function resendInvitation(groupId: string, invitationId: string) {
       }).catch((err) => console.error("[Groups] Failed to send invitation resent confirmation email:", err));
     }
 
+    // Log audit event
+    await logInvitationAction({
+      groupId,
+      invitationId,
+      action: "resent",
+      inviteeEmail: invitation.email,
+      performedBy: user.id,
+      metadata: {
+        role: invitation.role,
+        expiresAt: invitation.expiresAt.toISOString(),
+      },
+    });
+
     revalidatePath(`/dashboard/groups/${groupId}`);
 
     return { success: true, email: invitation.email };
@@ -543,6 +592,7 @@ export async function extendInvitation(
         role: groupInvitations.role,
         token: groupInvitations.token,
         message: groupInvitations.message,
+        expiresAt: groupInvitations.expiresAt,
         acceptedAt: groupInvitations.acceptedAt,
       })
       .from(groupInvitations)
@@ -611,6 +661,17 @@ export async function extendInvitation(
       }).catch((err) => console.error("[Groups] Failed to send invitation extended confirmation email:", err));
     }
 
+    // Log audit event
+    await logInvitationAction({
+      groupId,
+      invitationId,
+      action: "extended",
+      inviteeEmail: invitation.email,
+      performedBy: user.id,
+      oldValue: invitation.expiresAt.toISOString(),
+      newValue: newExpiresAt.toISOString(),
+    });
+
     revalidatePath(`/dashboard/groups/${groupId}`);
 
     return { success: true, email: invitation.email };
@@ -618,4 +679,228 @@ export async function extendInvitation(
     console.error("[Groups] extendInvitation error:", error);
     return { success: false, error: "Failed to extend invitation" };
   }
+}
+
+interface BulkInviteInput {
+  email: string;
+  role?: GroupRole;
+  message?: string;
+}
+
+interface BulkInviteResult {
+  email: string;
+  success: boolean;
+  error?: string;
+}
+
+export async function inviteMultipleMembers(
+  groupId: string,
+  invites: BulkInviteInput[],
+  defaultRole: GroupRole = "participant",
+  defaultMessage?: string,
+  expiresAt?: Date
+) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "Unauthorized", results: [] };
+  }
+
+  // Verify user is coordinator or collaborator of this group
+  const [membership] = await db
+    .select({
+      role: groupMembers.role,
+    })
+    .from(groupMembers)
+    .where(
+      and(
+        eq(groupMembers.groupId, groupId),
+        eq(groupMembers.userId, user.id),
+        eq(groupMembers.status, "active")
+      )
+    );
+
+  if (!membership || (membership.role !== "coordinator" && membership.role !== "collaborator")) {
+    return { success: false, error: "Only coordinators and collaborators can invite members", results: [] };
+  }
+
+  // Validate we have invites
+  if (!invites || invites.length === 0) {
+    return { success: false, error: "No email addresses provided", results: [] };
+  }
+
+  // Limit bulk invites to prevent abuse
+  if (invites.length > 50) {
+    return { success: false, error: "Maximum 50 invitations allowed at once", results: [] };
+  }
+
+  // Get group and inviter info once (used for all emails)
+  const [group] = await db
+    .select({ name: groups.name })
+    .from(groups)
+    .where(eq(groups.id, groupId));
+
+  const [inviter] = await db
+    .select({ name: users.name, email: users.email })
+    .from(users)
+    .where(eq(users.id, user.id));
+
+  // Calculate expiration date
+  let expiration: Date;
+  if (expiresAt) {
+    expiration = new Date(expiresAt);
+    if (expiration <= new Date()) {
+      return { success: false, error: "Expiration date must be in the future", results: [] };
+    }
+  } else {
+    expiration = new Date();
+    expiration.setDate(expiration.getDate() + 7);
+  }
+
+  const results: BulkInviteResult[] = [];
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  for (const invite of invites) {
+    const emailLower = invite.email.toLowerCase().trim();
+    const role = invite.role || defaultRole;
+    const message = invite.message || defaultMessage;
+
+    // Validate email format
+    if (!emailRegex.test(emailLower)) {
+      results.push({ email: emailLower, success: false, error: "Invalid email address" });
+      continue;
+    }
+
+    try {
+      // Check if user with this email is already a member
+      const [existingUser] = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(eq(users.email, emailLower));
+
+      if (existingUser) {
+        const [existingMember] = await db
+          .select({ id: groupMembers.id, status: groupMembers.status })
+          .from(groupMembers)
+          .where(
+            and(
+              eq(groupMembers.groupId, groupId),
+              eq(groupMembers.userId, existingUser.id)
+            )
+          );
+
+        if (existingMember) {
+          if (existingMember.status === "active") {
+            results.push({ email: emailLower, success: false, error: "Already a member" });
+            continue;
+          } else if (existingMember.status === "pending") {
+            results.push({ email: emailLower, success: false, error: "Has pending invitation" });
+            continue;
+          }
+        }
+      }
+
+      // Check if there's already a pending invitation for this email
+      const [existingInvite] = await db
+        .select({ id: groupInvitations.id, expiresAt: groupInvitations.expiresAt })
+        .from(groupInvitations)
+        .where(
+          and(
+            eq(groupInvitations.groupId, groupId),
+            eq(groupInvitations.inviteeEmail, emailLower)
+          )
+        );
+
+      if (existingInvite && existingInvite.expiresAt > new Date()) {
+        results.push({ email: emailLower, success: false, error: "Invitation already sent" });
+        continue;
+      }
+
+      // Generate unique token
+      const token = crypto.randomUUID();
+
+      // Insert invitation
+      await db
+        .insert(groupInvitations)
+        .values({
+          groupId,
+          inviteeEmail: emailLower,
+          token,
+          role,
+          message: message || null,
+          invitedBy: user.id,
+          expiresAt: expiration,
+        });
+
+      const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://opportuniq.app"}/invite/${token}`;
+
+      // Send invitation email
+      await sendGroupInvitationEmail({
+        email: emailLower,
+        inviterName: inviter?.name || "A group member",
+        groupName: group?.name || "a group",
+        inviteUrl,
+        role,
+        message,
+      });
+
+      results.push({ email: emailLower, success: true });
+    } catch (error) {
+      console.error(`[Groups] Failed to invite ${emailLower}:`, error);
+      results.push({ email: emailLower, success: false, error: "Failed to send invitation" });
+    }
+  }
+
+  // Send summary confirmation email to inviter
+  const successCount = results.filter(r => r.success).length;
+  const failedCount = results.filter(r => !r.success).length;
+
+  if (inviter?.email && successCount > 0) {
+    const groupUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://opportuniq.app"}/dashboard/groups/${groupId}`;
+    const successEmails = results.filter(r => r.success).map(r => r.email);
+
+    sendBulkInvitationConfirmationEmail({
+      email: inviter.email,
+      inviterName: inviter.name || "You",
+      groupName: group?.name || "the group",
+      successCount,
+      failedCount,
+      successEmails,
+      groupUrl,
+    }).catch((err) => console.error("[Groups] Failed to send bulk invitation confirmation email:", err));
+  }
+
+  // Log audit events for successful bulk invitations
+  const batchId = crypto.randomUUID();
+  const successfulInvites = results.filter(r => r.success);
+
+  for (const result of successfulInvites) {
+    await logInvitationAction({
+      groupId,
+      action: "bulk_created",
+      inviteeEmail: result.email,
+      performedBy: user.id,
+      newValue: defaultRole,
+      metadata: {
+        batchId,
+        totalInBatch: successfulInvites.length,
+        expiresAt: expiration.toISOString(),
+      },
+    });
+  }
+
+  revalidatePath(`/dashboard/groups/${groupId}`);
+
+  return {
+    success: successCount > 0,
+    results,
+    summary: {
+      total: invites.length,
+      successful: successCount,
+      failed: failedCount,
+    },
+  };
 }

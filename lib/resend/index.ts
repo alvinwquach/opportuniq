@@ -20,6 +20,7 @@ export {
   sendInvitationRoleUpdatedEmail,
   sendInvitationRevokedEmail,
   sendInvitationRevokedConfirmationEmail,
+  sendBulkInvitationConfirmationEmail,
 } from "./groups";
 
 // Invite emails

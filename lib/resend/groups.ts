@@ -9,6 +9,7 @@ import InvitationSentConfirmationEmail from "@/emails/InvitationSentConfirmation
 import InvitationRoleUpdatedEmail from "@/emails/InvitationRoleUpdatedEmail";
 import InvitationRevokedEmail from "@/emails/InvitationRevokedEmail";
 import InvitationRevokedConfirmationEmail from "@/emails/InvitationRevokedConfirmationEmail";
+import BulkInvitationConfirmationEmail from "@/emails/BulkInvitationConfirmationEmail";
 import { resend, EMAIL_FROM } from "./client";
 
 /**
@@ -483,6 +484,63 @@ export async function sendInvitationRevokedConfirmationEmail({
     return { success: true, data };
   } catch (error) {
     console.error("Error sending invitation revoked confirmation email:", error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * Send bulk invitation confirmation email to the inviter
+ */
+export async function sendBulkInvitationConfirmationEmail({
+  email,
+  inviterName,
+  groupName,
+  successCount,
+  failedCount,
+  successEmails,
+  groupUrl,
+}: {
+  email: string;
+  inviterName: string;
+  groupName: string;
+  successCount: number;
+  failedCount: number;
+  successEmails: string[];
+  groupUrl: string;
+}) {
+  try {
+    const emailHtml = await render(
+      BulkInvitationConfirmationEmail({
+        inviterName,
+        groupName,
+        successCount,
+        failedCount,
+        successEmails,
+        groupUrl,
+      })
+    );
+
+    const totalCount = successCount + failedCount;
+    const subject = failedCount === 0
+      ? `${successCount} invitations sent for "${groupName}"`
+      : `${successCount} of ${totalCount} invitations sent for "${groupName}"`;
+
+    const { data, error } = await resend.emails.send({
+      from: EMAIL_FROM.notifications,
+      to: [email],
+      replyTo: "support@opportuniq.app",
+      subject,
+      html: emailHtml,
+    });
+
+    if (error) {
+      console.error("Failed to send bulk invitation confirmation email:", error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error sending bulk invitation confirmation email:", error);
     return { success: false, error };
   }
 }
