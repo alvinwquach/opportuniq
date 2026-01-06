@@ -24,9 +24,11 @@ import {
   IoCopyOutline,
   IoCheckmark,
   IoRefresh,
+  IoCalendarOutline,
 } from "react-icons/io5";
 import { EditGroupDialog } from "@/app/dashboard/components/sections/EditGroupDialog";
 import { InviteMemberDialog } from "@/app/dashboard/components/sections/InviteMemberDialog";
+import { ExtendInvitationDialog } from "@/app/dashboard/components/sections/ExtendInvitationDialog";
 import { useCancelInvitation, useUpdateInvitationRole, useResendInvitation } from "@/hooks/useGroupMembers";
 import {
   Select,
@@ -621,12 +623,27 @@ export function GroupDashboard({
                               })
                             }
                             disabled={isResending}
-                            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-amber-500 hover:bg-amber-500/10 rounded transition-colors disabled:opacity-50"
-                            title="Resend invitation"
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-green-500 hover:bg-green-500/10 rounded transition-colors disabled:opacity-50"
+                            title="Resend invitation email"
                           >
                             <IoRefresh className="w-3.5 h-3.5" />
                             Resend
                           </button>
+                          <ExtendInvitationDialog
+                            groupId={group.id}
+                            invitationId={invitation.id}
+                            inviteeEmail={invitation.email}
+                            currentExpiresAt={invitation.expiresAt}
+                            trigger={
+                              <button
+                                className="inline-flex items-center gap-1 px-2 py-1 text-xs text-amber-500 hover:bg-amber-500/10 rounded transition-colors"
+                                title="Extend invitation expiration"
+                              >
+                                <IoCalendarOutline className="w-3.5 h-3.5" />
+                                Extend
+                              </button>
+                            }
+                          />
                           <button
                             onClick={() =>
                               cancelInvitation({

@@ -19,7 +19,8 @@ export async function inviteMember(
   groupId: string,
   email: string,
   role: GroupRole = "participant",
-  message?: string
+  message?: string,
+  expiresAt?: Date
 ) {
   const supabase = await createClient();
   const {
@@ -99,8 +100,19 @@ export async function inviteMember(
 
     // Generate unique token
     const token = crypto.randomUUID();
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7); // 7 days expiration
+
+    // Use provided expiration date or default to 7 days
+    let expiration: Date;
+    if (expiresAt) {
+      expiration = new Date(expiresAt);
+      // Validate expiration date is in the future
+      if (expiration <= new Date()) {
+        return { success: false, error: "Expiration date must be in the future" };
+      }
+    } else {
+      expiration = new Date();
+      expiration.setDate(expiration.getDate() + 7); // 7 days default
+    }
 
     // Insert invitation
     const [invitation] = await db
@@ -112,7 +124,7 @@ export async function inviteMember(
         role,
         message: message || null,
         invitedBy: user.id,
-        expiresAt,
+        expiresAt: expiration,
       })
       .returning();
 
@@ -421,6 +433,7 @@ export async function resendInvitation(groupId: string, invitationId: string) {
         role: groupInvitations.role,
         token: groupInvitations.token,
         message: groupInvitations.message,
+        expiresAt: groupInvitations.expiresAt,
         acceptedAt: groupInvitations.acceptedAt,
       })
       .from(groupInvitations)
@@ -439,20 +452,9 @@ export async function resendInvitation(groupId: string, invitationId: string) {
       return { success: false, error: "This invitation has already been accepted" };
     }
 
-    // Generate new token and reset expiration
-    const newToken = crypto.randomUUID();
-    const newExpiresAt = new Date();
-    newExpiresAt.setDate(newExpiresAt.getDate() + 7); // 7 days expiration
-
-    // Update the invitation with new token and expiration
-    await db
-      .update(groupInvitations)
-      .set({
-        token: newToken,
-        expiresAt: newExpiresAt,
-        createdAt: new Date(),
-      })
-      .where(eq(groupInvitations.id, invitationId));
+    if (invitation.expiresAt < new Date()) {
+      return { success: false, error: "This invitation has expired. Please extend it first." };
+    }
 
     // Get group and inviter info for email
     const [group] = await db
@@ -465,7 +467,7 @@ export async function resendInvitation(groupId: string, invitationId: string) {
       .from(users)
       .where(eq(users.id, user.id));
 
-    const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://opportuniq.app"}/invite/${newToken}`;
+    const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://opportuniq.app"}/invite/${invitation.token}`;
 
     // Send invitation email to invitee
     await sendGroupInvitationEmail({
@@ -497,5 +499,123 @@ export async function resendInvitation(groupId: string, invitationId: string) {
   } catch (error) {
     console.error("[Groups] resendInvitation error:", error);
     return { success: false, error: "Failed to resend invitation" };
+  }
+}
+
+export async function extendInvitation(
+  groupId: string,
+  invitationId: string,
+  newExpiresAt: Date
+) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  // Verify user is coordinator or collaborator of this group
+  const [membership] = await db
+    .select({
+      role: groupMembers.role,
+    })
+    .from(groupMembers)
+    .where(
+      and(
+        eq(groupMembers.groupId, groupId),
+        eq(groupMembers.userId, user.id),
+        eq(groupMembers.status, "active")
+      )
+    );
+
+  if (!membership || (membership.role !== "coordinator" && membership.role !== "collaborator")) {
+    return { success: false, error: "Only coordinators and collaborators can extend invitations" };
+  }
+
+  try {
+    // Get the invitation
+    const [invitation] = await db
+      .select({
+        id: groupInvitations.id,
+        email: groupInvitations.inviteeEmail,
+        role: groupInvitations.role,
+        token: groupInvitations.token,
+        message: groupInvitations.message,
+        acceptedAt: groupInvitations.acceptedAt,
+      })
+      .from(groupInvitations)
+      .where(
+        and(
+          eq(groupInvitations.id, invitationId),
+          eq(groupInvitations.groupId, groupId)
+        )
+      );
+
+    if (!invitation) {
+      return { success: false, error: "Invitation not found" };
+    }
+
+    if (invitation.acceptedAt) {
+      return { success: false, error: "This invitation has already been accepted" };
+    }
+
+    // Validate expiration date is in the future
+    if (newExpiresAt <= new Date()) {
+      return { success: false, error: "Expiration date must be in the future" };
+    }
+
+    // Update the invitation with new expiration (keep same token so existing links work)
+    await db
+      .update(groupInvitations)
+      .set({
+        expiresAt: newExpiresAt,
+      })
+      .where(eq(groupInvitations.id, invitationId));
+
+    // Get group and inviter info for email
+    const [group] = await db
+      .select({ name: groups.name })
+      .from(groups)
+      .where(eq(groups.id, groupId));
+
+    const [inviter] = await db
+      .select({ name: users.name, email: users.email })
+      .from(users)
+      .where(eq(users.id, user.id));
+
+    // Send email to invitee notifying them of the extended expiration
+    const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://opportuniq.app"}/invite/${invitation.token}`;
+
+    await sendGroupInvitationEmail({
+      email: invitation.email,
+      inviterName: inviter?.name || "A group member",
+      groupName: group?.name || "a group",
+      inviteUrl,
+      role: invitation.role,
+      message: invitation.message || undefined,
+    });
+
+    // Send confirmation email to inviter
+    if (inviter?.email) {
+      const groupUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://opportuniq.app"}/dashboard/groups/${groupId}`;
+      sendInvitationSentConfirmationEmail({
+        email: inviter.email,
+        inviterName: inviter.name || "You",
+        inviteeEmail: invitation.email,
+        groupName: group?.name || "the group",
+        role: invitation.role,
+        groupUrl,
+        message: invitation.message || undefined,
+      }).catch((err) => console.error("[Groups] Failed to send invitation extended confirmation email:", err));
+    }
+
+    revalidatePath(`/dashboard/groups/${groupId}`);
+
+    return { success: true, email: invitation.email };
+  } catch (error) {
+    console.error("[Groups] extendInvitation error:", error);
+    return { success: false, error: "Failed to extend invitation" };
   }
 }
