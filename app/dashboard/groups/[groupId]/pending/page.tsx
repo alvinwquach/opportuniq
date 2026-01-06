@@ -1,7 +1,7 @@
 import { getCachedUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { db } from "@/app/db/client";
-import { groupMembers, groups } from "@/app/db/schema";
+import { groupMembers, groups, users } from "@/app/db/schema";
 import { eq, and } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import { IoTime, IoHome, IoMail } from "react-icons/io5";
@@ -23,14 +23,20 @@ export default async function PendingApprovalPage({ params }: PendingPageProps) 
     redirect("/auth/login");
   }
 
-  // Fetch group info and membership status
+  // Fetch group info, membership status, and inviter info
   const [membership] = await db
     .select({
       member: groupMembers,
       group: groups,
+      inviter: {
+        id: users.id,
+        name: users.name,
+        email: users.email,
+      },
     })
     .from(groupMembers)
     .leftJoin(groups, eq(groupMembers.groupId, groups.id))
+    .leftJoin(users, eq(groupMembers.invitedBy, users.id))
     .where(
       and(
         eq(groupMembers.groupId, groupId),
@@ -44,8 +50,11 @@ export default async function PendingApprovalPage({ params }: PendingPageProps) 
 
   // If approved, redirect to group
   if (membership.member.status === "active") {
-    redirect(`/groups/${groupId}`);
+    redirect(`/dashboard/groups/${groupId}`);
   }
+
+  // Get inviter's display name (name or email fallback)
+  const inviterName = membership.inviter?.name || membership.inviter?.email || "the organizer";
 
   // If rejected/inactive, show rejection message
   if (membership.member.status === "inactive") {
@@ -59,8 +68,8 @@ export default async function PendingApprovalPage({ params }: PendingPageProps) 
             Access Denied
           </h1>
           <p className="text-lg text-muted-foreground mb-8">
-            The organizer has declined your request to join{" "}
-            <span className="font-semibold">{membership.group?.name}</span>.
+            <span className="font-semibold text-foreground">{inviterName}</span> has declined your request to join{" "}
+            <span className="font-semibold text-foreground">{membership.group?.name}</span>.
           </p>
           <Button asChild size="lg">
             <Link href="/dashboard">
@@ -84,17 +93,17 @@ export default async function PendingApprovalPage({ params }: PendingPageProps) 
           Waiting for Approval
         </h1>
         <p className="text-lg text-muted-foreground mb-4">
-          You've successfully joined{" "}
-          <span className="font-semibold text-foreground">{membership.group?.name}</span>
+          You've been invited to join{" "}
+          <span className="font-semibold text-foreground">{membership.group?.name}</span> by{" "}
+          <span className="font-semibold text-foreground">{inviterName}</span>
         </p>
         <p className="text-base text-muted-foreground mb-8">
-          The group organizer needs to approve your access before you can view
-          budget and expenses. This is to protect sensitive financial information.
+          <span className="font-semibold text-foreground">{inviterName}</span> needs to approve your access.
         </p>
         <div className="bg-muted/50 rounded-lg p-6 mb-8 max-w-md mx-auto">
           <h3 className="font-semibold mb-2">What happens next?</h3>
           <ul className="text-sm text-muted-foreground space-y-2 text-left">
-            <li>✓ The organizer will be notified of your request</li>
+            <li>✓ <span className="font-medium">{inviterName}</span> will be notified of your request</li>
             <li>✓ They'll verify it's really you</li>
             <li>✓ Once approved, you'll get full access</li>
             <li>✓ You'll receive an email notification</li>
@@ -108,11 +117,11 @@ export default async function PendingApprovalPage({ params }: PendingPageProps) 
             </Link>
           </Button>
           <Button asChild size="lg">
-            <a href={`/groups/${groupId}/pending`}>Check Status</a>
+            <Link href={`/dashboard/groups/${groupId}/pending`}>Check Status</Link>
           </Button>
         </div>
         <p className="text-sm text-muted-foreground mt-8">
-          If you're not approved within 24 hours, contact the group organizer directly.
+          If you're not approved within 24 hours, contact <span className="font-medium">{inviterName}</span> directly.
         </p>
       </div>
     </div>

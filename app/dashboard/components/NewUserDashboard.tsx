@@ -49,7 +49,7 @@ export function NewUserDashboard({ userProfile }: NewUserDashboardProps) {
               Start solo or invite family members to decide together.
             </p>
             <Link
-              href="/groups/new"
+              href="/dashboard/groups"
               onClick={() => amplitude.track("Create Group Clicked", { source: "new_user_dashboard" })}
               className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-[#0c0c0c] bg-[#00D4FF] rounded-lg hover:bg-[#00D4FF]/90 transition-colors"
             >

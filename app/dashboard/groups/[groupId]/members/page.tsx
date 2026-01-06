@@ -6,7 +6,6 @@ interface GroupMembersPageProps {
   }>;
 }
 
-// Server Component - passes groupId to client component
 export default async function GroupMembersPage({ params }: GroupMembersPageProps) {
   const { groupId } = await params;
 

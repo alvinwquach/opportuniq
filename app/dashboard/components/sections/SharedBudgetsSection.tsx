@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { IoWallet } from "react-icons/io5";
 
@@ -32,16 +30,16 @@ export function SharedBudgetsSection({ groupFinances }: SharedBudgetsSectionProp
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-medium text-white">Shared Budgets</h2>
         <Link
-          href="/groups"
+          href="/dashboard/groups"
           className="text-xs text-[#9a9a9a] hover:text-white transition-colors"
         >
           Manage
         </Link>
       </div>
       <div className="space-y-3">
-        {groupFinances.map((gf) => (
+        {groupFinances.map((groupFinance) => (
           <div
-            key={gf.groupId}
+            key={groupFinance.groupId}
             className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]"
           >
             <div className="flex items-center justify-between mb-3">
@@ -49,39 +47,35 @@ export function SharedBudgetsSection({ groupFinances }: SharedBudgetsSectionProp
                 <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center">
                   <IoWallet className="w-4 h-4 text-green-400" />
                 </div>
-                <span className="text-sm font-medium text-white">{gf.groupName}</span>
+                <span className="text-sm font-medium text-white">{groupFinance.groupName}</span>
               </div>
               <span className="text-lg font-semibold text-green-400">
-                ${gf.sharedBalance.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                ${groupFinance.sharedBalance.toLocaleString(undefined, { maximumFractionDigits: 0 })}
               </span>
             </div>
-
-            {/* Budget Progress */}
-            {gf.monthlyBudget && (
+            {groupFinance.monthlyBudget && (
               <div className="mb-3">
                 <div className="flex items-center justify-between text-[10px] text-[#9a9a9a] mb-1">
                   <span>Monthly Budget</span>
                   <span>
-                    ${gf.monthlySpent.toLocaleString()} / ${gf.monthlyBudget.toLocaleString()}
+                    ${groupFinance.monthlySpent.toLocaleString()} / ${groupFinance.monthlyBudget.toLocaleString()}
                   </span>
                 </div>
                 <div className="h-1.5 bg-[#1f1f1f] rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all ${
-                      gf.monthlySpent > gf.monthlyBudget ? "bg-red-500" : "bg-green-500"
+                      groupFinance.monthlySpent > groupFinance.monthlyBudget ? "bg-red-500" : "bg-green-500"
                     }`}
                     style={{
-                      width: `${Math.min(100, (gf.monthlySpent / gf.monthlyBudget) * 100)}%`,
+                      width: `${Math.min(100, (groupFinance.monthlySpent / groupFinance.monthlyBudget) * 100)}%`,
                     }}
                   />
                 </div>
               </div>
             )}
-
-            {/* Recent Expenses */}
-            {gf.recentExpenses.length > 0 && (
+            {groupFinance.recentExpenses.length > 0 && (
               <div className="space-y-1.5">
-                {gf.recentExpenses.slice(0, 2).map((expense) => (
+                {groupFinance.recentExpenses.slice(0, 2).map((expense) => (
                   <div key={expense.id} className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
                       {expense.isEmergency && (
@@ -94,12 +88,10 @@ export function SharedBudgetsSection({ groupFinances }: SharedBudgetsSectionProp
                 ))}
               </div>
             )}
-
-            {/* Emergency Buffer */}
-            {gf.emergencyBuffer && gf.emergencyBuffer > 0 && (
+            {groupFinance.emergencyBuffer && groupFinance.emergencyBuffer > 0 && (
               <div className="mt-3 pt-3 border-t border-[#1f1f1f] flex items-center justify-between text-xs">
                 <span className="text-[#9a9a9a]">Emergency Fund</span>
-                <span className="text-amber-400">${gf.emergencyBuffer.toLocaleString()}</span>
+                <span className="text-amber-400">${groupFinance.emergencyBuffer.toLocaleString()}</span>
               </div>
             )}
           </div>

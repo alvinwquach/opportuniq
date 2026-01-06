@@ -1,5 +1,3 @@
-"use client";
-
 import { IoCamera, IoCalendar, IoBook, IoPeople, IoMic, IoVideocam, IoCloudUpload } from "react-icons/io5";
 import { QuickAction } from "../QuickAction";
 import { ReportIssueModal } from "./ReportIssueModal";
@@ -9,7 +7,6 @@ export function QuickActionsSection() {
     <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
       <h3 className="text-sm font-medium text-white mb-3">Quick Actions</h3>
       <div className="space-y-1">
-        {/* Report Issue with modal for input selection */}
         <ReportIssueModal
           variant="quick-action"
           trigger={
@@ -43,7 +40,7 @@ export function QuickActionsSection() {
           description="DIY tutorials"
         />
         <QuickAction
-          href="/groups"
+          href="/dashboard/groups"
           icon={IoPeople}
           label="Manage Groups"
           description="Members & budget"

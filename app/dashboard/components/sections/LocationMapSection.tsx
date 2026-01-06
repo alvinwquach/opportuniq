@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { LocationMap } from "../LocationMap";
 import { LocationSetupDialog } from "./LocationSetupDialog";
 import {
@@ -16,7 +16,6 @@ import {
   WiThermometer,
   WiSunrise,
   WiSunset,
-  WiDust,
 } from "react-icons/wi";
 import {
   IoShieldCheckmark,
@@ -27,6 +26,7 @@ import {
   IoChevronForward,
 } from "react-icons/io5";
 import { cn } from "@/lib/utils";
+import type { LocationWeatherData } from "../../weather-actions";
 
 interface UserProfile {
   id: string;
@@ -92,38 +92,31 @@ interface WeatherData {
 
 interface LocationMapSectionProps {
   userProfile: UserProfile;
+  weatherData: LocationWeatherData;
 }
 
 function getWeatherIcon(code: number, isDay: boolean = true) {
-  // Clear
   if (code === 0 || code === 1) {
     return isDay ? <WiDaySunny className="w-6 h-6 text-yellow-400" /> : <WiNightClear className="w-6 h-6 text-slate-300" />;
   }
-  // Partly cloudy
   if (code === 2 || code === 3) {
     return <WiCloudy className="w-6 h-6 text-gray-400" />;
   }
-  // Fog
   if (code === 45 || code === 48) {
     return <WiFog className="w-6 h-6 text-gray-400" />;
   }
-  // Drizzle/Rain
   if (code >= 51 && code <= 67) {
     return <WiRain className="w-6 h-6 text-blue-400" />;
   }
-  // Snow
   if (code >= 71 && code <= 77) {
     return <WiSnow className="w-6 h-6 text-blue-200" />;
   }
-  // Rain showers
   if (code >= 80 && code <= 82) {
     return <WiRain className="w-6 h-6 text-blue-400" />;
   }
-  // Snow showers
   if (code >= 85 && code <= 86) {
     return <WiSnow className="w-6 h-6 text-blue-200" />;
   }
-  // Thunderstorm
   if (code >= 95) {
     return <WiThunderstorm className="w-6 h-6 text-yellow-400" />;
   }
@@ -187,7 +180,6 @@ function getHourlyForDay(hourly: HourlyForecast[], dayIndex: number): HourlyFore
   const now = new Date();
 
   if (dayIndex === 0) {
-    // For "Today": show from midnight (12:00 AM) through the next 24 hours into tomorrow
     const startOfToday = new Date(now);
     startOfToday.setHours(0, 0, 0, 0);
 
@@ -202,14 +194,13 @@ function getHourlyForDay(hourly: HourlyForecast[], dayIndex: number): HourlyFore
       return hourDate >= startOfToday && hourDate <= endTime;
     });
   } else {
-    // For future days: show just that day (midnight to midnight)
     const targetDate = new Date();
     targetDate.setDate(now.getDate() + dayIndex);
     targetDate.setHours(0, 0, 0, 0);
 
     const endTime = new Date(targetDate);
     endTime.setDate(endTime.getDate() + 1);
-    endTime.setHours(0, 0, 0, 0); // End at midnight (exclusive)
+    endTime.setHours(0, 0, 0, 0);
 
     return hourly.filter((h) => {
       const hourDate = new Date(h.time);
@@ -221,7 +212,6 @@ function getHourlyForDay(hourly: HourlyForecast[], dayIndex: number): HourlyFore
 function getWeatherAlerts(current: CurrentWeather, daily: DailyForecast[]): string[] {
   const alerts: string[] = [];
 
-  // Current conditions alerts
   if (current.uvIndex >= 8) {
     alerts.push(`Very high UV index (${current.uvIndex}) - limit sun exposure`);
   }
@@ -232,13 +222,11 @@ function getWeatherAlerts(current: CurrentWeather, daily: DailyForecast[]): stri
     alerts.push("Low visibility - drive carefully");
   }
 
-  // Severe weather codes
   const severeWeatherCodes = [65, 66, 67, 75, 82, 86, 95, 96, 99];
   if (severeWeatherCodes.includes(current.weatherCode)) {
     alerts.push(`Severe weather: ${current.weatherDescription}`);
   }
 
-  // Tomorrow's alerts
   const tomorrow = daily[1];
   if (tomorrow) {
     if (tomorrow.precipitationProbability >= 70) {
@@ -252,15 +240,13 @@ function getWeatherAlerts(current: CurrentWeather, daily: DailyForecast[]): stri
   return alerts;
 }
 
-export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
-  const [weather, setWeather] = useState<WeatherData | null>(null);
-  const [airQuality, setAirQuality] = useState<AirQuality | null>(null);
-  const [loading, setLoading] = useState(true);
+export function LocationMapSection({ userProfile, weatherData }: LocationMapSectionProps) {
+  const { weather, airQuality } = weatherData;
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const isScrollingRef = useRef(false); // Track if day change is from scrolling
+  const isScrollingRef = useRef(false);
 
   const updateScrollButtons = useCallback(() => {
     const container = scrollContainerRef.current;
@@ -272,16 +258,13 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
     }
   }, []);
 
-  // Check which day is currently visible and auto-select it
   const checkVisibleDay = useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container || !weather) return;
 
-    // Find the hour card that's roughly in the center of the visible area
     const containerRect = container.getBoundingClientRect();
     const centerX = containerRect.left + containerRect.width / 2;
 
-    // Get all hour cards
     const hourCards = container.querySelectorAll('[data-hour-time]');
     let visibleHourTime: string | null = null;
 
@@ -298,7 +281,6 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      // Calculate which day index the visible hour belongs to
       const diffDays = Math.floor((visibleDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
       const newDayIndex = Math.max(0, Math.min(diffDays, 6));
 
@@ -312,7 +294,7 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
   const scrollHourly = useCallback((direction: "left" | "right") => {
     const container = scrollContainerRef.current;
     if (container) {
-      const scrollAmount = 200; // Scroll by ~3 hour cards
+      const scrollAmount = 200;
       container.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
         behavior: "smooth",
@@ -321,42 +303,11 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
   }, []);
 
   useEffect(() => {
-    async function fetchWeather() {
-      if (!userProfile.latitude || !userProfile.longitude) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { getWeatherForecast, getAirQuality } = await import("@/lib/integrations/weather");
-
-        // Fetch weather and air quality in parallel
-        const [weatherData, aqiData] = await Promise.all([
-          getWeatherForecast(userProfile.latitude, userProfile.longitude, 7),
-          getAirQuality(userProfile.latitude, userProfile.longitude).catch(() => null),
-        ]);
-
-        setWeather(weatherData);
-        setAirQuality(aqiData);
-      } catch (error) {
-        console.error("Failed to fetch weather:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchWeather();
-  }, [userProfile.latitude, userProfile.longitude]);
-
-  // Update scroll button states when day selection changes or weather loads
-  useEffect(() => {
-    // Only reset scroll position if the day change was from clicking a tab, not from scrolling
     if (!isScrollingRef.current && scrollContainerRef.current) {
       scrollContainerRef.current.scrollLeft = 0;
     }
-    isScrollingRef.current = false; // Reset the flag
+    isScrollingRef.current = false;
 
-    // Small delay to let the DOM update before checking scroll state
     const timer = setTimeout(updateScrollButtons, 100);
     return () => clearTimeout(timer);
   }, [selectedDayIndex, weather, updateScrollButtons]);
@@ -383,7 +334,6 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
         <span className="text-xs text-[#9a9a9a]">{userProfile.postalCode}</span>
       </div>
       <div className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
-        {/* Weather Alerts */}
         {weatherAlerts.length > 0 && (
           <div className="p-3 bg-amber-500/10 border-b border-amber-500/20">
             <div className="flex items-start gap-2">
@@ -396,8 +346,6 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
             </div>
           </div>
         )}
-
-        {/* Weather Section */}
         {weather && (
           <div className="p-4 border-b border-[#1f1f1f]">
             {/* Current Weather */}
@@ -431,10 +379,7 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
                 </div>
               </div>
             </div>
-
-            {/* UV Index, AQI, Sunrise/Sunset Row */}
             <div className="flex gap-2 mb-4">
-              {/* UV Index */}
               <div className="flex-1 p-2 rounded-lg bg-[#1a1a1a]">
                 <p className="text-[10px] text-[#9a9a9a] mb-1">UV Index</p>
                 <div className="flex items-center gap-1">
@@ -447,8 +392,6 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
                   </span>
                 </div>
               </div>
-
-              {/* Air Quality */}
               {airQuality && (
                 <div className="flex-1 p-2 rounded-lg bg-[#1a1a1a]">
                   <p className="text-[10px] text-[#9a9a9a] mb-1">Air Quality</p>
@@ -463,8 +406,6 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
                   </div>
                 </div>
               )}
-
-              {/* Sunrise/Sunset */}
               {todayForecast && (
                 <div className="flex-1 p-2 rounded-lg bg-[#1a1a1a]">
                   <p className="text-[10px] text-[#9a9a9a] mb-1">Sun</p>
@@ -481,8 +422,6 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
                 </div>
               )}
             </div>
-
-            {/* Best Days for Outdoor Work */}
             {bestDays.length > 0 && (
               <div className="mb-4 p-2 rounded-lg bg-green-500/10 border border-green-500/20">
                 <div className="flex items-center gap-1.5 mb-1">
@@ -535,17 +474,14 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
                 );
               })}
             </div>
-
-            {/* Hourly Forecast for Selected Day - Always visible, grid layout */}
             <div className="pt-3 border-t border-[#1f1f1f] overflow-hidden">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1.5">
                   <IoTime className="w-3 h-3 text-[#9a9a9a]" />
-                  <p className="text-[10px] text-[#9a9a9a] uppercase tracking-wider">
-                    {selectedDayIndex === 0 ? "Today" : getDayName(weather.daily[selectedDayIndex]?.date || "")} hourly
+                  <p className="text-[10px] text-[#9a9a9a]">
+                    Hourly forecast · {selectedDayIndex === 0 ? "Today" : getDayName(weather.daily[selectedDayIndex]?.date || "")}
                   </p>
                 </div>
-                {/* Carousel navigation buttons */}
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => scrollHourly("left")}
@@ -575,7 +511,7 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
                   </button>
                 </div>
               </div>
-              {/* Horizontal scrollable hourly forecast - Apple Weather style */}
+              {/* Horizontal scrollable hourly forecast */}
               <div
                 ref={scrollContainerRef}
                 onScroll={() => {
@@ -594,7 +530,6 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
 
                     return (
                       <div key={hour.time} className="flex gap-2" data-hour-time={hour.time}>
-                        {/* Day divider when crossing into next day */}
                         {isNewDay && (
                           <div className="flex-shrink-0 w-px bg-[#333] mx-1 relative">
                             <span className="absolute -top-1 left-1/2 -translate-x-1/2 text-[8px] text-[#666] whitespace-nowrap bg-[#161616] px-1">
@@ -635,19 +570,6 @@ export function LocationMapSection({ userProfile }: LocationMapSectionProps) {
                     );
                   })}
                 </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Loading State */}
-        {loading && userProfile.latitude && userProfile.longitude && (
-          <div className="p-4 border-b border-[#1f1f1f]">
-            <div className="animate-pulse flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-[#1f1f1f]" />
-              <div className="space-y-2">
-                <div className="h-6 w-16 bg-[#1f1f1f] rounded" />
-                <div className="h-3 w-24 bg-[#1f1f1f] rounded" />
               </div>
             </div>
           </div>
