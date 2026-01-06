@@ -10,6 +10,7 @@ import {
   rejectMember,
   cancelInvitation,
   updateInvitationRole,
+  resendInvitation,
 } from "@/app/dashboard/groups/actions";
 import {
   trackMemberInvited,
@@ -49,6 +50,11 @@ interface UpdateInvitationRoleInput {
   groupId: string;
   invitationId: string;
   newRole: GroupRole;
+}
+
+interface ResendInvitationInput {
+  groupId: string;
+  invitationId: string;
 }
 
 export function useGroupMembers(groupId: string) {
@@ -211,6 +217,23 @@ export function useUpdateInvitationRole() {
           newRole: result.newRole,
         });
       }
+      queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
+    },
+  });
+}
+
+export function useResendInvitation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ groupId, invitationId }: ResendInvitationInput) => {
+      const result = await resendInvitation(groupId, invitationId);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to resend invitation");
+      }
+      return { ...result, groupId };
+    },
+    onSuccess: (result, variables) => {
       queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
     },
   });

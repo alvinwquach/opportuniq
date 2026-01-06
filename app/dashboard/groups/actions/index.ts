@@ -21,4 +21,5 @@ export {
   inviteMember,
   cancelInvitation,
   updateInvitationRole,
+  resendInvitation,
 } from "./invitations";

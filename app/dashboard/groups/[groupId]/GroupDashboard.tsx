@@ -23,10 +23,11 @@ import {
   IoClose,
   IoCopyOutline,
   IoCheckmark,
+  IoRefresh,
 } from "react-icons/io5";
 import { EditGroupDialog } from "@/app/dashboard/components/sections/EditGroupDialog";
 import { InviteMemberDialog } from "@/app/dashboard/components/sections/InviteMemberDialog";
-import { useCancelInvitation, useUpdateInvitationRole } from "@/hooks/useGroupMembers";
+import { useCancelInvitation, useUpdateInvitationRole, useResendInvitation } from "@/hooks/useGroupMembers";
 import {
   Select,
   SelectContent,
@@ -138,6 +139,8 @@ export function GroupDashboard({
     useCancelInvitation();
   const { mutate: updateInvitationRole, isPending: isUpdatingRole } =
     useUpdateInvitationRole();
+  const { mutate: resendInvitation, isPending: isResending } =
+    useResendInvitation();
 
   const copyInviteLink = async (token: string, invitationId: string) => {
     const inviteUrl = `${window.location.origin}/invite/${token}`;
@@ -609,6 +612,20 @@ export function GroupDashboard({
                                 Copy Link
                               </>
                             )}
+                          </button>
+                          <button
+                            onClick={() =>
+                              resendInvitation({
+                                groupId: group.id,
+                                invitationId: invitation.id,
+                              })
+                            }
+                            disabled={isResending}
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-amber-500 hover:bg-amber-500/10 rounded transition-colors disabled:opacity-50"
+                            title="Resend invitation"
+                          >
+                            <IoRefresh className="w-3.5 h-3.5" />
+                            Resend
                           </button>
                           <button
                             onClick={() =>
