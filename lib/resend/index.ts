@@ -18,6 +18,8 @@ export {
   sendGroupMemberRemovedEmail,
   sendInvitationSentConfirmationEmail,
   sendInvitationRoleUpdatedEmail,
+  sendInvitationRevokedEmail,
+  sendInvitationRevokedConfirmationEmail,
 } from "./groups";
 
 // Invite emails

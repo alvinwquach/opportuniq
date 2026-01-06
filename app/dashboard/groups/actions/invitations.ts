@@ -9,6 +9,8 @@ import {
   sendGroupInvitationEmail,
   sendInvitationSentConfirmationEmail,
   sendInvitationRoleUpdatedEmail,
+  sendInvitationRevokedEmail,
+  sendInvitationRevokedConfirmationEmail,
 } from "@/lib/resend";
 
 type GroupRole = "coordinator" | "collaborator" | "participant" | "contributor" | "observer";
@@ -194,6 +196,24 @@ export async function cancelInvitation(groupId: string, invitationId: string) {
   }
 
   try {
+    // Get invitation details before deleting (for email notification)
+    const [invitation] = await db
+      .select({
+        email: groupInvitations.inviteeEmail,
+      })
+      .from(groupInvitations)
+      .where(
+        and(
+          eq(groupInvitations.id, invitationId),
+          eq(groupInvitations.groupId, groupId)
+        )
+      );
+
+    if (!invitation) {
+      return { success: false, error: "Invitation not found" };
+    }
+
+    // Delete the invitation
     await db
       .delete(groupInvitations)
       .where(
@@ -202,6 +222,37 @@ export async function cancelInvitation(groupId: string, invitationId: string) {
           eq(groupInvitations.groupId, groupId)
         )
       );
+
+    // Get group and revoker info for emails
+    const [group] = await db
+      .select({ name: groups.name })
+      .from(groups)
+      .where(eq(groups.id, groupId));
+
+    const [revoker] = await db
+      .select({ name: users.name, email: users.email })
+      .from(users)
+      .where(eq(users.id, user.id));
+
+    const groupUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://opportuniq.app"}/dashboard/groups/${groupId}`;
+
+    // Send email to invitee notifying them of revocation
+    sendInvitationRevokedEmail({
+      email: invitation.email,
+      groupName: group?.name || "the group",
+      revokedBy: revoker?.name || "A coordinator",
+    }).catch((err) => console.error("[Groups] Failed to send invitation revoked email:", err));
+
+    // Send confirmation email to revoker
+    if (revoker?.email) {
+      sendInvitationRevokedConfirmationEmail({
+        email: revoker.email,
+        revokerName: revoker.name || "You",
+        inviteeEmail: invitation.email,
+        groupName: group?.name || "the group",
+        groupUrl,
+      }).catch((err) => console.error("[Groups] Failed to send invitation revoked confirmation email:", err));
+    }
 
     revalidatePath(`/dashboard/groups/${groupId}`);
 
