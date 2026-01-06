@@ -113,6 +113,13 @@ export function trackGroupSettingsUpdated(props: {
   amplitude.track("Group Settings Updated", props);
 }
 
+export function trackGroupDeleted(props: {
+  groupId: string;
+  memberCount: number;
+}) {
+  amplitude.track("Group Deleted", props);
+}
+
 // ============================================
 // INCOME & BUDGET EVENTS
 // ============================================

@@ -18,6 +18,8 @@ import WaitlistLaunchEmail from "@/emails/WaitlistLaunchEmail";
 import PublicLaunchEmail from "@/emails/PublicLaunchEmail";
 import FeedbackRequestEmail from "@/emails/FeedbackRequestEmail";
 import ReferralReminderEmail from "@/emails/ReferralReminderEmail";
+import GroupUpdatedEmail from "@/emails/GroupUpdatedEmail";
+import GroupDeletedEmail from "@/emails/GroupDeletedEmail";
 
 if (!process.env.RESEND_API_KEY) {
   throw new Error("RESEND_API_KEY is not set");
@@ -850,6 +852,101 @@ export async function sendReferralReminderEmail({
     return { success: true, data };
   } catch (error) {
     console.error("Error sending referral reminder email:", error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * Send group updated email when group settings are changed
+ */
+export async function sendGroupUpdatedEmail({
+  email,
+  memberName,
+  groupName,
+  updatedBy,
+  changes,
+  groupUrl,
+}: {
+  email: string;
+  memberName: string;
+  groupName: string;
+  updatedBy: string;
+  changes: string[];
+  groupUrl: string;
+}) {
+  try {
+    const emailHtml = await render(
+      GroupUpdatedEmail({
+        memberName,
+        groupName,
+        updatedBy,
+        changes,
+        groupUrl,
+      })
+    );
+
+    const { data, error } = await resend.emails.send({
+      from: "OpportunIQ <onboarding@resend.dev>",
+      to: [email],
+      replyTo: "support@opportuniq.app",
+      subject: `"${groupName}" settings were updated`,
+      html: emailHtml,
+    });
+
+    if (error) {
+      console.error("Failed to send group updated email:", error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error sending group updated email:", error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * Send group deleted email when a group is removed
+ */
+export async function sendGroupDeletedEmail({
+  email,
+  memberName,
+  groupName,
+  deletedBy,
+  dashboardUrl,
+}: {
+  email: string;
+  memberName: string;
+  groupName: string;
+  deletedBy: string;
+  dashboardUrl: string;
+}) {
+  try {
+    const emailHtml = await render(
+      GroupDeletedEmail({
+        memberName,
+        groupName,
+        deletedBy,
+        dashboardUrl,
+      })
+    );
+
+    const { data, error } = await resend.emails.send({
+      from: "OpportunIQ <onboarding@resend.dev>",
+      to: [email],
+      replyTo: "support@opportuniq.app",
+      subject: `The group "${groupName}" has been deleted`,
+      html: emailHtml,
+    });
+
+    if (error) {
+      console.error("Failed to send group deleted email:", error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error sending group deleted email:", error);
     return { success: false, error };
   }
 }

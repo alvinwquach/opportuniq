@@ -1,4 +1,6 @@
-import { IoCamera, IoCalendar, IoBook, IoPeople, IoMic, IoVideocam, IoCloudUpload } from "react-icons/io5";
+"use client";
+
+import { IoCamera, IoCalendar, IoBook, IoPeople, IoMic, IoVideocam } from "react-icons/io5";
 import { QuickAction } from "../QuickAction";
 import { ReportIssueModal } from "./ReportIssueModal";
 

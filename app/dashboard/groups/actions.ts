@@ -11,6 +11,7 @@ import {
   type UpdateGroupFormValues,
 } from "@/lib/schemas/group";
 import { revalidatePath } from "next/cache";
+import { sendGroupUpdatedEmail, sendGroupDeletedEmail } from "@/lib/resend";
 
 export async function getUserGroups() {
   const supabase = await createClient();
@@ -166,6 +167,12 @@ export async function updateGroup(groupId: string, data: UpdateGroupFormValues) 
   const { name, postalCode, defaultSearchRadius } = parseResult.data;
 
   try {
+    // Fetch current group to detect changes
+    const [currentGroup] = await db
+      .select()
+      .from(groups)
+      .where(eq(groups.id, groupId));
+
     const [updatedGroup] = await db
       .update(groups)
       .set({
@@ -177,12 +184,68 @@ export async function updateGroup(groupId: string, data: UpdateGroupFormValues) 
       .where(eq(groups.id, groupId))
       .returning();
 
+    // Build list of changes for email
+    const changes: string[] = [];
+    if (currentGroup.name !== name) {
+      changes.push(`Group name changed to "${name}"`);
+    }
+    if (currentGroup.postalCode !== (postalCode ?? null)) {
+      changes.push(postalCode ? `Postal code updated to ${postalCode}` : "Postal code removed");
+    }
+    if (currentGroup.defaultSearchRadius !== defaultSearchRadius) {
+      changes.push(`Search radius changed to ${defaultSearchRadius} miles`);
+    }
+
+    // Send email notifications to all group members (except the updater)
+    if (changes.length > 0) {
+      const members = await db
+        .select({
+          user: {
+            id: users.id,
+            name: users.name,
+            email: users.email,
+          },
+        })
+        .from(groupMembers)
+        .innerJoin(users, eq(groupMembers.userId, users.id))
+        .where(
+          and(
+            eq(groupMembers.groupId, groupId),
+            eq(groupMembers.status, "active")
+          )
+        );
+
+      // Get updater's name
+      const [updater] = await db
+        .select({ name: users.name })
+        .from(users)
+        .where(eq(users.id, user.id));
+
+      const updaterName = updater?.name || "A coordinator";
+      const groupUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://opportuniq.app"}/dashboard/groups/${groupId}`;
+
+      // Send emails in background (don't await)
+      for (const member of members) {
+        if (member.user.id !== user.id) {
+          sendGroupUpdatedEmail({
+            email: member.user.email,
+            memberName: member.user.name || "there",
+            groupName: updatedGroup.name,
+            updatedBy: updaterName,
+            changes,
+            groupUrl,
+          }).catch((err) => console.error("[Groups] Failed to send update email:", err));
+        }
+      }
+    }
+
     revalidatePath(`/dashboard/groups/${groupId}`);
     revalidatePath("/dashboard/groups");
 
     return {
       success: true,
       group: updatedGroup,
+      changes,
     };
   } catch (error) {
     console.error("[Groups] updateGroup error:", error);
@@ -288,5 +351,94 @@ export async function getGroupDetails(groupId: string) {
   } catch (error) {
     console.error("[Groups] getGroupDetails error:", error);
     return { success: false, error: "Failed to fetch group details" };
+  }
+}
+
+export async function deleteGroup(groupId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  // Verify user is coordinator of this group
+  const [membership] = await db
+    .select({
+      role: groupMembers.role,
+    })
+    .from(groupMembers)
+    .where(
+      and(
+        eq(groupMembers.groupId, groupId),
+        eq(groupMembers.userId, user.id),
+        eq(groupMembers.status, "active")
+      )
+    );
+
+  if (!membership || membership.role !== "coordinator") {
+    return { success: false, error: "Only coordinators can delete groups" };
+  }
+
+  try {
+    // Fetch group info and members before deletion
+    const [group] = await db
+      .select({ name: groups.name })
+      .from(groups)
+      .where(eq(groups.id, groupId));
+
+    const members = await db
+      .select({
+        user: {
+          id: users.id,
+          name: users.name,
+          email: users.email,
+        },
+      })
+      .from(groupMembers)
+      .innerJoin(users, eq(groupMembers.userId, users.id))
+      .where(
+        and(
+          eq(groupMembers.groupId, groupId),
+          eq(groupMembers.status, "active")
+        )
+      );
+
+    // Get deleter's name
+    const [deleter] = await db
+      .select({ name: users.name })
+      .from(users)
+      .where(eq(users.id, user.id));
+
+    const deleterName = deleter?.name || "A coordinator";
+    const groupName = group?.name || "Unknown Group";
+    const memberCount = members.length;
+    const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://opportuniq.app"}/dashboard`;
+
+    // Delete the group - cascade will handle related records
+    await db.delete(groups).where(eq(groups.id, groupId));
+
+    // Send email notifications to all group members (except the deleter)
+    for (const member of members) {
+      if (member.user.id !== user.id) {
+        sendGroupDeletedEmail({
+          email: member.user.email,
+          memberName: member.user.name || "there",
+          groupName,
+          deletedBy: deleterName,
+          dashboardUrl,
+        }).catch((err) => console.error("[Groups] Failed to send delete email:", err));
+      }
+    }
+
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/groups");
+
+    return { success: true, memberCount };
+  } catch (error) {
+    console.error("[Groups] deleteGroup error:", error);
+    return { success: false, error: "Failed to delete group" };
   }
 }
