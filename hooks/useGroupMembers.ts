@@ -21,6 +21,10 @@ import {
   trackMemberApproved,
   trackMemberRejected,
   trackInvitationRoleChanged,
+  trackInvitationResent,
+  trackInvitationExtended,
+  trackInvitationRevoked,
+  trackBulkMembersInvited,
 } from "@/lib/analytics";
 
 type GroupRole = "coordinator" | "collaborator" | "participant" | "contributor" | "observer";
@@ -139,10 +143,12 @@ export function useInviteMultipleMembers() {
       return { ...result, groupId };
     },
     onSuccess: (result, variables) => {
-      if (result.summary && result.summary.successful > 0) {
-        trackMemberInvited({
+      if (result.summary) {
+        trackBulkMembersInvited({
           groupId: variables.groupId,
-          inviteMethod: "email",
+          totalCount: result.summary.total,
+          successCount: result.summary.successful,
+          failedCount: result.summary.failed,
         });
       }
       queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
@@ -247,9 +253,13 @@ export function useCancelInvitation() {
       if (!result.success) {
         throw new Error(result.error || "Failed to cancel invitation");
       }
-      return { ...result, groupId };
+      return { ...result, groupId, invitationId };
     },
     onSuccess: (result, variables) => {
+      trackInvitationRevoked({
+        groupId: variables.groupId,
+        invitationId: variables.invitationId,
+      });
       queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
     },
   });
@@ -289,9 +299,13 @@ export function useResendInvitation() {
       if (!result.success) {
         throw new Error(result.error || "Failed to resend invitation");
       }
-      return { ...result, groupId };
+      return { ...result, groupId, invitationId };
     },
     onSuccess: (result, variables) => {
+      trackInvitationResent({
+        groupId: variables.groupId,
+        invitationId: variables.invitationId,
+      });
       queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
     },
   });
@@ -306,9 +320,14 @@ export function useExtendInvitation() {
       if (!result.success) {
         throw new Error(result.error || "Failed to extend invitation");
       }
-      return { ...result, groupId };
+      return { ...result, groupId, invitationId, newExpiresAt };
     },
     onSuccess: (result, variables) => {
+      trackInvitationExtended({
+        groupId: variables.groupId,
+        invitationId: variables.invitationId,
+        newExpiresAt: variables.newExpiresAt.toISOString(),
+      });
       queryClient.invalidateQueries({ queryKey: ["groupMembers", variables.groupId] });
     },
   });

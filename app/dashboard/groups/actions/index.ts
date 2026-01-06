@@ -27,4 +27,4 @@ export {
 } from "./invitations";
 
 // Audit log
-export { getInvitationAuditLog } from "./auditLog";
+export { getInvitationAuditLog, type InvitationAuditLogEntry } from "./auditLog";
