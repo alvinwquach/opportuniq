@@ -604,3 +604,78 @@ export function trackVideoDiagnosisSubmitted(props: {
 }) {
   amplitude.track("Video Diagnosis Submitted", props);
 }
+
+// ============================================
+// CONTRACTOR EMAIL EVENTS
+// ============================================
+
+export function trackEmailDraftGenerated(props: {
+  conversationId?: string | null;
+  contractorName: string;
+  hasPhone: boolean;
+  hasWebsite: boolean;
+  issueCategory?: string | null;
+}) {
+  amplitude.track("Email Draft Generated", props);
+}
+
+export function trackEmailDraftOpened(props: {
+  conversationId?: string | null;
+  contractorName: string;
+}) {
+  amplitude.track("Email Draft Opened", props);
+}
+
+export function trackEmailDraftCopied(props: {
+  conversationId?: string | null;
+  contractorName: string;
+}) {
+  amplitude.track("Email Draft Copied", props);
+}
+
+export function trackContractorCalled(props: {
+  conversationId?: string | null;
+  contractorName: string;
+  source: "email_draft" | "search_result";
+}) {
+  amplitude.track("Contractor Called", props);
+}
+
+export function trackContractorWebsiteVisited(props: {
+  conversationId?: string | null;
+  contractorName: string;
+  source: "email_draft" | "search_result";
+}) {
+  amplitude.track("Contractor Website Visited", props);
+}
+
+export function trackGmailConnected(props: {
+  conversationId?: string | null;
+  source: "email_draft" | "settings";
+}) {
+  amplitude.track("Gmail Connected", props);
+}
+
+export function trackGmailConnectionFailed(props: {
+  conversationId?: string | null;
+  errorCode: string;
+  source: "email_draft" | "settings";
+}) {
+  amplitude.track("Gmail Connection Failed", props);
+}
+
+export function trackEmailSent(props: {
+  conversationId?: string | null;
+  contractorName: string;
+  sentVia: "gmail";
+}) {
+  amplitude.track("Email Sent", props);
+}
+
+export function trackEmailSendFailed(props: {
+  conversationId?: string | null;
+  contractorName: string;
+  errorCode: string;
+}) {
+  amplitude.track("Email Send Failed", props);
+}

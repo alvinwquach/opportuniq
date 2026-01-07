@@ -9,6 +9,7 @@ import {
 } from "@/lib/analytics";
 import { InlineChartRenderer } from "./InlineChartRenderer";
 import { DIYGuideLinks } from "./DIYGuideLinks";
+import { EmailDraftCard } from "./EmailDraftCard";
 
 interface MessageContentProps {
   content: string;
@@ -104,6 +105,63 @@ function getRetailer(url: string): string {
   if (lowerUrl.includes("acehardware")) return "Ace Hardware";
   if (lowerUrl.includes("menards")) return "Menards";
   return "Other";
+}
+
+// Parse email draft from content
+// Looks for patterns like:
+// <!-- EMAIL_DRAFT contractor="Name" phone="123" website="url" -->
+// Subject: ...
+// Body: ...
+// <!-- /EMAIL_DRAFT -->
+interface EmailDraft {
+  contractor: {
+    name: string;
+    phone?: string;
+    website?: string;
+  };
+  email: {
+    subject: string;
+    body: string;
+  };
+  fullMatch: string;
+}
+
+function parseEmailDrafts(content: string): { drafts: EmailDraft[]; remainingContent: string } {
+  const drafts: EmailDraft[] = [];
+  let remainingContent = content;
+
+  // Pattern to match email draft blocks
+  // Format: <!-- EMAIL_DRAFT contractor="Name" phone="123" website="url" -->
+  //         **Subject:** ...
+  //         **Body:**
+  //         ```
+  //         ...email body...
+  //         ```
+  //         <!-- /EMAIL_DRAFT -->
+  const draftPattern = /<!-- EMAIL_DRAFT contractor="([^"]*)"(?:\s+phone="([^"]*)")?(?:\s+website="([^"]*)")? -->\s*\*\*Subject:\*\*\s*(.+?)\s*\*\*Body:\*\*\s*```\s*([\s\S]*?)\s*```\s*<!-- \/EMAIL_DRAFT -->/g;
+
+  let match;
+  while ((match = draftPattern.exec(content)) !== null) {
+    drafts.push({
+      contractor: {
+        name: match[1],
+        phone: match[2] || undefined,
+        website: match[3] || undefined,
+      },
+      email: {
+        subject: match[4].trim(),
+        body: match[5].trim(),
+      },
+      fullMatch: match[0],
+    });
+  }
+
+  // Remove the matched draft blocks from the content
+  for (const draft of drafts) {
+    remainingContent = remainingContent.replace(draft.fullMatch, "");
+  }
+
+  return { drafts, remainingContent: remainingContent.trim() };
 }
 
 export function MessageContent({ content, conversationId, showCharts = true }: MessageContentProps) {
@@ -214,18 +272,35 @@ export function MessageContent({ content, conversationId, showCharts = true }: M
     return /^#{1,3}\s*(?:\d+\.\s*)?(?:issue|severity|diy|risk|cost|skill|safety)/im.test(content);
   }, [content]);
 
+  // Parse email drafts from content
+  const { drafts: emailDrafts, remainingContent } = useMemo(() => {
+    return parseEmailDrafts(content);
+  }, [content]);
+
+  // Use remaining content (without email draft blocks) for rendering
+  const displayContent = emailDrafts.length > 0 ? remainingContent : content;
+
   return (
     <div onClick={handleLinkClick}>
-      {showCharts && <DIYGuideLinks content={content} conversationId={conversationId} />}
+      {showCharts && <DIYGuideLinks content={displayContent} conversationId={conversationId} />}
       {showCharts && isStructuredResponse ? (
-        <InlineChartRenderer content={content} markdownComponents={markdownComponents} />
+        <InlineChartRenderer content={displayContent} markdownComponents={markdownComponents} />
       ) : (
         <div className="prose prose-sm prose-invert max-w-none">
           <ReactMarkdown components={markdownComponents}>
-            {content}
+            {displayContent}
           </ReactMarkdown>
         </div>
       )}
+      {/* Render email draft cards */}
+      {emailDrafts.map((draft, index) => (
+        <EmailDraftCard
+          key={`email-draft-${index}`}
+          contractor={draft.contractor}
+          email={draft.email}
+          conversationId={conversationId}
+        />
+      ))}
     </div>
   );
 }

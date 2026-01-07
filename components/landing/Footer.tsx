@@ -41,17 +41,9 @@ const footerSections = [
   },
 ];
 
-const socialLinks = [
-  { icon: IoLogoTwitter, href: "https://twitter.com/opportuniq", label: "Twitter" },
-  { icon: IoLogoGithub, href: "https://github.com/opportuniq", label: "GitHub" },
-  { icon: IoLogoLinkedin, href: "https://linkedin.com/company/opportuniq", label: "LinkedIn" },
-  { icon: IoMail, href: "mailto:support@opportuniq.app", label: "Email" },
-];
-
 export function Footer() {
   return (
     <footer className="relative overflow-hidden" style={{ backgroundColor: "#111111" }}>
-      {/* Background Pattern */}
       <div
         className="absolute inset-0 opacity-[0.02]"
         style={{
@@ -63,8 +55,6 @@ export function Footer() {
         }}
         aria-hidden="true"
       />
-
-      {/* Glow Effect */}
       <div
         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] opacity-20"
         style={{
@@ -72,11 +62,8 @@ export function Footer() {
         }}
         aria-hidden="true"
       />
-
       <div className="relative mx-auto max-w-7xl px-6 pt-16 pb-8">
-        {/* Main Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12 pb-12 border-b border-neutral-800">
-          {/* Brand Column */}
           <div className="col-span-2">
             <Link href="/" className="inline-flex items-center gap-3 group mb-6">
               <OpportunIQLogo className="h-10 w-10 text-teal-500 transition-all duration-300 group-hover:text-teal-400" />
@@ -87,34 +74,7 @@ export function Footer() {
             <p className="text-neutral-400 text-sm mb-6 max-w-sm leading-relaxed">
               Decision intelligence for everyday life. Analyze risk, safety, and budget to make smarter choices without second-guessing.
             </p>
-
-            {/* Status Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 mb-6">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)] animate-pulse" />
-              <span className="text-xs font-medium text-emerald-400 uppercase tracking-wider">All Systems Operational</span>
-            </div>
-
-            {/* Social Links */}
-            <div className="flex items-center gap-3">
-              {socialLinks.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-lg border border-neutral-800 hover:border-teal-500/50 bg-neutral-900 hover:bg-teal-500/10 flex items-center justify-center transition-all duration-300 group"
-                    aria-label={social.label}
-                  >
-                    <Icon className="w-4 h-4 text-neutral-400 group-hover:text-teal-400 transition-colors" />
-                  </a>
-                );
-              })}
-            </div>
           </div>
-
-          {/* Navigation Columns */}
           {footerSections.map((section) => (
             <div key={section.title}>
               <h3 className="text-xs font-semibold text-teal-500 uppercase tracking-wider mb-4">

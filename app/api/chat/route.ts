@@ -121,10 +121,13 @@ export async function POST(req: Request) {
     console.timeEnd("[Chat API] Parse body");
     console.log("[Chat API] Request type:", body.type);
 
+    // Get user's name from metadata
+    const userName = user.user_metadata?.full_name || user.user_metadata?.name || null;
+
     if (body.type === "structured") {
-      return handleStructuredRequest(body, user.id, startTime);
+      return handleStructuredRequest(body, user.id, startTime, userName);
     } else if (body.type === "followup") {
-      return handleFollowUpRequest(body, user.id, startTime);
+      return handleFollowUpRequest(body, user.id, startTime, userName);
     } else {
       return new Response("Invalid request type", { status: 400 });
     }
@@ -138,7 +141,7 @@ export async function POST(req: Request) {
 // STRUCTURED REQUEST HANDLER (Initial Diagnosis)
 // ============================================================================
 
-async function handleStructuredRequest(body: StructuredRequest, userId: string, startTime: number) {
+async function handleStructuredRequest(body: StructuredRequest, userId: string, startTime: number, userName: string | null) {
   console.log("[Chat API] --- handleStructuredRequest ---");
 
   // Validate request
@@ -239,7 +242,7 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
   console.log("[Chat API] Prompt length:", systemPrompt.length);
 
   // Create tools
-  const tools = createChatTools(firecrawl, userId, conversationId);
+  const tools = createChatTools(firecrawl, userId, conversationId, userName || undefined);
   console.log("[Chat API] Tools created:", Object.keys(tools));
 
   // Build user message content (text + optional images)
@@ -464,7 +467,7 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
 // FOLLOW-UP REQUEST HANDLER
 // ============================================================================
 
-async function handleFollowUpRequest(body: FollowUpRequest, userId: string, startTime: number) {
+async function handleFollowUpRequest(body: FollowUpRequest, userId: string, startTime: number, userName: string | null) {
   const { conversationId, message, postalCode, language, attachments } = body;
 
   if (!conversationId || (!message.trim() && !attachments?.length)) {
@@ -661,7 +664,7 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
       : "You are OpportunIQ's diagnostic assistant. Continue helping with the user's issue.";
 
   // Create tools
-  const tools = createChatTools(firecrawl, userId, conversationId);
+  const tools = createChatTools(firecrawl, userId, conversationId, userName || undefined);
 
   // Track tool calls
   const allToolCalls: Array<{ name: string; args: unknown }> = [];

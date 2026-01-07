@@ -7,6 +7,7 @@ import FirecrawlApp from "@mendable/firecrawl-js";
 export interface ToolContext {
   firecrawl: FirecrawlApp | null;
   userId?: string;
+  userName?: string;
   conversationId?: string;
 }
 
