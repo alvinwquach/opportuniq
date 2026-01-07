@@ -45,59 +45,125 @@ export async function getDashboardData(userId: string) {
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
-  // PHASE 1: Get user data and groups (needed for subsequent queries)
-  const [
-    userGroups,
-    [userProfile],
-    incomeStreams,
-    budgets,
-    monthlyExpenses,
-  ] = await Promise.all([
-    // User's groups with membership info
-    db
-      .select({
-        group: groups,
-        membership: groupMembers,
-        constraints: groupConstraints,
-      })
-      .from(groupMembers)
-      .innerJoin(groups, eq(groupMembers.groupId, groups.id))
-      .leftJoin(groupConstraints, eq(groups.id, groupConstraints.groupId))
-      .where(eq(groupMembers.userId, userId)),
+  // Helper to handle database connection errors
+  const handleDbError = (error: any, operation: string) => {
+    const errorMsg = error?.message || String(error);
+    const errorCode = error?.code || error?.cause?.code;
+    
+    // Check for "Tenant or user not found" error (XX000)
+    if (
+      errorCode === "XX000" ||
+      errorMsg.includes("Tenant or user not found") ||
+      errorMsg.includes("authentication") ||
+      errorMsg.includes("password")
+    ) {
+      console.error(`[Dashboard] Database connection error in ${operation}:`, {
+        error: errorMsg,
+        code: errorCode,
+      });
+      
+      throw new Error(
+        `Database connection failed. Please check your DATABASE_URL environment variable. ` +
+        `Error: ${errorMsg}`
+      );
+    }
+    
+    throw error;
+  };
 
-    // User profile
-    db.select().from(users).where(eq(users.id, userId)),
+  try {
+    // PHASE 1: Get user data and groups (needed for subsequent queries)
+    const [
+      userGroupsResult,
+      userProfileResult,
+      incomeStreamsResult,
+      budgetsResult,
+      monthlyExpensesResult,
+    ] = await Promise.allSettled([
+      // User's groups with membership info
+      db
+        .select({
+          group: groups,
+          membership: groupMembers,
+          constraints: groupConstraints,
+        })
+        .from(groupMembers)
+        .innerJoin(groups, eq(groupMembers.groupId, groups.id))
+        .leftJoin(groupConstraints, eq(groups.id, groupConstraints.groupId))
+        .where(eq(groupMembers.userId, userId)),
 
-    // Income streams
-    db
-      .select()
-      .from(userIncomeStreams)
-      .where(
-        and(
-          eq(userIncomeStreams.userId, userId),
-          eq(userIncomeStreams.isActive, true)
-        )
-      ),
+      // User profile
+      db.select().from(users).where(eq(users.id, userId)),
 
-    // User budgets
-    db.select().from(userBudgets).where(eq(userBudgets.userId, userId)),
+      // Income streams
+      db
+        .select()
+        .from(userIncomeStreams)
+        .where(
+          and(
+            eq(userIncomeStreams.userId, userId),
+            eq(userIncomeStreams.isActive, true)
+          )
+        ),
 
-    // This month's personal expenses
-    db
-      .select({
-        total: sql<number>`COALESCE(SUM(${userExpenses.amount}), 0)`,
-      })
-      .from(userExpenses)
-      .where(
-        and(
-          eq(userExpenses.userId, userId),
-          gte(userExpenses.date, startOfMonth)
-        )
-      ),
-  ]);
+      // User budgets
+      db.select().from(userBudgets).where(eq(userBudgets.userId, userId)),
 
-  // Calculate monthly and hourly income
-  let monthlyIncome = 0;
+      // This month's personal expenses
+      db
+        .select({
+          total: sql<number>`COALESCE(SUM(${userExpenses.amount}), 0)`,
+        })
+        .from(userExpenses)
+        .where(
+          and(
+            eq(userExpenses.userId, userId),
+            gte(userExpenses.date, startOfMonth)
+          )
+        ),
+    ]);
+
+    // Check for database connection errors
+    const errors = [
+      userGroupsResult,
+      userProfileResult,
+      incomeStreamsResult,
+      budgetsResult,
+      monthlyExpensesResult,
+    ].filter((r) => r.status === "rejected");
+
+    for (const errorResult of errors) {
+      if (errorResult.status === "rejected") {
+        const error = errorResult.reason;
+        const errorMsg = error?.message || String(error);
+        const errorCode = error?.code || error?.cause?.code;
+        
+        if (
+          errorCode === "XX000" ||
+          errorMsg.includes("Tenant or user not found") ||
+          errorMsg.includes("authentication") ||
+          errorMsg.includes("password")
+        ) {
+          handleDbError(error, "database query");
+        }
+      }
+    }
+
+    // Extract results (use defaults if failed)
+    const userGroups = userGroupsResult.status === "fulfilled" ? userGroupsResult.value : [];
+    const userProfileArray = userProfileResult.status === "fulfilled" ? userProfileResult.value : [];
+    const incomeStreams = incomeStreamsResult.status === "fulfilled" ? incomeStreamsResult.value : [];
+    const budgets = budgetsResult.status === "fulfilled" ? budgetsResult.value : [];
+    const monthlyExpenses = monthlyExpensesResult.status === "fulfilled" ? monthlyExpensesResult.value : [{ total: 0 }];
+
+    const [userProfile] = userProfileArray;
+    
+    if (!userProfile) {
+      throw new Error("User profile not found");
+    }
+
+    // Calculate monthly and hourly income
+    let monthlyIncome = 0;
   for (const stream of incomeStreams) {
     const multiplier = FREQUENCY_TO_MONTHLY[stream.frequency] || 0;
     monthlyIncome += Number(stream.amount) * multiplier;
@@ -105,9 +171,9 @@ export async function getDashboardData(userId: string) {
   const annualIncome = monthlyIncome * 12;
   const hourlyRate = annualIncome / ANNUAL_HOURS;
 
-  // Get active groups
-  const activeGroups = userGroups.filter((g) => g.membership.status === "active");
-  const pendingGroups = userGroups.filter((g) => g.membership.status === "pending");
+    // Get active groups
+    const activeGroups = userGroups.filter((g) => g.membership.status === "active");
+    const pendingGroups = userGroups.filter((g) => g.membership.status === "pending");
   // Ensure groupIds is always an array (even if empty) and contains only valid UUIDs
   const groupIds: string[] = activeGroups
     .map((g) => g.group.id)
@@ -859,6 +925,32 @@ export async function getDashboardData(userId: string) {
     groupActivityFeed,
     pipelineSummary,
   };
+  } catch (error: any) {
+    const errorMsg = error?.message || String(error);
+    const errorCode = error?.code || error?.cause?.code;
+    
+    // Check for database connection errors
+    if (
+      errorCode === "XX000" ||
+      errorMsg.includes("Tenant or user not found") ||
+      errorMsg.includes("authentication") ||
+      errorMsg.includes("password")
+    ) {
+      console.error("[Dashboard] Database connection error:", {
+        error: errorMsg,
+        code: errorCode,
+      });
+      
+      throw new Error(
+        `Database connection failed. Please check your DATABASE_URL environment variable. ` +
+        `The database may be paused, or your connection string may be incorrect. ` +
+        `Error: ${errorMsg}`
+      );
+    }
+    
+    // Re-throw other errors
+    throw error;
+  }
 }
 
 export async function addIncomeStream(
