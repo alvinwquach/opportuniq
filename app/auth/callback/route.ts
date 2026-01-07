@@ -101,8 +101,42 @@ export async function GET(request: Request) {
       const result = await Promise.race([queryPromise, timeoutPromise]);
       [existingUser] = result as Awaited<typeof queryPromise>;
       console.log("[Auth Callback] Database query completed", { found: !!existingUser });
-    } catch (dbError) {
-      console.error("[Auth Callback] Database query error:", dbError);
+    } catch (dbError: any) {
+      // Enhanced error logging for database connection issues
+      const errorMessage = dbError?.message || String(dbError);
+      const errorCode = dbError?.code || dbError?.cause?.code;
+      const errorHostname = dbError?.cause?.hostname;
+      
+      console.error("[Auth Callback] Database query error:", {
+        message: errorMessage,
+        code: errorCode,
+        hostname: errorHostname,
+        isDnsError: errorCode === "ENOTFOUND",
+        isConnectionError: errorCode === "ECONNREFUSED" || errorCode === "ETIMEDOUT",
+        stack: process.env.NODE_ENV === "development" ? dbError?.stack : undefined,
+      });
+      
+      // Provide specific guidance based on error type
+      if (errorCode === "ENOTFOUND") {
+        console.error(
+          "[Auth Callback] DNS resolution failed - database hostname cannot be found.\n" +
+          "This usually means:\n" +
+          "1. The DATABASE_URL environment variable has an incorrect or outdated hostname\n" +
+          "2. The Supabase project was deleted or paused\n" +
+          "3. Network connectivity issues\n" +
+          `Hostname: ${errorHostname || "unknown"}\n` +
+          "Please verify your DATABASE_URL in your environment variables."
+        );
+      } else if (errorCode === "ECONNREFUSED" || errorCode === "ETIMEDOUT") {
+        console.error(
+          "[Auth Callback] Database connection refused or timed out.\n" +
+          "This usually means:\n" +
+          "1. The database server is down or unreachable\n" +
+          "2. Firewall or network restrictions are blocking the connection\n" +
+          "3. The connection string has incorrect port or credentials"
+        );
+      }
+      
       // If DB query fails, redirect anyway - user is authenticated in Supabase
       // Default to dashboard since we can't check role
       console.log("[Auth Callback] Redirecting to dashboard due to DB error");
