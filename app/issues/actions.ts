@@ -16,7 +16,6 @@ import {
   decisions,
   decisionOptions,
   decisionVotes,
-  decisionOutcomes,
 } from "@/app/db/schema/decisions";
 import { eq, and, desc, asc, inArray } from "drizzle-orm";
 import type { NewIssueActivityLog } from "@/app/db/schema";
