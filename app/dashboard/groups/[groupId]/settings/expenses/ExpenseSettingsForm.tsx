@@ -69,9 +69,6 @@ export function ExpenseSettingsForm({
     },
   });
 
-  const currentMode = form.useStore((state) => state.values.approvalMode);
-  const isThresholdMode = currentMode === "threshold";
-
   return (
     <form
       onSubmit={(e) => {
@@ -127,7 +124,8 @@ export function ExpenseSettingsForm({
       </div>
 
       {/* Threshold Settings - Only show when threshold mode is selected */}
-      {isThresholdMode && (
+      <form.Subscribe selector={(state) => state.values.approvalMode}>
+        {(currentMode) => currentMode === "threshold" && (
         <div className="p-5 rounded-xl bg-[#161616] border border-[#1f1f1f]">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-lg bg-[#5eead4]/10 flex items-center justify-center">
@@ -164,7 +162,8 @@ export function ExpenseSettingsForm({
             )}
           </form.Field>
         </div>
-      )}
+        )}
+      </form.Subscribe>
 
       {/* Role Settings */}
       <div className="p-5 rounded-xl bg-[#161616] border border-[#1f1f1f]">
@@ -204,42 +203,44 @@ export function ExpenseSettingsForm({
           </form.Field>
 
           {/* Moderator Threshold */}
-          {isThresholdMode && (
-            <form.Field name="moderatorThreshold">
-              {(field) => (
-                <div className="p-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a]">
-                  <div className="flex items-center justify-between mb-2">
-                    <div>
-                      <Label className="text-sm text-white">
-                        Higher Threshold for Participants
-                      </Label>
-                      <p className="text-[11px] text-[#555]">
-                        Optional: Give participants a higher auto-approval limit
-                      </p>
+          <form.Subscribe selector={(state) => state.values.approvalMode}>
+            {(currentMode) => currentMode === "threshold" && (
+              <form.Field name="moderatorThreshold">
+                {(field) => (
+                  <div className="p-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a]">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <Label className="text-sm text-white">
+                          Higher Threshold for Participants
+                        </Label>
+                        <p className="text-[11px] text-[#555]">
+                          Optional: Give participants a higher auto-approval limit
+                        </p>
+                      </div>
+                    </div>
+                    <div className="relative max-w-xs">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555] text-sm">
+                        $
+                      </span>
+                      <input
+                        type="number"
+                        placeholder="Leave empty to use default"
+                        disabled={!canEdit}
+                        value={field.state.value ?? ""}
+                        onChange={(e) =>
+                          field.handleChange(
+                            e.target.value ? Number(e.target.value) : undefined
+                          )
+                        }
+                        onBlur={field.handleBlur}
+                        className="w-full h-11 pl-7 pr-3 rounded-lg bg-[#161616] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      />
                     </div>
                   </div>
-                  <div className="relative max-w-xs">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555] text-sm">
-                      $
-                    </span>
-                    <input
-                      type="number"
-                      placeholder="Leave empty to use default"
-                      disabled={!canEdit}
-                      value={field.state.value ?? ""}
-                      onChange={(e) =>
-                        field.handleChange(
-                          e.target.value ? Number(e.target.value) : undefined
-                        )
-                      }
-                      onBlur={field.handleBlur}
-                      className="w-full h-11 pl-7 pr-3 rounded-lg bg-[#161616] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    />
-                  </div>
-                </div>
-              )}
-            </form.Field>
-          )}
+                )}
+              </form.Field>
+            )}
+          </form.Subscribe>
 
           {/* Allow Moderator Approve */}
           <form.Field name="allowModeratorApprove">
