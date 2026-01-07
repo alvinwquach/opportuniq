@@ -13,6 +13,7 @@ import {
   IoChevronForward,
   IoCard,
   IoShield,
+  IoWallet,
 } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 
@@ -164,7 +165,15 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
               className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-[#161616] transition-colors"
             >
               <IoCard className="w-4 h-4" />
-              <span className="text-sm">Income & Budget</span>
+              <span className="text-sm">Income</span>
+            </Link>
+            <Link
+              href="/dashboard/settings/budget"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-[#161616] transition-colors"
+            >
+              <IoWallet className="w-4 h-4" />
+              <span className="text-sm">Budget & Risk</span>
             </Link>
             <Link
               href="/dashboard/settings"
