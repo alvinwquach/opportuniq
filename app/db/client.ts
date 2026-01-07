@@ -21,8 +21,21 @@ if (!connectionString) {
 const isPooledConnection = 
   connectionString.includes("pgbouncer=true") || 
   connectionString.includes(":6543") ||
-  connectionString.includes("/pooler");
+  connectionString.includes("/pooler") ||
+  connectionString.includes("pooler.supabase.com");
 const isDirectConnection = connectionString.includes(":5432") && !connectionString.includes(":6543");
+const usesDirectHostname = connectionString.includes("db.") && connectionString.includes(".supabase.co:5432");
+
+// Validate connection string and provide helpful warnings
+if (usesDirectHostname && process.env.NODE_ENV === "production") {
+  console.error(
+    "[DB Client] ERROR: DATABASE_URL is using direct connection hostname in production!\n" +
+    "Direct connections (db.*.supabase.co:5432) often fail with DNS errors in serverless environments.\n" +
+    "You MUST use the pooled connection string instead:\n" +
+    "  postgresql://postgres.rmeupfihxrqbnurieevp:[PASSWORD]@aws-0-us-west-2.pooler.supabase.com:6543/postgres\n" +
+    "Get the correct connection string from: Supabase Dashboard → Settings → Database → Connection String → Pooled connection"
+  );
+}
 
 if (isDirectConnection && process.env.NODE_ENV === "development") {
   console.log(
@@ -33,8 +46,8 @@ if (isDirectConnection && process.env.NODE_ENV === "development") {
 } else if (!isPooledConnection && process.env.NODE_ENV === "production") {
   console.warn(
     "[DB Client] WARNING: DATABASE_URL may not be using Supabase pooled connection.\n" +
-    "Pooled connections should include '?pgbouncer=true' or use port 6543.\n" +
-    "Direct connections (port 5432) can cause connection limits in production."
+    "Pooled connections should include '?pgbouncer=true' or use port 6543 or hostname 'pooler.supabase.com'.\n" +
+    "Direct connections (port 5432) can cause connection limits and DNS errors in production."
   );
 }
 
@@ -50,7 +63,9 @@ if (previousConnectionString && previousConnectionString !== connectionString) {
   console.log("[DB Client] Connection string changed, resetting client");
   if (globalForDb.client) {
     // Close connection asynchronously (don't await at module level)
-    globalForDb.client.end({ timeout: 2 }).catch(() => {
+    // Use a positive timeout value to avoid negative timeout warnings
+    const closeTimeout = Math.max(1, 2); // Ensure timeout is positive
+    globalForDb.client.end({ timeout: closeTimeout }).catch(() => {
       // Ignore errors when closing
     });
   }
@@ -99,11 +114,39 @@ export async function checkDatabaseConnection(): Promise<{ success: boolean; err
   } catch (error: any) {
     // Check for circuit breaker or auth errors
     const errorMsg = error?.message || String(error);
+    const errorCode = error?.code || error?.cause?.code;
+    const errorHostname = error?.cause?.hostname;
     const isAuthError = 
       errorMsg.includes("authentication") ||
       errorMsg.includes("password") ||
       errorMsg.includes("Circuit breaker") ||
       error?.code === "28P01"; // PostgreSQL invalid password error code
+    
+    if (errorCode === "ENOTFOUND") {
+      return {
+        success: false,
+        error: `DNS resolution failed: Cannot resolve hostname "${errorHostname || "unknown"}". ` +
+               `This usually means:\n` +
+               `1. The DATABASE_URL has an incorrect or outdated hostname\n` +
+               `2. The Supabase project was deleted or paused\n` +
+               `3. Network connectivity issues\n` +
+               `4. You're using a direct connection (db.*.supabase.co) instead of pooled connection (pooler.supabase.com)\n` +
+               `Please verify your DATABASE_URL in your environment variables. ` +
+               `Get the correct connection string from Supabase Dashboard → Settings → Database → Connection String → Pooled connection.`,
+      };
+    }
+    
+    if (errorCode === "ECONNREFUSED" || errorCode === "ETIMEDOUT") {
+      return {
+        success: false,
+        error: `Connection refused or timed out (${errorCode}). ` +
+               `This usually means:\n` +
+               `1. The database server is down or unreachable\n` +
+               `2. Firewall or network restrictions are blocking the connection\n` +
+               `3. The connection string has incorrect port or credentials\n` +
+               `Please verify your DATABASE_URL and network connectivity.`,
+      };
+    }
     
     if (isAuthError) {
       return {
@@ -123,7 +166,9 @@ export async function checkDatabaseConnection(): Promise<{ success: boolean; err
 export function resetDatabaseConnection() {
   if (globalForDb.client) {
     try {
-      globalForDb.client.end({ timeout: 2 });
+      // Use a positive timeout value to avoid negative timeout warnings
+      const closeTimeout = Math.max(1, 2); // Ensure timeout is positive
+      globalForDb.client.end({ timeout: closeTimeout });
     } catch (e) {
       // Ignore errors
     }
