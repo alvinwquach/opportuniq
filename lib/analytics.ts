@@ -679,3 +679,20 @@ export function trackEmailSendFailed(props: {
 }) {
   amplitude.track("Email Send Failed", props);
 }
+
+// ============================================
+// GOOGLE CALENDAR EVENTS
+// ============================================
+
+export function trackGoogleCalendarConnected(props: {
+  source: "settings";
+}) {
+  amplitude.track("Google Calendar Connected", props);
+}
+
+export function trackGoogleCalendarConnectionFailed(props: {
+  errorCode: string;
+  source: "settings";
+}) {
+  amplitude.track("Google Calendar Connection Failed", props);
+}

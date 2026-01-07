@@ -1,9 +1,10 @@
 import { getCachedUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { db } from "@/app/db/client";
-import { gmailTokens } from "@/app/db/schema";
+import { gmailTokens, googleCalendarTokens } from "@/app/db/schema";
 import { eq } from "drizzle-orm";
 import { GmailIntegration } from "./GmailIntegration";
+import { GoogleCalendarIntegration } from "./GoogleCalendarIntegration";
 import Link from "next/link";
 
 async function getGmailConnection(userId: string) {
@@ -20,6 +21,20 @@ async function getGmailConnection(userId: string) {
   return connection || null;
 }
 
+async function getGoogleCalendarConnection(userId: string) {
+  const [connection] = await db
+    .select({
+      email: googleCalendarTokens.email,
+      isActive: googleCalendarTokens.isActive,
+      connectedAt: googleCalendarTokens.connectedAt,
+    })
+    .from(googleCalendarTokens)
+    .where(eq(googleCalendarTokens.userId, userId))
+    .limit(1);
+
+  return connection || null;
+}
+
 export default async function IntegrationsPage() {
   const user = await getCachedUser();
 
@@ -27,7 +42,10 @@ export default async function IntegrationsPage() {
     redirect("/auth/login");
   }
 
-  const gmailConnection = await getGmailConnection(user.id);
+  const [gmailConnection, googleCalendarConnection] = await Promise.all([
+    getGmailConnection(user.id),
+    getGoogleCalendarConnection(user.id),
+  ]);
 
   return (
     <div className="min-h-screen bg-[#0c0c0c]">
@@ -68,34 +86,18 @@ export default async function IntegrationsPage() {
             }
           />
 
-          {/* Placeholder for future integrations */}
-          <div className="p-6 rounded-xl bg-[#111] border border-dashed border-[#2a2a2a]">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#1a1a1a] flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-[#444]"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-[#555]">
-                  More integrations coming soon
-                </h3>
-                <p className="text-xs text-[#444] mt-0.5">
-                  Calendar sync, smart home devices, and more
-                </p>
-              </div>
-            </div>
-          </div>
+          <GoogleCalendarIntegration
+            connection={
+              googleCalendarConnection
+                ? {
+                    email: googleCalendarConnection.email,
+                    isActive: googleCalendarConnection.isActive,
+                    connectedAt:
+                      googleCalendarConnection.connectedAt.toISOString(),
+                  }
+                : null
+            }
+          />
         </div>
       </div>
     </div>
