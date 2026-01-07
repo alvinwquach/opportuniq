@@ -14,7 +14,7 @@
  * - Financial data (income/expenses/budgets) is PRIVATE to each user
  */
 
-import { pgTable, uuid, text, timestamp, integer, real, jsonb, boolean, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, integer, real, jsonb, boolean, pgEnum, decimal } from "drizzle-orm/pg-core";
 
 /**
  * PLATFORM ROLES ENUM
@@ -25,6 +25,27 @@ import { pgTable, uuid, text, timestamp, integer, real, jsonb, boolean, pgEnum }
  * - banned: Banned user - no platform access (abuse, ToS violations)
  */
 export const userRoleEnum = pgEnum("user_role", ["admin", "moderator", "user", "banned"]);
+
+/**
+ * USER RISK TOLERANCE ENUM
+ *
+ * Personal risk tolerance for DIY decision recommendations.
+ * Influences whether to suggest DIY vs hiring a professional.
+ * - none: Never DIY, always hire professionals
+ * - very_low: Very risk-averse, prefer professionals for most tasks
+ * - low: Cautious, prefer professionals for anything beyond basic repairs
+ * - moderate: Balanced approach, comfortable with common DIY tasks
+ * - high: Comfortable with most DIY tasks, hire only for specialized work
+ * - very_high: Very confident, prefer DIY for almost everything
+ */
+export const userRiskToleranceEnum = pgEnum("user_risk_tolerance", [
+  "none",
+  "very_low",
+  "low",
+  "moderate",
+  "high",
+  "very_high",
+]);
 
 /**
  * USERS TABLE
@@ -135,6 +156,22 @@ export const users = pgTable("users", {
     unitSystem?: 'imperial' | 'metric';
     currency?: 'USD' | 'EUR' | 'GBP';
   }>(),
+
+  // ============================================
+  // PERSONAL BUDGET SETTINGS
+  // ============================================
+
+  // Maximum monthly spending budget for repairs/maintenance
+  // Used to filter recommendations and warn when approaching limit
+  monthlyBudget: decimal("monthly_budget", { precision: 10, scale: 2 }),
+
+  // Emergency savings buffer reserved for unexpected major repairs
+  // Helps determine if a repair can be deferred or needs immediate attention
+  emergencyBuffer: decimal("emergency_buffer", { precision: 10, scale: 2 }),
+
+  // Personal risk tolerance for DIY recommendations
+  // Influences whether to suggest DIY vs hiring a professional
+  riskTolerance: userRiskToleranceEnum("risk_tolerance").default("moderate"),
 
   // Last user activity timestamp - updated on meaningful interactions
   // Use throttling (only update if >5 min since last update) to avoid excessive writes
