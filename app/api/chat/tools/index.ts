@@ -16,6 +16,7 @@ import { createRedditSearchTool } from "./reddit-search";
 import { createRecallCheckTool } from "./recall-check";
 import { createUtilityRebatesTool } from "./utility-rebates";
 import { createCostLookupTool } from "./cost-lookup";
+import { createDraftContractorEmailTool } from "./draft-contractor-email";
 
 // Re-export types
 export type { ToolContext } from "./types";
@@ -26,9 +27,10 @@ export type { ToolContext } from "./types";
 export function createChatTools(
   firecrawl: FirecrawlApp | null,
   userId?: string,
-  conversationId?: string
+  conversationId?: string,
+  userName?: string
 ) {
-  const ctx: ToolContext = { firecrawl, userId, conversationId };
+  const ctx: ToolContext = { firecrawl, userId, userName, conversationId };
 
   return {
     // 1. Get real cost estimates from cached data (fast - DB lookup)
@@ -48,6 +50,9 @@ export function createChatTools(
 
     // 6. Find utility rebates and tax credits (Firecrawl)
     findUtilityRebates: createUtilityRebatesTool(ctx),
+
+    // 7. Draft email to contractor (fast - text generation)
+    draftContractorEmail: createDraftContractorEmailTool(ctx),
   };
 }
 
@@ -61,4 +66,5 @@ export const TOOL_DESCRIPTIONS = {
   searchReddit: "Search Reddit for real user experiences, actual costs, and DIY advice",
   checkRecalls: "Check for product/vehicle safety recalls (CPSC, NHTSA)",
   findUtilityRebates: "Find utility rebates and federal tax credits for energy upgrades",
+  draftContractorEmail: "Generate a professional email draft to send to a contractor for quotes",
 };

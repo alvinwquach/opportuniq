@@ -1,0 +1,129 @@
+/**
+ * Gmail OAuth Callback
+ *
+ * Handles the OAuth callback from Google, exchanges the code for tokens,
+ * and stores them in the database.
+ */
+
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { db } from "@/app/db/client";
+import { gmailTokens } from "@/app/db/schema";
+import { exchangeCodeForTokens, getGmailAddress } from "@/lib/gmail";
+
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+  const error = url.searchParams.get("error");
+
+  // Handle user denying access
+  if (error) {
+    console.error("[Gmail Callback] OAuth error:", error);
+    const redirectUrl = new URL("/diagnose", req.url);
+    redirectUrl.searchParams.set("gmail_error", error);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  if (!code) {
+    return NextResponse.json(
+      { error: "No authorization code provided" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    // Authenticate user
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.redirect(new URL("/auth/login", req.url));
+    }
+
+    // Parse state to get redirect URL
+    let redirectTo = "/diagnose";
+    if (state) {
+      try {
+        const stateData = JSON.parse(
+          Buffer.from(state, "base64url").toString()
+        );
+        redirectTo = stateData.redirectTo || "/diagnose";
+
+        // Verify the state belongs to this user
+        if (stateData.userId !== user.id) {
+          console.error("[Gmail Callback] State user ID mismatch");
+          return NextResponse.redirect(
+            new URL("/diagnose?gmail_error=invalid_state", req.url)
+          );
+        }
+      } catch {
+        console.error("[Gmail Callback] Failed to parse state");
+      }
+    }
+
+    // Exchange code for tokens
+    const tokens = await exchangeCodeForTokens(code);
+
+    if (!tokens.access_token || !tokens.refresh_token) {
+      console.error("[Gmail Callback] Missing tokens:", {
+        hasAccessToken: !!tokens.access_token,
+        hasRefreshToken: !!tokens.refresh_token,
+      });
+      return NextResponse.redirect(
+        new URL("/diagnose?gmail_error=missing_tokens", req.url)
+      );
+    }
+
+    // Get the Gmail address associated with this token
+    const gmailAddress = await getGmailAddress(tokens.access_token);
+
+    // Calculate expiry time
+    const expiresAt = new Date(
+      Date.now() + (tokens.expiry_date || 3600 * 1000)
+    );
+
+    // Store tokens in database (upsert)
+    await db
+      .insert(gmailTokens)
+      .values({
+        userId: user.id,
+        gmailAddress,
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token,
+        expiresAt,
+        scopes: tokens.scope || "https://www.googleapis.com/auth/gmail.send",
+        isActive: true,
+        connectedAt: new Date(),
+      })
+      .onConflictDoUpdate({
+        target: gmailTokens.userId,
+        set: {
+          gmailAddress,
+          accessToken: tokens.access_token,
+          refreshToken: tokens.refresh_token,
+          expiresAt,
+          scopes: tokens.scope || "https://www.googleapis.com/auth/gmail.send",
+          isActive: true,
+          lastRefreshedAt: new Date(),
+        },
+      });
+
+    console.log("[Gmail Callback] Gmail connected successfully:", {
+      userId: user.id,
+      gmailAddress,
+    });
+
+    // Redirect back with success
+    const redirectUrl = new URL(redirectTo, req.url);
+    redirectUrl.searchParams.set("gmail_connected", "true");
+    return NextResponse.redirect(redirectUrl);
+  } catch (error) {
+    console.error("[Gmail Callback] Error:", error);
+    return NextResponse.redirect(
+      new URL("/diagnose?gmail_error=connection_failed", req.url)
+    );
+  }
+}

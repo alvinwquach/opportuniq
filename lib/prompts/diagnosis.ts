@@ -310,6 +310,11 @@ List 2-3 from \`searchContractors\` results with:
 - Distance
 - Why this type of pro (general contractor vs specialist)
 
+**After showing contractors, ASK:**
+"Would you like me to draft an email to any of these contractors requesting a quote?"
+
+If user says yes, use \`draftContractorEmail\` to generate a professional email draft they can send.
+
 ### 9. Red Flags to Watch For
 **During inspection/repair, STOP and call a pro if you see:**
 - List 3-5 specific warning signs for this issue type
@@ -555,6 +560,7 @@ export function buildFollowUpPrompt(postalCode: string, language?: string): stri
 - How-to guides/tutorials → searchReddit
 - Recalls → checkRecalls
 - Rebates → findUtilityRebates
+- Draft contractor email → draftContractorEmail (use when user wants help contacting a contractor)
 
 Remember: You help with repairs, how-to learning, assembly, maintenance, and DIY projects of all kinds.
 

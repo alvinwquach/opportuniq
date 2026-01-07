@@ -82,7 +82,6 @@ export default function LandingPage() {
         <TrustCluster />
 
         {/* Zone 7: Testimonials (Light) - "Do others use this?" */}
-        <Testimonials />
 
         {/* Zone 8: Final CTA (Light with gradient) - "How do I get it?" */}
         <FinalCTA />
