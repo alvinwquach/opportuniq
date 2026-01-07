@@ -151,14 +151,14 @@ export async function getDashboardData(userId: string) {
 
     // Extract results (use defaults if failed)
     const userGroups = userGroupsResult.status === "fulfilled" ? userGroupsResult.value : [];
-    const userProfile = userProfileResult.status === "fulfilled" ? userProfileResult.value : [];
+    const userProfileArray = userProfileResult.status === "fulfilled" ? userProfileResult.value : [];
     const incomeStreams = incomeStreamsResult.status === "fulfilled" ? incomeStreamsResult.value : [];
     const budgets = budgetsResult.status === "fulfilled" ? budgetsResult.value : [];
     const monthlyExpenses = monthlyExpensesResult.status === "fulfilled" ? monthlyExpensesResult.value : [{ total: 0 }];
 
-    const [userProfileData] = userProfile;
+    const [userProfile] = userProfileArray;
     
-    if (!userProfileData) {
+    if (!userProfile) {
       throw new Error("User profile not found");
     }
 
