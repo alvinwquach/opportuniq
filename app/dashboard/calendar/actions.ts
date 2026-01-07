@@ -5,6 +5,7 @@ import { db } from "@/app/db/client";
 import { diySchedules, issues, groups, groupMembers, users, userIncomeStreams, userExpenses, groupExpenses } from "@/app/db/schema";
 import { eq, and, gte, lte, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { logIssueActivity } from "@/app/issues/actions";
 
 export interface ScheduleEvent {
   id: string;
@@ -211,6 +212,22 @@ export async function createSchedule(data: {
       })
       .returning();
 
+    // Log the activity
+    await logIssueActivity({
+      issueId: data.issueId,
+      activityType: "schedule_created",
+      performedBy: membership.id,
+      title: "Scheduled DIY work",
+      description: `Scheduled for ${data.scheduledTime.toLocaleDateString()} at ${data.scheduledTime.toLocaleTimeString()}`,
+      metadata: {
+        scheduleId: newSchedule.id,
+        scheduledTime: data.scheduledTime.toISOString(),
+        participants: data.participants ?? [membership.id],
+      },
+      relatedEntityType: "schedule",
+      relatedEntityId: newSchedule.id,
+    });
+
     revalidatePath("/dashboard/calendar");
     revalidatePath("/dashboard");
 
@@ -244,6 +261,7 @@ export async function updateSchedule(
       .select({
         id: diySchedules.id,
         issueId: diySchedules.issueId,
+        scheduledTime: diySchedules.scheduledTime,
       })
       .from(diySchedules)
       .where(eq(diySchedules.id, scheduleId));
@@ -301,6 +319,28 @@ export async function updateSchedule(
       .where(eq(diySchedules.id, scheduleId))
       .returning();
 
+    // Log the activity
+    const oldTime = schedule.scheduledTime;
+    const newTime = data.scheduledTime;
+    await logIssueActivity({
+      issueId: schedule.issueId,
+      activityType: "schedule_updated",
+      performedBy: membership.id,
+      title: "Updated scheduled DIY work",
+      description: newTime
+        ? `Rescheduled from ${oldTime.toLocaleDateString()} to ${newTime.toLocaleDateString()}`
+        : "Updated schedule details",
+      oldValue: oldTime.toISOString(),
+      newValue: newTime?.toISOString(),
+      metadata: {
+        scheduleId,
+        scheduledTime: newTime?.toISOString() ?? oldTime.toISOString(),
+        participants: data.participants,
+      },
+      relatedEntityType: "schedule",
+      relatedEntityId: scheduleId,
+    });
+
     revalidatePath("/dashboard/calendar");
     revalidatePath("/dashboard");
 
@@ -327,6 +367,7 @@ export async function deleteSchedule(scheduleId: string) {
       .select({
         id: diySchedules.id,
         issueId: diySchedules.issueId,
+        scheduledTime: diySchedules.scheduledTime,
         createdBy: diySchedules.createdBy,
       })
       .from(diySchedules)
@@ -371,6 +412,21 @@ export async function deleteSchedule(scheduleId: string) {
     if (!isCreator && !canManage) {
       return { success: false, error: "Only the creator or coordinators can delete schedules" };
     }
+
+    // Log the activity before deleting
+    await logIssueActivity({
+      issueId: schedule.issueId,
+      activityType: "schedule_deleted",
+      performedBy: membership.id,
+      title: "Cancelled scheduled DIY work",
+      description: `Cancelled work scheduled for ${schedule.scheduledTime.toLocaleDateString()}`,
+      metadata: {
+        scheduleId,
+        scheduledTime: schedule.scheduledTime.toISOString(),
+      },
+      relatedEntityType: "schedule",
+      relatedEntityId: scheduleId,
+    });
 
     // Delete the schedule
     await db.delete(diySchedules).where(eq(diySchedules.id, scheduleId));
