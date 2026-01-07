@@ -81,6 +81,28 @@ export const diyPreferenceEnum = pgEnum("diy_preference", [
   "prefer_hire",
 ]);
 
+// Expense approval mode for groups
+export const expenseApprovalModeEnum = pgEnum("expense_approval_mode", [
+  "none",      // All expenses auto-approved
+  "required",  // All expenses need approval
+  "threshold", // Auto-approve under threshold amount
+]);
+
+// Category-level approval rule
+export const categoryApprovalRuleEnum = pgEnum("category_approval_rule", [
+  "use_default",      // Use group's default threshold
+  "always_require",   // Always require approval regardless of amount
+  "custom_threshold", // Use category-specific threshold
+]);
+
+// Expense approval status
+export const expenseApprovalStatusEnum = pgEnum("expense_approval_status", [
+  "auto_approved", // Approved automatically (under threshold or trusted role)
+  "pending",       // Awaiting approval
+  "approved",      // Manually approved by approver
+  "rejected",      // Rejected by approver
+]);
+
 // ============================================
 // TABLES
 // ============================================
@@ -427,3 +449,96 @@ export const groupMemberAuditLog = pgTable("group_member_audit_log", {
 
 export type GroupMemberAuditLog = typeof groupMemberAuditLog.$inferSelect;
 export type NewGroupMemberAuditLog = typeof groupMemberAuditLog.$inferInsert;
+
+// ============================================
+// EXPENSE SETTINGS & CATEGORIES
+// ============================================
+
+/**
+ * GROUP_EXPENSE_SETTINGS TABLE
+ *
+ * Configuration for expense approval workflows per group.
+ * Controls how expenses are approved: none (auto), required (all need approval),
+ * or threshold-based (auto-approve under certain amounts).
+ * Relation: One-to-one with groups (unique groupId)
+ */
+export const groupExpenseSettings = pgTable("group_expense_settings", {
+  id: uuid("id").primaryKey().defaultRandom(),
+
+  // Foreign key to groups - unique constraint ensures one-to-one relation
+  // Relation: One groupExpenseSettings → One group
+  groupId: uuid("group_id")
+    .notNull()
+    .references(() => groups.id, { onDelete: "cascade" })
+    .unique(),
+
+  // Approval mode: none (auto-approve all), required (all need approval), threshold (amount-based)
+  approvalMode: expenseApprovalModeEnum("approval_mode").notNull().default("none"),
+
+  // Default threshold for auto-approval (used when mode is "threshold")
+  // Expenses under this amount are auto-approved
+  defaultThreshold: decimal("default_threshold", { precision: 10, scale: 2 }),
+
+  // Skip approval entirely for coordinator/collaborator expenses
+  trustOwnerAdmin: boolean("trust_owner_admin").default(false).notNull(),
+
+  // Optional higher threshold for participants with moderator-like trust
+  // null = use default threshold, set value = use this threshold for moderators
+  moderatorThreshold: decimal("moderator_threshold", { precision: 10, scale: 2 }),
+
+  // Whether participants (moderator role equivalent) can approve expenses
+  allowModeratorApprove: boolean("allow_moderator_approve").default(false).notNull(),
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export type GroupExpenseSettings = typeof groupExpenseSettings.$inferSelect;
+export type NewGroupExpenseSettings = typeof groupExpenseSettings.$inferInsert;
+
+/**
+ * GROUP_EXPENSE_CATEGORIES TABLE
+ *
+ * Custom expense categories for a group with optional approval rule overrides.
+ * Categories can override the group's default approval threshold or always require approval.
+ * Relation: One group → Many categories
+ */
+export const groupExpenseCategories = pgTable("group_expense_categories", {
+  id: uuid("id").primaryKey().defaultRandom(),
+
+  // Foreign key to groups - cascade delete removes categories when group deleted
+  // Relation: Many groupExpenseCategories → One group
+  groupId: uuid("group_id")
+    .notNull()
+    .references(() => groups.id, { onDelete: "cascade" }),
+
+  // Category display name - e.g., "Groceries", "Utilities", "Major Repairs"
+  name: text("name").notNull(),
+
+  // Optional icon identifier for UI (e.g., "shopping-cart", "wrench", "bolt")
+  icon: text("icon"),
+
+  // How this category handles approval:
+  // - use_default: Use group's default threshold
+  // - always_require: Always require approval regardless of amount
+  // - custom_threshold: Use category-specific threshold below
+  approvalRule: categoryApprovalRuleEnum("approval_rule").notNull().default("use_default"),
+
+  // Custom threshold for this category (only used when approvalRule is "custom_threshold")
+  customThreshold: decimal("custom_threshold", { precision: 10, scale: 2 }),
+
+  // Display order in lists (lower = first)
+  sortOrder: integer("sort_order").default(0).notNull(),
+
+  // Who created this category
+  // Relation: Many groupExpenseCategories → One user
+  createdBy: uuid("created_by")
+    .notNull()
+    .references(() => users.id),
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export type GroupExpenseCategory = typeof groupExpenseCategories.$inferSelect;
+export type NewGroupExpenseCategory = typeof groupExpenseCategories.$inferInsert;
