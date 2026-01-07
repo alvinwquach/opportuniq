@@ -95,6 +95,50 @@ export const projectCategoryEnum = pgEnum("project_category", [
   "other",
 ]);
 
+// Resolution type: how was this issue ultimately resolved?
+export const resolutionTypeEnum = pgEnum("resolution_type", [
+  "diy",        // User fixed it themselves
+  "hired",      // Hired a professional
+  "replaced",   // Replaced the item entirely
+  "abandoned",  // Gave up / not worth fixing
+  "deferred",   // Postponed for later (with revisit date)
+  "monitoring", // Decided to watch and wait
+]);
+
+// Activity types for issue timeline/audit log
+export const issueActivityTypeEnum = pgEnum("issue_activity_type", [
+  // Status changes
+  "status_changed",
+  "issue_created",
+  "issue_reopened",
+  // Evidence/attachment actions
+  "evidence_added",
+  "evidence_removed",
+  // Diagnosis actions
+  "hypothesis_generated",
+  "diagnosis_updated",
+  // Decision actions
+  "options_generated",
+  "decision_made",
+  "decision_voted",
+  // DIY scheduling
+  "schedule_created",
+  "schedule_updated",
+  "schedule_deleted",
+  // Comments
+  "comment_added",
+  "comment_edited",
+  // Vendor/product actions
+  "vendor_contacted",
+  "vendor_added",
+  "product_purchased",
+  // Outcome tracking
+  "outcome_recorded",
+  "issue_completed",
+  // Resolution
+  "resolution_set",
+]);
+
 // ============================================
 // TABLES
 // ============================================
@@ -198,6 +242,25 @@ export const issues = pgTable("projects", {
 
   // When issue was marked complete - null if not yet completed
   completedAt: timestamp("completed_at"),
+
+  // ============================================
+  // RESOLUTION TRACKING - "How was this resolved?"
+  // ============================================
+
+  // How was this issue ultimately resolved? See resolutionTypeEnum
+  resolutionType: resolutionTypeEnum("resolution_type"),
+
+  // User notes about the resolution
+  // Example: "Fixed by replacing the capacitor - $15 part from Amazon"
+  resolutionNotes: text("resolution_notes"),
+
+  // When the resolution was set
+  resolvedAt: timestamp("resolved_at"),
+
+  // Which household member marked this resolved
+  // Relation: Many issues → One groupMember
+  resolvedBy: uuid("resolved_by")
+    .references(() => groupMembers.id),
 });
 
 /**
@@ -364,6 +427,86 @@ export const diySchedules = pgTable("diy_schedules", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+/**
+ * ISSUE_ACTIVITY_LOG TABLE
+ *
+ * Comprehensive audit trail for all issue-related events.
+ * Creates a complete timeline from creation to resolution.
+ * Follows pattern from groupInvitationAuditLog/groupMemberAuditLog.
+ *
+ * Relation: One issue → Many activity log entries
+ */
+export const issueActivityLog = pgTable("issue_activity_log", {
+  id: uuid("id").primaryKey().defaultRandom(),
+
+  // Foreign key to issues - cascade delete removes logs when issue deleted
+  // Relation: Many issueActivityLog → One issue
+  issueId: uuid("issue_id")
+    .notNull()
+    .references(() => issues.id, { onDelete: "cascade" }),
+
+  // Type of activity - see issueActivityTypeEnum
+  activityType: issueActivityTypeEnum("activity_type").notNull(),
+
+  // Who performed this action (null for system/AI actions)
+  // Relation: Many issueActivityLog → One groupMember (optional)
+  performedBy: uuid("performed_by")
+    .references(() => groupMembers.id),
+
+  // Human-readable title for timeline display
+  // Example: "Status changed to In Progress", "Added photo evidence"
+  title: text("title").notNull(),
+
+  // Optional longer description
+  description: text("description"),
+
+  // For state changes - what was the previous value?
+  // Example: "open" (for status changes)
+  oldValue: text("old_value"),
+
+  // For state changes - what is the new value?
+  // Example: "in_progress" (for status changes)
+  newValue: text("new_value"),
+
+  // Flexible metadata for activity-specific data
+  metadata: jsonb("metadata").$type<{
+    // For evidence_added
+    evidenceId?: string;
+    evidenceType?: string;
+    fileName?: string;
+    // For decision_made
+    decisionId?: string;
+    optionId?: string;
+    optionType?: string;
+    // For schedule actions
+    scheduleId?: string;
+    scheduledTime?: string;
+    participants?: string[];
+    // For vendor actions
+    vendorId?: string;
+    vendorName?: string;
+    // For outcome
+    outcomeId?: string;
+    success?: boolean;
+    actualCost?: number;
+    // For resolution
+    resolutionType?: string;
+    resolutionReason?: string;
+    // For comments
+    commentId?: string;
+    // For hypotheses
+    hypothesisCount?: number;
+    topHypothesis?: string;
+    confidence?: number;
+  }>(),
+
+  // Link to related entity for deep linking in UI
+  relatedEntityType: text("related_entity_type"), // "evidence", "decision", "schedule", "vendor", "comment", "outcome"
+  relatedEntityId: uuid("related_entity_id"),
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Type exports for type-safe queries
 export type Issue = typeof issues.$inferSelect;
 export type NewIssue = typeof issues.$inferInsert;
@@ -379,3 +522,6 @@ export type NewIssueComment = typeof issueComments.$inferInsert;
 
 export type DiySchedule = typeof diySchedules.$inferSelect;
 export type NewDiySchedule = typeof diySchedules.$inferInsert;
+
+export type IssueActivityLog = typeof issueActivityLog.$inferSelect;
+export type NewIssueActivityLog = typeof issueActivityLog.$inferInsert;
