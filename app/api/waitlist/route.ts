@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
       await db
         .update(waitlist)
         .set({
-          referralCount: sql`COALESCE(referral_count, 0) + 1`,
+          referralCount: sql`(COALESCE(referral_count::int, 0) + 1)::text`,
         })
         .where(eq(waitlist.myReferralCode, referralCode));
     }
