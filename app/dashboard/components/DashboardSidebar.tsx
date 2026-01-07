@@ -36,7 +36,7 @@ const sidebarLinks = [
   { href: "/dashboard/diagnose", icon: IoScan, label: "Diagnose" },
   { href: "/issues", icon: IoAlertCircle, label: "Issues" },
   { href: "/dashboard/groups", icon: IoPeople, label: "Groups" },
-  { href: "/calendar", icon: IoCalendar, label: "Calendar" },
+  { href: "/dashboard/calendar", icon: IoCalendar, label: "Calendar" },
   { href: "/guides", icon: IoBook, label: "Guides" },
   { href: "/dashboard/settings", icon: IoSettings, label: "Settings" },
 ];
