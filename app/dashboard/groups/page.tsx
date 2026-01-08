@@ -7,7 +7,7 @@ import {
 import { getUserGroups } from "./actions";
 import { CreateGroupDialog } from "../components/sections/CreateGroupDialog";
 import { formatDistanceToNow } from "date-fns";
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 function getRoleColor(role: string) {
@@ -24,7 +24,7 @@ function getRoleColor(role: string) {
 }
 
 export default async function Groups() {
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/auth/login");

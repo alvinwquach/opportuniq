@@ -31,7 +31,7 @@ export async function proxy(request: NextRequest) {
 
   // OPTIMIZED: Use getSession() for session refresh (lighter than getUser())
   // Only refresh session for protected routes to minimize API calls
-  // Layouts will use getCachedUser() which dedupes within the same request
+  // Layouts will use getCurrentUser() which dedupes within the same request
   const { pathname } = request.nextUrl;
   
   // Exclude static assets, API routes, and Next.js internals from auth checks

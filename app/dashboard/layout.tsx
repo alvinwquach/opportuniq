@@ -1,4 +1,4 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { db } from "@/app/db/client";
 import { users, userIncomeStreams, groups, groupMembers } from "@/app/db/schema";
@@ -26,7 +26,7 @@ export default async function DashboardLayout({
 }) {
   // Use cached getUser() - dedupes calls within the same request
   // Middleware already validated, but we cache to prevent duplicate API calls
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/auth/login?redirect=/dashboard");

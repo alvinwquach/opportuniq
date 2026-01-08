@@ -1,10 +1,10 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { getExpenseData } from "./actions";
 import { ExpenseManager } from "./ExpenseManager";
 
 export default async function ExpensesPage() {
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/auth/login");

@@ -1,9 +1,9 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { LogoutClient } from "./LogoutClient";
 
 export default async function LogoutPage() {
   // Use cached getUser() to prevent duplicate API calls
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   // Pass whether user is logged in - show appropriate state
   return <LogoutClient isLoggedIn={!!user} />;

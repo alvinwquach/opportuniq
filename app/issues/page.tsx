@@ -1,4 +1,4 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { db } from "@/app/db/client";
 import { issues, groups, groupMembers } from "@/app/db/schema";
@@ -30,7 +30,7 @@ function getStatusConfig(status: string) {
 }
 
 export default async function IssuesPage() {
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/auth/login?redirect=/issues");

@@ -1,4 +1,4 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { getIssueDetails, getIssueTimeline } from "../actions";
 import { IssueDetailClient } from "./IssueDetailClient";
@@ -13,7 +13,7 @@ interface IssueDetailPageProps {
 
 export default async function IssueDetailPage({ params }: IssueDetailPageProps) {
   const { id } = await params;
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect(`/auth/login?redirect=/issues/${id}`);

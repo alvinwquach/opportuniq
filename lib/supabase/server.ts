@@ -1,6 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { cache } from "react";
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -28,14 +27,3 @@ export async function createClient() {
     }
   );
 }
-
-// Cache getUser() calls within the same request to prevent duplicate API calls
-// This dramatically reduces auth requests while maintaining security
-export const getCachedUser = cache(async () => {
-  const supabase = await createClient();
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if (error || !user) {
-    return null;
-  }
-  return user;
-});

@@ -1,4 +1,4 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { getDashboardData } from "./actions";
 import { getLocationWeatherData } from "./weather-actions";
@@ -35,7 +35,7 @@ export const revalidate = 0;
 export default async function Dashboard() {
   // Use cached getUser() - dedupes calls within the same request
   // Layout already validated, but we cache to prevent duplicate API calls
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/auth/login?redirect=/dashboard");

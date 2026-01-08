@@ -1,11 +1,11 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { getIncomeData } from "./actions";
 import { IncomeManager } from "./IncomeManager";
 
 export default async function IncomePage() {
   // Use cached getUser() to prevent duplicate API calls
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/auth/login");
