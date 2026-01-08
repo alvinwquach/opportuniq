@@ -10,39 +10,40 @@ import { OpportunIQLogo } from "@/components/landing/OpportunIQLogo";
 import amplitude from "@/amplitude";
 
 interface JoinClientProps {
-  alphaToken?: string | null;
+  inviteToken?: string | null;
   urlReferralCode?: string | null;
 }
 
-export function JoinClient({ alphaToken, urlReferralCode }: JoinClientProps) {
+export function JoinClient({ inviteToken, urlReferralCode }: JoinClientProps) {
   const [referralCode, setReferralCode] = useState(urlReferralCode || "");
   const [validating, setValidating] = useState(false);
   const [validated, setValidated] = useState(false);
   const [referrerName, setReferrerName] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteTier, setInviteTier] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState<string | null>(null);
 
-  // Auto-validate alpha token on mount
+  // Auto-validate invite token on mount
   useEffect(() => {
-    if (alphaToken) {
-      validateAlphaToken(alphaToken);
+    if (inviteToken) {
+      validateInviteToken(inviteToken);
     }
-  }, [alphaToken]);
+  }, [inviteToken]);
 
   // Auto-validate referral code from URL
   useEffect(() => {
-    if (urlReferralCode && !alphaToken) {
+    if (urlReferralCode && !inviteToken) {
       validateReferralCode(urlReferralCode);
     }
-  }, [urlReferralCode, alphaToken]);
+  }, [urlReferralCode, inviteToken]);
 
-  const validateAlphaToken = async (token: string) => {
+  const validateInviteToken = async (token: string) => {
     setValidating(true);
     setError("");
 
     try {
-      const res = await fetch("/api/alpha/validate", {
+      const res = await fetch("/api/invite/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
@@ -54,18 +55,20 @@ export function JoinClient({ alphaToken, urlReferralCode }: JoinClientProps) {
         setValidated(true);
         setInviteEmail(data.email);
         setReferrerName(data.invitedBy);
-        amplitude.track("Alpha Token Validated", {
+        setInviteTier(data.tier);
+        amplitude.track("Invite Token Validated", {
           hasInviteEmail: !!data.email,
+          tier: data.tier,
         });
       } else {
         setError(data.error);
-        amplitude.track("Alpha Token Invalid", {
+        amplitude.track("Invite Token Invalid", {
           error: data.error,
         });
       }
     } catch {
       setError("Failed to validate invite");
-      amplitude.track("Alpha Token Validation Failed", {
+      amplitude.track("Invite Token Validation Failed", {
         error: "Network error",
       });
     } finally {
@@ -124,7 +127,7 @@ export function JoinClient({ alphaToken, urlReferralCode }: JoinClientProps) {
 
     amplitude.track("Join Sign Up Started", {
       provider,
-      hasAlphaToken: !!alphaToken,
+      hasInviteToken: !!inviteToken,
       hasReferralCode: !!referralCode,
     });
 
@@ -134,8 +137,8 @@ export function JoinClient({ alphaToken, urlReferralCode }: JoinClientProps) {
     let redirectUrl = `${window.location.origin}/auth/callback`;
     const params = new URLSearchParams();
 
-    if (alphaToken) {
-      params.set("alpha_token", alphaToken);
+    if (inviteToken) {
+      params.set("invite_token", inviteToken);
     } else if (referralCode) {
       params.set("ref", referralCode.trim().toUpperCase());
     }
@@ -161,8 +164,17 @@ export function JoinClient({ alphaToken, urlReferralCode }: JoinClientProps) {
     }
   };
 
-  // Alpha invite flow
-  if (alphaToken) {
+  // Tier display config
+  const tierConfig: Record<string, { label: string; color: string; bg: string; border: string }> = {
+    johatsu: { label: "Johatsu Access", color: "text-rose-400", bg: "bg-rose-500/10", border: "border-rose-500/30" },
+    alpha: { label: "Alpha Access", color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/30" },
+    beta: { label: "Beta Access", color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30" },
+  };
+
+  const currentTier = tierConfig[inviteTier || "alpha"] || tierConfig.alpha;
+
+  // Admin invite flow (johatsu, alpha, beta)
+  if (inviteToken) {
     return (
       <div className="min-h-screen bg-[#000000] flex items-center justify-center p-6">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.08)_0%,transparent_70%)]" />
@@ -191,10 +203,10 @@ export function JoinClient({ alphaToken, urlReferralCode }: JoinClientProps) {
               </div>
             ) : validated ? (
               <div className="space-y-6">
-                <div className="p-4 rounded-lg bg-[#00F0FF]/10 border border-[#00F0FF]/30">
-                  <div className="flex items-center justify-center gap-2 text-[#00F0FF] mb-2">
+                <div className={`p-4 rounded-lg ${currentTier.bg} ${currentTier.border} border`}>
+                  <div className={`flex items-center justify-center gap-2 ${currentTier.color} mb-2`}>
                     <IoSparkles className="h-5 w-5" />
-                    <span className="font-medium">Alpha Access</span>
+                    <span className="font-medium">{currentTier.label}</span>
                   </div>
                   <p className="text-slate-400 text-sm">
                     You&apos;ve been invited by <span className="text-white font-medium">{referrerName}</span>

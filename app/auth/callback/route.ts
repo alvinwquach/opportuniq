@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   const errorParam = searchParams.get("error");
   const invitationToken = searchParams.get("token"); // From group magic link
-  const alphaToken = searchParams.get("alpha_token"); // From admin alpha invite
+  const inviteToken = searchParams.get("invite_token"); // From admin invite (johatsu/alpha/beta)
   const referralCode = searchParams.get("ref"); // From beta referral
   const next = searchParams.get("next") ?? "/";
 
@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     error: errorParam,
     errorCode: searchParams.get("error_code"),
     hasInvitationToken: !!invitationToken,
-    hasAlphaToken: !!alphaToken,
+    hasInviteToken: !!inviteToken,
     hasReferralCode: !!referralCode,
     next,
     origin,
@@ -171,11 +171,11 @@ export async function GET(request: Request) {
         let referredById: string | null = null;
 
         // Check for invite token (johatsu, alpha, or beta)
-        if (alphaToken && !isAdmin) {
+        if (inviteToken && !isAdmin) {
           const [invite] = await db
             .select()
             .from(invites)
-            .where(eq(invites.token, alphaToken));
+            .where(eq(invites.token, inviteToken));
 
           if (invite && !invite.acceptedAt && new Date() < invite.expiresAt) {
             accessTier = invite.tier as "johatsu" | "alpha" | "beta";
@@ -187,10 +187,10 @@ export async function GET(request: Request) {
               .set({ acceptedAt: new Date(), userId })
               .where(eq(invites.id, invite.id));
 
-            console.log("[Auth Callback] Invite accepted", { token: alphaToken, invitedBy: referredById, accessTier });
+            console.log("[Auth Callback] Invite accepted", { token: inviteToken, invitedBy: referredById, accessTier });
           } else {
             // Invalid or expired token - redirect to error
-            console.log("[Auth Callback] Invalid invite token", { token: alphaToken });
+            console.log("[Auth Callback] Invalid invite token", { token: inviteToken });
             return NextResponse.redirect(`${origin}/join?error=invalid_invite`);
           }
         }

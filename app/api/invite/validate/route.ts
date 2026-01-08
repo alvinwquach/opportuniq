@@ -4,7 +4,7 @@ import { invites, users } from "@/app/db/schema";
 import { eq } from "drizzle-orm";
 
 /**
- * POST /api/alpha/validate
+ * POST /api/invite/validate
  * Validates an invite token (johatsu, alpha, or beta tier)
  */
 export async function POST(request: Request) {
