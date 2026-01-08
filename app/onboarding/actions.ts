@@ -1,7 +1,7 @@
 
 "use server";
 
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { db } from "@/app/db/client";
 import { users } from "@/app/db/schema";
 import { eq } from "drizzle-orm";
@@ -25,7 +25,7 @@ export async function completeOnboarding(data: {
   });
 
   // Use cached getUser() to prevent duplicate API calls
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     console.error("[Onboarding Action] Auth error: No user");

@@ -1,9 +1,9 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { SettingsNav } from "./components/SettingsNav";
 
 export default async function SettingsPage() {
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/auth/login");

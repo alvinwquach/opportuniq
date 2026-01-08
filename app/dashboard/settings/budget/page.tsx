@@ -1,10 +1,10 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { getBudgetSettings } from "./actions";
 import { BudgetSettingsForm } from "./BudgetSettingsForm";
 
 export default async function BudgetSettingsPage() {
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/auth/login");

@@ -1,4 +1,4 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { getGroupDetails } from "../actions";
 import { GroupDashboard } from "./GroupDashboard";
@@ -10,7 +10,7 @@ interface GroupPageProps {
 }
 
 export default async function GroupPage({ params }: GroupPageProps) {
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/auth/login");

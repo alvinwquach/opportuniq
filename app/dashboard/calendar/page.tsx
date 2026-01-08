@@ -1,4 +1,4 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import {
   getUserSchedules,
@@ -13,7 +13,7 @@ import { IoCalendar } from "react-icons/io5";
 export const dynamic = "force-dynamic";
 
 export default async function CalendarPage() {
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/auth/login?redirect=/dashboard/calendar");

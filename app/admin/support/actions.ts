@@ -1,6 +1,6 @@
 "use server";
 
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { db } from "@/app/db/client";
 import { chatSessions, chatMessages, users } from "@/app/db/schema";
 import { eq, and, isNull, desc, sql, or } from "drizzle-orm";
@@ -26,7 +26,7 @@ function getAdminName(email: string): "Alvin" | "Kevin" {
 
 export async function getSupportData() {
   // Use cached getUser() to prevent duplicate API calls
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     throw new Error("Unauthorized");
@@ -112,7 +112,7 @@ export async function getSupportData() {
 
 export async function getChatMessages(userId: string) {
   // Use cached getUser() to prevent duplicate API calls
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     throw new Error("Unauthorized");
@@ -166,7 +166,7 @@ export async function sendSupportMessage(
   content: string
 ) {
   // Use cached getUser() to prevent duplicate API calls
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     throw new Error("Unauthorized");

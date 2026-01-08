@@ -1,4 +1,4 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import OnboardingClient from "./OnboardingClient";
 
@@ -14,7 +14,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
 
   if (!isPreview) {
     // Use cached getUser() to prevent duplicate API calls
-    const user = await getCachedUser();
+    const user = await getCurrentUser();
 
     if (!user) {
       redirect("/auth/login");

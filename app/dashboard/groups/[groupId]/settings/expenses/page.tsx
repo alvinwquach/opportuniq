@@ -1,4 +1,4 @@
-import { getCachedUser } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { IoArrowBack } from "react-icons/io5";
 import Link from "next/link";
@@ -14,7 +14,7 @@ interface ExpenseSettingsPageProps {
 }
 
 export default async function ExpenseSettingsPage({ params }: ExpenseSettingsPageProps) {
-  const user = await getCachedUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/auth/login");
