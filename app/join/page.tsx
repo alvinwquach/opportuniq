@@ -6,8 +6,8 @@ interface JoinPageProps {
 
 export default async function JoinPage({ searchParams }: JoinPageProps) {
   const params = await searchParams;
-  const alphaToken = params.token ?? null;
+  const inviteToken = params.token ?? null;
   const urlReferralCode = params.ref ?? null;
 
-  return <JoinClient alphaToken={alphaToken} urlReferralCode={urlReferralCode} />;
+  return <JoinClient inviteToken={inviteToken} urlReferralCode={urlReferralCode} />;
 }
