@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { db } from "@/app/db/client";
-import { alphaInvites, users } from "@/app/db/schema";
+import { invites, users } from "@/app/db/schema";
 import { eq } from "drizzle-orm";
 
 /**
  * POST /api/alpha/validate
- * Validates an alpha invite token
+ * Validates an invite token (johatsu, alpha, or beta tier)
  */
 export async function POST(request: Request) {
   try {
@@ -18,17 +18,17 @@ export async function POST(request: Request) {
       );
     }
 
-    // Look up the alpha invite
     const [invite] = await db
       .select({
-        id: alphaInvites.id,
-        email: alphaInvites.email,
-        acceptedAt: alphaInvites.acceptedAt,
-        expiresAt: alphaInvites.expiresAt,
-        invitedBy: alphaInvites.invitedBy,
+        id: invites.id,
+        email: invites.email,
+        acceptedAt: invites.acceptedAt,
+        expiresAt: invites.expiresAt,
+        invitedBy: invites.invitedBy,
+        tier: invites.tier,
       })
-      .from(alphaInvites)
-      .where(eq(alphaInvites.token, token));
+      .from(invites)
+      .where(eq(invites.token, token));
 
     if (!invite) {
       return NextResponse.json(
@@ -62,10 +62,11 @@ export async function POST(request: Request) {
     return NextResponse.json({
       valid: true,
       email: invite.email,
+      tier: invite.tier,
       invitedBy: inviter?.name || "OpportunIQ Team",
     });
   } catch (error) {
-    console.error("[Alpha Validate] Error:", error);
+    console.error("[Invite Validate] Error:", error);
     return NextResponse.json(
       { valid: false, error: "Something went wrong" },
       { status: 500 }

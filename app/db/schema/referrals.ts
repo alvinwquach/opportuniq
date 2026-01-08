@@ -171,38 +171,6 @@ export const invites = pgTable("invites", {
   emailSent: boolean("email_sent").default(false).notNull(),
 });
 
-/**
- * ALPHA INVITES TABLE (Legacy - kept for backward compatibility)
- *
- * @deprecated Use `invites` table instead
- * Tracks direct alpha invitations from admin.
- * These are the seed users who can then refer beta users.
- */
-export const alphaInvites = pgTable("alpha_invites", {
-  id: uuid("id").primaryKey().defaultRandom(),
-
-  // Email to invite
-  email: text("email").notNull().unique(),
-
-  // Unique invite token for this alpha user
-  token: text("token").notNull().unique(),
-
-  // Who sent the invite (admin user)
-  invitedBy: uuid("invited_by").references(() => users.id).notNull(),
-
-  // Has the invite been accepted?
-  acceptedAt: timestamp("accepted_at"),
-
-  // The user account created when accepting
-  userId: uuid("user_id").references(() => users.id),
-
-  // When the invite expires
-  expiresAt: timestamp("expires_at").notNull(),
-
-  // When the invite was created
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
 // Type exports for type-safe queries
 export type ReferralCode = typeof referralCodes.$inferSelect;
 export type NewReferralCode = typeof referralCodes.$inferInsert;
@@ -210,7 +178,3 @@ export type Referral = typeof referrals.$inferSelect;
 export type NewReferral = typeof referrals.$inferInsert;
 export type Invite = typeof invites.$inferSelect;
 export type NewInvite = typeof invites.$inferInsert;
-/** @deprecated Use Invite instead */
-export type AlphaInvite = typeof alphaInvites.$inferSelect;
-/** @deprecated Use NewInvite instead */
-export type NewAlphaInvite = typeof alphaInvites.$inferInsert;

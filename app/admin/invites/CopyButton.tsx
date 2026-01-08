@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IoCopy, IoCheckmarkCircle } from "react-icons/io5";
+import { IoCopy, IoCheckmark } from "react-icons/io5";
 
 export function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -15,18 +15,17 @@ export function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-1 px-2 py-1 rounded text-[11px] text-[#5eead4] hover:bg-[#5eead4]/10 transition-colors"
+      className={`p-1.5 rounded transition-colors ${
+        copied
+          ? "text-emerald-400 bg-emerald-500/10"
+          : "text-[#555] hover:text-white hover:bg-[#1f1f1f]"
+      }`}
+      title="Copy invite link"
     >
       {copied ? (
-        <>
-          <IoCheckmarkCircle className="h-3 w-3" />
-          Copied
-        </>
+        <IoCheckmark className="h-3.5 w-3.5" />
       ) : (
-        <>
-          <IoCopy className="h-3 w-3" />
-          Copy
-        </>
+        <IoCopy className="h-3.5 w-3.5" />
       )}
     </button>
   );

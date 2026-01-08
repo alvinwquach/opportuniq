@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { db } from "@/app/db/client";
-import { users, groupMembers, groupInvitations, alphaInvites, referralCodes, referrals } from "@/app/db/schema";
+import { users, groupMembers, groupInvitations, invites, referralCodes, referrals } from "@/app/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { generateReferralCode } from "@/lib/referral";
 
@@ -170,27 +170,27 @@ export async function GET(request: Request) {
         let accessTier: "johatsu" | "alpha" | "beta" | "public" = isAdmin ? "johatsu" : "alpha"; 
         let referredById: string | null = null;
 
-        // Check for alpha invite token
+        // Check for invite token (johatsu, alpha, or beta)
         if (alphaToken && !isAdmin) {
-          const [alphaInvite] = await db
+          const [invite] = await db
             .select()
-            .from(alphaInvites)
-            .where(eq(alphaInvites.token, alphaToken));
+            .from(invites)
+            .where(eq(invites.token, alphaToken));
 
-          if (alphaInvite && !alphaInvite.acceptedAt && new Date() < alphaInvite.expiresAt) {
-            accessTier = "alpha";
-            referredById = alphaInvite.invitedBy;
+          if (invite && !invite.acceptedAt && new Date() < invite.expiresAt) {
+            accessTier = invite.tier as "johatsu" | "alpha" | "beta";
+            referredById = invite.invitedBy;
 
-            // Mark alpha invite as accepted
+            // Mark invite as accepted
             await db
-              .update(alphaInvites)
+              .update(invites)
               .set({ acceptedAt: new Date(), userId })
-              .where(eq(alphaInvites.id, alphaInvite.id));
+              .where(eq(invites.id, invite.id));
 
-            console.log("[Auth Callback] Alpha invite accepted", { alphaToken, invitedBy: referredById });
+            console.log("[Auth Callback] Invite accepted", { token: alphaToken, invitedBy: referredById, accessTier });
           } else {
-            // Invalid or expired alpha token - redirect to error
-            console.log("[Auth Callback] Invalid alpha token", { alphaToken });
+            // Invalid or expired token - redirect to error
+            console.log("[Auth Callback] Invalid invite token", { token: alphaToken });
             return NextResponse.redirect(`${origin}/join?error=invalid_invite`);
           }
         }
