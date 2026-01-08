@@ -1,5 +1,8 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/supabase/server";
+import { db } from "@/app/db/client";
+import { users } from "@/app/db/schema";
+import { eq } from "drizzle-orm";
 import { LoginClient } from "./LoginClient";
 
 interface LoginPageProps {
@@ -12,13 +15,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   let user = null;
   try {
     const getUserPromise = getCurrentUser();
-    const timeoutPromise = new Promise<null>((resolve) => 
+    const timeoutPromise = new Promise<null>((resolve) =>
       setTimeout(() => {
         console.warn("[Login Page] Auth check timed out - proceeding to login form");
         resolve(null);
       }, 3000)
     );
-    
+
     user = await Promise.race([getUserPromise, timeoutPromise]);
   } catch (error) {
     console.error("[Login Page] Auth check error:", error);
@@ -26,6 +29,11 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   }
 
   if (user) {
+    // Check if user is admin to redirect appropriately
+    const [userData] = await db.select({ role: users.role }).from(users).where(eq(users.id, user.id));
+    if (userData?.role === "admin") {
+      redirect("/admin");
+    }
     redirect("/dashboard");
   }
 
