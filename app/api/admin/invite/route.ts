@@ -90,7 +90,7 @@ export async function POST(request: Request) {
       const newExpiresAt = new Date();
       newExpiresAt.setDate(newExpiresAt.getDate() + 30);
 
-      const inviteLink = `https://www.opportuniq.app/join/${newToken}`;
+      const inviteLink = `https://www.opportuniq.app/join?token=${newToken}`;
 
       // Send email if requested
       let emailSent = false;
@@ -121,7 +121,7 @@ export async function POST(request: Request) {
     expiresAt.setDate(expiresAt.getDate() + 30);
 
     // Always use production domain for invite links
-    const inviteLink = `https://www.opportuniq.app/join/${token}`;
+    const inviteLink = `https://www.opportuniq.app/join?token=${token}`;
 
     // Send email if requested
     let emailSent = false;
