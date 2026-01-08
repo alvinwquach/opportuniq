@@ -55,11 +55,9 @@ export default async function Invites() {
               <span className="text-[#666]">{expiredCount} expired</span>
             </div>
           </div>
-          <InviteFormCompact />
+          <InviteForm />
         </div>
       </div>
-
-      {/* Table */}
       <div className="flex-1 overflow-auto">
         {allInvites.length === 0 ? (
           <div className="flex items-center justify-center h-full">
