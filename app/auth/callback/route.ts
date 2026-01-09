@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import { db } from "@/app/db/client";
 import { users, groupMembers, groupInvitations, invites, referralCodes, referrals } from "@/app/db/schema";
@@ -49,10 +49,49 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/auth/error?error=${encodeURIComponent(errorParam)}&description=${encodeURIComponent(errorDescription)}`, { status: 302 });
   }
 
+  // Create Supabase client with request cookies for PKCE code verifier
+  // This is critical: PKCE code verifier must be read from request cookies
+  let supabaseResponse = NextResponse.next();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY! || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    {
+      cookies: {
+        getAll() {
+          // Read cookies from the incoming request headers
+          // This ensures we can access the PKCE code verifier stored by the browser client
+          const cookieHeader = request.headers.get("cookie") || "";
+          const cookies: { name: string; value: string }[] = [];
+          
+          if (cookieHeader) {
+            cookieHeader.split(";").forEach((cookie) => {
+              const trimmed = cookie.trim();
+              const equalIndex = trimmed.indexOf("=");
+              if (equalIndex > 0) {
+                const name = trimmed.substring(0, equalIndex).trim();
+                const value = trimmed.substring(equalIndex + 1).trim();
+                if (name) {
+                  cookies.push({ name, value });
+                }
+              }
+            });
+          }
+          
+          return cookies;
+        },
+        setAll(cookiesToSet) {
+          // Set cookies on the response so they persist
+          cookiesToSet.forEach(({ name, value, options }) => {
+            supabaseResponse.cookies.set(name, value, options);
+          });
+        },
+      },
+    }
+  );
+
   if (code) {
     // CRITICAL: Exchange code IMMEDIATELY - codes expire in ~60 seconds
     // Do this BEFORE any database queries
-    const supabase = await createClient();
     
     console.log("[Auth Callback] Exchanging code for session (must be fast)", { codeLength: code.length });
     
@@ -72,15 +111,15 @@ export async function GET(request: Request) {
       
       // If code expired or invalid, redirect to login
       if (error.message.includes("expired") || error.message.includes("invalid") || error.message.includes("flow_state")) {
-        return NextResponse.redirect(`${origin}/auth/login?error=expired`);
+        return NextResponse.redirect(`${origin}/auth/login?error=expired`, { status: 302 });
       }
       
-      return NextResponse.redirect(`${origin}/auth/error?error=${encodeURIComponent(error.message)}`);
+      return NextResponse.redirect(`${origin}/auth/error?error=${encodeURIComponent(error.message)}`, { status: 302 });
     }
 
     if (!data?.user) {
       console.error("[Auth Callback] No user in session data");
-      return NextResponse.redirect(`${origin}/auth/error`);
+      return NextResponse.redirect(`${origin}/auth/error`, { status: 302 });
     }
 
     const userId = data.user.id;
@@ -140,7 +179,8 @@ export async function GET(request: Request) {
       // If DB query fails, redirect anyway - user is authenticated in Supabase
       // Default to dashboard since we can't check role
       console.log("[Auth Callback] Redirecting to dashboard due to DB error");
-      return NextResponse.redirect(`${origin}/dashboard`, { status: 302 });
+      supabaseResponse = NextResponse.redirect(`${origin}/dashboard`, { status: 302 });
+      return supabaseResponse;
     }
 
     const isNewUser = !existingUser;
@@ -191,7 +231,7 @@ export async function GET(request: Request) {
           } else {
             // Invalid or expired token - redirect to error
             console.log("[Auth Callback] Invalid invite token", { token: inviteToken });
-            return NextResponse.redirect(`${origin}/join?error=invalid_invite`);
+            return NextResponse.redirect(`${origin}/join?error=invalid_invite`, { status: 302 });
           }
         }
         // Check for beta referral code
@@ -233,18 +273,18 @@ export async function GET(request: Request) {
               console.log("[Auth Callback] Beta referral accepted", { referralCode, referredBy: referredById });
             } else {
               console.log("[Auth Callback] Referral code max uses reached", { referralCode });
-              return NextResponse.redirect(`${origin}/join?error=code_exhausted`);
+              return NextResponse.redirect(`${origin}/join?error=code_exhausted`, { status: 302 });
             }
           } else {
             console.log("[Auth Callback] Invalid referral code", { referralCode });
-            return NextResponse.redirect(`${origin}/join?error=invalid_code`);
+            return NextResponse.redirect(`${origin}/join?error=invalid_code`, { status: 302 });
           }
         }
         // No valid access method for non-admin
         else if (!isAdmin) {
           // Block public signups - redirect to join page
           console.log("[Auth Callback] No access token - blocking signup");
-          return NextResponse.redirect(`${origin}/join?error=access_required`);
+          return NextResponse.redirect(`${origin}/join?error=access_required`, { status: 302 });
         }
 
         // Generate a referral code for this new user
@@ -349,22 +389,23 @@ export async function GET(request: Request) {
               console.log("[Auth Callback] New user with invitation → redirecting to onboarding", {
                 redirectAfter: `/groups/${invitation.groupId}/pending`,
               });
-              return NextResponse.redirect(
-                `${origin}/onboarding?redirect=/groups/${invitation.groupId}/pending`
-              );
+              const redirectUrl = `${origin}/onboarding?redirect=/groups/${invitation.groupId}/pending`;
+              supabaseResponse = NextResponse.redirect(redirectUrl, { status: 302 });
+              return supabaseResponse;
             }
 
             // EXISTING USERS with invitation → directly to pending page
             console.log("[Auth Callback] Existing user with invitation → redirecting to pending page", {
               groupId: invitation.groupId,
             });
-            return NextResponse.redirect(
-              `${origin}/groups/${invitation.groupId}/pending`
-            );
+            const redirectUrl = `${origin}/groups/${invitation.groupId}/pending`;
+            supabaseResponse = NextResponse.redirect(redirectUrl, { status: 302 });
+            return supabaseResponse;
           } else {
             // Token expired
             return NextResponse.redirect(
-              `${origin}/invite/expired?email=${encodeURIComponent(userEmail)}`
+              `${origin}/invite/expired?email=${encodeURIComponent(userEmail)}`,
+              { status: 302 }
             );
           }
         }
@@ -374,7 +415,9 @@ export async function GET(request: Request) {
     // NEW USERS without invitation → onboarding
     if (isNewUser) {
       console.log("[Auth Callback] New user without invitation → redirecting to onboarding");
-      return NextResponse.redirect(`${origin}/onboarding`);
+      const redirectUrl = `${origin}/onboarding`;
+      supabaseResponse = NextResponse.redirect(redirectUrl, { status: 302 });
+      return supabaseResponse;
     }
 
     // EXISTING USERS without invitation → dashboard or custom redirect
@@ -395,18 +438,18 @@ export async function GET(request: Request) {
     
     // Use 302 (temporary redirect) for better browser compatibility
     console.log("[Auth Callback] Creating redirect response", { redirectUrl });
-    const response = NextResponse.redirect(redirectUrl, { status: 302 });
+    supabaseResponse = NextResponse.redirect(redirectUrl, { status: 302 });
     
     // Set headers to ensure redirect works
-    response.headers.set("Location", redirectUrl);
-    response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+    supabaseResponse.headers.set("Location", redirectUrl);
+    supabaseResponse.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
     
     console.log("[Auth Callback] Sending redirect response", { 
       status: 302, 
       location: redirectUrl 
     });
     
-    return response;
+    return supabaseResponse;
   }
 
   // Error fallback
