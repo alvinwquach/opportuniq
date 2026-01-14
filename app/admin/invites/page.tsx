@@ -41,11 +41,10 @@ export default async function Invites() {
   }
 
   return (
-    <div className="h-full flex flex-col">
-      {/* Compact Header */}
-      <div className="flex-shrink-0 px-5 py-4 border-b border-[#1f1f1f] bg-[#0a0a0a]">
-        <div className="flex items-center justify-between gap-6">
-          <div className="flex items-center gap-5">
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="shrink-0 px-5 py-4 border-b border-[#1f1f1f] bg-[#0a0a0a]">
+        <div className="flex items-start justify-between gap-6">
+          <div className="flex items-center gap-5 shrink-0 pt-1">
             <h1 className="text-base font-semibold text-white">Invites</h1>
             <div className="flex items-center gap-4 text-sm">
               <span className="text-blue-400">{pendingCount} pending</span>
@@ -55,7 +54,9 @@ export default async function Invites() {
               <span className="text-[#666]">{expiredCount} expired</span>
             </div>
           </div>
-          <InviteForm />
+          <div className="shrink-0">
+            <InviteForm />
+          </div>
         </div>
       </div>
       <div className="flex-1 overflow-auto">
@@ -68,6 +69,7 @@ export default async function Invites() {
             <thead className="sticky top-0 bg-[#0d0d0d] z-10">
               <tr className="border-b border-[#1a1a1a]">
                 <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Email</th>
+                <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Token</th>
                 <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Tier</th>
                 <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Status</th>
                 <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Delivery</th>
@@ -87,6 +89,14 @@ export default async function Invites() {
                   <tr key={invite.id} className="border-b border-[#141414] hover:bg-[#111] transition-colors">
                     <td className="px-5 py-3">
                       <span className="text-sm text-white">{invite.email}</span>
+                    </td>
+                    <td className="px-5 py-3">
+                      <div className="flex items-center gap-1.5">
+                        <code className="text-xs font-mono text-[#888] bg-[#1a1a1a] px-2 py-1 rounded">
+                          {invite.token}
+                        </code>
+                        <CopyButton text={invite.token} title="Copy token" />
+                      </div>
                     </td>
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2">
@@ -131,7 +141,7 @@ export default async function Invites() {
                     <td className="px-5 py-3">
                       <div className="flex items-center justify-end gap-1">
                         <CopyButton
-                          text={`https://www.opportuniq.app/join?token=${invite.token}`}
+                          text={`https://opportuniq.app/join?token=${invite.token}`}
                         />
                         {!isAccepted && (
                           <RevokeButton inviteId={invite.id} email={invite.email} />

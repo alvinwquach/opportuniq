@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { db } from "@/app/db/client";
 import { users, invites } from "@/app/db/schema";
 import { eq } from "drizzle-orm";
-import { generateAlphaToken } from "@/lib/referral";
+import { generateInviteToken } from "@/lib/referral";
 import {
   sendJohatsuInviteEmail,
   sendAlphaInviteEmail,
@@ -86,11 +86,12 @@ export async function POST(request: Request) {
       }
 
       // Regenerate token and reset expiration to 30 days from now
-      const newToken = generateAlphaToken();
+      const newToken = generateInviteToken();
       const newExpiresAt = new Date();
       newExpiresAt.setDate(newExpiresAt.getDate() + 30);
 
-      const inviteLink = `https://www.opportuniq.app/join?token=${newToken}`;
+      // Use non-www domain to match Supabase OAuth callback configuration
+      const inviteLink = `https://opportuniq.app/join?token=${newToken}`;
 
       // Send email if requested
       let emailSent = false;
@@ -114,14 +115,14 @@ export async function POST(request: Request) {
     }
 
     // Generate invite token for new invite
-    const token = generateAlphaToken();
+    const token = generateInviteToken();
 
     // Set expiration to 30 days from now
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30);
 
-    // Always use production domain for invite links
-    const inviteLink = `https://www.opportuniq.app/join?token=${token}`;
+    // Always use production domain for invite links (non-www to match OAuth callback)
+    const inviteLink = `https://opportuniq.app/join?token=${token}`;
 
     // Send email if requested
     let emailSent = false;

@@ -3,7 +3,7 @@
 import { db } from "@/app/db/client";
 import { users, invites } from "@/app/db/schema";
 import { eq, desc, and } from "drizzle-orm";
-import { generateAlphaToken, generateReferralCode } from "@/lib/referral";
+import { generateInviteToken, generateReferralCode } from "@/lib/referral";
 import { sendBetaInviteEmail, sendAlphaInviteEmail } from "@/lib/resend";
 
 export type InviteTier = "johatsu" | "alpha" | "beta" | "public";
@@ -173,7 +173,7 @@ export async function sendUserInvite(
       return { success: false, error: "This person is already a member" };
     }
 
-    const token = generateAlphaToken();
+    const token = generateInviteToken();
     const tier = getInvitableTier(accessTier);
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);

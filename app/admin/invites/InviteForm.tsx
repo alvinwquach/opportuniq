@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { IoSend, IoLink, IoCheckmark } from "react-icons/io5";
+import { IoSend, IoLink, IoCheckmark, IoClose, IoCopy } from "react-icons/io5";
 
 type InviteTier = "johatsu" | "alpha" | "beta";
 
 export function InviteForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [tier, setTier] = useState<InviteTier>("alpha");
+  const [tier, setTier] = useState<InviteTier>("johatsu");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<"sent" | "copied" | null>(null);
   const [error, setError] = useState("");
+  const [lastToken, setLastToken] = useState<string | null>(null);
+  const [tokenCopied, setTokenCopied] = useState(false);
 
   const handleSubmit = async (sendEmail: boolean) => {
     if (!email.trim()) return;
@@ -20,6 +22,7 @@ export function InviteForm() {
     setLoading(true);
     setError("");
     setSuccess(null);
+    setLastToken(null);
 
     try {
       const res = await fetch("/api/admin/invite", {
@@ -33,6 +36,12 @@ export function InviteForm() {
       if (!res.ok) {
         setError(data.error || "Failed to send invite");
       } else {
+        // Extract token from invite link
+        const tokenMatch = data.inviteLink?.match(/token=([A-Z0-9]+)/i);
+        if (tokenMatch) {
+          setLastToken(tokenMatch[1]);
+        }
+
         if (!sendEmail) {
           await navigator.clipboard.writeText(data.inviteLink);
           setSuccess("copied");
@@ -41,13 +50,28 @@ export function InviteForm() {
         }
         setEmail("");
         router.refresh();
-        setTimeout(() => setSuccess(null), 2000);
+        if (!tokenMatch) {
+          setTimeout(() => setSuccess(null), 2000);
+        }
       }
     } catch {
       setError("Something went wrong");
     } finally {
       setLoading(false);
     }
+  };
+
+  const copyToken = async () => {
+    if (lastToken) {
+      await navigator.clipboard.writeText(lastToken);
+      setTokenCopied(true);
+      setTimeout(() => setTokenCopied(false), 1500);
+    }
+  };
+
+  const dismissToken = () => {
+    setLastToken(null);
+    setSuccess(null);
   };
 
   const tierColors: Record<InviteTier, string> = {
@@ -57,17 +81,45 @@ export function InviteForm() {
   };
 
   return (
-    <div className="flex items-center gap-3">
-      {error && (
-        <span className="text-xs text-red-400 mr-2">{error}</span>
+    <div className="flex flex-col gap-2 items-end">
+      {lastToken && (
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/30">
+          <IoCheckmark className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <span className="text-xs text-emerald-400 whitespace-nowrap">Token:</span>
+          <code className="text-xs font-mono text-white tracking-wider font-medium">{lastToken}</code>
+          <button
+            type="button"
+            onClick={copyToken}
+            className="p-1 hover:bg-emerald-500/20 rounded transition-colors shrink-0"
+            title="Copy token"
+          >
+            {tokenCopied ? (
+              <IoCheckmark className="w-3.5 h-3.5 text-emerald-400" />
+            ) : (
+              <IoCopy className="w-3.5 h-3.5 text-emerald-400" />
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={dismissToken}
+            className="p-1 hover:bg-emerald-500/20 rounded transition-colors flex-shrink-0"
+            title="Dismiss"
+          >
+            <IoClose className="w-3.5 h-3.5 text-emerald-400" />
+          </button>
+        </div>
       )}
-      {success && (
-        <span className="text-xs text-emerald-400 flex items-center gap-1 mr-2">
-          <IoCheckmark className="w-3.5 h-3.5" />
-          {success === "sent" ? "Sent" : "Copied"}
-        </span>
-      )}
-      <div className="flex items-center border border-[#2a2a2a] rounded-md overflow-hidden">
+      <div className="flex items-center gap-3">
+        {error && (
+          <span className="text-xs text-red-400 mr-2">{error}</span>
+        )}
+        {success && !lastToken && (
+          <span className="text-xs text-emerald-400 flex items-center gap-1 mr-2">
+            <IoCheckmark className="w-3.5 h-3.5" />
+            {success === "sent" ? "Sent" : "Copied"}
+          </span>
+        )}
+        <div className="flex items-center border border-[#2a2a2a] rounded-md overflow-hidden">
         {(["johatsu", "alpha", "beta"] as InviteTier[]).map((t) => (
           <button
             key={t}
@@ -110,8 +162,6 @@ export function InviteForm() {
         <IoLink className="h-4 w-4" />
         <span className="hidden sm:inline">Copy</span>
       </button>
-
-      {/* Send button */}
       <button
         type="button"
         onClick={() => handleSubmit(true)}
@@ -127,6 +177,7 @@ export function InviteForm() {
           </>
         )}
       </button>
+      </div>
     </div>
   );
 }

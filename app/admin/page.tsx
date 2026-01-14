@@ -11,11 +11,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminDashboard() {
   console.log("[Admin Dashboard] Starting to fetch stats");
   const result = await getAdminDashboardStats();
-  console.log("[Admin Dashboard] Stats fetch completed:", { success: result.success, partial: result.partial });
-
-  // Show warning if we have partial data
-  const hasPartialData = result.partial && result.data;
-  const hasErrors = result.errors && Object.values(result.errors).some((e) => e !== null);
+  console.log("[Admin Dashboard] Stats fetch completed:", { success: result.success });
 
   if (!result.data) {
     const isConnectionError = result.error?.includes("connection") || result.error?.includes("DATABASE_URL");
@@ -58,35 +54,6 @@ export default async function AdminDashboard() {
 
   return (
       <div className="p-6 space-y-6">
-        {/* Warning banner if partial data */}
-        {hasPartialData && (
-          <div className="bg-yellow-900/50 border border-yellow-800 rounded-lg p-4">
-            <h3 className="text-lg font-semibold text-yellow-400 mb-2">⚠️ Partial Data Loaded</h3>
-            <p className="text-yellow-300 text-sm">
-              Some dashboard statistics couldn't be loaded due to slow database queries. 
-              The data shown below may be incomplete.
-            </p>
-            {hasErrors && (
-              <div className="mt-2">
-                <p className="text-yellow-400 text-xs mb-1">Failed queries:</p>
-                <ul className="text-yellow-400 text-xs list-disc list-inside space-y-0.5">
-                  {Object.entries(result.errors || {}).map(([key, error]) => 
-                    error ? (
-                      <li key={key} className="truncate">
-                        <span className="font-mono">{key}</span>: {error.length > 60 ? error.substring(0, 60) + "..." : error}
-                      </li>
-                    ) : null
-                  )}
-                </ul>
-                <p className="text-yellow-500 text-xs mt-2 italic">
-                  Note: If you're the only user, these queries should be instant. 
-                  This suggests a connection issue rather than query performance.
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>

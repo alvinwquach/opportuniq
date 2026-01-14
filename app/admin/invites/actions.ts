@@ -49,7 +49,6 @@ export async function getInvitesData() {
       .from(invites)
       .leftJoin(users, eq(invites.invitedBy, users.id))
       .orderBy(desc(invites.createdAt)),
-
     db
       .select({
         pendingCount: count(
