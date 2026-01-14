@@ -36,8 +36,12 @@ export function LoginClient({ inviteToken, groupName }: LoginClientProps) {
     const supabase = createClient();
 
     // Build redirect URL with invitation token if present
-    // Use absolute URL to ensure proper redirect
-    const callbackUrl = new URL('/auth/callback', window.location.origin);
+    // IMPORTANT: Always use the canonical domain (without www) to match Supabase config
+    const canonicalOrigin = typeof window !== "undefined" && window.location.hostname === "www.opportuniq.app"
+      ? "https://opportuniq.app"
+      : window.location.origin;
+
+    const callbackUrl = new URL('/auth/callback', canonicalOrigin);
     if (inviteToken) {
       callbackUrl.searchParams.set('token', inviteToken);
     }

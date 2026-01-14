@@ -29,25 +29,37 @@ export async function GET(request: Request) {
     origin,
   });
 
-  // Handle OAuth errors FIRST (before any processing)
-  if (errorParam) {
-    const errorDescription = searchParams.get("error_description") || "Unknown error";
-    const errorCode = searchParams.get("error_code");
-    
-    console.error("[Auth Callback] OAuth error received", {
-      error: errorParam,
-      errorCode,
-      description: errorDescription,
-    });
-    
-    // If flow state not found, the code expired - redirect to login with message
-    if (errorParam === "server_error" && errorCode === "flow_state_not_found") {
-      console.log("[Auth Callback] OAuth code expired - redirecting to login");
-      return NextResponse.redirect(`${origin}/auth/login?error=expired&message=${encodeURIComponent("Your login session expired. Please try again.")}`, { status: 302 });
+  try {
+    // Handle OAuth errors FIRST (before any processing)
+    if (errorParam) {
+      const errorDescription = searchParams.get("error_description") || "Unknown error";
+      const errorCode = searchParams.get("error_code");
+
+      console.error("[Auth Callback] OAuth error received", {
+        error: errorParam,
+        errorCode,
+        description: errorDescription,
+      });
+
+      // If flow state not found, the code expired - redirect to login with message
+      if (errorParam === "server_error" && errorCode === "flow_state_not_found") {
+        console.log("[Auth Callback] OAuth code expired - redirecting to login");
+        return NextResponse.redirect(`${origin}/auth/login?error=expired&message=${encodeURIComponent("Your login session expired. Please try again.")}`, { status: 302 });
+      }
+
+      return NextResponse.redirect(`${origin}/auth/error?error=${encodeURIComponent(errorParam)}&description=${encodeURIComponent(errorDescription)}`, { status: 302 });
     }
-    
-    return NextResponse.redirect(`${origin}/auth/error?error=${encodeURIComponent(errorParam)}&description=${encodeURIComponent(errorDescription)}`, { status: 302 });
-  }
+
+    // If someone visits callback directly without a code, redirect them appropriately
+    if (!code) {
+      console.log("[Auth Callback] No code provided - redirecting");
+      // If they have an invite token, send them to the join page
+      if (inviteToken) {
+        return NextResponse.redirect(`${origin}/join?token=${inviteToken}`, { status: 302 });
+      }
+      // Otherwise send to login
+      return NextResponse.redirect(`${origin}/auth/login`, { status: 302 });
+    }
 
   // Create Supabase client with request cookies for PKCE code verifier
   // This is critical: PKCE code verifier must be read from request cookies
@@ -108,12 +120,22 @@ export async function GET(request: Request) {
     // Handle exchange errors
     if (error) {
       console.error("[Auth Callback] Code exchange failed", { error: error.message });
-      
+
+      // Handle PKCE code verifier errors - this happens when:
+      // 1. Auth flow was started on a different device/browser
+      // 2. Cookies were cleared/blocked
+      // 3. User navigated away and came back
+      if (error.message.includes("code verifier") || error.message.includes("PKCE")) {
+        console.error("[Auth Callback] PKCE verification failed - cookies may not have been sent correctly");
+        const errorMsg = encodeURIComponent("PKCE code verifier not found in storage. This can happen if the auth flow was initiated in a different browser or device, or if the storage was cleared. For SSR frameworks (Next.js, SvelteKit, etc.), use @supabase/ssr on both the server and client to store the code verifier in cookies.");
+        return NextResponse.redirect(`${origin}/auth/error?error=${encodeURIComponent("pkce_error")}&error_description=${errorMsg}`, { status: 302 });
+      }
+
       // If code expired or invalid, redirect to login
       if (error.message.includes("expired") || error.message.includes("invalid") || error.message.includes("flow_state")) {
         return NextResponse.redirect(`${origin}/auth/login?error=expired`, { status: 302 });
       }
-      
+
       return NextResponse.redirect(`${origin}/auth/error?error=${encodeURIComponent(error.message)}`, { status: 302 });
     }
 
@@ -455,4 +477,29 @@ export async function GET(request: Request) {
   // Error fallback
   console.log("[Auth Callback] Error fallback - no valid code or session");
   return NextResponse.redirect(`${origin}/auth/error`);
+
+  } catch (error: any) {
+    // Catch-all for any unhandled errors to prevent 500s
+    console.error("[Auth Callback] Unhandled error:", {
+      message: error?.message,
+      stack: error?.stack,
+    });
+
+    const errorMsg = error?.message || "An unexpected error occurred";
+
+    // Check for PKCE-related errors
+    if (errorMsg.includes("code verifier") || errorMsg.includes("PKCE") || errorMsg.includes("pkce")) {
+      return NextResponse.redirect(
+        `${origin}/auth/error?error=pkce_error&error_description=${encodeURIComponent(
+          "Authentication session expired or was started on a different device. Please try signing in again from the beginning."
+        )}`,
+        { status: 302 }
+      );
+    }
+
+    return NextResponse.redirect(
+      `${origin}/auth/error?error=callback_error&error_description=${encodeURIComponent(errorMsg)}`,
+      { status: 302 }
+    );
+  }
 }

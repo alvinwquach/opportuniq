@@ -20,10 +20,10 @@ export function generateReferralCode(): string {
 }
 
 /**
- * Generate a unique alpha invite token
+ * Generate a unique invite token for admin invites (johatsu, alpha, beta)
  * Longer for security since these are admin-generated
  */
-export function generateAlphaToken(): string {
+export function generateInviteToken(): string {
   return customAlphabet(alphabet, 16)();
 }
 

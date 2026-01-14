@@ -78,18 +78,45 @@ export function JoinClient({ inviteToken, urlReferralCode }: JoinClientProps) {
 
   const validateReferralCode = async (code: string) => {
     if (!code.trim()) {
-      setError("Please enter a referral code");
+      setError("Please enter a code");
       return;
     }
 
     setValidating(true);
     setError("");
 
+    const trimmedCode = code.trim();
+
     try {
+      // If 16 characters, try as invite token first
+      if (trimmedCode.length === 16) {
+        const inviteRes = await fetch("/api/invite/validate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: trimmedCode }),
+        });
+
+        const inviteData = await inviteRes.json();
+
+        if (inviteData.valid) {
+          setValidated(true);
+          setInviteEmail(inviteData.email);
+          setReferrerName(inviteData.invitedBy);
+          setInviteTier(inviteData.tier);
+          // Store the token so OAuth flow uses it
+          setReferralCode(trimmedCode);
+          amplitude.track("Invite Token Validated (Manual Entry)", {
+            tier: inviteData.tier,
+          });
+          return;
+        }
+      }
+
+      // Try as referral code (8 chars or fallback)
       const res = await fetch("/api/referral/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: code.trim() }),
+        body: JSON.stringify({ code: trimmedCode }),
       });
 
       const data = await res.json();
@@ -98,17 +125,23 @@ export function JoinClient({ inviteToken, urlReferralCode }: JoinClientProps) {
         setValidated(true);
         setReferrerName(data.referrer);
         amplitude.track("Referral Code Validated", {
-          codeLength: code.length,
+          codeLength: trimmedCode.length,
         });
       } else {
-        setError(data.error);
-        amplitude.track("Referral Code Invalid", {
+        // If 16 chars and both failed, give better error
+        if (trimmedCode.length === 16) {
+          setError("Invalid invite token. Please check the code and try again.");
+        } else {
+          setError(data.error);
+        }
+        amplitude.track("Code Invalid", {
           error: data.error,
+          codeLength: trimmedCode.length,
         });
       }
     } catch {
       setError("Failed to validate code");
-      amplitude.track("Referral Code Validation Failed", {
+      amplitude.track("Code Validation Failed", {
         error: "Network error",
       });
     } finally {
@@ -134,11 +167,23 @@ export function JoinClient({ inviteToken, urlReferralCode }: JoinClientProps) {
     const supabase = createClient();
 
     // Build redirect URL with the access info
-    let redirectUrl = `${window.location.origin}/auth/callback`;
+    // IMPORTANT: Always use the canonical domain (without www) to match Supabase config
+    // This prevents PKCE cookie mismatches between www and non-www domains
+    const canonicalOrigin = typeof window !== "undefined" && window.location.hostname === "www.opportuniq.app"
+      ? "https://opportuniq.app"
+      : window.location.origin;
+
+    let redirectUrl = `${canonicalOrigin}/auth/callback`;
     const params = new URLSearchParams();
 
+    // If we have an invite tier set, it means either:
+    // 1. User came via URL with ?token= (inviteToken is set)
+    // 2. User manually entered a 16-char invite token (stored in referralCode, inviteTier is set)
     if (inviteToken) {
       params.set("invite_token", inviteToken);
+    } else if (inviteTier && referralCode.length === 16) {
+      // Manual entry of invite token
+      params.set("invite_token", referralCode.trim().toUpperCase());
     } else if (referralCode) {
       params.set("ref", referralCode.trim().toUpperCase());
     }
@@ -281,8 +326,10 @@ export function JoinClient({ inviteToken, urlReferralCode }: JoinClientProps) {
           <h1 className="text-3xl font-bold text-white mb-2">Join OpportunIQ</h1>
           <p className="text-slate-400">
             {validated
-              ? `You've been referred by ${referrerName}`
-              : "Enter your referral code to get early access"}
+              ? inviteTier
+                ? `You've been invited by ${referrerName}`
+                : `You've been referred by ${referrerName}`
+              : "Enter your invite token or referral code"}
           </p>
         </div>
 
@@ -291,24 +338,21 @@ export function JoinClient({ inviteToken, urlReferralCode }: JoinClientProps) {
             <div className="p-6 rounded-xl bg-[#0a0e14]/80 border border-white/10">
               <div className="flex items-center gap-2 text-[#00F0FF] mb-4">
                 <IoPeople className="h-5 w-5" />
-                <span className="text-sm font-medium">Referral Code</span>
+                <span className="text-sm font-medium">Invite Token or Referral Code</span>
               </div>
-
               <Input
                 value={referralCode}
                 onChange={(e) => {
                   setReferralCode(e.target.value.toUpperCase());
                   setError("");
                 }}
-                placeholder="Enter code (e.g., A3BK7M2X)"
+                placeholder="e.g., ABCD1234EFGH5678"
                 className="h-12 text-center text-lg font-mono tracking-wider bg-black/50 border-white/20 text-white placeholder:text-slate-600"
-                maxLength={8}
+                maxLength={16}
               />
-
               {error && (
                 <p className="text-red-400 text-sm mt-2">{error}</p>
               )}
-
               <Button
                 onClick={() => validateReferralCode(referralCode)}
                 disabled={validating || !referralCode.trim()}
@@ -336,12 +380,33 @@ export function JoinClient({ inviteToken, urlReferralCode }: JoinClientProps) {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="p-4 rounded-lg bg-[#00FF88]/10 border border-[#00FF88]/30">
-              <div className="flex items-center justify-center gap-2 text-[#00FF88]">
-                <IoCheckmarkCircle className="h-5 w-5" />
-                <span className="font-medium">Code validated!</span>
+            {/* Show tier badge for invite tokens */}
+            {inviteTier ? (
+              <div className={`p-4 rounded-lg ${currentTier.bg} ${currentTier.border} border`}>
+                <div className={`flex items-center justify-center gap-2 ${currentTier.color} mb-2`}>
+                  <IoSparkles className="h-5 w-5" />
+                  <span className="font-medium">{currentTier.label}</span>
+                </div>
+                <p className="text-slate-400 text-sm text-center">
+                  You&apos;ve been invited by <span className="text-white font-medium">{referrerName}</span>
+                </p>
+                {inviteEmail && (
+                  <p className="text-slate-500 text-xs text-center mt-1">
+                    Invite for: {inviteEmail}
+                  </p>
+                )}
               </div>
-            </div>
+            ) : (
+              <div className="p-4 rounded-lg bg-[#00FF88]/10 border border-[#00FF88]/30">
+                <div className="flex items-center justify-center gap-2 text-[#00FF88]">
+                  <IoCheckmarkCircle className="h-5 w-5" />
+                  <span className="font-medium">Code validated!</span>
+                </div>
+                <p className="text-slate-400 text-sm text-center mt-1">
+                  Referred by <span className="text-white font-medium">{referrerName}</span>
+                </p>
+              </div>
+            )}
 
             <div className="space-y-3">
               <Button
