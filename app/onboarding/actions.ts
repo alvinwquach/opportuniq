@@ -40,7 +40,7 @@ export async function completeOnboarding(data: {
 
   if (!user) {
     console.error("[Onboarding Action] Auth error: No user");
-    return { success: false, error: "Unauthorized - please sign in again" };
+    return { success: false as const, error: "Unauthorized - please sign in again" };
   }
 
   console.log("[Onboarding Action] User authenticated:", user.id);
@@ -48,7 +48,7 @@ export async function completeOnboarding(data: {
   const { country, postalCode, searchRadius, theme, streetAddress, city, stateProvince, phoneNumber } = data;
 
   if (!country || !postalCode || !searchRadius) {
-    return { success: false, error: "Country, postal code, and search radius are required" };
+    return { success: false as const, error: "Country, postal code, and search radius are required" };
   }
 
   // Countries that use miles (US, UK, and a few others)
@@ -63,26 +63,33 @@ export async function completeOnboarding(data: {
     console.log("[Onboarding] Starting onboarding for user:", user.id);
 
     // Check for pending_user cookie (set during auth callback for new users)
-    const cookieStore = await cookies();
-    const pendingUserCookie = cookieStore.get("pending_user");
+    let cookieStore;
     let pendingUserData: PendingUserData | null = null;
     let isNewUser = false;
 
-    if (pendingUserCookie) {
-      try {
-        pendingUserData = JSON.parse(pendingUserCookie.value) as PendingUserData;
-        isNewUser = true;
-        console.log("[Onboarding] Found pending user data:", {
-          accessTier: pendingUserData.accessTier,
-          hasReferredBy: !!pendingUserData.referredBy,
-          hasInviteId: !!pendingUserData.inviteId,
-          hasReferralCodeId: !!pendingUserData.referralCodeId,
-          isAdmin: pendingUserData.isAdmin,
-        });
-      } catch (parseError) {
-        console.error("[Onboarding] Failed to parse pending_user cookie:", parseError);
-        // Continue as existing user update
+    try {
+      cookieStore = await cookies();
+      const pendingUserCookie = cookieStore.get("pending_user");
+
+      if (pendingUserCookie) {
+        try {
+          pendingUserData = JSON.parse(pendingUserCookie.value) as PendingUserData;
+          isNewUser = true;
+          console.log("[Onboarding] Found pending user data:", {
+            accessTier: pendingUserData.accessTier,
+            hasReferredBy: !!pendingUserData.referredBy,
+            hasInviteId: !!pendingUserData.inviteId,
+            hasReferralCodeId: !!pendingUserData.referralCodeId,
+            isAdmin: pendingUserData.isAdmin,
+          });
+        } catch (parseError) {
+          console.error("[Onboarding] Failed to parse pending_user cookie:", parseError);
+          // Continue as existing user update
+        }
       }
+    } catch (cookieError) {
+      console.error("[Onboarding] Cookie access error:", cookieError);
+      // Continue without cookie - treat as existing user
     }
 
     // Geocode the postal code with timeout (don't block onboarding if it fails)
@@ -114,8 +121,59 @@ export async function completeOnboarding(data: {
 
     let userData: { role: "admin" | "user"; name?: string | null; id: string; email: string };
 
-    // Handle new user creation vs existing user update
-    if (isNewUser && pendingUserData) {
+    // First, check if user already exists in DB (handles retry/refresh scenarios)
+    const [existingUser] = await db.select().from(users).where(eq(users.id, user.id));
+
+    if (existingUser) {
+      // User already exists - this is a retry or refresh, just update and redirect
+      console.log("[Onboarding] User already exists in DB, updating onboarding data");
+
+      const updateData = {
+        country,
+        postalCode,
+        streetAddress: streetAddress || null,
+        city: city || null,
+        stateProvince: stateProvince || null,
+        phoneNumber: phoneNumber || null,
+        defaultSearchRadius: searchRadius,
+        distanceUnit: distanceUnit as "miles" | "kilometers",
+        preferences: {
+          unitSystem,
+          theme: theme || "auto",
+        } as any,
+        latitude: geocodingResult?.latitude ?? null,
+        longitude: geocodingResult?.longitude ?? null,
+        formattedAddress: geocodingResult?.formattedAddress ?? null,
+        geocodedAt: geocodingResult ? new Date() : null,
+        updatedAt: new Date(),
+      };
+
+      await db.update(users).set(updateData).where(eq(users.id, user.id));
+      console.log("[Onboarding] Existing user updated with onboarding data");
+
+      // Clear pending_user cookie if it exists
+      try {
+        if (cookieStore) {
+          cookieStore.set("pending_user", "", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+            maxAge: 0,
+          });
+        }
+      } catch (e) {
+        // Ignore cookie errors
+      }
+
+      userData = {
+        role: existingUser.role as "admin" | "user",
+        name: existingUser.name,
+        id: existingUser.id,
+        email: existingUser.email,
+      };
+
+    } else if (isNewUser && pendingUserData) {
       // NEW USER: Create user record with all data
       console.log("[Onboarding] Creating new user record");
 
@@ -210,9 +268,22 @@ export async function completeOnboarding(data: {
           }
         }
 
-        // Clear the pending_user cookie
-        cookieStore.delete("pending_user");
-        console.log("[Onboarding] Cleared pending_user cookie");
+        // Clear the pending_user cookie by setting it to expire immediately
+        try {
+          if (cookieStore) {
+            cookieStore.set("pending_user", "", {
+              httpOnly: true,
+              secure: process.env.NODE_ENV === "production",
+              sameSite: "lax",
+              path: "/",
+              maxAge: 0, // Expire immediately
+            });
+            console.log("[Onboarding] Cleared pending_user cookie");
+          }
+        } catch (clearCookieError) {
+          console.error("[Onboarding] Failed to clear cookie (non-blocking):", clearCookieError);
+          // Continue anyway - cookie will expire naturally
+        }
 
         userData = {
           role: pendingUserData.isAdmin ? "admin" : "user",
@@ -223,96 +294,81 @@ export async function completeOnboarding(data: {
 
       } catch (createError: any) {
         console.error("[Onboarding] Failed to create user:", createError);
-        return { success: false, error: "Failed to create user account. Please try again." };
+        // Check if it's a duplicate key error (user was created in a race condition)
+        if (createError?.code === '23505' || createError?.message?.includes('duplicate') || createError?.message?.includes('unique')) {
+          console.log("[Onboarding] User was created in parallel request, fetching existing user");
+          const [raceUser] = await db.select().from(users).where(eq(users.id, user.id));
+          if (raceUser) {
+            userData = {
+              role: raceUser.role as "admin" | "user",
+              name: raceUser.name,
+              id: raceUser.id,
+              email: raceUser.email,
+            };
+          } else {
+            return { success: false as const, error: "Failed to create user account. Please try again." };
+          }
+        } else {
+          return { success: false as const, error: "Failed to create user account. Please try again." };
+        }
       }
 
     } else {
-      // EXISTING USER: Update with onboarding preferences
-      console.log("[Onboarding] Updating existing user in database");
+      // Edge case: No user in DB and no pending cookie
+      // This shouldn't happen in normal flow - user should have cookie from auth callback
+      console.error("[Onboarding] No user in DB and no pending cookie - invalid state");
 
-      const updateData = {
-        country,
-        postalCode,
-        streetAddress: streetAddress || null,
-        city: city || null,
-        stateProvince: stateProvince || null,
-        phoneNumber: phoneNumber || null,
-        defaultSearchRadius: searchRadius,
-        distanceUnit: distanceUnit as "miles" | "kilometers",
-        preferences: {
-          unitSystem,
-          theme: theme || "auto",
-        } as any,
-        latitude: geocodingResult?.latitude ?? null,
-        longitude: geocodingResult?.longitude ?? null,
-        formattedAddress: geocodingResult?.formattedAddress ?? null,
-        geocodedAt: geocodingResult ? new Date() : null,
-        updatedAt: new Date(),
-      };
+      // Try to create user with fallback data (using email to determine admin status)
+      const isAdminEmail = user.email === "alvinwquach@gmail.com" || user.email === "binarydecisions1111@gmail.com";
+      const fallbackReferralCode = generateReferralCode();
+      const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture || null;
 
       try {
-        console.log("[Onboarding] Executing database update query");
-        const updatePromise = db
-          .update(users)
-          .set(updateData)
-          .where(eq(users.id, user.id));
+        await db.insert(users).values({
+          id: user.id,
+          email: user.email!,
+          name: user.user_metadata?.full_name || null,
+          avatarUrl,
+          role: isAdminEmail ? "admin" : "user",
+          accessTier: isAdminEmail ? "johatsu" : "alpha",
+          referralCode: fallbackReferralCode,
+          country,
+          postalCode,
+          streetAddress: streetAddress || null,
+          city: city || null,
+          stateProvince: stateProvince || null,
+          phoneNumber: phoneNumber || null,
+          defaultSearchRadius: searchRadius,
+          distanceUnit: distanceUnit as "miles" | "kilometers",
+          preferences: {
+            unitSystem,
+            theme: theme || "auto",
+          } as any,
+          latitude: geocodingResult?.latitude ?? null,
+          longitude: geocodingResult?.longitude ?? null,
+          formattedAddress: geocodingResult?.formattedAddress ?? null,
+          geocodedAt: geocodingResult ? new Date() : null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
 
-        // Aggressive 1.5 second timeout - if DB is slow, skip update and continue
-        const updateTimeout = new Promise<never>((_, reject) =>
-          setTimeout(() => {
-            console.warn("[Onboarding] Database update TIMEOUT after 1.5 seconds - continuing without update");
-            reject(new Error("Database update timeout"));
-          }, 1500)
-        );
+        await db.insert(referralCodes).values({
+          code: fallbackReferralCode,
+          ownerId: user.id,
+          maxUses: null,
+        });
 
-        await Promise.race([updatePromise, updateTimeout]);
-        console.log("[Onboarding] User updated successfully");
-      } catch (dbUpdateError: any) {
-        const errorMsg = dbUpdateError?.message || String(dbUpdateError);
-        console.error("[Onboarding] Database update error (non-blocking):", errorMsg);
-        // Continue even if update fails - onboarding can complete without DB update
-      }
+        console.log("[Onboarding] Created user with fallback data");
 
-      // Get user data for email and redirect (with timeout)
-      try {
-        console.log("[Onboarding] Fetching user data for redirect");
-        const selectPromise = db
-          .select()
-          .from(users)
-          .where(eq(users.id, user.id));
-
-        const selectTimeout = new Promise<never>((_, reject) =>
-          setTimeout(() => {
-            console.warn("[Onboarding] Database select TIMEOUT after 1.5 seconds - using fallback");
-            reject(new Error("Database select timeout"));
-          }, 1500)
-        );
-
-        const result = await Promise.race([selectPromise, selectTimeout]) as Awaited<typeof selectPromise>;
-        const [existingUserData] = result;
-
-        if (existingUserData) {
-          userData = {
-            role: existingUserData.role as "admin" | "user",
-            name: existingUserData.name,
-            id: existingUserData.id,
-            email: existingUserData.email,
-          };
-        } else {
-          throw new Error("User not found");
-        }
-        console.log("[Onboarding] User data fetched:", { role: userData.role });
-      } catch (dbSelectError: any) {
-        const errorMsg = dbSelectError?.message || String(dbSelectError);
-        console.warn("[Onboarding] Database select error (using fallback):", errorMsg);
-        // Fallback: check if user email is admin email
-        const isAdminEmail = user.email === "alvinwquach@gmail.com" || user.email === "binarydecisions1111@gmail.com";
         userData = {
           role: isAdminEmail ? "admin" : "user",
+          name: user.user_metadata?.full_name || null,
           id: user.id,
           email: user.email!,
         };
-        console.log("[Onboarding] Using fallback user data:", userData);
+      } catch (fallbackError: any) {
+        console.error("[Onboarding] Fallback user creation failed:", fallbackError);
+        return { success: false as const, error: "Unable to complete onboarding. Please try signing in again." };
       }
     }
 
@@ -332,15 +388,17 @@ export async function completeOnboarding(data: {
     const redirectTo = userData.role === "admin" ? "/admin" : "/dashboard";
     console.log("[Onboarding] Onboarding complete, redirecting to:", redirectTo);
 
-    return {
-      success: true,
+    const result = {
+      success: true as const,
       role: userData.role,
       redirectTo
     };
+    console.log("[Onboarding] Returning result:", JSON.stringify(result));
+    return result;
   } catch (error) {
     console.error("[Onboarding] Onboarding error:", error);
     return {
-      success: false,
+      success: false as const,
       error: error instanceof Error ? error.message : "Failed to complete onboarding"
     };
   }
