@@ -40,7 +40,7 @@ export async function completeOnboarding(data: {
 
   if (!user) {
     console.error("[Onboarding Action] Auth error: No user");
-    return { success: false, error: "Unauthorized - please sign in again" };
+    return { success: false as const, error: "Unauthorized - please sign in again" };
   }
 
   console.log("[Onboarding Action] User authenticated:", user.id);
@@ -48,7 +48,7 @@ export async function completeOnboarding(data: {
   const { country, postalCode, searchRadius, theme, streetAddress, city, stateProvince, phoneNumber } = data;
 
   if (!country || !postalCode || !searchRadius) {
-    return { success: false, error: "Country, postal code, and search radius are required" };
+    return { success: false as const, error: "Country, postal code, and search radius are required" };
   }
 
   // Countries that use miles (US, UK, and a few others)
@@ -306,10 +306,10 @@ export async function completeOnboarding(data: {
               email: raceUser.email,
             };
           } else {
-            return { success: false, error: "Failed to create user account. Please try again." };
+            return { success: false as const, error: "Failed to create user account. Please try again." };
           }
         } else {
-          return { success: false, error: "Failed to create user account. Please try again." };
+          return { success: false as const, error: "Failed to create user account. Please try again." };
         }
       }
 
@@ -368,7 +368,7 @@ export async function completeOnboarding(data: {
         };
       } catch (fallbackError: any) {
         console.error("[Onboarding] Fallback user creation failed:", fallbackError);
-        return { success: false, error: "Unable to complete onboarding. Please try signing in again." };
+        return { success: false as const, error: "Unable to complete onboarding. Please try signing in again." };
       }
     }
 
@@ -398,7 +398,7 @@ export async function completeOnboarding(data: {
   } catch (error) {
     console.error("[Onboarding] Onboarding error:", error);
     return {
-      success: false,
+      success: false as const,
       error: error instanceof Error ? error.message : "Failed to complete onboarding"
     };
   }
