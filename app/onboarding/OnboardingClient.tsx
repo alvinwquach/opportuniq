@@ -52,9 +52,9 @@ export default function OnboardingClient({ customRedirect, isPreview }: Onboardi
       try {
         console.log("[Onboarding Client] Submitting form...", { postalCode: value.postalCode, country: value.country });
 
-        // Add timeout to prevent hanging
+        // Add timeout to prevent hanging (increased to 30s for slow DB connections)
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Request timed out after 10 seconds")), 10000)
+          setTimeout(() => reject(new Error("Request timed out after 30 seconds")), 30000)
         );
 
         const result = await Promise.race([

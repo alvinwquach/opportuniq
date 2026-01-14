@@ -122,7 +122,21 @@ export async function completeOnboarding(data: {
     let userData: { role: "admin" | "user"; name?: string | null; id: string; email: string };
 
     // First, check if user already exists in DB (handles retry/refresh scenarios)
-    const [existingUser] = await db.select().from(users).where(eq(users.id, user.id));
+    console.log("[Onboarding] Checking if user exists in DB...");
+    let existingUser;
+    try {
+      const selectPromise = db.select().from(users).where(eq(users.id, user.id));
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("DB query timeout")), 5000)
+      );
+      const result = await Promise.race([selectPromise, timeoutPromise]);
+      [existingUser] = result;
+      console.log("[Onboarding] DB check completed, user exists:", !!existingUser);
+    } catch (dbError: any) {
+      console.error("[Onboarding] DB check failed:", dbError?.message);
+      // If DB is down, use fallback based on pending cookie
+      existingUser = null;
+    }
 
     if (existingUser) {
       // User already exists - this is a retry or refresh, just update and redirect
