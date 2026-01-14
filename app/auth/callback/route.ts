@@ -241,7 +241,8 @@ export async function GET(request: Request) {
     // Get avatar URL from OAuth metadata
     const avatarUrl = data.user.user_metadata?.avatar_url || data.user.user_metadata?.picture || null;
 
-    // Step 1: Create user record if new
+    // Step 1: For new users, validate access and store pending data in cookie
+    // User creation is deferred to onboarding completion
     if (isNewUser) {
         // Check if this is an admin user
         const adminEmails = [
@@ -252,8 +253,10 @@ export async function GET(request: Request) {
 
         // Determine access tier and referrer
         // Default for admins - set to johatsu
-        let accessTier: "johatsu" | "alpha" | "beta" | "public" = isAdmin ? "johatsu" : "alpha"; 
+        let accessTier: "johatsu" | "alpha" | "beta" | "public" = isAdmin ? "johatsu" : "alpha";
         let referredById: string | null = null;
+        let inviteId: string | null = null;
+        let referralCodeId: string | null = null;
 
         // Check for invite token (johatsu, alpha, or beta)
         if (inviteToken && !isAdmin) {
@@ -265,14 +268,9 @@ export async function GET(request: Request) {
           if (invite && !invite.acceptedAt && new Date() < invite.expiresAt) {
             accessTier = invite.tier as "johatsu" | "alpha" | "beta";
             referredById = invite.invitedBy;
+            inviteId = invite.id; // Store for marking accepted after onboarding
 
-            // Mark invite as accepted
-            await db
-              .update(invites)
-              .set({ acceptedAt: new Date(), userId })
-              .where(eq(invites.id, invite.id));
-
-            console.log("[Auth Callback] Invite accepted", { token: inviteToken, invitedBy: referredById, accessTier });
+            console.log("[Auth Callback] Invite validated (will be marked accepted after onboarding)", { token: inviteToken, invitedBy: referredById, accessTier });
           } else {
             // Invalid or expired token - redirect to error
             console.log("[Auth Callback] Invalid invite token", { token: inviteToken });
@@ -291,31 +289,9 @@ export async function GET(request: Request) {
             if (!refCode.maxUses || refCode.useCount < refCode.maxUses) {
               accessTier = "beta";
               referredById = refCode.ownerId;
+              referralCodeId = refCode.id; // Store for tracking after onboarding
 
-              // Increment referral code usage
-              await db
-                .update(referralCodes)
-                .set({ useCount: refCode.useCount + 1 })
-                .where(eq(referralCodes.id, refCode.id));
-
-              // Create referral record
-              await db.insert(referrals).values({
-                referralCodeId: refCode.id,
-                referrerId: refCode.ownerId,
-                refereeEmail: userEmail,
-                refereeId: userId,
-                status: "converted",
-                chainDepth: 1, // TODO: Calculate actual depth
-                convertedAt: new Date(),
-              });
-
-              // Increment referrer's referral count
-              await db
-                .update(users)
-                .set({ referralCount: sql`${users.referralCount} + 1` })
-                .where(eq(users.id, refCode.ownerId));
-
-              console.log("[Auth Callback] Beta referral accepted", { referralCode, referredBy: referredById });
+              console.log("[Auth Callback] Referral code validated (will be tracked after onboarding)", { referralCode, referredBy: referredById });
             } else {
               console.log("[Auth Callback] Referral code max uses reached", { referralCode });
               return NextResponse.redirect(`${origin}/join?error=code_exhausted`, { status: 302 });
@@ -332,37 +308,32 @@ export async function GET(request: Request) {
           return NextResponse.redirect(`${origin}/join?error=access_required`, { status: 302 });
         }
 
-        // Generate a referral code for this new user
-        const newUserReferralCode = generateReferralCode();
-
-        await db.insert(users).values({
-          id: userId,
-          email: userEmail,
-          name: data.user.user_metadata?.full_name || null,
-          avatarUrl,
-          role: isAdmin ? "admin" : "user",
-          accessTier: accessTier,
+        // Store pending user data in cookie (user will be created after onboarding)
+        const pendingUserData = {
+          accessTier,
           referredBy: referredById,
-          referralCode: newUserReferralCode,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          inviteId,
+          referralCodeId,
+          isAdmin,
+        };
+
+        // Set the pending_user cookie on the response
+        supabaseResponse.cookies.set("pending_user", JSON.stringify(pendingUserData), {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+          maxAge: 60 * 60, // 1 hour
         });
 
-        // Create referral code entry for the new user
-        await db.insert(referralCodes).values({
-          code: newUserReferralCode,
-          ownerId: userId,
-          maxUses: null, // Unlimited by default
-        });
-
-        console.log("[Auth Callback] Created new user", {
+        console.log("[Auth Callback] Stored pending user data in cookie (user will be created after onboarding)", {
           userId,
           userEmail,
           isAdmin,
           accessTier,
           referredBy: referredById,
-          referralCode: newUserReferralCode,
-          avatarUrl
+          hasInviteId: !!inviteId,
+          hasReferralCodeId: !!referralCodeId,
         });
       } else {
         // Update avatar URL and access tier for existing users (in case it changed)
