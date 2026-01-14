@@ -223,9 +223,9 @@ export async function GET(request: Request) {
         // Check if this is an admin user
         const adminEmails = [
           "alvinwquach@gmail.com",
-          "BinaryDecisions1111@gmail.com",
+          "binarydecisions1111@gmail.com",
         ];
-        const isAdmin = adminEmails.includes(userEmail);
+        const isAdmin = adminEmails.includes(userEmail.toLowerCase());
 
         // Determine access tier and referrer
         // Default for admins - set to johatsu
@@ -346,9 +346,9 @@ export async function GET(request: Request) {
         // For admins, ensure they have johatsu tier
         const adminEmails = [
           "alvinwquach@gmail.com",
-          "BinaryDecisions1111@gmail.com",
+          "binarydecisions1111@gmail.com",
         ];
-        const isAdmin = adminEmails.includes(userEmail);
+        const isAdmin = adminEmails.includes(userEmail.toLowerCase());
         
         // Use Promise.race to prevent hanging on slow DB updates
         try {
