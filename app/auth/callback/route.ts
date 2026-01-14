@@ -5,6 +5,29 @@ import { users, groupMembers, groupInvitations, invites, referralCodes, referral
 import { eq, and, sql } from "drizzle-orm";
 import { generateReferralCode } from "@/lib/referral";
 
+// Helper to create a redirect response while preserving cookies from the original response
+function createRedirectWithCookies(
+  url: string,
+  sourceResponse: NextResponse
+): NextResponse {
+  const redirectResponse = NextResponse.redirect(url, { status: 302 });
+
+  // Copy all cookies from the source response to the redirect response
+  sourceResponse.cookies.getAll().forEach((cookie) => {
+    redirectResponse.cookies.set(cookie.name, cookie.value, {
+      path: cookie.path,
+      domain: cookie.domain,
+      secure: cookie.secure,
+      httpOnly: cookie.httpOnly,
+      sameSite: cookie.sameSite as "lax" | "strict" | "none" | undefined,
+      maxAge: cookie.maxAge,
+      expires: cookie.expires,
+    });
+  });
+
+  return redirectResponse;
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const { searchParams, origin } = url;
@@ -412,8 +435,7 @@ export async function GET(request: Request) {
                 redirectAfter: `/groups/${invitation.groupId}/pending`,
               });
               const redirectUrl = `${origin}/onboarding?redirect=/groups/${invitation.groupId}/pending`;
-              supabaseResponse = NextResponse.redirect(redirectUrl, { status: 302 });
-              return supabaseResponse;
+              return createRedirectWithCookies(redirectUrl, supabaseResponse);
             }
 
             // EXISTING USERS with invitation → directly to pending page
@@ -421,8 +443,7 @@ export async function GET(request: Request) {
               groupId: invitation.groupId,
             });
             const redirectUrl = `${origin}/groups/${invitation.groupId}/pending`;
-            supabaseResponse = NextResponse.redirect(redirectUrl, { status: 302 });
-            return supabaseResponse;
+            return createRedirectWithCookies(redirectUrl, supabaseResponse);
           } else {
             // Token expired
             return NextResponse.redirect(
@@ -438,8 +459,7 @@ export async function GET(request: Request) {
     if (isNewUser) {
       console.log("[Auth Callback] New user without invitation → redirecting to onboarding");
       const redirectUrl = `${origin}/onboarding`;
-      supabaseResponse = NextResponse.redirect(redirectUrl, { status: 302 });
-      return supabaseResponse;
+      return createRedirectWithCookies(redirectUrl, supabaseResponse);
     }
 
     // EXISTING USERS without invitation → dashboard or custom redirect
@@ -455,23 +475,19 @@ export async function GET(request: Request) {
     
     // Create redirect response with absolute URL
     const redirectUrl = new URL(destination, origin).toString();
-    
+
     console.log("[Auth Callback] Redirect URL", { redirectUrl, origin, destination });
-    
-    // Use 302 (temporary redirect) for better browser compatibility
-    console.log("[Auth Callback] Creating redirect response", { redirectUrl });
-    supabaseResponse = NextResponse.redirect(redirectUrl, { status: 302 });
-    
-    // Set headers to ensure redirect works
-    supabaseResponse.headers.set("Location", redirectUrl);
-    supabaseResponse.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
-    
-    console.log("[Auth Callback] Sending redirect response", { 
-      status: 302, 
-      location: redirectUrl 
+
+    // Use helper to preserve session cookies on redirect
+    const finalResponse = createRedirectWithCookies(redirectUrl, supabaseResponse);
+    finalResponse.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+
+    console.log("[Auth Callback] Sending redirect response", {
+      status: 302,
+      location: redirectUrl
     });
-    
-    return supabaseResponse;
+
+    return finalResponse;
   }
 
   // Error fallback
