@@ -1,34 +1,26 @@
 import { InviteForm } from "./InviteForm";
-import { CopyButton } from "./CopyButton";
-import { RevokeButton } from "./RevokeButton";
+import { InviteCard } from "./InviteCard";
+import { InviteTableRow } from "./InviteTableRow";
 import { getInvitesData } from "./actions";
-import { IoMailOpen, IoLink } from "react-icons/io5";
+import type { InviteData, InviteStats } from "./types";
 
-export const dynamic = "force-dynamic";
-
-export default async function Invites() {
-  let allInvites: any[] = [];
-  let pendingCount = 0;
-  let acceptedCount = 0;
-  let expiredCount = 0;
+export default async function InvitesPage() {
+  let invites: InviteData[] = [];
+  let stats: InviteStats = { pendingCount: 0, acceptedCount: 0, expiredCount: 0 };
   let error: string | null = null;
 
   try {
     const result = await getInvitesData();
-    allInvites = result.allInvites || [];
-    pendingCount = result.pendingCount || 0;
-    acceptedCount = result.acceptedCount || 0;
-    expiredCount = result.expiredCount || 0;
-  } catch (err: any) {
-    error = err?.message || "Failed to load invites";
+    invites = result.allInvites;
+    stats = {
+      pendingCount: result.pendingCount,
+      acceptedCount: result.acceptedCount,
+      expiredCount: result.expiredCount,
+    };
+  } catch (err) {
+    error = err instanceof Error ? err.message : "Failed to load invites";
     console.error("[Admin Invites] Error loading invites:", err);
   }
-
-  const tierConfig: Record<string, { dot: string; text: string; label: string }> = {
-    johatsu: { dot: "bg-rose-400", text: "text-rose-400", label: "Johatsu" },
-    alpha: { dot: "bg-purple-400", text: "text-purple-400", label: "Alpha" },
-    beta: { dot: "bg-emerald-400", text: "text-emerald-400", label: "Beta" },
-  };
 
   if (error) {
     return (
@@ -41,120 +33,70 @@ export default async function Invites() {
   }
 
   return (
-    <div className="h-full flex flex-col overflow-hidden">
-      <div className="shrink-0 px-5 py-4 border-b border-[#1f1f1f] bg-[#0a0a0a]">
-        <div className="flex items-start justify-between gap-6">
-          <div className="flex items-center gap-5 shrink-0 pt-1">
-            <h1 className="text-base font-semibold text-white">Invites</h1>
-            <div className="flex items-center gap-4 text-sm">
-              <span className="text-blue-400">{pendingCount} pending</span>
-              <span className="text-[#333]">·</span>
-              <span className="text-emerald-400">{acceptedCount} accepted</span>
-              <span className="text-[#333]">·</span>
-              <span className="text-[#666]">{expiredCount} expired</span>
-            </div>
-          </div>
-          <div className="shrink-0">
-            <InviteForm />
+    <div className="min-h-[calc(100vh-48px)] lg:min-h-screen flex flex-col bg-[#0a0a0a]">
+      <InvitesHeader stats={stats} />
+      <InvitesList invites={invites} />
+    </div>
+  );
+}
+
+function InvitesHeader({ stats }: { stats: InviteStats }) {
+  return (
+    <div className="shrink-0 px-4 py-4 border-b border-[#1f1f1f] bg-[#0a0a0a]">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-5">
+          <h1 className="text-base font-semibold text-white">Invites</h1>
+          <div className="flex items-center gap-3 text-xs sm:text-sm">
+            <span className="text-blue-400">{stats.pendingCount} pending</span>
+            <span className="text-[#333]">·</span>
+            <span className="text-emerald-400">{stats.acceptedCount} accepted</span>
+            <span className="text-[#333]">·</span>
+            <span className="text-[#666]">{stats.expiredCount} expired</span>
           </div>
         </div>
+        <div className="shrink-0">
+          <InviteForm />
+        </div>
       </div>
-      <div className="flex-1 overflow-auto">
-        {allInvites.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-sm text-[#444]">No invites yet</p>
-          </div>
-        ) : (
-          <table className="w-full">
-            <thead className="sticky top-0 bg-[#0d0d0d] z-10">
-              <tr className="border-b border-[#1a1a1a]">
-                <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Email</th>
-                <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Token</th>
-                <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Tier</th>
-                <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Status</th>
-                <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Delivery</th>
-                <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Created</th>
-                <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Expires</th>
-                <th className="text-right text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {allInvites.map((invite) => {
-                const isExpired = !invite.acceptedAt && new Date() >= invite.expiresAt;
-                const isAccepted = !!invite.acceptedAt;
-                const isPending = !isExpired && !isAccepted;
-                const tier = invite.tier || "alpha";
+    </div>
+  );
+}
 
-                return (
-                  <tr key={invite.id} className="border-b border-[#141414] hover:bg-[#111] transition-colors">
-                    <td className="px-5 py-3">
-                      <span className="text-sm text-white">{invite.email}</span>
-                    </td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-1.5">
-                        <code className="text-xs font-mono text-[#888] bg-[#1a1a1a] px-2 py-1 rounded">
-                          {invite.token}
-                        </code>
-                        <CopyButton text={invite.token} title="Copy token" />
-                      </div>
-                    </td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-2">
-                        <span className={`w-2 h-2 rounded-full ${tierConfig[tier]?.dot || tierConfig.alpha.dot}`} />
-                        <span className={`text-sm ${tierConfig[tier]?.text || tierConfig.alpha.text}`}>
-                          {tierConfig[tier]?.label || "Alpha"}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-5 py-3">
-                      <span
-                        className={`text-sm ${
-                          isAccepted ? "text-emerald-400" : isPending ? "text-blue-400" : "text-[#555]"
-                        }`}
-                      >
-                        {isAccepted ? "Accepted" : isPending ? "Pending" : "Expired"}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3">
-                      {invite.emailSent ? (
-                        <IoMailOpen className="w-4 h-4 text-emerald-400" title="Email sent" />
-                      ) : (
-                        <IoLink className="w-4 h-4 text-[#444]" title="Link only" />
-                      )}
-                    </td>
-                    <td className="px-5 py-3">
-                      <span className="text-sm text-[#666]">
-                        {invite.createdAt.toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3">
-                      <span className={`text-sm ${isExpired ? "text-red-400/70" : "text-[#666]"}`}>
-                        {invite.expiresAt.toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center justify-end gap-1">
-                        <CopyButton
-                          text={`https://opportuniq.app/join?token=${invite.token}`}
-                        />
-                        {!isAccepted && (
-                          <RevokeButton inviteId={invite.id} email={invite.email} />
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
+function InvitesList({ invites }: { invites: InviteData[] }) {
+  if (invites.length === 0) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#0a0a0a]">
+        <p className="text-sm text-[#444]">No invites yet</p>
       </div>
+    );
+  }
+
+  return (
+    <div className="flex-1 overflow-auto bg-[#0a0a0a]">
+      <div className="lg:hidden p-4 space-y-3">
+        {invites.map((invite) => (
+          <InviteCard key={invite.id} invite={invite} />
+        ))}
+      </div>
+      <table className="w-full hidden lg:table">
+        <thead className="sticky top-0 bg-[#0d0d0d] z-10">
+          <tr className="border-b border-[#1a1a1a]">
+            <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Email</th>
+            <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Token</th>
+            <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Tier</th>
+            <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Status</th>
+            <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Delivery</th>
+            <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Created</th>
+            <th className="text-left text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Expires</th>
+            <th className="text-right text-xs font-medium text-[#666] uppercase tracking-wider px-5 py-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {invites.map((invite) => (
+            <InviteTableRow key={invite.id} invite={invite} />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

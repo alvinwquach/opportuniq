@@ -81,12 +81,12 @@ export function InviteForm() {
   };
 
   return (
-    <div className="flex flex-col gap-2 items-end">
+    <div className="flex flex-col gap-2 items-stretch sm:items-end">
       {lastToken && (
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/30">
           <IoCheckmark className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
           <span className="text-xs text-emerald-400 whitespace-nowrap">Token:</span>
-          <code className="text-xs font-mono text-white tracking-wider font-medium">{lastToken}</code>
+          <code className="text-xs font-mono text-white tracking-wider font-medium truncate">{lastToken}</code>
           <button
             type="button"
             onClick={copyToken}
@@ -109,17 +109,16 @@ export function InviteForm() {
           </button>
         </div>
       )}
-      <div className="flex items-center gap-3">
-        {error && (
-          <span className="text-xs text-red-400 mr-2">{error}</span>
-        )}
-        {success && !lastToken && (
-          <span className="text-xs text-emerald-400 flex items-center gap-1 mr-2">
-            <IoCheckmark className="w-3.5 h-3.5" />
-            {success === "sent" ? "Sent" : "Copied"}
-          </span>
-        )}
-        <div className="flex items-center border border-[#2a2a2a] rounded-md overflow-hidden">
+      {error && (
+        <span className="text-xs text-red-400">{error}</span>
+      )}
+      {success && !lastToken && (
+        <span className="text-xs text-emerald-400 flex items-center gap-1">
+          <IoCheckmark className="w-3.5 h-3.5" />
+          {success === "sent" ? "Sent" : "Copied"}
+        </span>
+      )}
+      <div className="flex items-center border border-[#2a2a2a] rounded-md overflow-hidden w-fit">
         {(["johatsu", "alpha", "beta"] as InviteTier[]).map((t) => (
           <button
             key={t}
@@ -135,48 +134,45 @@ export function InviteForm() {
           </button>
         ))}
       </div>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => {
-          setEmail(e.target.value);
-          setError("");
-        }}
-        placeholder="email@example.com"
-        className="w-56 h-8 px-3 rounded-md bg-[#1a1a1a] border border-[#2a2a2a] text-sm text-white placeholder:text-[#444] focus:outline-none focus:border-[#3a3a3a] transition-colors"
-        disabled={loading}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            handleSubmit(true);
-          }
-        }}
-      />
-      <button
-        type="button"
-        onClick={() => handleSubmit(false)}
-        disabled={loading || !email.trim()}
-        className="h-8 px-3 rounded-md bg-[#1a1a1a] hover:bg-[#252525] border border-[#2a2a2a] text-[#888] hover:text-white text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
-        title="Copy invite link"
-      >
-        <IoLink className="h-4 w-4" />
-        <span className="hidden sm:inline">Copy</span>
-      </button>
-      <button
-        type="button"
-        onClick={() => handleSubmit(true)}
-        disabled={loading || !email.trim()}
-        className="h-8 px-4 rounded-md bg-white hover:bg-gray-100 text-black text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
-      >
-        {loading ? (
-          <div className="h-4 w-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
-        ) : (
-          <>
+      <div className="flex items-center gap-2">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setError("");
+          }}
+          placeholder="email@example.com"
+          className="flex-1 sm:w-44 h-8 px-3 rounded-md bg-[#1a1a1a] border border-[#2a2a2a] text-sm text-white placeholder:text-[#444] focus:outline-none focus:border-[#3a3a3a] transition-colors"
+          disabled={loading}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleSubmit(true);
+            }
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => handleSubmit(false)}
+          disabled={loading || !email.trim()}
+          className="h-8 px-2.5 rounded-md bg-[#1a1a1a] hover:bg-[#252525] border border-[#2a2a2a] text-[#888] hover:text-white text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 shrink-0"
+          title="Copy invite link"
+        >
+          <IoLink className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSubmit(true)}
+          disabled={loading || !email.trim()}
+          className="h-8 px-3 rounded-md bg-white hover:bg-gray-100 text-black text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 shrink-0"
+        >
+          {loading ? (
+            <div className="h-4 w-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+          ) : (
             <IoSend className="h-4 w-4" />
-            <span className="hidden sm:inline">Send</span>
-          </>
-        )}
-      </button>
+          )}
+        </button>
       </div>
     </div>
   );
