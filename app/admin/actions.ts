@@ -36,8 +36,8 @@ export async function getAdminDashboardStats() {
           johatsu: sql<number>`count(*) filter (where ${users.accessTier} = 'johatsu')`,
           alpha: sql<number>`count(*) filter (where ${users.accessTier} = 'alpha')`,
           beta: sql<number>`count(*) filter (where ${users.accessTier} = 'beta')`,
-          thisWeek: sql<number>`count(*) filter (where ${users.createdAt} >= ${oneWeekAgo})`,
-          lastWeek: sql<number>`count(*) filter (where ${users.createdAt} >= ${twoWeeksAgo} AND ${users.createdAt} < ${oneWeekAgo})`,
+          thisWeek: sql<number>`count(*) filter (where ${users.createdAt} >= ${oneWeekAgo.toISOString()})`,
+          lastWeek: sql<number>`count(*) filter (where ${users.createdAt} >= ${twoWeeksAgo.toISOString()} AND ${users.createdAt} < ${oneWeekAgo.toISOString()})`,
         })
         .from(users),
 
