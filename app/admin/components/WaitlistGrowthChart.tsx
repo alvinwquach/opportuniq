@@ -21,7 +21,7 @@ interface WaitlistGrowthChartProps {
 
 export function WaitlistGrowthChart({ data }: WaitlistGrowthChartProps) {
   return (
-    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+    <ChartContainer config={chartConfig} className="h-full w-full">
       <AreaChart
         accessibilityLayer
         data={data}
@@ -61,7 +61,7 @@ export function WaitlistGrowthChart({ data }: WaitlistGrowthChartProps) {
         />
         <ChartTooltip
           cursor={{ stroke: 'rgba(168,85,247,0.2)' }}
-          content={<ChartTooltipContent indicator="line" />}
+          content={<ChartTooltipContent className="bg-neutral-900 border-neutral-700 text-white" indicator="line" />}
         />
         <Area
           dataKey="users"
