@@ -169,65 +169,30 @@ export async function GET(request: Request) {
 
     const userId = data.user.id;
     const userEmail = data.user.email!;
+    const avatarUrl = data.user.user_metadata?.avatar_url || data.user.user_metadata?.picture || null;
 
     console.log("[Auth Callback] Processing user", { userId, userEmail });
 
-    // NOW do database queries (code is already exchanged, so we have time)
-    // Check if user exists in our database with timeout protection
-    let existingUser;
-    try {
-      console.log("[Auth Callback] Starting database query for user", { userId });
-      const queryPromise = db.select().from(users).where(eq(users.id, userId));
-      const timeoutPromise = new Promise<never>((_, reject) => 
-        setTimeout(() => reject(new Error("Database query timeout")), 5000)
-      );
-      
-      const result = await Promise.race([queryPromise, timeoutPromise]);
-      [existingUser] = result as Awaited<typeof queryPromise>;
-      console.log("[Auth Callback] Database query completed", { found: !!existingUser });
-    } catch (dbError: any) {
-      // Enhanced error logging for database connection issues
-      const errorMessage = dbError?.message || String(dbError);
-      const errorCode = dbError?.code || dbError?.cause?.code;
-      const errorHostname = dbError?.cause?.hostname;
-      
-      console.error("[Auth Callback] Database query error:", {
-        message: errorMessage,
-        code: errorCode,
-        hostname: errorHostname,
-        isDnsError: errorCode === "ENOTFOUND",
-        isConnectionError: errorCode === "ECONNREFUSED" || errorCode === "ETIMEDOUT",
-        stack: process.env.NODE_ENV === "development" ? dbError?.stack : undefined,
-      });
-      
-      // Provide specific guidance based on error type
-      if (errorCode === "ENOTFOUND") {
-        console.error(
-          "[Auth Callback] DNS resolution failed - database hostname cannot be found.\n" +
-          "This usually means:\n" +
-          "1. The DATABASE_URL environment variable has an incorrect or outdated hostname\n" +
-          "2. The Supabase project was deleted or paused\n" +
-          "3. Network connectivity issues\n" +
-          `Hostname: ${errorHostname || "unknown"}\n` +
-          "Please verify your DATABASE_URL in your environment variables."
-        );
-      } else if (errorCode === "ECONNREFUSED" || errorCode === "ETIMEDOUT") {
-        console.error(
-          "[Auth Callback] Database connection refused or timed out.\n" +
-          "This usually means:\n" +
-          "1. The database server is down or unreachable\n" +
-          "2. Firewall or network restrictions are blocking the connection\n" +
-          "3. The connection string has incorrect port or credentials"
-        );
-      }
-      
-      // If DB query fails, redirect anyway - user is authenticated in Supabase
-      // Default to dashboard since we can't check role
-      console.log("[Auth Callback] Redirecting to dashboard due to DB error");
-      supabaseResponse = NextResponse.redirect(`${origin}/dashboard`, { status: 302 });
-      return supabaseResponse;
+    // Fast path for known admin emails - skip DB query entirely
+    const ADMIN_EMAILS = ["alvinwquach@gmail.com", "binarydecisions1111@gmail.com"];
+    const isKnownAdmin = ADMIN_EMAILS.includes(userEmail.toLowerCase());
+
+    if (isKnownAdmin && !invitationToken && !inviteToken) {
+      // Admin fast path - redirect directly to admin without DB query
+      // Skip fast path if they have an invite token that needs processing
+      const destination = next !== "/" ? next : "/admin";
+      console.log("[Auth Callback] Admin fast path → redirecting to", destination);
+      return createRedirectWithCookies(`${origin}${destination}`, supabaseResponse);
     }
 
+    // For non-admins or admins with invitation tokens, check DB
+    console.log("[Auth Callback] Starting DB query...");
+    const startTime = Date.now();
+    const [existingUser] = await db
+      .select({ id: users.id, role: users.role })
+      .from(users)
+      .where(eq(users.id, userId));
+    console.log("[Auth Callback] DB query completed in", Date.now() - startTime, "ms");
     const isNewUser = !existingUser;
 
     console.log("[Auth Callback] User lookup result", {
@@ -235,11 +200,7 @@ export async function GET(request: Request) {
       userEmail,
       isNewUser,
       existingUserRole: existingUser?.role,
-      existingUserPostalCode: existingUser?.postalCode,
     });
-
-    // Get avatar URL from OAuth metadata
-    const avatarUrl = data.user.user_metadata?.avatar_url || data.user.user_metadata?.picture || null;
 
     // Step 1: For new users, validate access and store pending data in cookie
     // User creation is deferred to onboarding completion
@@ -336,36 +297,15 @@ export async function GET(request: Request) {
           hasReferralCodeId: !!referralCodeId,
         });
       } else {
-        // Update avatar URL and access tier for existing users (in case it changed)
-        // For admins, ensure they have johatsu tier
-        const adminEmails = [
-          "alvinwquach@gmail.com",
-          "binarydecisions1111@gmail.com",
-        ];
-        const isAdmin = adminEmails.includes(userEmail.toLowerCase());
-        
-        // Use Promise.race to prevent hanging on slow DB updates
-        try {
-          await Promise.race([
-            db
-              .update(users)
-              .set({
-                avatarUrl,
-                lastLoginAt: new Date(),
-                updatedAt: new Date(),
-                // Update admin access tier to johatsu if they're an admin
-                ...(isAdmin ? { accessTier: "johatsu" as const } : {}),
-              })
-              .where(eq(users.id, userId)),
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error("Update timeout")), 3000)
-            )
-          ]);
-          console.log("[Auth Callback] Updated existing user", { userId, avatarUrl, isAdmin, accessTier: isAdmin ? "johatsu" : "unchanged" });
-        } catch (updateError) {
-          console.warn("[Auth Callback] User update failed (non-critical):", updateError);
-          // Continue anyway - user is authenticated
-        }
+        // Update avatar and last login for existing users
+        await db
+          .update(users)
+          .set({
+            avatarUrl,
+            lastLoginAt: new Date(),
+            updatedAt: new Date(),
+          })
+          .where(eq(users.id, userId));
       }
 
     // Step 4: Handle invitation token if present

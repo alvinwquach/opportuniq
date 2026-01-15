@@ -1,137 +1,107 @@
-"use server";
-
 import { db } from "@/app/db/client";
 import { users, waitlist, invites, referrals } from "@/app/db/schema";
-import { sql, desc, count, gte } from "drizzle-orm";
+import { desc, count } from "drizzle-orm";
 
-/**
- * Server action to fetch all admin dashboard statistics
- * Uses Drizzle ORM for type-safe, optimized queries
- */
-export async function getAdminDashboardStats() {
-  // Date calculations
-  const now = new Date();
-  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-  const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-  const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
-
+async function fetchAdminStats() {
+  console.log("[Admin Stats] Starting fetch...");
+  const startTime = Date.now();
   try {
-    // Run all queries in parallel for better performance
-    const [
-      userStatsResult,
-      waitlistStats,
-      inviteStats,
-      referralStats,
-      userGrowthData,
-      recentUsers,
-    ] = await Promise.all([
-      // User stats - single query with conditional aggregation (more efficient than multiple queries)
-      db
-        .select({
-          total: count(),
-          admins: sql<number>`count(*) filter (where ${users.role} = 'admin')`,
-          moderators: sql<number>`count(*) filter (where ${users.role} = 'moderator')`,
-          activeUsers: sql<number>`count(*) filter (where ${users.role} = 'user')`,
-          banned: sql<number>`count(*) filter (where ${users.role} = 'banned')`,
-          johatsu: sql<number>`count(*) filter (where ${users.accessTier} = 'johatsu')`,
-          alpha: sql<number>`count(*) filter (where ${users.accessTier} = 'alpha')`,
-          beta: sql<number>`count(*) filter (where ${users.accessTier} = 'beta')`,
-          thisWeek: sql<number>`count(*) filter (where ${users.createdAt} >= ${oneWeekAgo.toISOString()})`,
-          lastWeek: sql<number>`count(*) filter (where ${users.createdAt} >= ${twoWeeksAgo.toISOString()} AND ${users.createdAt} < ${oneWeekAgo.toISOString()})`,
-        })
-        .from(users),
+    // Run queries sequentially to identify which one hangs
+    console.log("[Admin Stats] Fetching users...");
+    const allUsers = await db.select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      role: users.role,
+      accessTier: users.accessTier,
+      createdAt: users.createdAt,
+    }).from(users).orderBy(desc(users.createdAt)).limit(100);
+    console.log("[Admin Stats] Users fetched:", allUsers.length);
 
-      // Waitlist stats
-      db.select({ total: count() }).from(waitlist),
+    console.log("[Admin Stats] Fetching waitlist...");
+    const waitlistCount = await db.select({ total: count() }).from(waitlist);
+    console.log("[Admin Stats] Waitlist fetched");
 
-      // Invite stats - using Drizzle's query builder with SQL for complex filters
-      db
-        .select({
-          total: count(),
-          pending: sql<number>`count(*) filter (where ${invites.acceptedAt} IS NULL AND ${invites.expiresAt} > NOW())`,
-          accepted: sql<number>`count(*) filter (where ${invites.acceptedAt} IS NOT NULL)`,
-          expired: sql<number>`count(*) filter (where ${invites.expiresAt} <= NOW() AND ${invites.acceptedAt} IS NULL)`,
-        })
-        .from(invites),
+    console.log("[Admin Stats] Fetching invites...");
+    const allInvites = await db.select({
+      id: invites.id,
+      acceptedAt: invites.acceptedAt,
+      expiresAt: invites.expiresAt,
+    }).from(invites);
+    console.log("[Admin Stats] Invites fetched:", allInvites.length);
 
-      // Referral stats - using Drizzle's query builder
-      db
-        .select({
-          total: count(),
-          valid: sql<number>`count(*) filter (where ${referrals.status} = 'converted')`,
-          invalid: sql<number>`count(*) filter (where ${referrals.status} IN ('expired', 'pending'))`,
-        })
-        .from(referrals),
+    console.log("[Admin Stats] Fetching referrals...");
+    const allReferrals = await db.select({
+      id: referrals.id,
+      status: referrals.status,
+    }).from(referrals);
+    console.log("[Admin Stats] Referrals fetched:", allReferrals.length);
 
-      // User growth data - using Drizzle with SQL for date truncation
-      db
-        .select({
-          date: sql<string>`DATE(${users.createdAt})`.as("date"),
-          count: count(),
-        })
-        .from(users)
-        .where(gte(users.createdAt, thirtyDaysAgo))
-        .groupBy(sql`DATE(${users.createdAt})`)
-        .orderBy(sql`DATE(${users.createdAt}) ASC`),
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-      // Recent users
-      db
-        .select({
-          id: users.id,
-          name: users.name,
-          email: users.email,
-          role: users.role,
-          accessTier: users.accessTier,
-          createdAt: users.createdAt,
-        })
-        .from(users)
-        .orderBy(desc(users.createdAt))
-        .limit(10),
-    ]);
-
-    // Extract user stats from result
-    const userStats = userStatsResult[0] || {};
     const combinedUserStats = {
-      total: Number(userStats.total || 0),
-      admins: Number(userStats.admins || 0),
-      moderators: Number(userStats.moderators || 0),
-      activeUsers: Number(userStats.activeUsers || 0),
-      banned: Number(userStats.banned || 0),
-      johatsu: Number(userStats.johatsu || 0),
-      alpha: Number(userStats.alpha || 0),
-      beta: Number(userStats.beta || 0),
-      thisWeek: Number(userStats.thisWeek || 0),
-      lastWeek: Number(userStats.lastWeek || 0),
+      total: allUsers.length,
+      admins: allUsers.filter(user => user.role === 'admin').length,
+      moderators: allUsers.filter(user => user.role === 'moderator').length,
+      activeUsers: allUsers.filter(user => user.role === 'user').length,
+      banned: allUsers.filter(user => user.role === 'banned').length,
+      johatsu: allUsers.filter(user => user.accessTier === 'johatsu').length,
+      alpha: allUsers.filter(user => user.accessTier === 'alpha').length,
+      beta: allUsers.filter(user => user.accessTier === 'beta').length,
+      thisWeek: allUsers.filter(user => user.createdAt >= oneWeekAgo).length,
+      lastWeek: allUsers.filter(user => user.createdAt >= twoWeeksAgo && user.createdAt < oneWeekAgo).length,
     };
 
-    // Calculate growth percentage
-    const thisWeekCount = combinedUserStats.thisWeek;
-    const lastWeekCount = combinedUserStats.lastWeek;
-    const growthPercent =
-      lastWeekCount > 0 ? ((thisWeekCount - lastWeekCount) / lastWeekCount) * 100 : 0;
+    const recentUsers = allUsers.filter(user => user.createdAt >= thirtyDaysAgo);
+    const growthByDate = new Map<string, number>();
+    recentUsers.forEach(user => {
+      const date = user.createdAt.toISOString().split('T')[0];
+      growthByDate.set(date, (growthByDate.get(date) || 0) + 1);
+    });
 
-    // Format user growth data to match expected structure
-    const formattedGrowthData = {
-      rows: userGrowthData.map((row) => ({
-        date: row.date,
-        count: Number(row.count),
-      })),
+    const userGrowthData = {
+      rows: Array.from(growthByDate.entries())
+        .map(([date, count]) => ({ date, count }))
+        .sort((a, b) => a.date.localeCompare(b.date)),
     };
 
+    const growthPercent = combinedUserStats.lastWeek > 0
+      ? ((combinedUserStats.thisWeek - combinedUserStats.lastWeek) / combinedUserStats.lastWeek) * 100
+      : 0;
+
+    // Calculate invite stats
+    const inviteStats = {
+      total: allInvites.length,
+      accepted: allInvites.filter(i => i.acceptedAt !== null).length,
+      pending: allInvites.filter(i => i.acceptedAt === null && i.expiresAt > now).length,
+      expired: allInvites.filter(i => i.acceptedAt === null && i.expiresAt <= now).length,
+    };
+
+    // Calculate referral stats
+    const referralStats = {
+      total: allReferrals.length,
+      valid: allReferrals.filter(r => r.status === 'converted').length,
+      invalid: allReferrals.filter(r => r.status === 'expired' || r.status === 'pending').length,
+    };
+
+    console.log("[Admin Stats] Completed in", Date.now() - startTime, "ms");
     return {
       success: true,
       data: {
         combinedUserStats,
-        waitlistStats: { total: waitlistStats[0]?.total || 0 },
-        inviteStats: inviteStats[0] || { total: 0, pending: 0, accepted: 0, expired: 0 },
-        referralStats: referralStats[0] || { total: 0, valid: 0, invalid: 0 },
-        userGrowthData: formattedGrowthData,
-        recentUsers: recentUsers || [],
+        waitlistStats: { total: waitlistCount[0]?.total || 0 },
+        inviteStats,
+        referralStats,
+        userGrowthData,
+        recentUsers: allUsers.slice(0, 10),
         growthPercent,
       },
     };
   } catch (error) {
-    console.error("[Admin Dashboard] Error:", error);
+    console.error("[Admin Stats] Error after", Date.now() - startTime, "ms:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",
@@ -139,3 +109,5 @@ export async function getAdminDashboardStats() {
   }
 }
 
+// Temporarily bypass cache for debugging
+export const getAdminDashboardStats = fetchAdminStats;

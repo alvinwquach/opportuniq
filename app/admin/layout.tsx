@@ -1,13 +1,11 @@
 import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { db } from "@/app/db/client";
-import { users } from "@/app/db/schema";
-import { eq } from "drizzle-orm";
 import { AdminSidebar } from "./components/AdminSidebar";
 import { SidebarProvider } from "./components/SidebarContext";
 import { AdminContent } from "./components/AdminContent";
 
-export const dynamic = "force-dynamic";
+const ADMIN_EMAILS = ["alvinwquach@gmail.com", "binarydecisions1111@gmail.com"];
+
 
 export default async function AdminLayout({
   children,
@@ -20,22 +18,13 @@ export default async function AdminLayout({
     redirect("/auth/login?redirect=/admin");
   }
 
-  const [userData] = await db
-    .select({
-      id: users.id,
-      email: users.email,
-      name: users.name,
-      role: users.role,
-      postalCode: users.postalCode,
-    })
-    .from(users)
-    .where(eq(users.id, user.id))
-    .limit(1);
-
-  if (!userData || userData.role !== "admin") {
+  // Fast admin check using email - no DB query needed
+  if (!ADMIN_EMAILS.includes(user.email || "")) {
     redirect("/dashboard");
   }
 
+  // Get user info from Supabase auth metadata (already loaded, no extra query)
+  const name = user.user_metadata?.full_name || user.user_metadata?.name || null;
   const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture || null;
 
   return (
@@ -43,17 +32,17 @@ export default async function AdminLayout({
       <div className="min-h-screen bg-[#0c0c0c] flex">
         <AdminSidebar
           user={{
-            name: userData.name,
-            email: userData.email,
+            name,
+            email: user.email || "",
             avatarUrl,
           }}
         />
         <AdminContent
           user={{
-            name: userData.name,
-            email: userData.email,
+            name,
+            email: user.email || "",
             avatarUrl,
-            postalCode: userData.postalCode,
+            postalCode: null,
           }}
         >
           {children}

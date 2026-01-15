@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 import { LoginClient } from "./LoginClient";
 
 interface LoginPageProps {
-  searchParams: Promise<{ token?: string; group?: string }>;
+  searchParams: Promise<{ token?: string; group?: string; redirect?: string }>;
 }
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
@@ -40,6 +40,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
   const inviteToken = params.token ?? null;
   const groupName = params.group ?? null;
+  const redirectTo = params.redirect ?? null;
 
-  return <LoginClient inviteToken={inviteToken} groupName={groupName} />;
+  return <LoginClient inviteToken={inviteToken} groupName={groupName} redirectTo={redirectTo} />;
 }
