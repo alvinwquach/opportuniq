@@ -46,19 +46,14 @@ export function AdminContent({ children, user }: AdminContentProps) {
 
   return (
     <main className={cn(
-      "flex-1 transition-[margin] duration-200 ease-out",
-      isCollapsed ? "lg:ml-[68px]" : "lg:ml-56"
+      "flex-1 min-w-0 transition-[margin] duration-200 ease-out bg-[#0c0c0c]",
+      isCollapsed ? "lg:ml-17" : "lg:ml-56"
     )}>
-      {/* Desktop Header */}
       <div className="hidden lg:flex h-12 items-center justify-between px-4 border-b border-[#1f1f1f] bg-[#0c0c0c] sticky top-0 z-20">
-        {/* Left: Title */}
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-white">Admin</span>
         </div>
-
-        {/* Right: Actions */}
         <div className="flex items-center gap-1">
-          {/* Notifications */}
           <div ref={notificationsRef} className="relative">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -80,8 +75,6 @@ export function AdminContent({ children, user }: AdminContentProps) {
                 </TooltipContent>
               )}
             </Tooltip>
-
-            {/* Notifications Panel */}
             {notificationsOpen && (
               <div className="absolute right-0 top-full mt-2 w-80 bg-[#0c0c0c] border border-[#1f1f1f] rounded-lg shadow-xl z-50 overflow-hidden">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
@@ -102,15 +95,10 @@ export function AdminContent({ children, user }: AdminContentProps) {
               </div>
             )}
           </div>
-
           <div className="w-px h-5 bg-[#1f1f1f] mx-1" />
-
-          {/* User Menu */}
-          <AdminUserMenu user={user} />
+                    <AdminUserMenu user={user} />
         </div>
       </div>
-
-      {/* Content */}
       <div className="min-h-screen pt-12 lg:pt-0 bg-[#0c0c0c]">
         {children}
       </div>

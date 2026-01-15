@@ -484,6 +484,12 @@
 /* Prevent body scroll when dialog is open - use scrollbar-gutter to prevent layout shift */
 html {
   scrollbar-gutter: stable;
+  min-height: 100%;
+}
+
+html, body {
+  min-height: 100vh;
+  min-height: 100dvh; /* Use dynamic viewport height on mobile */
 }
 
 body:has([data-slot="dialog-overlay"]) {

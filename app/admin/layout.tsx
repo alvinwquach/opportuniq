@@ -6,7 +6,6 @@ import { AdminContent } from "./components/AdminContent";
 
 const ADMIN_EMAILS = ["alvinwquach@gmail.com", "binarydecisions1111@gmail.com"];
 
-
 export default async function AdminLayout({
   children,
 }: {
@@ -18,7 +17,6 @@ export default async function AdminLayout({
     redirect("/auth/login?redirect=/admin");
   }
 
-  // Fast admin check using email - no DB query needed
   if (!ADMIN_EMAILS.includes(user.email || "")) {
     redirect("/dashboard");
   }

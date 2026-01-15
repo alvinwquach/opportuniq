@@ -94,7 +94,7 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <Amplitude />
       <body
-        className={`${spaceGrotesk.variable} ${dmSans.variable} font-sans antialiased`}
+        className={`${spaceGrotesk.variable} ${dmSans.variable} font-sans antialiased bg-background`}
       >
         <Providers>
           {children}
