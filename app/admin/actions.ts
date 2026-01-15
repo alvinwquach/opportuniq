@@ -2,10 +2,11 @@
 
 import { db } from "@/app/db/client";
 import { users, waitlist, invites, referrals } from "@/app/db/schema";
-import { sql, desc } from "drizzle-orm";
+import { sql, desc, count, gte } from "drizzle-orm";
 
 /**
  * Server action to fetch all admin dashboard statistics
+ * Uses Drizzle ORM for type-safe, optimized queries
  */
 export async function getAdminDashboardStats() {
   // Date calculations
@@ -14,54 +15,66 @@ export async function getAdminDashboardStats() {
   const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
-  // ISO strings for raw SQL queries
-  const oneWeekAgoISO = oneWeekAgo.toISOString();
-  const twoWeeksAgoISO = twoWeeksAgo.toISOString();
-
   try {
+    // Run all queries in parallel for better performance
     const [
-      userStatsData,
-      [waitlistStats],
-      [inviteStats],
-      [referralStats],
+      userStatsResult,
+      waitlistStats,
+      inviteStats,
+      referralStats,
       userGrowthData,
       recentUsers,
     ] = await Promise.all([
-      db.execute(sql`
-        SELECT
-          COUNT(*) as total,
-          COUNT(*) FILTER (WHERE role = 'admin') as admins,
-          COUNT(*) FILTER (WHERE role = 'moderator') as moderators,
-          COUNT(*) FILTER (WHERE role = 'user') as active_users,
-          COUNT(*) FILTER (WHERE role = 'banned') as banned,
-          COUNT(*) FILTER (WHERE access_tier = 'johatsu') as johatsu,
-          COUNT(*) FILTER (WHERE access_tier = 'alpha') as alpha,
-          COUNT(*) FILTER (WHERE access_tier = 'beta') as beta,
-          COUNT(*) FILTER (WHERE created_at >= ${oneWeekAgoISO}::timestamptz) as this_week,
-          COUNT(*) FILTER (WHERE created_at >= ${twoWeeksAgoISO}::timestamptz AND created_at < ${oneWeekAgoISO}::timestamptz) as last_week
-        FROM users
-      `),
-      db.select({ total: sql<number>`count(*)` }).from(waitlist),
-      db.select({
-        total: sql<number>`count(*)`,
-        pending: sql<number>`count(*) filter (where ${invites.acceptedAt} IS NULL AND ${invites.expiresAt} > NOW())`,
-        accepted: sql<number>`count(*) filter (where ${invites.acceptedAt} IS NOT NULL)`,
-        expired: sql<number>`count(*) filter (where ${invites.expiresAt} <= NOW() AND ${invites.acceptedAt} IS NULL)`,
-      }).from(invites),
-      db.select({
-        total: sql<number>`count(*)`,
-        valid: sql<number>`count(*) filter (where ${referrals.status} = 'converted')`,
-        invalid: sql<number>`count(*) filter (where ${referrals.status} IN ('expired', 'pending'))`,
-      }).from(referrals),
-      db.execute(sql`
-        SELECT
-          DATE(${users.createdAt}) as date,
-          COUNT(*) as count
-        FROM ${users}
-        WHERE ${users.createdAt} >= ${thirtyDaysAgo.toISOString()}::timestamptz
-        GROUP BY DATE(${users.createdAt})
-        ORDER BY date ASC
-      `),
+      // User stats - single query with conditional aggregation (more efficient than multiple queries)
+      db
+        .select({
+          total: count(),
+          admins: sql<number>`count(*) filter (where ${users.role} = 'admin')`,
+          moderators: sql<number>`count(*) filter (where ${users.role} = 'moderator')`,
+          activeUsers: sql<number>`count(*) filter (where ${users.role} = 'user')`,
+          banned: sql<number>`count(*) filter (where ${users.role} = 'banned')`,
+          johatsu: sql<number>`count(*) filter (where ${users.accessTier} = 'johatsu')`,
+          alpha: sql<number>`count(*) filter (where ${users.accessTier} = 'alpha')`,
+          beta: sql<number>`count(*) filter (where ${users.accessTier} = 'beta')`,
+          thisWeek: sql<number>`count(*) filter (where ${users.createdAt} >= ${oneWeekAgo})`,
+          lastWeek: sql<number>`count(*) filter (where ${users.createdAt} >= ${twoWeeksAgo} AND ${users.createdAt} < ${oneWeekAgo})`,
+        })
+        .from(users),
+
+      // Waitlist stats
+      db.select({ total: count() }).from(waitlist),
+
+      // Invite stats - using Drizzle's query builder with SQL for complex filters
+      db
+        .select({
+          total: count(),
+          pending: sql<number>`count(*) filter (where ${invites.acceptedAt} IS NULL AND ${invites.expiresAt} > NOW())`,
+          accepted: sql<number>`count(*) filter (where ${invites.acceptedAt} IS NOT NULL)`,
+          expired: sql<number>`count(*) filter (where ${invites.expiresAt} <= NOW() AND ${invites.acceptedAt} IS NULL)`,
+        })
+        .from(invites),
+
+      // Referral stats - using Drizzle's query builder
+      db
+        .select({
+          total: count(),
+          valid: sql<number>`count(*) filter (where ${referrals.status} = 'converted')`,
+          invalid: sql<number>`count(*) filter (where ${referrals.status} IN ('expired', 'pending'))`,
+        })
+        .from(referrals),
+
+      // User growth data - using Drizzle with SQL for date truncation
+      db
+        .select({
+          date: sql<string>`DATE(${users.createdAt})`.as("date"),
+          count: count(),
+        })
+        .from(users)
+        .where(gte(users.createdAt, thirtyDaysAgo))
+        .groupBy(sql`DATE(${users.createdAt})`)
+        .orderBy(sql`DATE(${users.createdAt}) ASC`),
+
+      // Recent users
       db
         .select({
           id: users.id,
@@ -76,21 +89,19 @@ export async function getAdminDashboardStats() {
         .limit(10),
     ]);
 
-    // Handle raw SQL result (array of rows from db.execute)
-    const rawData = userStatsData as any;
-    const row = rawData?.rows?.[0] || rawData?.[0] || {};
-    // Normalize snake_case from SQL to camelCase
+    // Extract user stats from result
+    const userStats = userStatsResult[0] || {};
     const combinedUserStats = {
-      total: Number(row.total || 0),
-      admins: Number(row.admins || 0),
-      moderators: Number(row.moderators || 0),
-      activeUsers: Number(row.active_users || row.activeUsers || 0),
-      banned: Number(row.banned || 0),
-      johatsu: Number(row.johatsu || 0),
-      alpha: Number(row.alpha || 0),
-      beta: Number(row.beta || 0),
-      thisWeek: Number(row.this_week || row.thisWeek || 0),
-      lastWeek: Number(row.last_week || row.lastWeek || 0),
+      total: Number(userStats.total || 0),
+      admins: Number(userStats.admins || 0),
+      moderators: Number(userStats.moderators || 0),
+      activeUsers: Number(userStats.activeUsers || 0),
+      banned: Number(userStats.banned || 0),
+      johatsu: Number(userStats.johatsu || 0),
+      alpha: Number(userStats.alpha || 0),
+      beta: Number(userStats.beta || 0),
+      thisWeek: Number(userStats.thisWeek || 0),
+      lastWeek: Number(userStats.lastWeek || 0),
     };
 
     // Calculate growth percentage
@@ -99,14 +110,22 @@ export async function getAdminDashboardStats() {
     const growthPercent =
       lastWeekCount > 0 ? ((thisWeekCount - lastWeekCount) / lastWeekCount) * 100 : 0;
 
+    // Format user growth data to match expected structure
+    const formattedGrowthData = {
+      rows: userGrowthData.map((row) => ({
+        date: row.date,
+        count: Number(row.count),
+      })),
+    };
+
     return {
       success: true,
       data: {
         combinedUserStats,
-        waitlistStats: waitlistStats || { total: 0 },
-        inviteStats: inviteStats || { total: 0, pending: 0, accepted: 0, expired: 0 },
-        referralStats: referralStats || { total: 0, valid: 0, invalid: 0 },
-        userGrowthData: userGrowthData || { rows: [] },
+        waitlistStats: { total: waitlistStats[0]?.total || 0 },
+        inviteStats: inviteStats[0] || { total: 0, pending: 0, accepted: 0, expired: 0 },
+        referralStats: referralStats[0] || { total: 0, valid: 0, invalid: 0 },
+        userGrowthData: formattedGrowthData,
         recentUsers: recentUsers || [],
         growthPercent,
       },
