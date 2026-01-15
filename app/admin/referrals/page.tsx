@@ -27,8 +27,8 @@ export default async function Referrals() {
     return (
       <div className="p-4 lg:p-5">
         <div className="mb-4">
-          <h1 className="text-[15px] font-medium text-white">Referral Analytics</h1>
-          <p className="text-[13px] text-[#666]">Track referral performance and viral growth</p>
+          <h1 className="text-[15px] font-medium text-white">User Referrals</h1>
+          <p className="text-[13px] text-[#666]">Track user-to-user referrals</p>
         </div>
         <div className="bg-red-900/50 border border-red-800 rounded-lg p-4">
           <h2 className="text-xl font-bold text-red-400 mb-2">Error Loading Referrals</h2>
@@ -44,8 +44,13 @@ export default async function Referrals() {
   return (
     <div className="p-4 lg:p-5">
       <div className="mb-4">
-        <h1 className="text-[15px] font-medium text-white">Referral Analytics</h1>
-        <p className="text-[13px] text-[#666]">Track referral performance and viral growth</p>
+        <h1 className="text-[15px] font-medium text-white">User Referrals</h1>
+        <p className="text-[13px] text-[#666]">
+          Track user-to-user referrals (when existing users invite friends via referral codes)
+        </p>
+        <p className="text-[11px] text-[#444] mt-1">
+          Note: Admin invites are tracked separately in the Invites page
+        </p>
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 mb-4">
         <div className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
@@ -61,26 +66,29 @@ export default async function Referrals() {
           <span className="text-xl font-semibold text-white">{tierStats?.beta || 0}</span>
         </div>
         <div className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
-          <p className="text-[11px] text-[#666] mb-1">Converted</p>
+          <p className="text-[11px] text-[#666] mb-1">Referral Signups</p>
           <span className="text-xl font-semibold text-emerald-400">{referralStats?.converted || 0}</span>
         </div>
         <div className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
           <p className="text-[11px] text-[#666] mb-1">Conversion Rate</p>
           <span className="text-xl font-semibold text-white">{conversionRate}%</span>
         </div>
-        <div className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
+        <div className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f] group relative">
           <p className="text-[11px] text-[#666] mb-1">Viral Coefficient</p>
           <span className="text-xl font-semibold text-amber-400">{viralCoefficient}</span>
+          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[#1f1f1f] border border-[#333] rounded-lg text-[11px] text-[#888] w-48 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+            Avg new users per existing user. Above 1.0 = viral growth
+          </div>
         </div>
       </div>
       <div className="grid lg:grid-cols-2 gap-4 mb-4">
         <div className="p-4 rounded-lg bg-[#161616] border border-[#1f1f1f]">
           <div className="mb-3">
             <h2 className="text-[13px] font-medium text-white">Top referrers</h2>
-            <p className="text-[11px] text-[#666]">Leaderboard by successful referrals</p>
+            <p className="text-[11px] text-[#666]">Users who have referred the most friends</p>
           </div>
           {topReferrers.length === 0 ? (
-            <p className="text-[13px] text-[#666] text-center py-6">No referrals yet</p>
+            <p className="text-[13px] text-[#666] text-center py-6">No user referrals yet</p>
           ) : (
             <div className="space-y-2.5">
               {topReferrers.map((user, index) => (
@@ -112,12 +120,12 @@ export default async function Referrals() {
         <div className="p-4 rounded-lg bg-[#161616] border border-[#1f1f1f]">
           <div className="mb-3">
             <h2 className="text-[13px] font-medium text-white">Referral funnel</h2>
-            <p className="text-[11px] text-[#666]">Conversion breakdown</p>
+            <p className="text-[11px] text-[#666]">User referral code usage breakdown</p>
           </div>
           <div className="space-y-3">
             <div>
               <div className="flex justify-between text-[13px] mb-1.5">
-                <span className="text-[#888]">Referrals Sent</span>
+                <span className="text-[#888]">Codes Shared</span>
                 <span className="text-white font-medium">{referralStats?.total || 0}</span>
               </div>
               <div className="h-1 rounded-full bg-[#1f1f1f] overflow-hidden">
@@ -161,11 +169,13 @@ export default async function Referrals() {
       </div>
       <div className="rounded-lg bg-[#161616] border border-[#1f1f1f] overflow-hidden">
         <div className="px-4 py-3 border-b border-[#1f1f1f]">
-          <h2 className="text-[13px] font-medium text-white">Recent referrals</h2>
+          <h2 className="text-[13px] font-medium text-white">Recent user referrals</h2>
+          <p className="text-[11px] text-[#666]">Friends invited by existing users</p>
         </div>
         {recentReferrals.length === 0 ? (
           <div className="p-8 text-center">
-            <p className="text-[13px] text-[#666]">No referrals yet</p>
+            <p className="text-[13px] text-[#666]">No user referrals yet</p>
+            <p className="text-[11px] text-[#444] mt-1">Users can share their referral codes to invite friends</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
