@@ -8,6 +8,7 @@ import Link from "next/link";
 interface LoginClientProps {
   inviteToken?: string | null;
   groupName?: string | null;
+  redirectTo?: string | null;
 }
 
 // Dark theme styles to match dashboard
@@ -24,7 +25,7 @@ const styles = {
   accent: '#5eead4',
 };
 
-export function LoginClient({ inviteToken, groupName }: LoginClientProps) {
+export function LoginClient({ inviteToken, groupName, redirectTo }: LoginClientProps) {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState("");
   const errorId = useId();
@@ -47,6 +48,9 @@ export function LoginClient({ inviteToken, groupName }: LoginClientProps) {
     }
     if (groupName) {
       callbackUrl.searchParams.set('group', groupName);
+    }
+    if (redirectTo) {
+      callbackUrl.searchParams.set('next', redirectTo);
     }
 
     const { error } = await supabase.auth.signInWithOAuth({

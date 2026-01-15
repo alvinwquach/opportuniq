@@ -53,7 +53,8 @@ export default async function AnalyticsPage() {
     );
   }
 
-  const formatChartData = (data: { date: string; count: number }[]) => {
+  // WaitlistGrowthChart still needs the old format
+  const formatWaitlistChartData = (data: { date: string; count: number }[]) => {
     const filled: { date: string; users: number }[] = [];
     for (let i = 29; i >= 0; i--) {
       const date = new Date();
@@ -69,8 +70,9 @@ export default async function AnalyticsPage() {
     return filled;
   };
 
-  const userChartData = formatChartData(userGrowthData);
-  const waitlistChartData = formatChartData(waitlistGrowthData);
+  // UserGrowthChart now handles date filling internally
+  const userChartData = userGrowthData;
+  const waitlistChartData = formatWaitlistChartData(waitlistGrowthData);
 
   const countryChartData = countryData
     .filter(c => c.country)

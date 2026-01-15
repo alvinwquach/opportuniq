@@ -1,6 +1,6 @@
 "use client";
 
-import { Bar, BarChart, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { Area, AreaChart, XAxis, YAxis } from "recharts";
 import {
   ChartConfig,
   ChartContainer,
@@ -10,23 +10,58 @@ import {
 
 const chartConfig = {
   users: {
-    label: "Users",
+    label: "New Users",
     color: "#5eead4",
   },
 } satisfies ChartConfig;
 
 interface UserGrowthChartProps {
-  data: { date: string; users: number }[];
+  data: { date: string; count: number }[];
 }
 
 export function UserGrowthChart({ data }: UserGrowthChartProps) {
+  // Fill in missing dates to create a continuous line
+  const filledData: { date: string; users: number }[] = [];
+
+  if (data.length > 0) {
+    // Get date range (last 30 days)
+    const endDate = new Date();
+    const startDate = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    // Create a map of existing data
+    const dataMap = new Map(data.map(d => [d.date, d.count]));
+
+    // Fill in all dates
+    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+      const dateStr = d.toISOString().split('T')[0];
+      filledData.push({
+        date: dateStr,
+        users: dataMap.get(dateStr) || 0,
+      });
+    }
+  }
+
+  if (filledData.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full text-neutral-500 text-sm">
+        No user signups in the last 30 days
+      </div>
+    );
+  }
+
   return (
-    <ChartContainer config={chartConfig} className="h-full w-full">
-      <BarChart
+    <ChartContainer id="user-growth" config={chartConfig} className="h-full w-full">
+      <AreaChart
         accessibilityLayer
-        data={data}
-        margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
+        data={filledData}
+        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
       >
+        <defs>
+          <linearGradient id="userGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#5eead4" stopOpacity={0.3} />
+            <stop offset="95%" stopColor="#5eead4" stopOpacity={0} />
+          </linearGradient>
+        </defs>
         <XAxis
           dataKey="date"
           tickLine={false}
@@ -35,11 +70,8 @@ export function UserGrowthChart({ data }: UserGrowthChartProps) {
           tick={{ fill: '#555', fontSize: 10 }}
           interval="preserveStartEnd"
           tickFormatter={(value) => {
-            const index = data.findIndex(d => d.date === value);
-            if (index % 7 === 0 || index === data.length - 1) {
-              return value;
-            }
-            return '';
+            const date = new Date(value);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
           }}
         />
         <YAxis
@@ -50,16 +82,19 @@ export function UserGrowthChart({ data }: UserGrowthChartProps) {
           allowDecimals={false}
         />
         <ChartTooltip
-          cursor={{ fill: 'rgba(255,255,255,0.03)' }}
-          content={<ChartTooltipContent />}
+          cursor={{ stroke: '#333', strokeWidth: 1 }}
+          content={<ChartTooltipContent className="bg-neutral-900 border-neutral-700 text-white" labelClassName="text-white" />}
         />
-        <Bar
+        <Area
+          type="monotone"
           dataKey="users"
-          fill="#5eead4"
-          radius={[2, 2, 0, 0]}
-          maxBarSize={12}
+          stroke="#5eead4"
+          strokeWidth={2}
+          fill="url(#userGradient)"
+          dot={false}
+          activeDot={{ r: 4, fill: '#5eead4', stroke: '#0a0a0a', strokeWidth: 2 }}
         />
-      </BarChart>
+      </AreaChart>
     </ChartContainer>
   );
 }

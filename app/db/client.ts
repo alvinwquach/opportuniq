@@ -38,45 +38,12 @@ if (isDirectConnection && process.env.NODE_ENV === "development") {
   );
 }
 
-// Singleton pattern for serverless environments
-const globalForDb = globalThis as unknown as {
-  client: ReturnType<typeof postgres> | undefined;
-  connectionString: string | undefined;
-};
-
-// Reset client if connection string changed (helps recover from circuit breaker)
-const previousConnectionString = globalForDb.connectionString;
-if (previousConnectionString && previousConnectionString !== connectionString) {
-  console.log("[DB Client] Connection string changed, resetting client");
-  if (globalForDb.client) {
-    // Close connection asynchronously (don't await at module level)
-    globalForDb.client.end({ timeout: 2 }).catch(() => {
-      // Ignore errors when closing
-    });
-  }
-  globalForDb.client = undefined;
-}
-
-// Create new client if needed or if connection string changed
-const client =
-  globalForDb.client && previousConnectionString === connectionString
-    ? globalForDb.client
-    : postgres(connectionString, {
-        prepare: isDirectConnection, // Can use prepared statements with direct connection, but not with PgBouncer
-        max: 1, // Limit connections per serverless instance
-        idle_timeout: 20, // Close idle connections after 20 seconds
-        connect_timeout: 5, // Connection timeout in seconds (reduced to fail fast)
-        // Note: statement_timeout doesn't work with PgBouncer transaction mode
-        // Supabase has a default statement timeout (~2-5 seconds)
-        // If queries are slow, ensure indexes exist on frequently queried columns:
-        // - users.role, users.access_tier, users.created_at
-        // - Consider using EXPLAIN ANALYZE to identify slow queries
-        onnotice: process.env.NODE_ENV === "development" ? console.log : undefined,
-      });
-
-if (process.env.NODE_ENV !== "production") {
-  globalForDb.client = client;
-  globalForDb.connectionString = connectionString;
-}
+// Create postgres client with appropriate settings
+const client = postgres(connectionString, {
+  prepare: isDirectConnection,
+  max: 10, // Allow more connections
+  idle_timeout: 20,
+  connect_timeout: 10,
+});
 
 export const db = drizzle({ client, schema });
