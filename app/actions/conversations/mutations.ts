@@ -64,7 +64,7 @@ export async function createConversation(
 
     // Step 3: Extract input with defaults
     const {
-      type = "diagnosis",
+      type: inputType = "diagnosis",
       groupId,
       wrappedConversationKey,
       publicKeyFingerprint,
@@ -72,6 +72,9 @@ export async function createConversation(
       encryptedTitle,
       titleIv,
     } = input;
+
+    // Cast type to enum value
+    const type: "diagnosis" | "general" | "followup" = inputType as "diagnosis" | "general" | "followup";
 
     // Step 4: Determine encryption scope
     const encryptionScope: "user" | "group" = groupId ? "group" : "user";
