@@ -302,7 +302,7 @@ export async function generateDerivedKey(
 
   return {
     key,
-    salt: arrayBufferToBase64(salt.buffer as ArrayBuffer),
+    salt: arrayBufferToBase64(salt.buffer.slice(0)),
     iterations,
   };
 }
@@ -334,14 +334,14 @@ export async function encrypt(
   const iv = generateIV();
 
   const ciphertext = await crypto.subtle.encrypt(
-    { name: AES_ALGORITHM, iv: iv },
+    { name: AES_ALGORITHM, iv: new Uint8Array(iv) },
     key,
     data
   );
 
   return {
     ciphertext: arrayBufferToBase64(ciphertext),
-    iv: arrayBufferToBase64(iv.buffer as ArrayBuffer),
+    iv: arrayBufferToBase64(iv.buffer.slice(0)),
     algorithm: `${AES_ALGORITHM}-${AES_KEY_LENGTH}`,
   };
 }
@@ -501,14 +501,14 @@ export async function encryptText(
   const data = encoder.encode(text);
 
   const ciphertext = await crypto.subtle.encrypt(
-    { name: AES_ALGORITHM, iv: iv },
+    { name: AES_ALGORITHM, iv: new Uint8Array(iv) },
     key,
     data
   );
 
   return {
     ciphertext: arrayBufferToBase64(ciphertext),
-    iv: arrayBufferToBase64(iv.buffer as ArrayBuffer),
+    iv: arrayBufferToBase64(iv.buffer.slice(0)),
   };
 }
 
