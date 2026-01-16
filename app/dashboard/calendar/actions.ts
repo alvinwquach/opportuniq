@@ -662,17 +662,19 @@ export async function getUserExpensesForCalendar() {
       .from(userExpenses)
       .where(eq(userExpenses.userId, user.id));
 
-    const expenseEvents: ExpenseEvent[] = expenses.map((expense) => ({
-      id: expense.id,
-      type: "user_expense" as const,
-      category: expense.category,
-      amount: expense.amount,
-      date: expense.date,
-      description: expense.description,
-      isRecurring: expense.isRecurring ?? false,
-      recurringFrequency: expense.recurringFrequency,
-      nextDueDate: expense.nextDueDate,
-    }));
+    const expenseEvents: ExpenseEvent[] = expenses
+      .filter((expense) => expense.category && expense.amount)
+      .map((expense) => ({
+        id: expense.id,
+        type: "user_expense" as const,
+        category: expense.category!,
+        amount: expense.amount!,
+        date: expense.date,
+        description: expense.description,
+        isRecurring: expense.isRecurring ?? false,
+        recurringFrequency: expense.recurringFrequency,
+        nextDueDate: expense.nextDueDate,
+      }));
 
     return { success: true, expenseEvents };
   } catch (error) {
