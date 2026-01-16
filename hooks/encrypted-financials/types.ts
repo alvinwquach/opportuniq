@@ -56,7 +56,7 @@ export interface DecryptedIncomeStream {
   source: string;
   amount: number;
   description: string | null;
-  frequency: string;
+  frequency: IncomeFrequency;
   isActive: boolean;
   startDate: Date | null;
   endDate: Date | null;
@@ -71,7 +71,7 @@ export interface DecryptedExpense {
   description: string | null;
   date: Date;
   isRecurring: boolean | null;
-  recurringFrequency: string | null;
+  recurringFrequency: ExpenseFrequency | null;
   nextDueDate: Date | null;
   issueId: string | null;
   createdAt: Date;
@@ -102,12 +102,12 @@ export interface RawIncomeStream {
   amountIv: string | null;
   encryptedDescription: string | null;
   descriptionIv: string | null;
-  // Legacy plaintext fields
+  // Plaintext fields
   source: string | null;
   amount: string | null;
   description: string | null;
   // Always plaintext
-  frequency: string;
+  frequency: IncomeFrequency;
   isActive: boolean;
   startDate: Date | null;
   endDate: Date | null;
@@ -128,14 +128,14 @@ export interface RawExpense {
   amountIv: string | null;
   encryptedDescription: string | null;
   descriptionIv: string | null;
-  // Legacy plaintext fields
+  // Plaintext fields
   category: string | null;
   amount: string | null;
   description: string | null;
   // Always plaintext
   date: Date;
   isRecurring: boolean | null;
-  recurringFrequency: string | null;
+  recurringFrequency: ExpenseFrequency | null;
   nextDueDate: Date | null;
   issueId: string | null;
   createdAt: Date;
