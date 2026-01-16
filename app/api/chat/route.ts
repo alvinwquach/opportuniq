@@ -494,16 +494,17 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
     .where(eq(aiMessages.conversationId, conversationId))
     .orderBy(aiMessages.createdAt);
 
-  // Build attachments metadata for storage
+  // Build attachments metadata for storage (matches AttachmentMetadata interface)
   const attachmentsMeta = attachments?.map((att) => ({
-    type: att.type || "image",
+    type: (att.type || "image") as "image" | "video" | "document",
+    storageUrl: att.storagePath,
     mediaType: att.mimeType,
-    attachmentId: att.attachmentId,
-    storagePath: att.storagePath,
+    fileSize: att.originalSize || 0,
+    encrypted: true as const,
+    encryptionScope: "user" as const,
+    keyVersion: 1,
+    algorithm: "AES-GCM-256",
     iv: att.iv,
-    durationSeconds: att.durationSeconds,
-    hasAudio: att.hasAudio,
-    confidenceScore: att.confidenceScore,
   }));
 
   // Check attachment types
