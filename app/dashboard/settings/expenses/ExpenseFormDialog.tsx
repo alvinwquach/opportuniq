@@ -18,7 +18,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { expenseFormSchema, expenseCategories } from "./schemas";
-import { addExpense, updateExpense, type ExpenseFrequency } from "./actions";
+import { addExpense } from "./actions/addExpense";
+import { updateExpense } from "./actions/updateExpense";
+import type { ExpenseFrequency } from "./actions/types";
+import { useEncryptedFinancials, type DecryptedExpense } from "@/hooks/useEncryptedFinancials";
 
 const FREQUENCY_OPTIONS: { value: ExpenseFrequency; label: string }[] = [
   { value: "one_time", label: "One-time" },
@@ -30,25 +33,11 @@ const FREQUENCY_OPTIONS: { value: ExpenseFrequency; label: string }[] = [
   { value: "annual", label: "Annual" },
 ];
 
-export interface Expense {
-  id: string;
-  userId: string;
-  category: string;
-  amount: string;
-  date: Date;
-  description: string | null;
-  isRecurring: boolean | null;
-  recurringFrequency: string | null;
-  nextDueDate: Date | null;
-  issueId: string | null;
-  createdAt: Date;
-}
-
 interface ExpenseFormDialogProps {
   userId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  editingExpense?: Expense | null;
+  editingExpense?: DecryptedExpense | null;
 }
 
 export function ExpenseFormDialog({
@@ -60,6 +49,7 @@ export function ExpenseFormDialog({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { encryptExpenseData, isEncrypting } = useEncryptedFinancials();
   const isEditing = !!editingExpense;
 
   // Determine default frequency from editing expense
@@ -72,7 +62,7 @@ export function ExpenseFormDialog({
   const form = useForm({
     defaultValues: {
       category: editingExpense?.category ?? "",
-      amount: editingExpense ? parseFloat(editingExpense.amount) : 0,
+      amount: editingExpense?.amount ?? 0,
       frequency: getDefaultFrequency(),
       description: editingExpense?.description ?? "",
       date: editingExpense
@@ -83,22 +73,19 @@ export function ExpenseFormDialog({
       setIsSubmitting(true);
       startTransition(async () => {
         try {
+          // Encrypt sensitive fields before sending to server
+          const encryptedData = await encryptExpenseData({
+            category: value.category,
+            amount: value.amount,
+            description: value.description || undefined,
+            date: new Date(value.date),
+            frequency: value.frequency,
+          });
+
           if (isEditing && editingExpense) {
-            await updateExpense(editingExpense.id, userId, {
-              category: value.category,
-              amount: value.amount,
-              frequency: value.frequency,
-              description: value.description || undefined,
-              date: new Date(value.date),
-            });
+            await updateExpense(editingExpense.id, userId, encryptedData);
           } else {
-            await addExpense(userId, {
-              category: value.category,
-              amount: value.amount,
-              frequency: value.frequency,
-              description: value.description || undefined,
-              date: new Date(value.date),
-            });
+            await addExpense(userId, encryptedData);
           }
           form.reset();
           onOpenChange(false);
@@ -134,7 +121,6 @@ export function ExpenseFormDialog({
             </DialogTitle>
           </div>
         </DialogHeader>
-
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -144,7 +130,6 @@ export function ExpenseFormDialog({
         >
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              {/* Category */}
               <form.Field
                 name="category"
                 validators={{
@@ -230,9 +215,7 @@ export function ExpenseFormDialog({
                 )}
               </form.Field>
             </div>
-
             <div className="grid grid-cols-2 gap-3">
-              {/* Frequency */}
               <form.Field name="frequency">
                 {(field) => (
                   <div>
@@ -255,8 +238,6 @@ export function ExpenseFormDialog({
                   </div>
                 )}
               </form.Field>
-
-              {/* Date */}
               <form.Field
                 name="date"
                 validators={{
@@ -318,14 +299,13 @@ export function ExpenseFormDialog({
               )}
             </form.Field>
           </div>
-
           <div className="flex gap-2 pt-6">
             <button
               type="submit"
-              disabled={isPending || isSubmitting}
+              disabled={isPending || isSubmitting || isEncrypting}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#f87171] hover:bg-[#f87171]/90 disabled:bg-[#1f1f1f] disabled:text-[#555] text-white font-medium text-sm transition-colors"
             >
-              {isPending || isSubmitting ? (
+              {isPending || isSubmitting || isEncrypting ? (
                 <ImSpinner8 className="w-4 h-4 animate-spin" />
               ) : (
                 <IoCheckmark className="w-4 h-4" />

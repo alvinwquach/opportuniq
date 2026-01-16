@@ -12,11 +12,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { incomeFormSchema } from "./schemas";
-import {
-  addIncomeStream,
-  updateIncomeStream,
-  type IncomeFrequency,
-} from "./actions";
+import { addIncomeStream } from "./actions/addIncomeStream";
+import { updateIncomeStream } from "./actions/updateIncomeStream";
+import type { IncomeFrequency } from "./actions/types";
+import { useEncryptedFinancials, type DecryptedIncomeStream } from "@/hooks/useEncryptedFinancials";
 
 const FREQUENCY_OPTIONS: { value: IncomeFrequency; label: string }[] = [
   { value: "weekly", label: "Weekly" },
@@ -28,22 +27,11 @@ const FREQUENCY_OPTIONS: { value: IncomeFrequency; label: string }[] = [
   { value: "one_time", label: "One-time" },
 ];
 
-interface IncomeStream {
-  id: string;
-  source: string;
-  amount: string;
-  frequency: string;
-  description: string | null;
-  isActive: boolean;
-  startDate: Date | null;
-  endDate: Date | null;
-}
-
 interface IncomeFormDialogProps {
   userId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  editingStream?: IncomeStream | null;
+  editingStream?: DecryptedIncomeStream | null;
 }
 
 export function IncomeFormDialog({
@@ -55,12 +43,13 @@ export function IncomeFormDialog({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { encryptIncomeData, isEncrypting } = useEncryptedFinancials();
   const isEditing = !!editingStream;
 
   const form = useForm({
     defaultValues: {
       source: editingStream?.source ?? "",
-      amount: editingStream ? parseFloat(editingStream.amount) : 0,
+      amount: editingStream?.amount ?? 0,
       frequency: (editingStream?.frequency ?? "monthly") as IncomeFrequency,
       description: editingStream?.description ?? "",
       startDate: editingStream?.startDate
@@ -71,22 +60,19 @@ export function IncomeFormDialog({
       setIsSubmitting(true);
       startTransition(async () => {
         try {
+          // Encrypt sensitive fields before sending to server
+          const encryptedData = await encryptIncomeData({
+            source: value.source,
+            amount: value.amount,
+            description: value.description || undefined,
+            frequency: value.frequency,
+            startDate: value.startDate ? new Date(value.startDate) : undefined,
+          });
+
           if (isEditing && editingStream) {
-            await updateIncomeStream(editingStream.id, userId, {
-              source: value.source,
-              amount: value.amount,
-              frequency: value.frequency,
-              description: value.description || undefined,
-              startDate: value.startDate ? new Date(value.startDate) : null,
-            });
+            await updateIncomeStream(editingStream.id, userId, encryptedData);
           } else {
-            await addIncomeStream(userId, {
-              source: value.source,
-              amount: value.amount,
-              frequency: value.frequency,
-              description: value.description || undefined,
-              startDate: value.startDate ? new Date(value.startDate) : undefined,
-            });
+            await addIncomeStream(userId, encryptedData);
           }
           form.reset();
           onOpenChange(false);
@@ -278,10 +264,10 @@ export function IncomeFormDialog({
           <div className="flex gap-2 pt-6">
             <button
               type="submit"
-              disabled={isPending || isSubmitting}
+              disabled={isPending || isSubmitting || isEncrypting}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-[#1f1f1f] disabled:text-[#555] text-[#0c0c0c] font-medium text-sm transition-colors"
             >
-              {isPending || isSubmitting ? (
+              {isPending || isSubmitting || isEncrypting ? (
                 <ImSpinner8 className="w-4 h-4 animate-spin" />
               ) : (
                 <IoCheckmark className="w-4 h-4" />
