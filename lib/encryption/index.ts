@@ -1,35 +1,50 @@
 /**
  * Encryption Module
  *
- * Client-side E2EE utilities for OpportunIQ.
+ * Client-side encryption utilities for OpportunIQ.
  * All encryption happens in the browser - server never sees plaintext.
  *
- * Keys are stored server-side (encrypted at rest) for cross-device access.
- * See /api/encryption/key for key management.
+ * Uses AES-256-GCM for content encryption with symmetric keys.
  */
 
-// Core encryption functions
+// ============================================
+// KEY MANAGEMENT
+// ============================================
+
 export {
-  // Key generation
   generateMasterKey,
   generateDerivedKey,
   deriveKeyFromPassword,
   exportKey,
   importKey,
-
-  // Encryption
-  encrypt,
-  encryptFile,
   encryptMasterKey,
-  encryptImageForUpload,
-  encryptVideoForUpload,
-
-  // Decryption
-  decrypt,
-  decryptFile,
   decryptMasterKey,
+} from "./client";
+
+// ============================================
+// CONTENT ENCRYPTION (AES-256-GCM)
+// ============================================
+
+export {
+  // AES-256-GCM encryption
+  encrypt,
+  decrypt,
+  encryptFile,
+  decryptFile,
+
+  // Text encryption
+  encryptText,
+  decryptText,
+  encryptTextFields,
+  decryptTextFields,
+
+  // Image encryption
+  encryptImageForUpload,
   decryptImageForDisplay,
   revokeImageUrl,
+
+  // Video encryption
+  encryptVideoForUpload,
   decryptVideoForPlayback,
   revokeVideoUrl,
 
@@ -39,9 +54,17 @@ export {
   generateRandomBytes,
   arrayBufferToBase64,
   base64ToArrayBuffer,
+  base64ToUint8Array,
+  uint8ArrayToBase64,
+} from "./client";
 
-  // Types
-  type EncryptedData,
-  type EncryptedBlob,
-  type DerivedKeyResult,
+// ============================================
+// TYPES
+// ============================================
+
+export type {
+  EncryptedData,
+  EncryptedBlob,
+  EncryptedText,
+  DerivedKeyResult,
 } from "./client";
