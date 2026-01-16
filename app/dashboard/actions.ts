@@ -748,8 +748,9 @@ export async function getDashboardData(userId: string) {
   }[] = [];
 
   for (const budget of budgets) {
+    if (!budget.category) continue;
     const categorySpend = spendingByCategory.find(
-      (s) => s.category.toLowerCase() === budget.category.toLowerCase()
+      (s) => s.category?.toLowerCase() === budget.category?.toLowerCase()
     );
     const spent = categorySpend ? Number(categorySpend.total) : 0;
     const limit = Number(budget.monthlyLimit);
