@@ -91,6 +91,15 @@ export function arrayBufferToBase64(buffer: ArrayBuffer): string {
 }
 
 /**
+ * Convert Uint8Array to a proper ArrayBuffer (avoids SharedArrayBuffer type issues)
+ */
+function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const buffer = new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(buffer).set(bytes);
+  return buffer;
+}
+
+/**
  * Convert Base64 string to ArrayBuffer
  *
  * PSEUDOCODE:
@@ -106,7 +115,7 @@ export function base64ToArrayBuffer(base64: string): ArrayBuffer {
   for (let i = 0; i < binary.length; i++) {
     bytes[i] = binary.charCodeAt(i);
   }
-  return bytes.buffer.slice(0);
+  return toArrayBuffer(bytes);
 }
 
 /**
@@ -130,7 +139,7 @@ export function base64ToUint8Array(base64: string): Uint8Array {
  * 3. Return the Base64 string
  */
 export function uint8ArrayToBase64(bytes: Uint8Array): string {
-  return arrayBufferToBase64(bytes.buffer.slice(0));
+  return arrayBufferToBase64(toArrayBuffer(bytes));
 }
 
 /**
@@ -271,7 +280,7 @@ export async function deriveKeyFromPassword(
   return crypto.subtle.deriveKey(
     {
       name: "PBKDF2",
-      salt: salt.buffer.slice(0),
+      salt: toArrayBuffer(salt),
       iterations,
       hash: "SHA-256",
     },
@@ -302,7 +311,7 @@ export async function generateDerivedKey(
 
   return {
     key,
-    salt: arrayBufferToBase64(salt.buffer.slice(0)),
+    salt: arrayBufferToBase64(toArrayBuffer(salt)),
     iterations,
   };
 }
@@ -341,7 +350,7 @@ export async function encrypt(
 
   return {
     ciphertext: arrayBufferToBase64(ciphertext),
-    iv: arrayBufferToBase64(iv.buffer.slice(0)),
+    iv: arrayBufferToBase64(toArrayBuffer(iv)),
     algorithm: `${AES_ALGORITHM}-${AES_KEY_LENGTH}`,
   };
 }
@@ -407,7 +416,7 @@ export async function encryptFile(
 
   return {
     blob: new Blob([ciphertext], { type: "application/octet-stream" }),
-    iv: arrayBufferToBase64(iv.buffer.slice(0)),
+    iv: arrayBufferToBase64(toArrayBuffer(iv)),
     originalSize: file.size,
     encryptedSize: ciphertext.byteLength,
   };
@@ -508,7 +517,7 @@ export async function encryptText(
 
   return {
     ciphertext: arrayBufferToBase64(ciphertext),
-    iv: arrayBufferToBase64(iv.buffer.slice(0)),
+    iv: arrayBufferToBase64(toArrayBuffer(iv)),
   };
 }
 
