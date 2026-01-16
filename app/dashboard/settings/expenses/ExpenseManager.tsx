@@ -1,24 +1,29 @@
 "use client";
 
+
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { IoAdd } from "react-icons/io5";
-import { ExpenseCard, type Expense } from "./ExpenseCard";
+import { ExpenseCard } from "./ExpenseCard";
 import { ExpenseFormDialog } from "./ExpenseFormDialog";
-import { deleteExpense } from "./actions";
+import { deleteExpense } from "./actions/deleteExpense";
+import { type DecryptedExpense } from "@/hooks/useEncryptedFinancials";
 
 interface ExpenseManagerProps {
   userId: string;
-  initialExpenses: Expense[];
+  decryptedExpenses: DecryptedExpense[];
 }
 
-export function ExpenseManager({ userId, initialExpenses }: ExpenseManagerProps) {
+export function ExpenseManager({
+  userId,
+  decryptedExpenses,
+}: ExpenseManagerProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [editingExpense, setEditingExpense] = useState<DecryptedExpense | null>(null);
 
-  const handleEdit = (expense: Expense) => {
+  const handleEdit = (expense: DecryptedExpense) => {
     setEditingExpense(expense);
     setDialogOpen(true);
   };
@@ -42,13 +47,11 @@ export function ExpenseManager({ userId, initialExpenses }: ExpenseManagerProps)
     });
   };
 
-  // Separate recurring and one-time expenses
-  const recurringExpenses = initialExpenses.filter((e) => e.isRecurring);
-  const oneTimeExpenses = initialExpenses.filter((e) => !e.isRecurring);
+  const recurringExpenses = decryptedExpenses.filter((expense) => expense.isRecurring);
+  const oneTimeExpenses = decryptedExpenses.filter((expense) => !expense.isRecurring);
 
   return (
     <div className="space-y-6">
-      {/* Recurring Expenses */}
       {recurringExpenses.length > 0 && (
         <div>
           <h3 className="text-xs font-medium text-[#555] uppercase tracking-wider mb-3">
@@ -67,8 +70,6 @@ export function ExpenseManager({ userId, initialExpenses }: ExpenseManagerProps)
           </div>
         </div>
       )}
-
-      {/* One-time Expenses */}
       {oneTimeExpenses.length > 0 && (
         <div>
           <h3 className="text-xs font-medium text-[#555] uppercase tracking-wider mb-3">
@@ -87,8 +88,6 @@ export function ExpenseManager({ userId, initialExpenses }: ExpenseManagerProps)
           </div>
         </div>
       )}
-
-      {/* Add Button */}
       <button
         onClick={handleAdd}
         className="w-full flex items-center justify-center gap-2 p-4 rounded-xl border border-dashed border-[#2a2a2a] text-[#666] hover:text-white hover:border-[#f87171]/50 transition-colors"
@@ -96,8 +95,6 @@ export function ExpenseManager({ userId, initialExpenses }: ExpenseManagerProps)
         <IoAdd className="w-4 h-4" />
         Add Expense
       </button>
-
-      {/* Form Dialog */}
       <ExpenseFormDialog
         userId={userId}
         open={dialogOpen}

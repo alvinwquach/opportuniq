@@ -25,6 +25,7 @@ import {
   type IncomeFrequency,
 } from "../../settings/income/actions";
 import { trackIncomeAdded } from "@/lib/analytics";
+import { useEncryptedFinancials } from "@/hooks/useEncryptedFinancials";
 
 const FREQUENCY_OPTIONS: { value: IncomeFrequency; label: string }[] = [
   { value: "weekly", label: "Weekly" },
@@ -46,6 +47,7 @@ export function IncomeSetupDialog({ userId, variant = "prompt" }: IncomeSetupDia
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { encryptIncomeData, isEncrypting } = useEncryptedFinancials();
 
   const form = useForm({
     defaultValues: {
@@ -59,13 +61,16 @@ export function IncomeSetupDialog({ userId, variant = "prompt" }: IncomeSetupDia
       setIsSubmitting(true);
       startTransition(async () => {
         try {
-          await addIncomeStream(userId, {
+          // Encrypt sensitive fields before sending to server
+          const encryptedData = await encryptIncomeData({
             source: value.source,
             amount: value.amount,
-            frequency: value.frequency,
             description: value.description || undefined,
+            frequency: value.frequency,
             startDate: value.startDate ? new Date(value.startDate) : undefined,
           });
+
+          await addIncomeStream(userId, encryptedData);
           // Track income added event
           trackIncomeAdded({
             frequency: value.frequency,
@@ -123,7 +128,7 @@ export function IncomeSetupDialog({ userId, variant = "prompt" }: IncomeSetupDia
           </DialogHeader>
           <IncomeForm
             form={form}
-            isPending={isPending}
+            isPending={isPending || isEncrypting}
             isSubmitting={isSubmitting}
             onCancel={handleCancel}
           />
@@ -164,7 +169,7 @@ export function IncomeSetupDialog({ userId, variant = "prompt" }: IncomeSetupDia
         </DialogHeader>
         <IncomeForm
           form={form}
-          isPending={isPending}
+          isPending={isPending || isEncrypting}
           isSubmitting={isSubmitting}
           onCancel={handleCancel}
         />

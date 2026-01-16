@@ -1,7 +1,8 @@
 "use client";
 
 import { IoTrash, IoCheckmark, IoClose, IoPencil } from "react-icons/io5";
-import type { IncomeFrequency } from "./actions";
+import type { IncomeFrequency } from "./actions/types";
+import type { DecryptedIncomeStream } from "@/hooks/useEncryptedFinancials";
 
 const FREQUENCY_LABELS: Record<IncomeFrequency, string> = {
   weekly: "Weekly",
@@ -13,20 +14,8 @@ const FREQUENCY_LABELS: Record<IncomeFrequency, string> = {
   one_time: "One-time",
 };
 
-export interface IncomeStream {
-  id: string;
-  source: string;
-  amount: string;
-  frequency: string;
-  description: string | null;
-  isActive: boolean;
-  startDate: Date | null;
-  endDate: Date | null;
-  createdAt: Date;
-}
-
 interface IncomeStreamCardProps {
-  stream: IncomeStream;
+  stream: DecryptedIncomeStream;
   onEdit: () => void;
   onDelete: () => void;
   onToggleActive: () => void;
@@ -66,7 +55,7 @@ export function IncomeStreamCard({
             )}
           </div>
           <p className="text-lg font-semibold text-[#5eead4]">
-            ${Number(stream.amount).toLocaleString()}
+            ${stream.amount.toLocaleString()}
             {stream.frequency !== "one_time" && (
               <span className="text-xs text-[#666] font-normal ml-1">
                 /{frequencyLabel.toLowerCase().replace("-", " ")}

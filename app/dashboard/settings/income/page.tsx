@@ -1,17 +1,34 @@
 import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { getIncomeData } from "./actions";
-import { IncomeManager } from "./IncomeManager";
+import { getIncomeData } from "./actions/getIncomeData";
+import { IncomePageClient } from "./IncomePageClient";
 
+/**
+ * INCOME PAGE (Server Component)
+ *
+ * This is a server component that:
+ *   1. Authenticates the user
+ *   2. Fetches encrypted income data from the database
+ *   3. Passes it to IncomePageClient for client-side decryption
+ *
+ * WHY SERVER + CLIENT SPLIT?
+ *   - Server: Auth + data fetching (fast, secure, no client JS)
+ *   - Client: Decryption (requires encryption key from browser)
+ */
 export default async function IncomePage() {
-  // Use cached getUser() to prevent duplicate API calls
   const user = await getCurrentUser();
 
   if (!user) {
     redirect("/auth/login");
   }
 
-  const { incomeStreams, financials } = await getIncomeData(user.id);
+  // ─────────────────────────────────────────────────────────────────
+  // FETCH ENCRYPTED DATA ON SERVER
+  // ─────────────────────────────────────────────────────────────────
+  // Server fetches ciphertext from database. It can't decrypt because
+  // it doesn't have the user's encryption key (that's in the browser).
+  // ─────────────────────────────────────────────────────────────────
+  const { incomeStreams } = await getIncomeData(user.id);
 
   return (
     <div className="min-h-screen bg-[#0c0c0c]">
@@ -23,43 +40,14 @@ export default async function IncomePage() {
           </p>
         </div>
 
-        {/* Summary */}
-        {incomeStreams.length > 0 && (
-          <div className="p-5 rounded-xl bg-[#161616] border border-[#1f1f1f] mb-6">
-            <div className="grid grid-cols-3 gap-6">
-              <div>
-                <p className="text-[10px] uppercase tracking-wider text-[#555] mb-1">
-                  Monthly
-                </p>
-                <p className="text-xl font-semibold text-white">
-                  ${financials.monthlyIncome.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                </p>
-              </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-wider text-[#555] mb-1">
-                  Annual
-                </p>
-                <p className="text-xl font-semibold text-white">
-                  ${financials.annualIncome.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                </p>
-              </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-wider text-[#555] mb-1">
-                  Hourly Rate
-                </p>
-                <p className="text-xl font-semibold text-[#5eead4]">
-                  ${financials.hourlyRate.toFixed(2)}/hr
-                </p>
-              </div>
-            </div>
-            <p className="text-[11px] text-[#555] mt-4">
-              A 4-hour DIY project costs you ${(financials.hourlyRate * 4).toFixed(0)} in time.
-              If hiring costs less, it might be worth it.
-            </p>
-          </div>
-        )}
-
-        <IncomeManager userId={user.id} initialStreams={incomeStreams} />
+        {/* ─────────────────────────────────────────────────────────────
+            CLIENT COMPONENT HANDLES DECRYPTION
+            ─────────────────────────────────────────────────────────────
+            IncomePageClient receives encrypted data, decrypts it ONCE,
+            then passes decrypted data to IncomeSummary and IncomeManager.
+            This prevents duplicate decryption and loading flashes.
+            ───────────────────────────────────────────────────────────── */}
+        <IncomePageClient userId={user.id} initialStreams={incomeStreams} />
       </div>
     </div>
   );

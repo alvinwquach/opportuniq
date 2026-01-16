@@ -1,7 +1,8 @@
 "use client";
 
 import { IoTrash, IoRepeat, IoPencil } from "react-icons/io5";
-import type { ExpenseFrequency } from "./actions";
+import type { ExpenseFrequency } from "./actions/types";
+import type { DecryptedExpense } from "@/hooks/useEncryptedFinancials";
 
 const FREQUENCY_LABELS: Record<ExpenseFrequency, string> = {
   weekly: "Weekly",
@@ -13,22 +14,8 @@ const FREQUENCY_LABELS: Record<ExpenseFrequency, string> = {
   one_time: "One-time",
 };
 
-export interface Expense {
-  id: string;
-  userId: string;
-  category: string;
-  amount: string;
-  date: Date;
-  description: string | null;
-  isRecurring: boolean | null;
-  recurringFrequency: string | null;
-  nextDueDate: Date | null;
-  issueId: string | null;
-  createdAt: Date;
-}
-
 interface ExpenseCardProps {
-  expense: Expense;
+  expense: DecryptedExpense;
   onEdit: () => void;
   onDelete: () => void;
   isPending: boolean;
@@ -69,7 +56,7 @@ export function ExpenseCard({
             </span>
           </div>
           <p className="text-lg font-semibold text-[#f87171]">
-            ${Number(expense.amount).toLocaleString(undefined, {
+            ${expense.amount.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}

@@ -19,7 +19,7 @@
 
 import { pgTable, uuid, text, timestamp, pgEnum, decimal, integer, boolean } from "drizzle-orm/pg-core";
 import { users } from "./users";
-import { incomeFrequencyEnum } from "./income";
+import { incomeFrequencyEnum } from "./income-streams";
 
 // ============================================
 // ENUMS

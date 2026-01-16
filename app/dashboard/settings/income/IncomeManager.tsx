@@ -1,24 +1,55 @@
 "use client";
 
+/**
+ * INCOME MANAGER
+ *
+ * Displays income stream cards with edit/delete/toggle functionality.
+ * Receives ALREADY-DECRYPTED data from parent (IncomePageClient).
+ *
+ * NO useEffect for decryption here! Parent handles it.
+ * We receive both raw (for re-fetching) and decrypted (for display) data.
+ */
+
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { IoAdd } from "react-icons/io5";
-import { IncomeStreamCard, type IncomeStream } from "./IncomeStreamCard";
+import { IncomeStreamCard } from "./IncomeStreamCard";
 import { IncomeFormDialog } from "./IncomeFormDialog";
-import { updateIncomeStream, deleteIncomeStream } from "./actions";
+import { updateIncomeStream } from "./actions/updateIncomeStream";
+import { deleteIncomeStream } from "./actions/deleteIncomeStream";
+import {
+  useEncryptedFinancials,
+  type RawIncomeStream,
+  type DecryptedIncomeStream,
+} from "@/hooks/useEncryptedFinancials";
 
 interface IncomeManagerProps {
   userId: string;
-  initialStreams: IncomeStream[];
+  initialStreams: RawIncomeStream[];
+  decryptedStreams: DecryptedIncomeStream[];
+  setDecryptedStreams: React.Dispatch<React.SetStateAction<DecryptedIncomeStream[]>>;
 }
 
-export function IncomeManager({ userId, initialStreams }: IncomeManagerProps) {
+export function IncomeManager({
+  userId,
+  initialStreams,
+  decryptedStreams,
+  setDecryptedStreams,
+}: IncomeManagerProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingStream, setEditingStream] = useState<IncomeStream | null>(null);
+  const [editingStream, setEditingStream] = useState<DecryptedIncomeStream | null>(null);
+  const { encryptIncomeData } = useEncryptedFinancials();
 
-  const handleEdit = (stream: IncomeStream) => {
+  // ─────────────────────────────────────────────────────────────────
+  // NO useEffect FOR DECRYPTION
+  // ─────────────────────────────────────────────────────────────────
+  // Parent (IncomePageClient) handles decryption and passes down
+  // decryptedStreams. We just use it directly!
+  // ─────────────────────────────────────────────────────────────────
+
+  const handleEdit = (stream: DecryptedIncomeStream) => {
     setEditingStream(stream);
     setDialogOpen(true);
   };
@@ -42,17 +73,26 @@ export function IncomeManager({ userId, initialStreams }: IncomeManagerProps) {
     });
   };
 
-  const handleToggleActive = (stream: IncomeStream) => {
+  const handleToggleActive = (stream: DecryptedIncomeStream) => {
     startTransition(async () => {
-      await updateIncomeStream(stream.id, userId, {
+      // Re-encrypt data when toggling active (since we're updating)
+      const encryptedData = await encryptIncomeData({
+        source: stream.source,
+        amount: stream.amount,
+        description: stream.description || undefined,
+        frequency: stream.frequency,
         isActive: !stream.isActive,
       });
+      await updateIncomeStream(stream.id, userId, encryptedData);
       router.refresh();
     });
   };
 
-  const activeStreams = initialStreams.filter((s) => s.isActive);
-  const inactiveStreams = initialStreams.filter((s) => !s.isActive);
+  // ─────────────────────────────────────────────────────────────────
+  // SEPARATE ACTIVE AND INACTIVE STREAMS
+  // ─────────────────────────────────────────────────────────────────
+  const activeStreams = decryptedStreams.filter((s) => s.isActive);
+  const inactiveStreams = decryptedStreams.filter((s) => !s.isActive);
 
   return (
     <div className="space-y-6">
