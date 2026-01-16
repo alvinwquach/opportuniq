@@ -15,7 +15,10 @@
  * - RLS enabled: users can only see/update their own row
  * - Financial data (income/expenses/budgets) is private to each user
  *
- * ENCRYPTION:
+ * ENCRYPTION (E2E with AES-256-GCM):
+ * - Encrypted: name, phoneNumber, streetAddress, city, stateProvince,
+ *   postalCode, formattedAddress, monthlyBudget, emergencyBuffer
+ * - Plaintext: email (auth), role, coordinates (derived), preferences, timestamps
  * - encryptionKey: Legacy v1 symmetric key (AES-256, server-stored)
  * - publicKey: v2 X25519 for wrapped conversation keys (client-generated)
  */
@@ -63,8 +66,17 @@ export const users = pgTable("users", {
   // Core identity (matches Supabase auth.users.id)
   id: uuid("id").primaryKey(),
   email: text("email").notNull().unique(),
-  name: text("name"),
   avatarUrl: text("avatar_url"),
+
+  // Encryption metadata
+  isProfileEncrypted: boolean("is_profile_encrypted").default(false).notNull(),
+  profileKeyVersion: integer("profile_key_version").default(1).notNull(),
+  profileAlgorithm: text("profile_algorithm").default("AES-GCM-256").notNull(),
+
+  // Encrypted name (ciphertext + IV)
+  encryptedName: text("encrypted_name"),
+  nameIv: text("name_iv"),
+  name: text("name"), // Plaintext fallback
 
   // Platform access
   role: userRoleEnum("role").default("user").notNull(),
@@ -77,28 +89,46 @@ export const users = pgTable("users", {
   referralCode: text("referral_code").unique(),
   referralCount: integer("referral_count").default(0).notNull(),
 
-  // Location (for service recommendations)
-  streetAddress: text("street_address"),
-  city: text("city"),
-  stateProvince: text("state_province"),
-  postalCode: text("postal_code"),
+  // Encrypted location fields (ciphertext + IV pairs)
+  encryptedStreetAddress: text("encrypted_street_address"),
+  streetAddressIv: text("street_address_iv"),
+  streetAddress: text("street_address"), // Plaintext fallback
+
+  encryptedCity: text("encrypted_city"),
+  cityIv: text("city_iv"),
+  city: text("city"), // Plaintext fallback
+
+  encryptedStateProvince: text("encrypted_state_province"),
+  stateProvinceIv: text("state_province_iv"),
+  stateProvince: text("state_province"), // Plaintext fallback
+
+  encryptedPostalCode: text("encrypted_postal_code"),
+  postalCodeIv: text("postal_code_iv"),
+  postalCode: text("postal_code"), // Plaintext fallback
+
+  encryptedFormattedAddress: text("encrypted_formatted_address"),
+  formattedAddressIv: text("formatted_address_iv"),
+  formattedAddress: text("formatted_address"), // Plaintext fallback
+
+  // Plaintext location (needed for queries)
   country: text("country").default("US"),
   defaultSearchRadius: integer("default_search_radius").default(5),
   distanceUnit: text("distance_unit")
     .$type<"miles" | "kilometers">()
     .default("miles"),
 
-  // Geocoded coordinates (cached for performance)
+  // Geocoded coordinates (cached for performance, derived from address)
   latitude: real("latitude"),
   longitude: real("longitude"),
   geocodedAt: timestamp("geocoded_at"),
-  formattedAddress: text("formatted_address"),
 
-  // Contact
-  phoneNumber: text("phone_number"),
+  // Encrypted contact (ciphertext + IV)
+  encryptedPhoneNumber: text("encrypted_phone_number"),
+  phoneNumberIv: text("phone_number_iv"),
+  phoneNumber: text("phone_number"), // Plaintext fallback
   phoneVerified: boolean("phone_verified").default(false).notNull(),
 
-  // Preferences (flexible JSON)
+  // Preferences (flexible JSON) - not encrypted, no PII
   preferences: jsonb("preferences").$type<{
     language?: string;
     theme?: "light" | "dark" | "auto";
@@ -109,9 +139,15 @@ export const users = pgTable("users", {
     currency?: "USD" | "EUR" | "GBP";
   }>(),
 
-  // Budget settings
-  monthlyBudget: decimal("monthly_budget", { precision: 10, scale: 2 }),
-  emergencyBuffer: decimal("emergency_buffer", { precision: 10, scale: 2 }),
+  // Encrypted budget settings (ciphertext + IV pairs)
+  encryptedMonthlyBudget: text("encrypted_monthly_budget"),
+  monthlyBudgetIv: text("monthly_budget_iv"),
+  monthlyBudget: decimal("monthly_budget", { precision: 10, scale: 2 }), // Plaintext fallback
+
+  encryptedEmergencyBuffer: text("encrypted_emergency_buffer"),
+  emergencyBufferIv: text("emergency_buffer_iv"),
+  emergencyBuffer: decimal("emergency_buffer", { precision: 10, scale: 2 }), // Plaintext fallback
+
   riskTolerance: userRiskToleranceEnum("risk_tolerance").default("moderate"),
 
   // Timestamps

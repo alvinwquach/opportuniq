@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { updateUserLocation } from "../../settings/location/actions";
+import { updateLocationPlaintext } from "../../settings/location/actions";
 
 interface LocationSetupDialogProps {
   userId: string;
@@ -32,7 +32,7 @@ export function LocationSetupDialog({ userId }: LocationSetupDialogProps) {
 
     setError(null);
     startTransition(async () => {
-      const result = await updateUserLocation(userId, { postalCode: postalCode.trim() });
+      const result = await updateLocationPlaintext(userId, { postalCode: postalCode.trim() });
       if (result.success) {
         setOpen(false);
         setPostalCode("");

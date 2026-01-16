@@ -47,6 +47,28 @@ export interface EncryptedBudgetInput {
   keyVersion?: number;
 }
 
+export interface EncryptedProfileInput {
+  encryptedName?: string;
+  nameIv?: string;
+  encryptedPhoneNumber?: string;
+  phoneNumberIv?: string;
+  encryptedStreetAddress?: string;
+  streetAddressIv?: string;
+  encryptedCity?: string;
+  cityIv?: string;
+  encryptedStateProvince?: string;
+  stateProvinceIv?: string;
+  encryptedPostalCode?: string;
+  postalCodeIv?: string;
+  encryptedFormattedAddress?: string;
+  formattedAddressIv?: string;
+  encryptedMonthlyBudget?: string;
+  monthlyBudgetIv?: string;
+  encryptedEmergencyBuffer?: string;
+  emergencyBufferIv?: string;
+  keyVersion?: number;
+}
+
 // ============================================
 // DECRYPTED TYPES (for display in UI)
 // ============================================
@@ -83,6 +105,22 @@ export interface DecryptedBudget {
   monthlyLimit: number;
   currentSpend: number;
   updatedAt: Date;
+}
+
+export interface DecryptedProfile {
+  id: string;
+  email: string;
+  avatarUrl: string | null;
+  name: string | null;
+  phoneNumber: string | null;
+  streetAddress: string | null;
+  city: string | null;
+  stateProvince: string | null;
+  postalCode: string | null;
+  formattedAddress: string | null;
+  country: string | null;
+  monthlyBudget: number | null;
+  emergencyBuffer: number | null;
 }
 
 // ============================================
@@ -154,10 +192,49 @@ export interface RawBudget {
   monthlyLimitIv: string | null;
   encryptedCurrentSpend: string | null;
   currentSpendIv: string | null;
-  // Legacy plaintext fields
+  // Plaintext fields
   category: string | null;
   monthlyLimit: string | null;
   currentSpend: string | null;
   // Always plaintext
   updatedAt: Date;
+}
+
+export interface RawProfile {
+  id: string;
+  email: string;
+  avatarUrl: string | null;
+  isProfileEncrypted: boolean;
+  profileKeyVersion: number;
+  profileAlgorithm: string;
+  // Encrypted fields
+  encryptedName: string | null;
+  nameIv: string | null;
+  encryptedPhoneNumber: string | null;
+  phoneNumberIv: string | null;
+  encryptedStreetAddress: string | null;
+  streetAddressIv: string | null;
+  encryptedCity: string | null;
+  cityIv: string | null;
+  encryptedStateProvince: string | null;
+  stateProvinceIv: string | null;
+  encryptedPostalCode: string | null;
+  postalCodeIv: string | null;
+  encryptedFormattedAddress: string | null;
+  formattedAddressIv: string | null;
+  encryptedMonthlyBudget: string | null;
+  monthlyBudgetIv: string | null;
+  encryptedEmergencyBuffer: string | null;
+  emergencyBufferIv: string | null;
+  // Plaintext fields
+  name: string | null;
+  phoneNumber: string | null;
+  streetAddress: string | null;
+  city: string | null;
+  stateProvince: string | null;
+  postalCode: string | null;
+  formattedAddress: string | null;
+  country: string | null;
+  monthlyBudget: string | null;
+  emergencyBuffer: string | null;
 }
