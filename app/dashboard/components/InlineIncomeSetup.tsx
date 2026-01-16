@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { useIncomeEncryption } from "@/hooks/encrypted-financials/useIncomeEncryption";
 
 type IncomeFrequency =
   | "weekly"
@@ -87,6 +88,7 @@ export function InlineIncomeSetup({
 }: InlineIncomeSetupProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const { encryptIncomeData, isEncrypting } = useIncomeEncryption();
 
   // Form state
   const [source, setSource] = useState("");
@@ -123,16 +125,19 @@ export function InlineIncomeSetup({
           ? parseFloat(amount) * FREQUENCY_TO_MONTHLY.hourly
           : parseFloat(amount);
 
-      await addIncomeStream(userId, {
+      // Encrypt the sensitive fields before sending to server
+      const encryptedData = await encryptIncomeData({
         source: source.trim(),
         amount: actualAmount,
-        frequency: actualFrequency as Exclude<IncomeFrequency, "hourly">,
         description:
           frequency === "hourly"
             ? `Hourly rate: $${amount}/hr${description ? ` - ${description.trim()}` : ""}`
             : description.trim() || undefined,
+        frequency: actualFrequency,
         startDate: startDate ? new Date(startDate) : undefined,
       });
+
+      await addIncomeStream(userId, encryptedData);
 
       resetForm();
       onOpenChange(false);
@@ -292,10 +297,10 @@ export function InlineIncomeSetup({
           <div className="flex gap-2 pt-2">
             <button
               onClick={handleSubmit}
-              disabled={isPending || !source.trim() || !amount || parseFloat(amount) <= 0}
+              disabled={isPending || isEncrypting || !source.trim() || !amount || parseFloat(amount) <= 0}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-[#1f1f1f] disabled:text-[#555] text-[#0c0c0c] font-medium text-sm transition-colors"
             >
-              {isPending ? (
+              {isPending || isEncrypting ? (
                 <IoReload className="w-4 h-4 animate-spin" />
               ) : (
                 <IoCheckmark className="w-4 h-4" />
