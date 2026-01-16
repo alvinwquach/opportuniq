@@ -106,7 +106,7 @@ export function base64ToArrayBuffer(base64: string): ArrayBuffer {
   for (let i = 0; i < binary.length; i++) {
     bytes[i] = binary.charCodeAt(i);
   }
-  return bytes.buffer as ArrayBuffer;
+  return bytes.buffer.slice(0);
 }
 
 /**
@@ -130,7 +130,7 @@ export function base64ToUint8Array(base64: string): Uint8Array {
  * 3. Return the Base64 string
  */
 export function uint8ArrayToBase64(bytes: Uint8Array): string {
-  return arrayBufferToBase64(bytes.buffer as ArrayBuffer);
+  return arrayBufferToBase64(bytes.buffer.slice(0));
 }
 
 /**
@@ -271,7 +271,7 @@ export async function deriveKeyFromPassword(
   return crypto.subtle.deriveKey(
     {
       name: "PBKDF2",
-      salt: salt.buffer as ArrayBuffer,
+      salt: salt.buffer.slice(0),
       iterations,
       hash: "SHA-256",
     },
@@ -400,14 +400,14 @@ export async function encryptFile(
   const fileData = await file.arrayBuffer();
 
   const ciphertext = await crypto.subtle.encrypt(
-    { name: AES_ALGORITHM, iv: iv },
+    { name: AES_ALGORITHM, iv: new Uint8Array(iv) },
     key,
     fileData
   );
 
   return {
     blob: new Blob([ciphertext], { type: "application/octet-stream" }),
-    iv: arrayBufferToBase64(iv.buffer as ArrayBuffer),
+    iv: arrayBufferToBase64(iv.buffer.slice(0)),
     originalSize: file.size,
     encryptedSize: ciphertext.byteLength,
   };
