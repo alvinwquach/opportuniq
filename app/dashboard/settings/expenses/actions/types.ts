@@ -21,9 +21,6 @@ export type { ExpenseFrequency } from "../schemas";
 /**
  * Encrypted expense data sent from client to server.
  * Each sensitive field has a ciphertext and IV pair.
- *
- * Note: frequency is `string` (not ExpenseFrequency) because it comes
- * from the encryption hook which uses a generic string type.
  */
 export interface EncryptedExpenseInput {
   encryptedCategory: string;
@@ -33,7 +30,7 @@ export interface EncryptedExpenseInput {
   encryptedDescription?: string;
   descriptionIv?: string;
   date: Date;
-  frequency: string;
+  frequency: ExpenseFrequency;
   issueId?: string;
   keyVersion?: number;
 }
@@ -44,7 +41,7 @@ export interface EncryptedExpenseInput {
 
 /**
  * Expense record returned from the server.
- * Contains both encrypted fields and legacy plaintext for backwards compatibility.
+ * Contains both encrypted fields and plaintext for unencrypted rows.
  */
 export interface ExpenseResponse {
   id: string;
@@ -59,14 +56,14 @@ export interface ExpenseResponse {
   amountIv: string | null;
   encryptedDescription: string | null;
   descriptionIv: string | null;
-  // Legacy plaintext (for unencrypted rows)
+  // Plaintext fields (for unencrypted rows)
   category: string | null;
   amount: string | null;
   description: string | null;
-  // Plaintext fields
+  // Always plaintext
   date: Date;
   isRecurring: boolean | null;
-  recurringFrequency: string | null;
+  recurringFrequency: ExpenseFrequency | null;
   nextDueDate: Date | null;
   issueId: string | null;
   createdAt: Date;

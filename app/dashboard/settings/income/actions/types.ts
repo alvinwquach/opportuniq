@@ -42,7 +42,7 @@ export interface EncryptedIncomeInput {
 
 /**
  * Income stream record returned from the server.
- * Contains both encrypted fields and legacy plaintext for backwards compatibility.
+ * Contains both encrypted fields and plaintext for unencrypted rows.
  */
 export interface IncomeStreamResponse {
   id: string;
@@ -57,12 +57,12 @@ export interface IncomeStreamResponse {
   amountIv: string | null;
   encryptedDescription: string | null;
   descriptionIv: string | null;
-  // Legacy plaintext (for unencrypted rows)
+  // Plaintext fields (for unencrypted rows)
   source: string | null;
   amount: string | null;
   description: string | null;
-  // Plaintext fields
-  frequency: string;
+  // Always plaintext
+  frequency: IncomeFrequency;
   isActive: boolean;
   startDate: Date | null;
   endDate: Date | null;
