@@ -1,18 +1,29 @@
 "use server";
 
+/**
+ * UPDATE LOCATION (PLAINTEXT)
+ *
+ * Server action for updating user location without encryption.
+ * Use updateLocationEncrypted for encrypted data.
+ */
+
 import { db } from "@/app/db/client";
 import { users } from "@/app/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { geocodePostalCode } from "@/lib/geocoding";
+import type { LocationUpdateResult } from "./types";
 
-export async function updateUserLocation(
+/**
+ * Update user location without encryption (plaintext)
+ */
+export async function updateLocationPlaintext(
   userId: string,
   data: {
     postalCode: string;
     country?: string;
   }
-) {
+): Promise<LocationUpdateResult> {
   const { postalCode, country = "US" } = data;
 
   if (!postalCode) {
@@ -55,6 +66,7 @@ export async function updateUserLocation(
       .where(eq(users.id, userId));
 
     revalidatePath("/dashboard");
+    revalidatePath("/dashboard/settings/location");
 
     return { success: true };
   } catch (error) {
