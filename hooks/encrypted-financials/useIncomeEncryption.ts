@@ -35,6 +35,7 @@ import type {
   DecryptedIncomeStream,
   RawIncomeStream,
 } from "./types";
+import type { IncomeFrequency } from "@/app/dashboard/settings/income/schemas";
 
 export function useIncomeEncryption() {
   // Loading states for UI feedback (spinners, disabled buttons, etc.)
@@ -62,7 +63,7 @@ export function useIncomeEncryption() {
       source: string;
       amount: number;
       description?: string;
-      frequency: string;
+      frequency: IncomeFrequency;
       startDate?: Date;
       endDate?: Date;
       isActive?: boolean;

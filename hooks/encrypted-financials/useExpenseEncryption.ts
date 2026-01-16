@@ -39,6 +39,7 @@ import type {
   DecryptedExpense,
   RawExpense,
 } from "./types";
+import type { ExpenseFrequency } from "@/app/dashboard/settings/expenses/schemas";
 
 export function useExpenseEncryption() {
   // Loading states for UI feedback (spinners, disabled buttons, etc.)
@@ -67,7 +68,7 @@ export function useExpenseEncryption() {
       amount: number;
       description?: string;
       date: Date;
-      frequency: string;
+      frequency: ExpenseFrequency;
       issueId?: string;
     }): Promise<EncryptedExpenseInput> => {
       setIsEncrypting(true);

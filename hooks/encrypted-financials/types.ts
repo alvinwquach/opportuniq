@@ -3,6 +3,9 @@
  * Separates encrypted (server-stored) from decrypted (display) types.
  */
 
+import type { IncomeFrequency } from "@/app/dashboard/settings/income/schemas";
+import type { ExpenseFrequency } from "@/app/dashboard/settings/expenses/schemas";
+
 // ============================================
 // ENCRYPTED INPUT TYPES (sent to server)
 // ============================================
@@ -14,7 +17,7 @@ export interface EncryptedIncomeInput {
   amountIv: string;
   encryptedDescription?: string;
   descriptionIv?: string;
-  frequency: string;
+  frequency: IncomeFrequency;
   startDate?: Date;
   endDate?: Date;
   isActive?: boolean;
@@ -29,7 +32,7 @@ export interface EncryptedExpenseInput {
   encryptedDescription?: string;
   descriptionIv?: string;
   date: Date;
-  frequency: string;
+  frequency: ExpenseFrequency;
   issueId?: string;
   keyVersion?: number;
 }
