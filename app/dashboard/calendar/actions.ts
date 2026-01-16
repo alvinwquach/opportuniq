@@ -614,16 +614,18 @@ export async function getUserIncomeForCalendar() {
         )
       );
 
-    const incomeEvents: IncomeEvent[] = incomeStreams.map((income) => ({
-      id: income.id,
-      type: "income" as const,
-      source: income.source,
-      amount: income.amount,
-      frequency: income.frequency,
-      description: income.description,
-      isActive: income.isActive,
-      startDate: income.startDate,
-    }));
+    const incomeEvents: IncomeEvent[] = incomeStreams
+      .filter((income) => income.source && income.amount)
+      .map((income) => ({
+        id: income.id,
+        type: "income" as const,
+        source: income.source!,
+        amount: income.amount!,
+        frequency: income.frequency,
+        description: income.description,
+        isActive: income.isActive,
+        startDate: income.startDate,
+      }));
 
     return { success: true, incomeEvents };
   } catch (error) {
