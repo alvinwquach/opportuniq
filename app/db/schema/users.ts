@@ -1,199 +1,147 @@
 /**
- * USERS SCHEMA - Core user profile and authentication extension
- *
- * RELATIONS:
- * - Users (1) → (Many) GroupMembers - One user can belong to many groups
- * - Users (1) → (Many) UserIncomeStreams - One user has many income sources (private)
- * - Users (1) → (Many) UserExpenses - One user has many expense records (private)
- * - Users (1) → (Many) UserBudgets - One user has many budget categories (private)
- * - Users (1) → (Many) Guides - One user can create many DIY guides
- *
- * SECURITY:
- * - Enable RLS (Row Level Security) - users can only see/update their own row
- * - ID syncs with auth.users via database trigger on signup
- * - Financial data (income/expenses/budgets) is PRIVATE to each user
- */
-
-import { pgTable, uuid, text, timestamp, integer, real, jsonb, boolean, pgEnum, decimal } from "drizzle-orm/pg-core";
-
-/**
- * PLATFORM ROLES ENUM
- *
- * - admin: Platform administrator (alvinwquach@gmail.com) - full platform control
- * - moderator: Platform moderator - can moderate content, help users, manage reports
- * - user: Standard user - regular platform access
- * - banned: Banned user - no platform access (abuse, ToS violations)
- */
-export const userRoleEnum = pgEnum("user_role", ["admin", "moderator", "user", "banned"]);
-
-/**
- * USER RISK TOLERANCE ENUM
- *
- * Personal risk tolerance for DIY decision recommendations.
- * Influences whether to suggest DIY vs hiring a professional.
- * - none: Never DIY, always hire professionals
- * - very_low: Very risk-averse, prefer professionals for most tasks
- * - low: Cautious, prefer professionals for anything beyond basic repairs
- * - moderate: Balanced approach, comfortable with common DIY tasks
- * - high: Comfortable with most DIY tasks, hire only for specialized work
- * - very_high: Very confident, prefer DIY for almost everything
- */
-export const userRiskToleranceEnum = pgEnum("user_risk_tolerance", [
-  "none",
-  "very_low",
-  "low",
-  "moderate",
-  "high",
-  "very_high",
-]);
-
-/**
- * USERS TABLE
+ * USERS SCHEMA
  *
  * Extends Supabase auth.users with application-specific profile data.
- * Uses same UUID as auth.users for seamless joins.
+ * UUID syncs with auth.users via database trigger on signup.
+ *
+ * RELATIONS:
+ * - Users (1) → (Many) GroupMembers
+ * - Users (1) → (Many) UserIncomeStreams (private)
+ * - Users (1) → (Many) UserExpenses (private)
+ * - Users (1) → (Many) UserBudgets (private)
+ * - Users (1) → (Many) Guides
+ *
+ * SECURITY:
+ * - RLS enabled: users can only see/update their own row
+ * - Financial data (income/expenses/budgets) is private to each user
+ *
+ * ENCRYPTION:
+ * - encryptionKey: Legacy v1 symmetric key (AES-256, server-stored)
+ * - publicKey: v2 X25519 for wrapped conversation keys (client-generated)
  */
+
+import {
+  pgTable,
+  uuid,
+  text,
+  timestamp,
+  integer,
+  real,
+  jsonb,
+  boolean,
+  pgEnum,
+  decimal,
+} from "drizzle-orm/pg-core";
+
+// ============================================
+// ENUMS
+// ============================================
+
+// Platform-wide permissions (not group permissions)
+export const userRoleEnum = pgEnum("user_role", [
+  "admin",     // Full platform control
+  "moderator", // Content moderation
+  "user",      // Standard access
+  "banned",    // No access
+]);
+
+// DIY vs professional recommendation threshold
+export const userRiskToleranceEnum = pgEnum("user_risk_tolerance", [
+  "none",      // Always hire professionals
+  "very_low",  // Professionals for most tasks
+  "low",       // Professionals beyond basic repairs
+  "moderate",  // Comfortable with common DIY
+  "high",      // DIY most tasks
+  "very_high", // DIY almost everything
+]);
+
+// ============================================
+// USERS TABLE
+// ============================================
+
 export const users = pgTable("users", {
-  // Primary identifier - matches Supabase auth.users.id (not auto-generated here)
-  // Relation: References auth.users(id) in Supabase's auth schema
+  // Core identity (matches Supabase auth.users.id)
   id: uuid("id").primaryKey(),
-
-  // User's email address - duplicated from auth.users for convenience
-  // Source of truth is still auth.users.email
   email: text("email").notNull().unique(),
-
-  // Display name for the user - can be null if not provided during signup
   name: text("name"),
-
-  // Avatar URL from OAuth provider (Google, etc.) - cached for performance
   avatarUrl: text("avatar_url"),
 
-  // Platform role - determines platform-wide permissions (not group permissions)
-  // admin: Full platform control (alvinwquach@gmail.com) - can manage everything
-  // moderator: Platform moderator - can moderate content, help users
-  // user: Standard user (default) - regular platform access
+  // Platform access
   role: userRoleEnum("role").default("user").notNull(),
+  accessTier: text("access_tier")
+    .$type<"johatsu" | "alpha" | "beta" | "public">()
+    .default("alpha"),
 
-  // Access tier - controls platform access during launch phases
-  // johatsu: Pre-alpha exclusive group (closest collaborators)
-  // alpha: Direct invites from admin (seed users)
-  // beta: Referred by alpha users via referral code
-  // public: Open access (future)
-  accessTier: text("access_tier").$type<"johatsu" | "alpha" | "beta" | "public">().default("alpha"),
-
-  // Who referred this user (null for alpha/admin users)
+  // Referral system
   referredBy: uuid("referred_by"),
-
-  // This user's referral code for sharing
   referralCode: text("referral_code").unique(),
-
-  // How many successful referrals this user has made
   referralCount: integer("referral_count").default(0).notNull(),
 
-  // User-provided street address (optional)
-  // More precise than postal code for local service recommendations
-  // Examples: "123 Main St", "456 Oak Avenue, Apt 2B"
+  // Location (for service recommendations)
   streetAddress: text("street_address"),
-
-  // City name (optional) - helps with more accurate geocoding
   city: text("city"),
-
-  // State/Province/Region code (optional)
-  // Examples: "CA" (California), "ON" (Ontario), "NSW" (New South Wales)
   stateProvince: text("state_province"),
-
-  // Postal code for proximity searches - international support
-  // Stored as text to preserve leading zeros and support various formats
-  // Examples: "94132" (US ZIP), "SW1A 1AA" (UK), "100-0001" (Japan), "75001" (France)
   postalCode: text("postal_code"),
-
-  // ISO 3166-1 alpha-2 country code (US, GB, CA, JP, FR, etc.)
-  // Required for proper postal code validation and geocoding
   country: text("country").default("US"),
-
-  // Default search radius with unit (stored in user's preferred unit system)
-  // For imperial: miles, for metric: kilometers
   defaultSearchRadius: integer("default_search_radius").default(5),
+  distanceUnit: text("distance_unit")
+    .$type<"miles" | "kilometers">()
+    .default("miles"),
 
-  // User's preferred distance unit (for displaying search results)
-  distanceUnit: text("distance_unit").$type<'miles' | 'kilometers'>().default("miles"),
-
-  // Record creation timestamp - set once on signup, never updated
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-
-  // Last profile modification timestamp - update on every change
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-
-  // Geocoded coordinates from postal code - cached for performance
-  // Eliminates need for real-time geocoding API calls
-  // Used for proximity searches and vendor recommendations
+  // Geocoded coordinates (cached for performance)
   latitude: real("latitude"),
   longitude: real("longitude"),
-
-  // When geocoding was last performed - for cache invalidation
-  // Revalidate if postal code or country changed since last geocoding
   geocodedAt: timestamp("geocoded_at"),
-
-  // Full formatted address from geocoding service (optional)
-  // Helps users confirm their location is correct
-  // Example: "123 Main St, San Francisco, CA 94132, USA"
   formattedAddress: text("formatted_address"),
 
-  // Phone number in E.164 format (+14155552671) - optional
+  // Contact
   phoneNumber: text("phone_number"),
-
-  // Whether phone number has been verified via SMS code
   phoneVerified: boolean("phone_verified").default(false).notNull(),
 
-  // User preferences stored as flexible JSON
-  // Includes: theme, language, notifications, unit system, currency
+  // Preferences (flexible JSON)
   preferences: jsonb("preferences").$type<{
     language?: string;
-    theme?: 'light' | 'dark' | 'auto';
+    theme?: "light" | "dark" | "auto";
     emailNotifications?: boolean;
     smsNotifications?: boolean;
     weeklyDigest?: boolean;
-    unitSystem?: 'imperial' | 'metric';
-    currency?: 'USD' | 'EUR' | 'GBP';
+    unitSystem?: "imperial" | "metric";
+    currency?: "USD" | "EUR" | "GBP";
   }>(),
 
-  // ============================================
-  // PERSONAL BUDGET SETTINGS
-  // ============================================
-
-  // Maximum monthly spending budget for repairs/maintenance
-  // Used to filter recommendations and warn when approaching limit
+  // Budget settings
   monthlyBudget: decimal("monthly_budget", { precision: 10, scale: 2 }),
-
-  // Emergency savings buffer reserved for unexpected major repairs
-  // Helps determine if a repair can be deferred or needs immediate attention
   emergencyBuffer: decimal("emergency_buffer", { precision: 10, scale: 2 }),
-
-  // Personal risk tolerance for DIY recommendations
-  // Influences whether to suggest DIY vs hiring a professional
   riskTolerance: userRiskToleranceEnum("risk_tolerance").default("moderate"),
 
-  // Last user activity timestamp - updated on meaningful interactions
-  // Use throttling (only update if >5 min since last update) to avoid excessive writes
+  // Timestamps
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
   lastSeenAt: timestamp("last_seen_at"),
-
-  // Last successful authentication timestamp - updated on login only
   lastLoginAt: timestamp("last_login_at"),
-
-  // Total successful logins count - incremented atomically on each login
-  // Engagement metric and security signal
   loginCount: integer("login_count").default(0).notNull(),
-
-  // Soft delete timestamp - marks account as deleted without removing data
-  // Enables 30-day account recovery window
   deletedAt: timestamp("deleted_at"),
 
-  // Server-stored encryption key for E2E encrypted attachments
-  // Base64-encoded AES-256 key, generated on first login
-  // Stored encrypted at rest by Supabase, fetched on login and cached client-side
+  // Legacy encryption (v1) - Server-stored AES-256 key
   encryptionKey: text("encryption_key"),
+
+  // Public-key encryption (v2) - X25519 for wrapped keys
+  publicKey: text("public_key"),
+  publicKeyVersion: integer("public_key_version").default(1),
+  publicKeyCreatedAt: timestamp("public_key_created_at"),
+  encryptedPrivateKeyBackup: text("encrypted_private_key_backup"),
+  privateKeyBackupParams: jsonb("private_key_backup_params").$type<{
+    algorithm: "Argon2id";
+    memoryCost: number;
+    timeCost: number;
+    parallelism: number;
+    saltLength: number;
+  }>(),
 });
 
-// Type exports for type-safe queries
+// ============================================
+// TYPES
+// ============================================
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;

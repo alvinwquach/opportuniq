@@ -195,17 +195,17 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
     console.log("[Chat API] Created conversation:", conversationId);
   }
 
-  // Build attachments metadata
+  // Build attachments metadata (matches AttachmentMetadata interface)
   const attachments = diagnosis.attachments?.map((att) => ({
-    type: att.type || "image",
+    type: (att.type || "image") as "image" | "video" | "document",
+    storageUrl: att.storagePath,
     mediaType: att.mimeType,
-    attachmentId: att.attachmentId,
-    storagePath: att.storagePath,
+    fileSize: att.originalSize || 0,
+    encrypted: true as const,
+    encryptionScope: "user" as const,
+    keyVersion: 1,
+    algorithm: "AES-GCM-256",
     iv: att.iv,
-    // Video-specific fields
-    durationSeconds: att.durationSeconds,
-    hasAudio: att.hasAudio,
-    confidenceScore: att.confidenceScore,
   }));
 
   // Check if there are video attachments
@@ -494,16 +494,17 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
     .where(eq(aiMessages.conversationId, conversationId))
     .orderBy(aiMessages.createdAt);
 
-  // Build attachments metadata for storage
+  // Build attachments metadata for storage (matches AttachmentMetadata interface)
   const attachmentsMeta = attachments?.map((att) => ({
-    type: att.type || "image",
+    type: (att.type || "image") as "image" | "video" | "document",
+    storageUrl: att.storagePath,
     mediaType: att.mimeType,
-    attachmentId: att.attachmentId,
-    storagePath: att.storagePath,
+    fileSize: att.originalSize || 0,
+    encrypted: true as const,
+    encryptionScope: "user" as const,
+    keyVersion: 1,
+    algorithm: "AES-GCM-256",
     iv: att.iv,
-    durationSeconds: att.durationSeconds,
-    hasAudio: att.hasAudio,
-    confidenceScore: att.confidenceScore,
   }));
 
   // Check attachment types

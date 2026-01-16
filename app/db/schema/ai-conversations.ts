@@ -1,201 +1,274 @@
 /**
- * AI CONVERSATIONS SCHEMA - Photo diagnosis and AI chat
+ * AI CONVERSATIONS SCHEMA
  *
- * PURPOSE:
- * Stores AI-powered diagnosis conversations with message metadata
- * for admin dashboard tracking, analytics, and user conversation history.
+ * Stores AI diagnosis conversations with E2E encryption.
  *
- * PRIVACY:
- * - Attachments are end-to-end encrypted using group's master key
- * - Server stores encrypted blobs in Supabase Storage
- * - Only group members with decryption key can view attachments
- * - Admin sees metadata only (file size, type, timestamp)
+ * RELATIONS:
+ * - AiConversations (Many) → (1) Users - Each conversation belongs to one user
+ * - AiConversations (Many) → (1) Groups - Optional group association
+ * - AiConversations (1) → (Many) AiMessages - One conversation has many messages
+ * - AiConversations (1) → (Many) ConversationKeys - One key share per authorized user
+ * - AiUsageStats (Many) → (1) Users - Daily stats per user
  *
- * WORKFLOW:
- * 1. User starts conversation → new conversation record created
- * 2. User sends message (text/photo) → photo encrypted client-side, stored in storage
- * 3. AI responds → response stored with token usage, model info
- * 4. User shares with group → conversation linked to groupId
- * 5. Group members can view → decrypt using group master key
+ * ENCRYPTION MODEL:
+ * - encryptionScope: "user" (per-conversation key) or "group" (shared key)
+ * - "user" scope: Key stored in conversationKeys, wrapped to user's public key
+ * - "group" scope: Uses group master key from memberKeyShares
+ *
+ * WHAT'S ENCRYPTED: title, summary, message content, attachments
+ * WHAT'S PLAINTEXT: token counts, costs, categories, timestamps (for analytics)
  */
 
-import { pgTable, uuid, text, timestamp, integer, jsonb, pgEnum, boolean } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  text,
+  timestamp,
+  integer,
+  jsonb,
+  pgEnum,
+  boolean,
+  index,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { groups } from "./groups";
 
-/**
- * CONVERSATION TYPE ENUM
- */
+// ============================================
+// ENUMS
+// ============================================
+
 export const conversationTypeEnum = pgEnum("conversation_type", [
-  "diagnosis", // Photo diagnosis (home/auto issues)
-  "general",   // General questions
-  "followup",  // Follow-up on previous issue
+  "diagnosis",
+  "general",
+  "followup",
 ]);
 
-/**
- * MESSAGE ROLE ENUM
- */
 export const messageRoleEnum = pgEnum("message_role", [
   "user",
   "assistant",
   "system",
 ]);
 
+// Determines which key to use for decryption
+export const encryptionScopeEnum = pgEnum("encryption_scope", [
+  "user",  // Per-conversation key (from conversationKeys)
+  "group", // Group master key (from memberKeyShares)
+]);
+
+// ============================================
+// CONVERSATION KEYS - Per-Conversation Symmetric Key
+// ============================================
+
 /**
- * AI CONVERSATIONS TABLE
- *
+ * Stores per-conversation key wrapped to each authorized user's public key.
+ * One row per (conversation, user) pair.
+ */
+export const conversationKeys = pgTable(
+  "conversation_keys",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    conversationId: uuid("conversation_id")
+      .references(() => aiConversations.id, { onDelete: "cascade" })
+      .notNull(),
+    userId: uuid("user_id")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+
+    // Conversation key encrypted to this user's X25519 public key
+    encryptedConversationKey: text("encrypted_conversation_key").notNull(),
+
+    // Fingerprint of public key used (for verification)
+    encryptedForPublicKeyFingerprint: text("encrypted_for_public_key_fingerprint").notNull(),
+
+    // Key version (for rotation tracking)
+    keyVersion: integer("key_version").default(1).notNull(),
+
+    // Wrap algorithm (X25519-HKDF-SHA256-AES256GCM)
+    wrapAlgorithm: text("wrap_algorithm").default("X25519-HKDF-SHA256-AES256GCM").notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("conversation_keys_conversation_user_unique").on(
+      table.conversationId,
+      table.userId
+    ),
+    index("conversation_keys_user_id_idx").on(table.userId),
+  ]
+);
+
+// ============================================
+// AI CONVERSATIONS
+// ============================================
+
+/**
  * One record per conversation/chat session.
- * Groups multiple messages together.
- *
- * SHARING:
- * - Initially owned by userId (private)
- * - Can be shared with a group via groupId
- * - When shared, all group members can view/decrypt attachments
+ * Title and summary are encrypted; analytics fields are plaintext.
  */
-export const aiConversations = pgTable("ai_conversations", {
-  id: uuid("id").primaryKey().defaultRandom(),
+export const aiConversations = pgTable(
+  "ai_conversations",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+    groupId: uuid("group_id").references(() => groups.id, { onDelete: "set null" }),
+    type: conversationTypeEnum("type").default("diagnosis").notNull(),
 
-  // User who owns this conversation
-  userId: uuid("user_id")
-    .references(() => users.id, { onDelete: "cascade" })
-    .notNull(),
+    // Encryption metadata
+    encryptionScope: encryptionScopeEnum("encryption_scope").default("user").notNull(),
+    keyVersion: integer("key_version").default(1).notNull(),
+    algorithm: text("algorithm").default("AES-GCM-256").notNull(),
 
-  // Optional: Group this conversation is shared with
-  // When set, all group members can access this conversation
-  // Attachments are encrypted with group's master key
-  groupId: uuid("group_id")
-    .references(() => groups.id, { onDelete: "set null" }),
+    // Encrypted title (ciphertext + IV)
+    encryptedTitle: text("encrypted_title"),
+    titleIv: text("title_iv"),
 
-  // Conversation type
-  type: conversationTypeEnum("type").default("diagnosis").notNull(),
+    // Encrypted summary (ciphertext + IV)
+    encryptedSummary: text("encrypted_summary"),
+    summaryIv: text("summary_iv"),
 
-  // Title (auto-generated from first message or user-set)
-  title: text("title"),
+    // Legacy plaintext fields (for v1 migration only)
+    title: text("title"),
+    summary: text("summary"),
+    isEncrypted: boolean("is_encrypted").default(true).notNull(),
 
-  // Summary of the conversation (for quick display)
-  summary: text("summary"),
+    // Conversation state (plaintext for analytics)
+    isResolved: boolean("is_resolved").default(false).notNull(),
+    category: text("category"),
+    severity: text("severity"),
+    contractorType: text("contractor_type"),
+    estimatedCost: jsonb("estimated_cost"),
 
-  // Whether conversation has been resolved/closed
-  isResolved: boolean("is_resolved").default(false).notNull(),
+    // Usage metrics (plaintext)
+    totalInputTokens: integer("total_input_tokens").default(0).notNull(),
+    totalOutputTokens: integer("total_output_tokens").default(0).notNull(),
+    totalCostUsd: text("total_cost_usd").default("0"),
 
-  // Category detected from conversation (e.g., "plumbing", "electrical", "auto")
-  category: text("category"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    lastMessageAt: timestamp("last_message_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("ai_conversations_user_id_idx").on(table.userId),
+    index("ai_conversations_group_id_idx").on(table.groupId),
+    index("ai_conversations_encryption_scope_idx").on(table.encryptionScope),
+  ]
+);
 
-  // Severity level detected (for prioritization)
-  severity: text("severity"), // "minor" | "moderate" | "urgent"
-
-  // Contractor type recommended
-  contractorType: text("contractor_type"),
-
-  // Estimated cost range (JSON: { min: number, max: number, currency: string })
-  estimatedCost: jsonb("estimated_cost"),
-
-  // Total tokens used in this conversation
-  totalInputTokens: integer("total_input_tokens").default(0).notNull(),
-  totalOutputTokens: integer("total_output_tokens").default(0).notNull(),
-
-  // Total cost in USD (calculated from tokens)
-  totalCostUsd: text("total_cost_usd").default("0"),
-
-  // Timestamps
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-  lastMessageAt: timestamp("last_message_at").defaultNow().notNull(),
-});
+// ============================================
+// AI MESSAGES
+// ============================================
 
 /**
- * AI MESSAGES TABLE
- *
  * Individual messages within a conversation.
- * Stores both user and assistant messages with full metadata.
+ * Each message has its own encryption metadata (supports mixed encryption).
  */
-export const aiMessages = pgTable("ai_messages", {
-  id: uuid("id").primaryKey().defaultRandom(),
+export const aiMessages = pgTable(
+  "ai_messages",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    conversationId: uuid("conversation_id")
+      .references(() => aiConversations.id, { onDelete: "cascade" })
+      .notNull(),
+    role: messageRoleEnum("role").notNull(),
 
-  // Which conversation this belongs to
-  conversationId: uuid("conversation_id")
-    .references(() => aiConversations.id, { onDelete: "cascade" })
-    .notNull(),
+    // Encryption metadata
+    encryptionScope: encryptionScopeEnum("encryption_scope").default("user").notNull(),
+    keyVersion: integer("key_version").default(1).notNull(),
+    algorithm: text("algorithm").default("AES-GCM-256").notNull(),
+    isEncrypted: boolean("is_encrypted").default(true).notNull(),
 
-  // Message role
-  role: messageRoleEnum("role").notNull(),
+    // Encrypted content (ciphertext + IV)
+    encryptedContent: text("encrypted_content"),
+    contentIv: text("content_iv"),
 
-  // Text content
-  content: text("content").notNull(),
+    // Legacy plaintext content (for v1 migration)
+    content: text("content").notNull(),
 
-  // Attachments (images, etc.) - stored as JSON array
-  // Format: [{ type: "image", url: string, mediaType: string, fileName?: string }]
-  attachments: jsonb("attachments"),
+    // Attachments with encryption metadata
+    attachments: jsonb("attachments").$type<AttachmentMetadata[]>(),
 
-  // Model used for this response (only for assistant messages)
-  model: text("model"), // e.g., "gpt-4o", "claude-3-opus"
+    // AI response metadata (plaintext)
+    model: text("model"),
+    inputTokens: integer("input_tokens"),
+    outputTokens: integer("output_tokens"),
+    costUsd: text("cost_usd"),
+    latencyMs: integer("latency_ms"),
+    finishReason: text("finish_reason"),
+    toolCalls: jsonb("tool_calls"),
+    metadata: jsonb("metadata"),
+    debugInfo: jsonb("debug_info"),
 
-  // Token usage (only for assistant messages)
-  inputTokens: integer("input_tokens"),
-  outputTokens: integer("output_tokens"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("ai_messages_conversation_id_idx").on(table.conversationId),
+    index("ai_messages_encryption_scope_idx").on(table.encryptionScope),
+  ]
+);
 
-  // Cost in USD (only for assistant messages)
-  costUsd: text("cost_usd"),
-
-  // Response latency in milliseconds (only for assistant messages)
-  latencyMs: integer("latency_ms"),
-
-  // Finish reason (only for assistant messages)
-  finishReason: text("finish_reason"), // "stop", "length", "content_filter", etc.
-
-  // Tool calls made during this response
-  // Format: [{ name: string, args: object, result: object }]
-  toolCalls: jsonb("tool_calls"),
-
-  // Structured request metadata (for analytics and debugging)
-  // Format: { structured: boolean, category?: string, location?: string, ... }
-  metadata: jsonb("metadata"),
-
-  // Raw request/response for debugging (only stored if errors occur)
-  debugInfo: jsonb("debug_info"),
-
-  // When message was created
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+// ============================================
+// AI USAGE STATS (Plaintext Analytics)
+// ============================================
 
 /**
- * AI USAGE STATS TABLE (Aggregated)
- *
  * Daily aggregated stats for admin dashboard.
- * Updated via trigger or cron job.
+ * All plaintext - no encrypted data.
  */
-export const aiUsageStats = pgTable("ai_usage_stats", {
-  id: uuid("id").primaryKey().defaultRandom(),
+export const aiUsageStats = pgTable(
+  "ai_usage_stats",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    date: timestamp("date").notNull(),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
 
-  // Date for this stat record
-  date: timestamp("date").notNull(),
+    conversationCount: integer("conversation_count").default(0).notNull(),
+    messageCount: integer("message_count").default(0).notNull(),
+    imageCount: integer("image_count").default(0).notNull(),
+    totalInputTokens: integer("total_input_tokens").default(0).notNull(),
+    totalOutputTokens: integer("total_output_tokens").default(0).notNull(),
+    totalCostUsd: text("total_cost_usd").default("0"),
+    avgLatencyMs: integer("avg_latency_ms"),
+    categoryBreakdown: jsonb("category_breakdown"),
+    severityBreakdown: jsonb("severity_breakdown"),
 
-  // User (null for global stats)
-  userId: uuid("user_id")
-    .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("ai_usage_stats_date_idx").on(table.date),
+    index("ai_usage_stats_user_id_idx").on(table.userId),
+  ]
+);
 
-  // Counts
-  conversationCount: integer("conversation_count").default(0).notNull(),
-  messageCount: integer("message_count").default(0).notNull(),
-  imageCount: integer("image_count").default(0).notNull(),
+// ============================================
+// TYPES
+// ============================================
 
-  // Token usage
-  totalInputTokens: integer("total_input_tokens").default(0).notNull(),
-  totalOutputTokens: integer("total_output_tokens").default(0).notNull(),
+export interface AttachmentMetadata {
+  type: "image" | "video" | "document";
+  storageUrl: string;
+  mediaType: string;
+  fileName?: string;
+  fileSize: number;
+  encrypted: true;
+  encryptionScope: "user" | "group";
+  keyVersion: number;
+  algorithm: string;
+  iv: string;
+}
 
-  // Cost
-  totalCostUsd: text("total_cost_usd").default("0"),
-
-  // Average latency
-  avgLatencyMs: integer("avg_latency_ms"),
-
-  // Categories breakdown (JSON: { "plumbing": 5, "electrical": 3, ... })
-  categoryBreakdown: jsonb("category_breakdown"),
-
-  // Severity breakdown (JSON: { "minor": 10, "moderate": 5, "urgent": 2 })
-  severityBreakdown: jsonb("severity_breakdown"),
-
-  // Created/updated timestamps
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+export type ConversationKey = typeof conversationKeys.$inferSelect;
+export type NewConversationKey = typeof conversationKeys.$inferInsert;
+export type AiConversation = typeof aiConversations.$inferSelect;
+export type NewAiConversation = typeof aiConversations.$inferInsert;
+export type AiMessage = typeof aiMessages.$inferSelect;
+export type NewAiMessage = typeof aiMessages.$inferInsert;
+export type AiUsageStat = typeof aiUsageStats.$inferSelect;
+export type NewAiUsageStat = typeof aiUsageStats.$inferInsert;
+export type EncryptionScope = "user" | "group";
+export type ConversationType = "diagnosis" | "general" | "followup";
+export type MessageRole = "user" | "assistant" | "system";
