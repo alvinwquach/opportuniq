@@ -8,7 +8,7 @@ import {
   aiMessages,
   conversationKeys,
 } from "@/app/db/schema";
-import { eq, desc, sql, and, asc } from "drizzle-orm";
+import { eq, desc, sql, and, asc, inArray } from "drizzle-orm";
 import type {
   ConversationListItem,
   ConversationDetail,
@@ -117,7 +117,7 @@ export async function getConversations(
         .where(
           and(
             eq(conversationKeys.userId, user.id),
-            sql`${conversationKeys.conversationId} = ANY(${userScopedIds})`
+            inArray(conversationKeys.conversationId, userScopedIds)
           )
         );
 
