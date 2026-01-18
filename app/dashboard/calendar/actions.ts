@@ -545,7 +545,13 @@ export async function getUserIssuesForScheduling() {
         )
       );
 
-    return { success: true, issues: userIssues };
+    return {
+      success: true,
+      issues: userIssues.map((issue) => ({
+        ...issue,
+        title: issue.title || "Untitled Issue",
+      })),
+    };
   } catch (error) {
     console.error("[Calendar] getUserIssuesForScheduling error:", error);
     return { success: false, error: "Failed to fetch issues" };
