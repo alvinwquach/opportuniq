@@ -632,6 +632,9 @@ export const issueActivityLog = pgTable("issue_activity_log", {
     hypothesisCount?: number;
     topHypothesis?: string;
     confidence?: number;
+    // For issue creation
+    severity?: string;
+    urgency?: string;
   }>(),
 
   // Link to related entity for deep linking in UI
