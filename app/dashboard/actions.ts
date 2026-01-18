@@ -382,7 +382,7 @@ export async function getDashboardData(userId: string) {
 
     recentActivity = recentIssues.map(({ issue, group }) => ({
       type: "issue" as const,
-      title: issue.title,
+      title: issue.title || "Untitled Issue",
       description: issue.description || "No description",
       timestamp: issue.createdAt,
       groupName: group.name,
