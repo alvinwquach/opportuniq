@@ -24,6 +24,7 @@ import {
 } from "@/app/db/schema";
 import { eq, and, gte, lte, desc, count, sql, isNotNull, avg, inArray } from "drizzle-orm";
 import { geocodePostalCode } from "@/lib/geocoding";
+import type { SafetyAlert } from "./types";
 
 // Frequency multipliers to convert to monthly
 const FREQUENCY_TO_MONTHLY: Record<string, number> = {
@@ -220,7 +221,7 @@ export async function getDashboardData(userId: string) {
       shoppingList: [],
       personalBudgets: [],
       recentPersonalExpenses: [],
-      safetyAlerts: [],
+      safetyAlerts: [] as SafetyAlert[],
       aiInsights: [],
       mapVendors: [],
       mapStores: [],

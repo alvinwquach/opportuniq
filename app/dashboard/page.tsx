@@ -2,6 +2,7 @@ import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { getDashboardData } from "./actions";
 import { getLocationWeatherData } from "./weather-actions";
+import type { SafetyAlert } from "./types";
 import {
   NewUserDashboard,
   DashboardHeader,
@@ -83,7 +84,7 @@ export default async function Dashboard() {
         shoppingList: [],
         personalBudgets: [],
         recentPersonalExpenses: [],
-        safetyAlerts: [],
+        safetyAlerts: [] as SafetyAlert[],
         aiInsights: [],
         mapVendors: [],
         mapStores: [],
@@ -134,7 +135,7 @@ export default async function Dashboard() {
         shoppingList: [],
         personalBudgets: [],
         recentPersonalExpenses: [],
-        safetyAlerts: [],
+        safetyAlerts: [] as SafetyAlert[],
         aiInsights: [],
         mapVendors: [],
         mapStores: [],

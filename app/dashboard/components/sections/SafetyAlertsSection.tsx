@@ -2,14 +2,7 @@
 
 import Link from "next/link";
 import { IoShield, IoWarning, IoChevronForward } from "react-icons/io5";
-
-interface SafetyAlert {
-  id: string;
-  title: string;
-  severity: string | null;
-  groupName: string;
-  emergencyInstructions: string | null;
-}
+import type { SafetyAlert } from "@/app/dashboard/types";
 
 interface SafetyAlertsSectionProps {
   alerts: SafetyAlert[];
