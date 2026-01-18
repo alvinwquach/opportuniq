@@ -247,7 +247,7 @@ export async function setIssueResolution(
       activityType: "resolution_set",
       performedBy: membership.id,
       title: `Resolved as ${resolution.type}`,
-      description: resolution.notes,
+      description: resolution.notes ?? undefined,
       oldValue: oldResolution ?? undefined,
       newValue: resolution.type,
       metadata: {
@@ -503,7 +503,7 @@ export async function getIssueTimeline(
         type: "comment",
         timestamp: c.createdAt,
         title: "Added a comment",
-        description: c.content,
+        description: c.content ?? undefined,
         performer: performer ? { id: c.userId, ...performer } : undefined,
       });
     });
