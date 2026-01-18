@@ -725,7 +725,7 @@ export async function getIssueDetails(
       success: true,
       issue: {
         id: issueData.id,
-        title: issueData.title,
+        title: issueData.title || "Untitled Issue",
         description: issueData.description,
         status: issueData.status,
         priority: issueData.priority,
