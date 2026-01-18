@@ -11,7 +11,24 @@ import {
   IoChevronUp,
   IoImage,
   IoMic,
+  IoVolumeHigh,
+  IoCloud,
 } from "react-icons/io5";
+import {
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
 import { cn } from "@/lib/utils";
 
 interface Stats {
@@ -65,13 +82,70 @@ interface DailyUsage {
   images: number;
 }
 
+interface VoiceStats {
+  totalSttCalls: number;
+  totalTtsCalls: number;
+  totalSttDurationMs: number;
+  totalTtsCharacters: number;
+  totalVoiceCost: number;
+  avgSttLatency: number;
+  avgTtsLatency: number;
+  googleSttCalls: number;
+  openaiSttCalls: number;
+  googleTtsCalls: number;
+  openaiTtsCalls: number;
+}
+
+interface VoiceCall {
+  id: string;
+  userId: string;
+  apiType: string;
+  provider: string;
+  languageCode: string | null;
+  durationMs: number | null;
+  characterCount: number | null;
+  latencyMs: number | null;
+  costUsd: string | null;
+  model: string | null;
+  voiceName: string | null;
+  success: number;
+  errorMessage: string | null;
+  createdAt: string;
+  userName: string | null;
+  userEmail: string | null;
+}
+
+interface DailyVoiceUsage {
+  date: string;
+  sttCalls: number;
+  ttsCalls: number;
+  cost: number;
+}
+
 interface AIUsageClientProps {
   stats: Stats;
   toolUsage: Record<string, number>;
   recentConversations: Conversation[];
   recentToolCalls: ToolCall[];
+  voiceStats: VoiceStats;
+  recentVoiceCalls: VoiceCall[];
+  dailyVoiceUsage: DailyVoiceUsage[];
   dailyUsage: DailyUsage[];
 }
+
+// Chart colors
+const COLORS = {
+  purple: "#a855f7",
+  blue: "#3b82f6",
+  cyan: "#06b6d4",
+  green: "#22c55e",
+  yellow: "#eab308",
+  orange: "#f97316",
+  pink: "#ec4899",
+  red: "#ef4444",
+};
+
+const PIE_COLORS = [COLORS.purple, COLORS.blue, COLORS.cyan, COLORS.green, COLORS.orange];
 
 function StatCard({
   icon: Icon,
@@ -100,44 +174,20 @@ function StatCard({
   );
 }
 
-function ToolUsageCard({ toolUsage }: { toolUsage: Record<string, number> }) {
-  const sortedTools = Object.entries(toolUsage).sort((a, b) => b[1] - a[1]);
-  const totalCalls = sortedTools.reduce((acc, [, count]) => acc + count, 0);
-
-  return (
-    <div className="bg-[#141414] border border-[#1f1f1f] rounded-lg p-4">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="p-1.5 rounded-md bg-purple-500/20 text-purple-400">
-          <IoHammer className="h-4 w-4" />
-        </div>
-        <span className="text-[14px] font-medium text-white">Tool Usage</span>
-        <span className="text-[12px] text-[#666] ml-auto">{totalCalls} total calls</span>
+function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-[#1f1f1f] border border-[#333] rounded-lg p-3 shadow-xl">
+        <p className="text-[12px] text-white font-medium mb-2">{label}</p>
+        {payload.map((entry, index) => (
+          <p key={index} className="text-[11px]" style={{ color: entry.color }}>
+            {entry.name}: {typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}
+          </p>
+        ))}
       </div>
-      {sortedTools.length === 0 ? (
-        <p className="text-[13px] text-[#666]">No tool calls recorded yet</p>
-      ) : (
-        <div className="space-y-2">
-          {sortedTools.map(([name, count]) => {
-            const percentage = (count / totalCalls) * 100;
-            return (
-              <div key={name}>
-                <div className="flex justify-between text-[13px] mb-1">
-                  <span className="text-white font-mono">{name}</span>
-                  <span className="text-[#888]">{count} calls</span>
-                </div>
-                <div className="h-1.5 bg-[#1f1f1f] rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-purple-500 rounded-full transition-all"
-                    style={{ width: `${percentage}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
+    );
+  }
+  return null;
 }
 
 function ConversationRow({ conversation }: { conversation: Conversation }) {
@@ -158,7 +208,6 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
           </p>
         </div>
 
-        {/* Input type indicators */}
         <div className="flex items-center gap-1.5">
           {conversation.usedVoice && (
             <span className="p-1 rounded bg-blue-500/20 text-blue-400" title="Voice input">
@@ -227,26 +276,6 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
               {conversation.totalOutputTokens.toLocaleString()}
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-4 pt-2 border-t border-[#1f1f1f] mt-2">
-            <div>
-              <span className="text-[#666]">Voice Input:</span>{" "}
-              <span className={conversation.usedVoice ? "text-blue-400" : "text-[#444]"}>
-                {conversation.usedVoice ? "Yes" : "No"}
-              </span>
-            </div>
-            <div>
-              <span className="text-[#666]">Photo Input:</span>{" "}
-              <span className={conversation.usedPhoto ? "text-pink-400" : "text-[#444]"}>
-                {conversation.usedPhoto ? "Yes" : "No"}
-              </span>
-            </div>
-            <div>
-              <span className="text-[#666]">Tool Calls:</span>{" "}
-              <span className={conversation.toolCallCount > 0 ? "text-purple-400" : "text-[#444]"}>
-                {conversation.toolCallCount}
-              </span>
-            </div>
-          </div>
         </div>
       )}
     </div>
@@ -263,7 +292,7 @@ function ToolCallRow({ toolCall }: { toolCall: ToolCall }) {
         className="w-full px-4 py-3 flex items-center gap-4 hover:bg-[#1a1a1a] transition-colors text-left"
       >
         <div className="flex-1 min-w-0">
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {toolCall.toolCalls?.map((tc, i) => (
               <span
                 key={i}
@@ -302,30 +331,140 @@ function ToolCallRow({ toolCall }: { toolCall: ToolCall }) {
   );
 }
 
+function VoiceCallRow({ voiceCall }: { voiceCall: VoiceCall }) {
+  const providerLabel = {
+    google_stt: "Google STT",
+    google_tts: "Google TTS",
+    openai_whisper: "Whisper",
+    openai_tts: "OpenAI TTS",
+  }[voiceCall.provider] || voiceCall.provider;
+
+  const isGoogle = voiceCall.provider.startsWith("google");
+
+  return (
+    <div className="border-b border-[#1f1f1f] last:border-0 px-4 py-3 flex items-center gap-4">
+      <div className={cn(
+        "p-1.5 rounded-md",
+        isGoogle ? "bg-blue-500/20 text-blue-400" : "bg-green-500/20 text-green-400"
+      )}>
+        {voiceCall.apiType === "stt" ? (
+          <IoMic className="h-4 w-4" />
+        ) : (
+          <IoVolumeHigh className="h-4 w-4" />
+        )}
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className={cn(
+            "px-2 py-0.5 rounded text-[11px] font-medium",
+            isGoogle ? "bg-blue-500/20 text-blue-400" : "bg-green-500/20 text-green-400"
+          )}>
+            {providerLabel}
+          </span>
+          {voiceCall.languageCode && (
+            <span className="text-[11px] text-[#666]">{voiceCall.languageCode}</span>
+          )}
+          {voiceCall.success === 0 && (
+            <span className="px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 text-[10px]">
+              Error
+            </span>
+          )}
+        </div>
+        <p className="text-[12px] text-[#666] mt-0.5">
+          {voiceCall.userName || voiceCall.userEmail || "Unknown user"}
+        </p>
+      </div>
+
+      <div className="text-right">
+        {voiceCall.apiType === "stt" ? (
+          <p className="text-[12px] text-[#888]">
+            {voiceCall.durationMs ? `${(voiceCall.durationMs / 1000).toFixed(1)}s` : "—"}
+          </p>
+        ) : (
+          <p className="text-[12px] text-[#888]">
+            {voiceCall.characterCount?.toLocaleString() || "—"} chars
+          </p>
+        )}
+        {voiceCall.latencyMs && (
+          <p className="text-[11px] text-[#666]">{voiceCall.latencyMs}ms</p>
+        )}
+      </div>
+
+      <div className="text-right w-16">
+        <p className="text-[11px] text-green-500">
+          ${parseFloat(voiceCall.costUsd || "0").toFixed(5)}
+        </p>
+      </div>
+
+      <span className="text-[12px] text-[#666] w-36 text-right">
+        {new Date(voiceCall.createdAt).toLocaleString()}
+      </span>
+    </div>
+  );
+}
+
 export function AIUsageClient({
   stats,
   toolUsage,
   recentConversations,
   recentToolCalls,
+  voiceStats,
+  recentVoiceCalls,
+  dailyVoiceUsage,
   dailyUsage,
 }: AIUsageClientProps) {
-  const [activeTab, setActiveTab] = useState<"conversations" | "tools">("conversations");
+  const [activeTab, setActiveTab] = useState<"conversations" | "tools" | "voice">("conversations");
 
-  // Calculate max for chart scaling
-  const maxTokens = Math.max(...dailyUsage.map((d) => d.inputTokens + d.outputTokens), 1);
+  // Format daily usage data for charts
+  const formattedDailyUsage = dailyUsage.map((d) => ({
+    ...d,
+    date: new Date(d.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    totalTokens: d.inputTokens + d.outputTokens,
+  }));
+
+  // Format voice usage data for charts
+  const formattedVoiceUsage = dailyVoiceUsage.map((d) => ({
+    ...d,
+    date: new Date(d.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    totalCalls: d.sttCalls + d.ttsCalls,
+  }));
+
+  // Tool usage pie chart data
+  const toolUsageData = Object.entries(toolUsage)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([name, value]) => ({ name, value }));
+
+  // Voice provider pie chart data
+  const voiceProviderData = [
+    { name: "Google STT", value: voiceStats.googleSttCalls },
+    { name: "Whisper", value: voiceStats.openaiSttCalls },
+    { name: "Google TTS", value: voiceStats.googleTtsCalls },
+    { name: "OpenAI TTS", value: voiceStats.openaiTtsCalls },
+  ].filter((d) => d.value > 0);
+
+  // Token distribution pie chart data
+  const tokenDistribution = [
+    { name: "Input Tokens", value: stats.totalInputTokens },
+    { name: "Output Tokens", value: stats.totalOutputTokens },
+  ];
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-8">
+      {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-white flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
           <IoSparkles className="text-purple-400" />
           AI Usage Dashboard
         </h1>
-        <p className="text-[13px] text-[#888] mt-1">
-          Monitor token usage, costs, and tool calls across all AI conversations
+        <p className="text-[14px] text-[#888] mt-1">
+          Monitor token usage, costs, and API calls across all AI conversations
         </p>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+
+      {/* Main Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
         <StatCard
           icon={IoChatbubble}
           label="Conversations"
@@ -357,65 +496,436 @@ export function AIUsageClient({
           value={`${stats.avgLatency}ms`}
           color="bg-yellow-500/20 text-yellow-400"
         />
-        <StatCard
-          icon={IoMic}
-          label="Voice Inputs"
-          value={stats.totalVoiceInputs.toLocaleString()}
-          color="bg-blue-500/20 text-blue-400"
-        />
-        <StatCard
-          icon={IoImage}
-          label="Photo Inputs"
-          value={stats.totalPhotoInputs.toLocaleString()}
-          color="bg-pink-500/20 text-pink-400"
-        />
-        <StatCard
-          icon={IoHammer}
-          label="Tool Calls"
-          value={Object.values(toolUsage).reduce((a, b) => a + b, 0).toLocaleString()}
-          color="bg-orange-500/20 text-orange-400"
-        />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-[#141414] border border-[#1f1f1f] rounded-lg p-4">
-          <h3 className="text-[14px] font-medium text-white mb-4">Daily Usage (Last 30 Days)</h3>
-          {dailyUsage.length === 0 ? (
-            <p className="text-[13px] text-[#666]">No usage data yet</p>
-          ) : (
-            <div className="h-48 flex items-end gap-1">
-              {dailyUsage.map((day, i) => {
-                const totalTokens = day.inputTokens + day.outputTokens;
-                const height = (totalTokens / maxTokens) * 100;
-                return (
-                  <div
-                    key={i}
-                    className="flex-1 group relative"
-                    title={`${day.date}: ${totalTokens.toLocaleString()} tokens, $${day.cost.toFixed(4)}, ${day.images} images`}
-                  >
-                    <div
-                      className="bg-purple-500/50 hover:bg-purple-500 transition-colors rounded-t"
-                      style={{ height: `${Math.max(height, 2)}%` }}
-                    />
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-[#1f1f1f] px-2 py-1 rounded text-[11px] text-white whitespace-nowrap z-10">
-                      {day.date}
-                      <br />
-                      {totalTokens.toLocaleString()} tokens
-                      <br />${day.cost.toFixed(4)}
-                      {day.images > 0 && (
-                        <>
-                          <br />
-                          {day.images} image{day.images !== 1 ? "s" : ""}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+
+      {/* Charts Row 1: Token Usage & Distribution */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Daily Token Usage Area Chart */}
+        <div className="lg:col-span-2 bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+          <h3 className="text-[15px] font-semibold text-white mb-4">Daily Token Usage</h3>
+          {formattedDailyUsage.length === 0 ? (
+            <div className="h-64 flex items-center justify-center text-[#666]">
+              No usage data yet
             </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={280}>
+              <AreaChart data={formattedDailyUsage}>
+                <defs>
+                  <linearGradient id="colorInput" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={COLORS.purple} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={COLORS.purple} stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="colorOutput" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={COLORS.cyan} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={COLORS.cyan} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                <XAxis dataKey="date" stroke="#666" tickLine={{ stroke: "#666" }} tick={(props) => {
+                  const { x, y, payload } = props;
+                  return (
+                    <text x={x} y={y} dy={16} textAnchor="middle" fill="#fff" fontSize={11}>
+                      {payload.value}
+                    </text>
+                  );
+                }} />
+                <YAxis stroke="#666" tickLine={{ stroke: "#666" }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={(props) => {
+                  const { x, y, payload } = props;
+                  return (
+                    <text x={x} y={y} dx={-5} textAnchor="end" fill="#fff" fontSize={11}>
+                      {`${(payload.value / 1000).toFixed(0)}k`}
+                    </text>
+                  );
+                }} />
+                <Tooltip content={<CustomTooltip />} />
+                <Area
+                  type="monotone"
+                  dataKey="inputTokens"
+                  name="Input Tokens"
+                  stroke={COLORS.purple}
+                  fillOpacity={1}
+                  fill="url(#colorInput)"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="outputTokens"
+                  name="Output Tokens"
+                  stroke={COLORS.cyan}
+                  fillOpacity={1}
+                  fill="url(#colorOutput)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
+          <div className="flex gap-6 mt-4 justify-center text-[13px] text-[#ccc]">
+            <span className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded" style={{ backgroundColor: COLORS.purple }} /> Input Tokens
+            </span>
+            <span className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded" style={{ backgroundColor: COLORS.cyan }} /> Output Tokens
+            </span>
+          </div>
+        </div>
+
+        {/* Token Distribution Pie */}
+        <div className="bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+          <h3 className="text-[15px] font-semibold text-white mb-4">Token Distribution</h3>
+          {stats.totalInputTokens === 0 && stats.totalOutputTokens === 0 ? (
+            <div className="h-64 flex items-center justify-center text-[#666]">
+              No token data yet
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={320}>
+              <PieChart>
+                <Pie
+                  data={tokenDistribution}
+                  cx="50%"
+                  cy="45%"
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  <Cell fill={COLORS.purple} />
+                  <Cell fill={COLORS.cyan} />
+                </Pie>
+                <Tooltip
+                  contentStyle={{ backgroundColor: "#1f1f1f", border: "1px solid #333", borderRadius: 8 }}
+                  labelStyle={{ color: "#fff", fontSize: 12, fontWeight: 500 }}
+                  itemStyle={{ color: "#fff", fontSize: 12 }}
+                  formatter={(value: number) => value.toLocaleString()}
+                />
+                <Legend
+                  verticalAlign="bottom"
+                  wrapperStyle={{ paddingTop: 20 }}
+                  formatter={(value) => <span style={{ color: "#ccc", fontSize: 13 }}>{value}</span>}
+                />
+              </PieChart>
+            </ResponsiveContainer>
           )}
         </div>
-        <ToolUsageCard toolUsage={toolUsage} />
       </div>
+
+      {/* Charts Row 2: Cost & Conversations */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Daily Cost Bar Chart */}
+        <div className="bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+          <h3 className="text-[15px] font-semibold text-white mb-4">Daily Cost</h3>
+          {formattedDailyUsage.length === 0 ? (
+            <div className="h-64 flex items-center justify-center text-[#666]">
+              No cost data yet
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={formattedDailyUsage}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                <XAxis dataKey="date" stroke="#666" tickLine={{ stroke: "#666" }} tick={(props) => {
+                  const { x, y, payload } = props;
+                  return (
+                    <text x={x} y={y} dy={16} textAnchor="middle" fill="#fff" fontSize={11}>
+                      {payload.value}
+                    </text>
+                  );
+                }} />
+                <YAxis stroke="#666" tickLine={{ stroke: "#666" }} tick={(props) => {
+                  const { x, y, payload } = props;
+                  return (
+                    <text x={x} y={y} dx={-5} textAnchor="end" fill="#fff" fontSize={11}>
+                      {`$${payload.value.toFixed(2)}`}
+                    </text>
+                  );
+                }} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: "#1f1f1f", border: "1px solid #333", borderRadius: 8 }}
+                  labelStyle={{ color: "#fff", fontSize: 12, fontWeight: 500 }}
+                  itemStyle={{ fontSize: 12 }}
+                  formatter={(value: number) => [`$${value.toFixed(4)}`, "Cost"]}
+                  cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                />
+                <Bar dataKey="cost" name="Cost" fill={COLORS.green} radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        {/* Daily Conversations & Images */}
+        <div className="bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+          <h3 className="text-[15px] font-semibold text-white mb-4">Daily Conversations & Images</h3>
+          {formattedDailyUsage.length === 0 ? (
+            <div className="h-64 flex items-center justify-center text-[#666]">
+              No conversation data yet
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={formattedDailyUsage}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                <XAxis dataKey="date" stroke="#666" tickLine={{ stroke: "#666" }} tick={(props) => {
+                  const { x, y, payload } = props;
+                  return (
+                    <text x={x} y={y} dy={16} textAnchor="middle" fill="#fff" fontSize={11}>
+                      {payload.value}
+                    </text>
+                  );
+                }} />
+                <YAxis stroke="#666" tickLine={{ stroke: "#666" }} tick={(props) => {
+                  const { x, y, payload } = props;
+                  return (
+                    <text x={x} y={y} dx={-5} textAnchor="end" fill="#fff" fontSize={11}>
+                      {payload.value}
+                    </text>
+                  );
+                }} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: "#1f1f1f", border: "1px solid #333", borderRadius: 8 }}
+                  labelStyle={{ color: "#fff", fontSize: 12, fontWeight: 500 }}
+                  itemStyle={{ fontSize: 12 }}
+                  cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                />
+                <Bar dataKey="conversations" name="Conversations" fill={COLORS.blue} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="images" name="Images" fill={COLORS.pink} radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+          <div className="flex gap-6 mt-4 justify-center text-[13px] text-[#ccc]">
+            <span className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded" style={{ backgroundColor: COLORS.blue }} /> Conversations
+            </span>
+            <span className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded" style={{ backgroundColor: COLORS.pink }} /> Images
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Voice API Section */}
+      <div className="space-y-6">
+        <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+          <IoMic className="text-cyan-400" />
+          Voice API Usage
+        </h2>
+
+        {/* Voice Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <StatCard
+            icon={IoMic}
+            label="STT Calls"
+            value={voiceStats.totalSttCalls.toLocaleString()}
+            subValue={`${(voiceStats.totalSttDurationMs / 1000 / 60).toFixed(1)} min audio`}
+            color="bg-blue-500/20 text-blue-400"
+          />
+          <StatCard
+            icon={IoVolumeHigh}
+            label="TTS Calls"
+            value={voiceStats.totalTtsCalls.toLocaleString()}
+            subValue={`${voiceStats.totalTtsCharacters.toLocaleString()} chars`}
+            color="bg-cyan-500/20 text-cyan-400"
+          />
+          <StatCard
+            icon={IoCash}
+            label="Voice Cost"
+            value={`$${voiceStats.totalVoiceCost.toFixed(4)}`}
+            color="bg-green-500/20 text-green-400"
+          />
+          <StatCard
+            icon={IoTime}
+            label="Avg STT Latency"
+            value={`${voiceStats.avgSttLatency}ms`}
+            color="bg-yellow-500/20 text-yellow-400"
+          />
+          <StatCard
+            icon={IoTime}
+            label="Avg TTS Latency"
+            value={`${voiceStats.avgTtsLatency}ms`}
+            color="bg-orange-500/20 text-orange-400"
+          />
+          <StatCard
+            icon={IoCloud}
+            label="Total Voice Calls"
+            value={(voiceStats.totalSttCalls + voiceStats.totalTtsCalls).toLocaleString()}
+            color="bg-purple-500/20 text-purple-400"
+          />
+        </div>
+
+        {/* Voice Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Daily Voice Usage */}
+          <div className="lg:col-span-2 bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+            <h3 className="text-[15px] font-semibold text-white mb-4">Daily Voice API Calls</h3>
+            {formattedVoiceUsage.length === 0 ? (
+              <div className="h-64 flex items-center justify-center text-[#666]">
+                No voice API usage data yet
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={280}>
+                <BarChart data={formattedVoiceUsage}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                  <XAxis dataKey="date" stroke="#666" tickLine={{ stroke: "#666" }} tick={(props) => {
+                  const { x, y, payload } = props;
+                  return (
+                    <text x={x} y={y} dy={16} textAnchor="middle" fill="#fff" fontSize={11}>
+                      {payload.value}
+                    </text>
+                  );
+                }} />
+                  <YAxis stroke="#666" tickLine={{ stroke: "#666" }} tick={(props) => {
+                  const { x, y, payload } = props;
+                  return (
+                    <text x={x} y={y} dx={-5} textAnchor="end" fill="#fff" fontSize={11}>
+                      {payload.value}
+                    </text>
+                  );
+                }} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: "#1f1f1f", border: "1px solid #333", borderRadius: 8 }}
+                    labelStyle={{ color: "#fff", fontSize: 12, fontWeight: 500 }}
+                    itemStyle={{ fontSize: 12 }}
+                    cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                  />
+                  <Bar dataKey="sttCalls" name="STT Calls" fill={COLORS.blue} stackId="a" radius={[0, 0, 0, 0]} />
+                  <Bar dataKey="ttsCalls" name="TTS Calls" fill={COLORS.cyan} stackId="a" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+            <div className="flex gap-6 mt-4 justify-center text-[13px] text-[#ccc]">
+              <span className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded" style={{ backgroundColor: COLORS.blue }} /> STT Calls
+              </span>
+              <span className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded" style={{ backgroundColor: COLORS.cyan }} /> TTS Calls
+              </span>
+            </div>
+          </div>
+
+          {/* Voice Provider Distribution */}
+          <div className="bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+            <h3 className="text-[15px] font-semibold text-white mb-4">Provider Distribution</h3>
+            {voiceProviderData.length === 0 ? (
+              <div className="h-64 flex items-center justify-center text-[#666]">
+                No voice provider data yet
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={320}>
+                <PieChart>
+                  <Pie
+                    data={voiceProviderData}
+                    cx="50%"
+                    cy="45%"
+                    innerRadius={60}
+                    outerRadius={90}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {voiceProviderData.map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ backgroundColor: "#1f1f1f", border: "1px solid #333", borderRadius: 8 }}
+                    labelStyle={{ color: "#fff", fontSize: 12, fontWeight: 500 }}
+                    itemStyle={{ color: "#fff", fontSize: 12 }}
+                  />
+                  <Legend
+                    verticalAlign="bottom"
+                    wrapperStyle={{ paddingTop: 20 }}
+                    formatter={(value) => <span style={{ color: "#ccc", fontSize: 13 }}>{value}</span>}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Tool Usage Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-1.5 rounded-md bg-purple-500/20 text-purple-400">
+              <IoHammer className="h-4 w-4" />
+            </div>
+            <h3 className="text-[15px] font-semibold text-white">Tool Usage</h3>
+            <span className="text-[12px] text-[#666] ml-auto">
+              {Object.values(toolUsage).reduce((a, b) => a + b, 0)} total calls
+            </span>
+          </div>
+          {toolUsageData.length === 0 ? (
+            <div className="h-64 flex items-center justify-center text-[#666]">
+              No tool calls recorded yet
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={toolUsageData} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                <XAxis type="number" stroke="#666" tickLine={{ stroke: "#666" }} tick={(props) => {
+                  const { x, y, payload } = props;
+                  return (
+                    <text x={x} y={y} dy={16} textAnchor="middle" fill="#fff" fontSize={11}>
+                      {payload.value}
+                    </text>
+                  );
+                }} />
+                <YAxis type="category" dataKey="name" stroke="#666" tickLine={{ stroke: "#666" }} width={120} tick={(props) => {
+                  const { x, y, payload } = props;
+                  return (
+                    <text x={x} y={y} dx={-5} textAnchor="end" fill="#fff" fontSize={11}>
+                      {payload.value}
+                    </text>
+                  );
+                }} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: "#1f1f1f", border: "1px solid #333", borderRadius: 8 }}
+                  labelStyle={{ color: "#fff", fontSize: 12, fontWeight: 500 }}
+                  itemStyle={{ fontSize: 12 }}
+                  cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                />
+                <Bar dataKey="value" name="Calls" fill={COLORS.purple} radius={[0, 4, 4, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        {/* Input Types Pie */}
+        <div className="bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+          <h3 className="text-[15px] font-semibold text-white mb-4">Input Types</h3>
+          {stats.totalVoiceInputs === 0 && stats.totalPhotoInputs === 0 ? (
+            <div className="h-64 flex items-center justify-center text-[#666]">
+              No input type data yet
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={320}>
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: "Voice Inputs", value: stats.totalVoiceInputs },
+                    { name: "Photo Inputs", value: stats.totalPhotoInputs },
+                  ].filter((d) => d.value > 0)}
+                  cx="50%"
+                  cy="45%"
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  <Cell fill={COLORS.blue} />
+                  <Cell fill={COLORS.pink} />
+                </Pie>
+                <Tooltip
+                  contentStyle={{ backgroundColor: "#1f1f1f", border: "1px solid #333", borderRadius: 8 }}
+                  labelStyle={{ color: "#fff", fontSize: 12, fontWeight: 500 }}
+                  itemStyle={{ color: "#fff", fontSize: 12 }}
+                />
+                <Legend
+                  verticalAlign="bottom"
+                  wrapperStyle={{ paddingTop: 20 }}
+                  formatter={(value) => <span style={{ color: "#ccc", fontSize: 13 }}>{value}</span>}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+
+      {/* Tabs */}
       <div className="border-b border-[#1f1f1f]">
         <div className="flex gap-4">
           <button
@@ -440,21 +950,40 @@ export function AIUsageClient({
           >
             Recent Tool Calls
           </button>
+          <button
+            onClick={() => setActiveTab("voice")}
+            className={cn(
+              "pb-2 px-1 text-[13px] font-medium border-b-2 transition-colors",
+              activeTab === "voice"
+                ? "text-white border-cyan-500"
+                : "text-[#888] border-transparent hover:text-white"
+            )}
+          >
+            Voice API Calls
+          </button>
         </div>
       </div>
-      <div className="bg-[#141414] border border-[#1f1f1f] rounded-lg overflow-hidden">
+
+      {/* Tab Content */}
+      <div className="bg-[#141414] border border-[#1f1f1f] rounded-xl overflow-hidden">
         {activeTab === "conversations" ? (
           recentConversations.length === 0 ? (
-            <p className="p-4 text-[13px] text-[#666]">No conversations yet</p>
+            <p className="p-6 text-[13px] text-[#666]">No conversations yet</p>
           ) : (
             recentConversations.map((conv) => (
               <ConversationRow key={conv.id} conversation={conv} />
             ))
           )
-        ) : recentToolCalls.length === 0 ? (
-          <p className="p-4 text-[13px] text-[#666]">No tool calls recorded yet</p>
+        ) : activeTab === "tools" ? (
+          recentToolCalls.length === 0 ? (
+            <p className="p-6 text-[13px] text-[#666]">No tool calls recorded yet</p>
+          ) : (
+            recentToolCalls.map((tc) => <ToolCallRow key={tc.id} toolCall={tc} />)
+          )
+        ) : recentVoiceCalls.length === 0 ? (
+          <p className="p-6 text-[13px] text-[#666]">No voice API calls recorded yet</p>
         ) : (
-          recentToolCalls.map((tc) => <ToolCallRow key={tc.id} toolCall={tc} />)
+          recentVoiceCalls.map((vc) => <VoiceCallRow key={vc.id} voiceCall={vc} />)
         )}
       </div>
     </div>

@@ -1,23 +1,31 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
 import { ChatHistorySidebar } from "./ChatHistorySidebar";
 import { IssueChat } from "./IssueChat";
 import { useOptimisticConversation } from "@/hooks/useConversations";
 import { useSidebar } from "@/app/dashboard/components/SidebarContext";
 import { IoMenu, IoClose } from "react-icons/io5";
-import { TbLayoutSidebarRightCollapse, TbLayoutSidebarRightExpand } from "react-icons/tb";
+import { TbLayoutSidebarRightExpand } from "react-icons/tb";
 import { cn } from "@/lib/utils";
 
 interface DiagnosePageClientProps {
   userId: string;
   userName?: string | null;
   userPostalCode?: string | null;
+  initialConversationId?: string | null;
 }
 
-export function DiagnosePageClient({ userId, userName, userPostalCode }: DiagnosePageClientProps) {
-  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+export function DiagnosePageClient({
+  userId,
+  userName,
+  userPostalCode,
+  initialConversationId = null,
+}: DiagnosePageClientProps) {
+  const router = useRouter();
+  // Use the initial conversation ID from the URL (server-side)
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(initialConversationId);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [chatSidebarCollapsed, setChatSidebarCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -28,20 +36,30 @@ export function DiagnosePageClient({ userId, userName, userPostalCode }: Diagnos
     setMounted(true);
   }, []);
 
+  // Sync state when initialConversationId changes (e.g., navigation)
+  useEffect(() => {
+    setCurrentConversationId(initialConversationId);
+  }, [initialConversationId]);
+
   const handleNewChat = useCallback(() => {
-    setCurrentConversationId(null);
-  }, []);
+    router.push("/dashboard/diagnose");
+  }, [router]);
 
   const handleSelectConversation = useCallback((conversationId: string | null) => {
-    setCurrentConversationId(conversationId);
-  }, []);
+    if (conversationId) {
+      router.push(`/dashboard/diagnose/${conversationId}`);
+    } else {
+      router.push("/dashboard/diagnose");
+    }
+  }, [router]);
 
   // Called when a new conversation is created
   const handleConversationCreated = useCallback((conversationId: string) => {
-    setCurrentConversationId(conversationId);
+    // Navigate to the new conversation URL
+    router.push(`/dashboard/diagnose/${conversationId}`);
     // Invalidate to refetch the conversations list
     invalidateConversations();
-  }, [invalidateConversations]);
+  }, [router, invalidateConversations]);
 
   // Called when conversation title is updated (after AI response)
   const handleTitleUpdated = useCallback((conversationId: string, title: string) => {

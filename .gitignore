@@ -44,3 +44,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# speech-to-text / Google Cloud credentials
+google-credentials.json
+opportuniq-*.json

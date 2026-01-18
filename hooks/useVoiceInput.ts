@@ -31,6 +31,14 @@ interface UseVoiceInputOptions {
   onTranscription?: (result: TranscriptionResult) => void;
   onError?: (error: Error) => void;
   maxDuration?: number; // in milliseconds
+  /**
+   * Language hint for transcription.
+   * - "yue-HK" or "cantonese" = Cantonese (uses Google Cloud Speech-to-Text)
+   * - "zh-HK" = Traditional Chinese (Cantonese)
+   * - "zh-CN" = Simplified Chinese (Mandarin)
+   * - null = auto-detect (uses Whisper)
+   */
+  languageHint?: string | null;
 }
 
 export interface UseVoiceInputResult {
@@ -58,6 +66,7 @@ export function useVoiceInput({
   onTranscription,
   onError,
   maxDuration = MAX_RECORDING_DURATION,
+  languageHint = null,
 }: UseVoiceInputOptions = {}): UseVoiceInputResult {
   const [state, setState] = useState<VoiceInputState>({
     isRecording: false,
@@ -347,6 +356,11 @@ export function useVoiceInput({
 
           formData.append("audio", audioBlob, `recording.${extension}`);
 
+          // Add language hint if provided (e.g., "yue-HK" for Cantonese)
+          if (languageHint) {
+            formData.append("languageHint", languageHint);
+          }
+
           const response = await fetch("/api/voice/transcribe", {
             method: "POST",
             body: formData,
@@ -384,7 +398,7 @@ export function useVoiceInput({
       // Stop the recorder
       mediaRecorder.stop();
     });
-  }, [onTranscription, onError]);
+  }, [onTranscription, onError, languageHint]);
 
   // Cancel recording without transcribing
   const cancelRecording = useCallback(() => {
