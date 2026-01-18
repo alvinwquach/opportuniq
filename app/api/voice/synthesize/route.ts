@@ -303,10 +303,7 @@ export async function POST(request: NextRequest) {
         googleVoiceConfig.voiceName
       );
       // Convert Buffer to ArrayBuffer
-      audioBuffer = googleBuffer.buffer.slice(
-        googleBuffer.byteOffset,
-        googleBuffer.byteOffset + googleBuffer.byteLength
-      );
+      audioBuffer = new Uint8Array(googleBuffer).buffer;
       estimatedCost = (truncatedText.length / 1_000_000) * GOOGLE_TTS_PRICE_PER_1M_CHARS;
 
       const latencyMs = Date.now() - startTime;
