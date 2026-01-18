@@ -392,7 +392,7 @@ export async function getDashboardData(userId: string) {
     for (const { decision, option, issue, group, outcome } of recentDecisionsResult) {
       recentActivity.push({
         type: "decision" as const,
-        title: `${option.type === "diy" ? "DIY" : option.type === "hire" ? "Hired" : option.type} decision on ${issue.title}`,
+        title: `${option.type === "diy" ? "DIY" : option.type === "hire" ? "Hired" : option.type} decision on ${issue.title || "Untitled Issue"}`,
         description: outcome?.success
           ? `Completed successfully${outcome.actualCost ? ` for $${outcome.actualCost}` : ""}`
           : option.title,
@@ -624,7 +624,7 @@ export async function getDashboardData(userId: string) {
     .filter(d => d.decision.revisitDate)
     .map(({ decision, issue, group }) => ({
       type: "deferred_decision" as const,
-      title: issue.title,
+      title: issue.title || "Untitled Issue",
       date: decision.revisitDate!,
       issueId: issue.id,
       groupName: group.name,
@@ -639,7 +639,7 @@ export async function getDashboardData(userId: string) {
   }
 
   const recentOutcomes = outcomeResultsData.map(({ outcome, option, issue, group }) => ({
-    issueTitle: issue.title,
+    issueTitle: issue.title || "Untitled Issue",
     optionType: option.type,
     success: outcome.success,
     actualCost: outcome.actualCost ? Number(outcome.actualCost) : null,
@@ -723,13 +723,13 @@ export async function getDashboardData(userId: string) {
   const pendingVendors = vendorsResult.map(({ vendor, issue, group }) => ({
     id: vendor.id, vendorName: vendor.vendorName,
     quoteAmount: vendor.quoteAmount ? Number(vendor.quoteAmount) : null,
-    rating: vendor.rating, issueTitle: issue.title, groupName: group.name, contacted: vendor.contacted,
+    rating: vendor.rating, issueTitle: issue.title || "Untitled Issue", groupName: group.name, contacted: vendor.contacted,
   }));
 
   const shoppingList = productsResult.map(({ product, issue }) => ({
     id: product.id, productName: product.productName,
     estimatedCost: product.estimatedCost ? Number(product.estimatedCost) : null,
-    storeName: product.storeName, inStock: product.inStock, issueTitle: issue.title,
+    storeName: product.storeName, inStock: product.inStock, issueTitle: issue.title || "Untitled Issue",
   }));
 
   const totalBudget = budgets.reduce((sum, b) => sum + Number(b.monthlyLimit), 0);
@@ -767,7 +767,7 @@ export async function getDashboardData(userId: string) {
   // SAFETY ALERTS - use urgentIssuesResult from parallel query
   const safetyAlerts = urgentIssuesResult.map(({ issue, group }) => ({
     id: issue.id,
-    title: issue.title,
+    title: issue.title || "Untitled Issue",
     riskLevel: issue.severity || "unknown",
     severity: issue.severity || "unknown",
     groupName: group.name,
@@ -841,7 +841,7 @@ export async function getDashboardData(userId: string) {
       const revisitDate = decision.revisitDate!;
       const daysUntil = Math.ceil((revisitDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
       return {
-        id: decision.id, issueId: issue.id, issueTitle: issue.title, revisitDate,
+        id: decision.id, issueId: issue.id, issueTitle: issue.title || "Untitled Issue", revisitDate,
         reason: decision.assumptions ? (decision.assumptions as { reason?: string }).reason || null : null,
         groupName: group.name, daysUntilRevisit: daysUntil,
       };
@@ -863,7 +863,7 @@ export async function getDashboardData(userId: string) {
 
   for (const { issue, group, creator } of otherIssuesResult) {
     groupActivityFeed.push({
-      type: "issue_created", actorName: creator.name, description: `reported "${issue.title}"`,
+      type: "issue_created", actorName: creator.name, description: `reported "${issue.title || "Untitled Issue"}"`,
       timestamp: issue.createdAt, groupName: group.name, issueId: issue.id,
     });
   }

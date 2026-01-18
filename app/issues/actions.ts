@@ -488,7 +488,7 @@ export async function getIssueTimeline(
         id: a.id,
         type: "activity",
         timestamp: a.createdAt,
-        title: a.title,
+        title: a.title || "Untitled Activity",
         description: a.description ?? undefined,
         performer: performer ? { id: a.performedBy!, ...performer } : undefined,
         metadata: a.metadata as Record<string, unknown> | undefined,
