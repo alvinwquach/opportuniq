@@ -635,6 +635,8 @@ export const issueActivityLog = pgTable("issue_activity_log", {
     // For issue creation
     severity?: string;
     urgency?: string;
+    // For emergency
+    emergencyType?: string;
   }>(),
 
   // Link to related entity for deep linking in UI
