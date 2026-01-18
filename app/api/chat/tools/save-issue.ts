@@ -48,7 +48,7 @@ const saveIssueSchema = z.object({
 
   // Asset information (optional)
   assetName: z.string().optional().describe("Name of the item with the issue (e.g., '2018 Honda Civic', 'Kitchen Refrigerator')"),
-  assetDetails: z.record(z.unknown()).optional().describe("Additional details about the asset (make, model, year, etc.)"),
+  assetDetails: z.record(z.string(), z.unknown()).optional().describe("Additional details about the asset (make, model, year, etc.)"),
 
   // AI Assessment
   diagnosis: z.string().describe("AI's diagnosis of what the problem likely is"),
