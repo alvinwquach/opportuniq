@@ -22,6 +22,14 @@ interface VoiceMicButtonProps {
   maxDuration?: number;
   conversationId?: string | null;
   source?: "initial_form" | "follow_up";
+  /**
+   * Language hint for transcription.
+   * - "yue-HK" or "cantonese" = Cantonese (uses Google Cloud Speech-to-Text)
+   * - "zh-HK" = Traditional Chinese (Cantonese)
+   * - "zh-CN" = Simplified Chinese (Mandarin)
+   * - null = auto-detect (uses Whisper)
+   */
+  languageHint?: string | null;
 }
 
 const sizeClasses = {
@@ -45,6 +53,7 @@ export function VoiceMicButton({
   maxDuration,
   conversationId,
   source = "follow_up",
+  languageHint = null,
 }: VoiceMicButtonProps) {
   const [showTooltip, setShowTooltip] = useState(false);
   const recordingStartTime = useRef<number>(0);
@@ -91,6 +100,7 @@ export function VoiceMicButton({
     onTranscription: handleTranscription,
     onError: handleError,
     maxDuration,
+    languageHint,
   });
 
   // Handle click

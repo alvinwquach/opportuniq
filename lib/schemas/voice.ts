@@ -222,7 +222,21 @@ export interface TextToSpeechState {
 
 // Helper function to get language name
 export function getLanguageName(code: string): string {
-  return LANGUAGE_NAMES[code] || code.toUpperCase();
+  // Direct match (e.g., "es" -> "Spanish")
+  if (LANGUAGE_NAMES[code]) {
+    return LANGUAGE_NAMES[code];
+  }
+
+  // Check if the code is already a language name (e.g., "spanish" from Whisper)
+  const normalizedCode = code.toLowerCase();
+  for (const [, name] of Object.entries(LANGUAGE_NAMES)) {
+    if (name.toLowerCase() === normalizedCode) {
+      return name; // Return properly capitalized name
+    }
+  }
+
+  // Fallback: capitalize first letter (e.g., "spanish" -> "Spanish")
+  return code.charAt(0).toUpperCase() + code.slice(1).toLowerCase();
 }
 
 // Chinese dialect detection patterns

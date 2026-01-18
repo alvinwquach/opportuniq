@@ -58,6 +58,25 @@ export function IssueChat({
 
   const { messages, followUpInput, activeConversationId, isStreaming, streamingContent, error, decryptedUrls, detectedLanguage, translatedMessages } = state;
 
+  // Safety: Reset streaming state on mount if stuck
+  useEffect(() => {
+    if (isStreaming && !activeConversationId && messages.length === 0) {
+      console.warn("[IssueChat] Resetting stuck streaming state on mount");
+      stopStreaming();
+    }
+  }, []); // Only run on mount
+
+  // Safety: Reset streaming state if it's stuck for too long (10 seconds)
+  useEffect(() => {
+    if (isStreaming) {
+      const timeout = setTimeout(() => {
+        console.warn("[IssueChat] Streaming timeout - resetting stuck state");
+        stopStreaming();
+      }, 10000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isStreaming, stopStreaming]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const dropZoneRef = useRef<HTMLDivElement>(null);
 
@@ -390,7 +409,11 @@ export function IssueChat({
     if (result.language) setDetectedLanguage(result.language);
   };
 
-  const isLoading = isStreaming || mediaState.isEncrypting || isEncryptedUploading || isProcessingVideo;
+  // For the initial form, don't include isStreaming (it shouldn't block new submissions)
+  const isInitialFormLoading = mediaState.isEncrypting || isEncryptedUploading || isProcessingVideo;
+  // For follow-up input, include isStreaming
+  const isLoading = isStreaming || isInitialFormLoading;
+
   const hasConversation = messages.length > 0 || activeConversationId;
   const hasMedia = !!selectedImage || !!selectedVideo;
 
@@ -413,7 +436,7 @@ export function IssueChat({
             fileInputRef={fileInputRef}
             onFileSelect={handleFileSelect}
             onSubmit={handleDiagnosisSubmit}
-            isLoading={isLoading}
+            isLoading={isInitialFormLoading}
             selectedImage={selectedImage}
             imageFile={imageFile}
             selectedVideo={selectedVideo}

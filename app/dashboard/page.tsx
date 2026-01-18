@@ -2,6 +2,7 @@ import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { getDashboardData } from "./actions";
 import { getLocationWeatherData } from "./weather-actions";
+import type { SafetyAlert, PendingDecision, OpenIssue } from "./types";
 import {
   NewUserDashboard,
   DashboardHeader,
@@ -68,8 +69,8 @@ export default async function Dashboard() {
           budgetUsedPercent: 0,
           totalBudget: 0,
         },
-        pendingDecisions: [],
-        openIssues: [],
+        pendingDecisions: [] as PendingDecision[],
+        openIssues: [] as OpenIssue[],
         recentActivity: [],
         spendingByCategory: [],
         hasIncomeSetup: false,
@@ -83,7 +84,7 @@ export default async function Dashboard() {
         shoppingList: [],
         personalBudgets: [],
         recentPersonalExpenses: [],
-        safetyAlerts: [],
+        safetyAlerts: [] as SafetyAlert[],
         aiInsights: [],
         mapVendors: [],
         mapStores: [],
@@ -119,8 +120,8 @@ export default async function Dashboard() {
           budgetUsedPercent: 0,
           totalBudget: 0,
         },
-        pendingDecisions: [],
-        openIssues: [],
+        pendingDecisions: [] as PendingDecision[],
+        openIssues: [] as OpenIssue[],
         recentActivity: [],
         spendingByCategory: [],
         hasIncomeSetup: false,
@@ -134,7 +135,7 @@ export default async function Dashboard() {
         shoppingList: [],
         personalBudgets: [],
         recentPersonalExpenses: [],
-        safetyAlerts: [],
+        safetyAlerts: [] as SafetyAlert[],
         aiInsights: [],
         mapVendors: [],
         mapStores: [],

@@ -247,7 +247,7 @@ export async function setIssueResolution(
       activityType: "resolution_set",
       performedBy: membership.id,
       title: `Resolved as ${resolution.type}`,
-      description: resolution.notes,
+      description: resolution.notes ?? undefined,
       oldValue: oldResolution ?? undefined,
       newValue: resolution.type,
       metadata: {
@@ -488,7 +488,7 @@ export async function getIssueTimeline(
         id: a.id,
         type: "activity",
         timestamp: a.createdAt,
-        title: a.title,
+        title: a.title || "Untitled Activity",
         description: a.description ?? undefined,
         performer: performer ? { id: a.performedBy!, ...performer } : undefined,
         metadata: a.metadata as Record<string, unknown> | undefined,
@@ -503,7 +503,7 @@ export async function getIssueTimeline(
         type: "comment",
         timestamp: c.createdAt,
         title: "Added a comment",
-        description: c.content,
+        description: c.content ?? undefined,
         performer: performer ? { id: c.userId, ...performer } : undefined,
       });
     });
@@ -725,7 +725,7 @@ export async function getIssueDetails(
       success: true,
       issue: {
         id: issueData.id,
-        title: issueData.title,
+        title: issueData.title || "Untitled Issue",
         description: issueData.description,
         status: issueData.status,
         priority: issueData.priority,

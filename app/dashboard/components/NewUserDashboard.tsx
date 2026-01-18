@@ -160,10 +160,7 @@ export function NewUserDashboard({ userProfile }: NewUserDashboardProps) {
                 <div className="flex items-center gap-2 mt-2 pt-2 border-t border-[#1f1f1f]">
                   <IoCamera className="w-3 h-3 text-[#555]" />
                   {item.additionalIcons.map((Icon, i) => (
-                    <div key={i} className="flex items-center gap-1">
-                      <Icon className="w-3 h-3 text-[#555]" />
-                      <span className="text-[8px] px-1 py-0.5 rounded bg-[#00D4FF]/10 text-[#00D4FF]">Soon</span>
-                    </div>
+                    <Icon key={i} className="w-3 h-3 text-[#555]" />
                   ))}
                 </div>
               )}

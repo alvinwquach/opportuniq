@@ -24,6 +24,7 @@ import {
 } from "@/app/db/schema";
 import { eq, and, gte, lte, desc, count, sql, isNotNull, avg, inArray } from "drizzle-orm";
 import { geocodePostalCode } from "@/lib/geocoding";
+import type { SafetyAlert, PendingDecision, OpenIssue } from "./types";
 
 // Frequency multipliers to convert to monthly
 const FREQUENCY_TO_MONTHLY: Record<string, number> = {
@@ -205,8 +206,8 @@ export async function getDashboardData(userId: string) {
         budgetUsedPercent: monthlyIncome > 0 ? (totalSpent / monthlyIncome) * 100 : 0,
         totalBudget,
       },
-      pendingDecisions: [],
-      openIssues: [],
+      pendingDecisions: [] as PendingDecision[],
+      openIssues: [] as OpenIssue[],
       recentActivity: [],
       spendingByCategory: [],
       hasIncomeSetup: incomeStreams.length > 0,
@@ -220,7 +221,7 @@ export async function getDashboardData(userId: string) {
       shoppingList: [],
       personalBudgets: [],
       recentPersonalExpenses: [],
-      safetyAlerts: [],
+      safetyAlerts: [] as SafetyAlert[],
       aiInsights: [],
       mapVendors: [],
       mapStores: [],
@@ -235,18 +236,9 @@ export async function getDashboardData(userId: string) {
 
   // Full path for users with groups
 
-  let pendingDecisions: {
-    issue: typeof issues.$inferSelect;
-    option: typeof decisionOptions.$inferSelect;
-    group: typeof groups.$inferSelect;
-    voteCount: number;
-    totalMembers: number;
-  }[] = [];
+  let pendingDecisions: PendingDecision[] = [];
 
-  let openIssues: {
-    issue: typeof issues.$inferSelect;
-    group: typeof groups.$inferSelect;
-  }[] = [];
+  let openIssues: OpenIssue[] = [];
 
   let recentActivity: {
     type: "issue" | "decision" | "expense";
@@ -371,18 +363,38 @@ export async function getDashboardData(userId: string) {
 
     // Build pending decisions from joined query results
     pendingDecisions = issuesWithRecommendedOptions.map(({ issue, group, option }) => ({
-      issue,
-      option,
-      group,
+      issue: {
+        id: issue.id,
+        title: issue.title || "Untitled Issue",
+        priority: issue.priority,
+      },
+      option: {
+        type: option.type,
+        costMin: option.costMin,
+        costMax: option.costMax,
+        timeEstimate: option.timeEstimate,
+      },
+      group: {
+        name: group.name,
+      },
       voteCount: 0,
       totalMembers: memberCountMap.get(group.id) || 0,
     }));
 
-    openIssues = openIssuesResult;
+    openIssues = openIssuesResult.map(({ issue, group }) => ({
+      issue: {
+        id: issue.id,
+        title: issue.title || "Untitled Issue",
+        status: issue.status,
+      },
+      group: {
+        name: group.name,
+      },
+    }));
 
     recentActivity = recentIssues.map(({ issue, group }) => ({
       type: "issue" as const,
-      title: issue.title,
+      title: issue.title || "Untitled Issue",
       description: issue.description || "No description",
       timestamp: issue.createdAt,
       groupName: group.name,
@@ -392,7 +404,7 @@ export async function getDashboardData(userId: string) {
     for (const { decision, option, issue, group, outcome } of recentDecisionsResult) {
       recentActivity.push({
         type: "decision" as const,
-        title: `${option.type === "diy" ? "DIY" : option.type === "hire" ? "Hired" : option.type} decision on ${issue.title}`,
+        title: `${option.type === "diy" ? "DIY" : option.type === "hire" ? "Hired" : option.type} decision on ${issue.title || "Untitled Issue"}`,
         description: outcome?.success
           ? `Completed successfully${outcome.actualCost ? ` for $${outcome.actualCost}` : ""}`
           : option.title,
@@ -624,7 +636,7 @@ export async function getDashboardData(userId: string) {
     .filter(d => d.decision.revisitDate)
     .map(({ decision, issue, group }) => ({
       type: "deferred_decision" as const,
-      title: issue.title,
+      title: issue.title || "Untitled Issue",
       date: decision.revisitDate!,
       issueId: issue.id,
       groupName: group.name,
@@ -639,7 +651,7 @@ export async function getDashboardData(userId: string) {
   }
 
   const recentOutcomes = outcomeResultsData.map(({ outcome, option, issue, group }) => ({
-    issueTitle: issue.title,
+    issueTitle: issue.title || "Untitled Issue",
     optionType: option.type,
     success: outcome.success,
     actualCost: outcome.actualCost ? Number(outcome.actualCost) : null,
@@ -700,7 +712,7 @@ export async function getDashboardData(userId: string) {
     id: schedule.id,
     date: schedule.scheduledTime,
     type: "diy" as const,
-    title: issue.title,
+    title: issue.title || "Untitled Issue",
     time: schedule.scheduledTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     duration: schedule.estimatedDuration,
     groupName: group.name,
@@ -723,13 +735,13 @@ export async function getDashboardData(userId: string) {
   const pendingVendors = vendorsResult.map(({ vendor, issue, group }) => ({
     id: vendor.id, vendorName: vendor.vendorName,
     quoteAmount: vendor.quoteAmount ? Number(vendor.quoteAmount) : null,
-    rating: vendor.rating, issueTitle: issue.title, groupName: group.name, contacted: vendor.contacted,
+    rating: vendor.rating, issueTitle: issue.title || "Untitled Issue", groupName: group.name, contacted: vendor.contacted,
   }));
 
   const shoppingList = productsResult.map(({ product, issue }) => ({
     id: product.id, productName: product.productName,
     estimatedCost: product.estimatedCost ? Number(product.estimatedCost) : null,
-    storeName: product.storeName, inStock: product.inStock, issueTitle: issue.title,
+    storeName: product.storeName, inStock: product.inStock, issueTitle: issue.title || "Untitled Issue",
   }));
 
   const totalBudget = budgets.reduce((sum, b) => sum + Number(b.monthlyLimit), 0);
@@ -767,7 +779,7 @@ export async function getDashboardData(userId: string) {
   // SAFETY ALERTS - use urgentIssuesResult from parallel query
   const safetyAlerts = urgentIssuesResult.map(({ issue, group }) => ({
     id: issue.id,
-    title: issue.title,
+    title: issue.title || "Untitled Issue",
     riskLevel: issue.severity || "unknown",
     severity: issue.severity || "unknown",
     groupName: group.name,
@@ -841,7 +853,7 @@ export async function getDashboardData(userId: string) {
       const revisitDate = decision.revisitDate!;
       const daysUntil = Math.ceil((revisitDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
       return {
-        id: decision.id, issueId: issue.id, issueTitle: issue.title, revisitDate,
+        id: decision.id, issueId: issue.id, issueTitle: issue.title || "Untitled Issue", revisitDate,
         reason: decision.assumptions ? (decision.assumptions as { reason?: string }).reason || null : null,
         groupName: group.name, daysUntilRevisit: daysUntil,
       };
@@ -863,7 +875,7 @@ export async function getDashboardData(userId: string) {
 
   for (const { issue, group, creator } of otherIssuesResult) {
     groupActivityFeed.push({
-      type: "issue_created", actorName: creator.name, description: `reported "${issue.title}"`,
+      type: "issue_created", actorName: creator.name, description: `reported "${issue.title || "Untitled Issue"}"`,
       timestamp: issue.createdAt, groupName: group.name, issueId: issue.id,
     });
   }

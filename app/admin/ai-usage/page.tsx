@@ -1,5 +1,5 @@
 import { db } from "@/app/db/client";
-import { aiConversations, aiMessages } from "@/app/db/schema";
+import { aiConversations, aiMessages, voiceApiUsage } from "@/app/db/schema";
 import { users } from "@/app/db/schema/users";
 import { desc, sql, eq, count } from "drizzle-orm";
 import { AIUsageClient } from "./AIUsageClient";
@@ -147,6 +147,61 @@ export default async function AIUsagePage() {
     images: imagesByDate.get(d.date) || 0,
   }));
 
+  // Get voice API usage stats
+  const [voiceStats] = await db
+    .select({
+      totalSttCalls: sql<number>`COALESCE(SUM(CASE WHEN ${voiceApiUsage.apiType} = 'stt' THEN 1 ELSE 0 END), 0)`,
+      totalTtsCalls: sql<number>`COALESCE(SUM(CASE WHEN ${voiceApiUsage.apiType} = 'tts' THEN 1 ELSE 0 END), 0)`,
+      totalSttDurationMs: sql<number>`COALESCE(SUM(CASE WHEN ${voiceApiUsage.apiType} = 'stt' THEN ${voiceApiUsage.durationMs} ELSE 0 END), 0)`,
+      totalTtsCharacters: sql<number>`COALESCE(SUM(CASE WHEN ${voiceApiUsage.apiType} = 'tts' THEN ${voiceApiUsage.characterCount} ELSE 0 END), 0)`,
+      totalVoiceCost: sql<string>`COALESCE(SUM(CAST(${voiceApiUsage.costUsd} AS DECIMAL)), 0)`,
+      avgSttLatency: sql<number>`COALESCE(AVG(CASE WHEN ${voiceApiUsage.apiType} = 'stt' THEN ${voiceApiUsage.latencyMs} END), 0)`,
+      avgTtsLatency: sql<number>`COALESCE(AVG(CASE WHEN ${voiceApiUsage.apiType} = 'tts' THEN ${voiceApiUsage.latencyMs} END), 0)`,
+      googleSttCalls: sql<number>`COALESCE(SUM(CASE WHEN ${voiceApiUsage.provider} = 'google_stt' THEN 1 ELSE 0 END), 0)`,
+      openaiSttCalls: sql<number>`COALESCE(SUM(CASE WHEN ${voiceApiUsage.provider} = 'openai_whisper' THEN 1 ELSE 0 END), 0)`,
+      googleTtsCalls: sql<number>`COALESCE(SUM(CASE WHEN ${voiceApiUsage.provider} = 'google_tts' THEN 1 ELSE 0 END), 0)`,
+      openaiTtsCalls: sql<number>`COALESCE(SUM(CASE WHEN ${voiceApiUsage.provider} = 'openai_tts' THEN 1 ELSE 0 END), 0)`,
+    })
+    .from(voiceApiUsage);
+
+  // Get recent voice API calls
+  const recentVoiceCalls = await db
+    .select({
+      id: voiceApiUsage.id,
+      userId: voiceApiUsage.userId,
+      apiType: voiceApiUsage.apiType,
+      provider: voiceApiUsage.provider,
+      languageCode: voiceApiUsage.languageCode,
+      durationMs: voiceApiUsage.durationMs,
+      characterCount: voiceApiUsage.characterCount,
+      latencyMs: voiceApiUsage.latencyMs,
+      costUsd: voiceApiUsage.costUsd,
+      model: voiceApiUsage.model,
+      voiceName: voiceApiUsage.voiceName,
+      success: voiceApiUsage.success,
+      errorMessage: voiceApiUsage.errorMessage,
+      createdAt: voiceApiUsage.createdAt,
+      userName: users.name,
+      userEmail: users.email,
+    })
+    .from(voiceApiUsage)
+    .leftJoin(users, eq(voiceApiUsage.userId, users.id))
+    .orderBy(desc(voiceApiUsage.createdAt))
+    .limit(50);
+
+  // Get daily voice API usage (last 30 days)
+  const dailyVoiceUsage = await db
+    .select({
+      date: sql<string>`DATE(${voiceApiUsage.createdAt})`,
+      sttCalls: sql<number>`COALESCE(SUM(CASE WHEN ${voiceApiUsage.apiType} = 'stt' THEN 1 ELSE 0 END), 0)`,
+      ttsCalls: sql<number>`COALESCE(SUM(CASE WHEN ${voiceApiUsage.apiType} = 'tts' THEN 1 ELSE 0 END), 0)`,
+      cost: sql<string>`COALESCE(SUM(CAST(${voiceApiUsage.costUsd} AS DECIMAL)), 0)`,
+    })
+    .from(voiceApiUsage)
+    .where(sql`${voiceApiUsage.createdAt} >= NOW() - INTERVAL '30 days'`)
+    .groupBy(sql`DATE(${voiceApiUsage.createdAt})`)
+    .orderBy(sql`DATE(${voiceApiUsage.createdAt})`);
+
   return (
     <AIUsageClient
       stats={{
@@ -178,6 +233,29 @@ export default async function AIUsagePage() {
         outputTokens: Number(d.outputTokens) || 0,
         cost: parseFloat(String(d.cost)) || 0,
         images: Number(d.images) || 0,
+      }))}
+      voiceStats={{
+        totalSttCalls: Number(voiceStats?.totalSttCalls) || 0,
+        totalTtsCalls: Number(voiceStats?.totalTtsCalls) || 0,
+        totalSttDurationMs: Number(voiceStats?.totalSttDurationMs) || 0,
+        totalTtsCharacters: Number(voiceStats?.totalTtsCharacters) || 0,
+        totalVoiceCost: parseFloat(voiceStats?.totalVoiceCost || "0"),
+        avgSttLatency: Math.round(Number(voiceStats?.avgSttLatency) || 0),
+        avgTtsLatency: Math.round(Number(voiceStats?.avgTtsLatency) || 0),
+        googleSttCalls: Number(voiceStats?.googleSttCalls) || 0,
+        openaiSttCalls: Number(voiceStats?.openaiSttCalls) || 0,
+        googleTtsCalls: Number(voiceStats?.googleTtsCalls) || 0,
+        openaiTtsCalls: Number(voiceStats?.openaiTtsCalls) || 0,
+      }}
+      recentVoiceCalls={recentVoiceCalls.map((vc) => ({
+        ...vc,
+        createdAt: vc.createdAt.toISOString(),
+      }))}
+      dailyVoiceUsage={dailyVoiceUsage.map((d) => ({
+        date: d.date,
+        sttCalls: Number(d.sttCalls) || 0,
+        ttsCalls: Number(d.ttsCalls) || 0,
+        cost: parseFloat(String(d.cost)) || 0,
       }))}
     />
   );

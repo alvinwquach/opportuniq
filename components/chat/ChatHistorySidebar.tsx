@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { IoAdd, IoTrash, IoEllipsisVertical, IoCheckmark, IoChevronForward } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import {
@@ -41,12 +43,10 @@ function formatRelativeDate(dateString: string): string {
 function ConversationItem({
   conversation,
   isActive,
-  onSelect,
   onDelete,
 }: {
   conversation: Conversation;
   isActive: boolean;
-  onSelect: () => void;
   onDelete: () => void;
 }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -54,6 +54,7 @@ function ConversationItem({
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     if (confirmDelete) {
       onDelete();
       setConfirmDelete(false);
@@ -65,8 +66,16 @@ function ConversationItem({
   };
 
   return (
-    <div
-      onClick={onSelect}
+    <Link
+      href={`/dashboard/diagnose/${conversation.id}`}
+      onClick={() => {
+        trackDiagnosisConversationViewed({
+          conversationId: conversation.id,
+          messageCount: conversation.messageCount || 0,
+          category: conversation.category,
+          severity: conversation.severity,
+        });
+      }}
       className={cn(
         "group relative flex items-center gap-2 px-3 py-2.5 rounded-lg cursor-pointer transition-colors",
         isActive
@@ -85,6 +94,7 @@ function ConversationItem({
       <button
         onClick={(e) => {
           e.stopPropagation();
+          e.preventDefault();
           setShowMenu(!showMenu);
           setConfirmDelete(false);
         }}
@@ -102,6 +112,7 @@ function ConversationItem({
             className="fixed inset-0 z-10"
             onClick={(e) => {
               e.stopPropagation();
+              e.preventDefault();
               setShowMenu(false);
               setConfirmDelete(false);
             }}
@@ -143,7 +154,7 @@ function ConversationItem({
           )}
         />
       )}
-    </div>
+    </Link>
   );
 }
 
@@ -154,13 +165,15 @@ export function ChatHistorySidebar({
   isCollapsed,
   onToggleCollapse,
 }: ChatHistorySidebarProps) {
+  const router = useRouter();
   const { data, isLoading, error } = useConversations();
   const deleteConversation = useDeleteConversation();
 
   const handleDelete = async (conversationId: string) => {
     await deleteConversation.mutateAsync(conversationId);
     if (currentConversationId === conversationId) {
-      onNewChat();
+      // Navigate to new diagnosis page after deleting current conversation
+      router.push("/dashboard/diagnose");
     }
   };
 
@@ -175,13 +188,13 @@ export function ChatHistorySidebar({
           >
             <IoChevronForward className="w-4 h-4" />
           </button>
-          <button
-            onClick={onNewChat}
+          <Link
+            href="/dashboard/diagnose"
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#5eead4] text-black font-medium text-sm hover:bg-[#4fd1c5] transition-colors"
           >
             <IoAdd className="w-5 h-5" />
             New Diagnosis
-          </button>
+          </Link>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto p-2 space-y-1 min-h-0 scrollbar-dark">
@@ -203,15 +216,6 @@ export function ChatHistorySidebar({
               key={conversation.id}
               conversation={conversation}
               isActive={conversation.id === currentConversationId}
-              onSelect={() => {
-                trackDiagnosisConversationViewed({
-                  conversationId: conversation.id,
-                  messageCount: conversation.messageCount || 0,
-                  category: conversation.category,
-                  severity: conversation.severity,
-                });
-                onSelectConversation(conversation.id);
-              }}
               onDelete={() => handleDelete(conversation.id)}
             />
           ))

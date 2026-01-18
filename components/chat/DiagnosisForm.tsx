@@ -99,6 +99,8 @@ export function DiagnosisForm({
   onLanguageDetected,
 }: DiagnosisFormProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
+  // Use local state for description to ensure it updates properly
+  const [localDescription, setLocalDescription] = useState("");
 
   const form = useForm({
     defaultValues: {
@@ -115,10 +117,11 @@ export function DiagnosisForm({
       prefersDIY: undefined as boolean | undefined,
     },
     onSubmit: async ({ value }) => {
+      // Use localDescription as the source of truth for the description
       const formValue = {
         ...value,
         postalCode: userPostalCode || value.postalCode,
-        issueDescription: value.issueDescription.trim(),
+        issueDescription: localDescription.trim(),
       } as DiagnosisFormValues;
       const request = formToRequest(formValue);
       await onSubmit(request, detectedLanguage || undefined);
@@ -137,6 +140,9 @@ export function DiagnosisForm({
     form.state.values.issueCategory?.startsWith("auto_");
 
   const hasMedia = !!selectedImage || !!selectedVideo;
+
+  // Use local description state for disabled check (more reliable than form state)
+  const isDisabled = isSubmitting || isEncrypting || isProcessingVideo || (!localDescription.trim() && !hasMedia);
 
   return (
     <form
@@ -201,8 +207,12 @@ export function DiagnosisForm({
                   ? "Add details (optional)..."
                   : "What are you working on?"
               }
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
+              value={localDescription}
+              onChange={(e) => {
+                const value = e.target.value;
+                setLocalDescription(value);
+                field.handleChange(value);
+              }}
               onBlur={field.handleBlur}
               rows={hasMedia ? 2 : 3}
               className="w-full px-4 py-3 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] text-white text-sm placeholder:text-[#666] focus:outline-none focus:border-[#5eead4]/50 resize-none transition-colors"
@@ -462,10 +472,11 @@ export function DiagnosisForm({
         <VoiceMicButton
           onTranscription={(result: TranscriptionResult) => {
             // Append transcribed text to the description
-            const currentValue = form.state.values.issueDescription;
+            const currentValue = localDescription;
             const newValue = currentValue
               ? `${currentValue}\n${result.text}`
               : result.text;
+            setLocalDescription(newValue);
             form.setFieldValue("issueDescription", newValue);
             // Store detected language
             if (result.language && onLanguageDetected) {
@@ -478,7 +489,7 @@ export function DiagnosisForm({
         />
         <button
           type="submit"
-          disabled={isSubmitting || isEncrypting || isProcessingVideo || (!form.state.values.issueDescription.trim() && !hasMedia)}
+          disabled={isDisabled}
           className="flex-1 h-10 rounded-full bg-[#5eead4] text-black font-medium text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#4fd1c5] transition-colors"
         >
           {isSubmitting || isEncrypting || isProcessingVideo ? (

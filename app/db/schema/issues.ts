@@ -148,6 +148,9 @@ export const issueActivityTypeEnum = pgEnum("issue_activity_type", [
  *
  * Tracks repair/maintenance projects from creation to completion.
  * "Issue" and "Project" used interchangeably - table named "projects" in DB.
+ *
+ * ENCRYPTION: Supports E2E encryption for PII fields (title, description, etc.)
+ * When isEncrypted=true, use encrypted* fields. When false, use plaintext fields.
  */
 export const issues = pgTable("projects", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -158,8 +161,19 @@ export const issues = pgTable("projects", {
     .notNull()
     .references(() => groups.id, { onDelete: "cascade" }),
 
+  // ============================================
+  // ENCRYPTION METADATA
+  // ============================================
+  isEncrypted: boolean("is_encrypted").default(false).notNull(),
+  keyVersion: integer("key_version").default(1),
+  algorithm: text("algorithm"), // "AES-GCM-256"
+
+  // ============================================
+  // PLAINTEXT FIELDS (used when isEncrypted=false)
+  // ============================================
+
   // Short problem summary - e.g., "Dishwasher not draining", "Car won't start"
-  title: text("title").notNull(),
+  title: text("title"),
 
   // Detailed description with symptoms, context, timing
   description: text("description"),
@@ -261,6 +275,40 @@ export const issues = pgTable("projects", {
   // Relation: Many issues → One groupMember
   resolvedBy: uuid("resolved_by")
     .references(() => groupMembers.id),
+
+  // ============================================
+  // ENCRYPTED FIELDS (used when isEncrypted=true)
+  // Each field has ciphertext + IV for AES-GCM decryption
+  // ============================================
+  encryptedTitle: text("encrypted_title"),
+  titleIv: text("title_iv"),
+
+  encryptedDescription: text("encrypted_description"),
+  descriptionIv: text("description_iv"),
+
+  encryptedAssetName: text("encrypted_asset_name"),
+  assetNameIv: text("asset_name_iv"),
+
+  encryptedAssetDetails: text("encrypted_asset_details"), // JSON stringified then encrypted
+  assetDetailsIv: text("asset_details_iv"),
+
+  encryptedDiagnosis: text("encrypted_diagnosis"),
+  diagnosisIv: text("diagnosis_iv"),
+
+  encryptedIgnoreRisk: text("encrypted_ignore_risk"),
+  ignoreRiskIv: text("ignore_risk_iv"),
+
+  encryptedWarningSignsToWatch: text("encrypted_warning_signs_to_watch"), // JSON stringified then encrypted
+  warningSignsToWatchIv: text("warning_signs_to_watch_iv"),
+
+  encryptedWhenToEscalate: text("encrypted_when_to_escalate"),
+  whenToEscalateIv: text("when_to_escalate_iv"),
+
+  encryptedEmergencyInstructions: text("encrypted_emergency_instructions"),
+  emergencyInstructionsIv: text("emergency_instructions_iv"),
+
+  encryptedResolutionNotes: text("encrypted_resolution_notes"),
+  resolutionNotesIv: text("resolution_notes_iv"),
 });
 
 /**
@@ -268,6 +316,9 @@ export const issues = pgTable("projects", {
  *
  * Stores evidence for AI analysis (photos/videos/audio/text/observations).
  * CRITICAL: Media files are encrypted end-to-end for privacy.
+ *
+ * ENCRYPTION: Supports E2E encryption for PII fields (fileName, content, extractedInfo)
+ * When isEncrypted=true, use encrypted* fields. When false, use plaintext fields.
  *
  * Relation: One issue → Many evidence pieces
  */
@@ -280,6 +331,13 @@ export const issueEvidence = pgTable("issue_evidence", {
     .notNull()
     .references(() => issues.id, { onDelete: "cascade" }),
 
+  // ============================================
+  // ENCRYPTION METADATA
+  // ============================================
+  isEncrypted: boolean("is_encrypted").default(false).notNull(),
+  keyVersion: integer("key_version").default(1),
+  algorithm: text("algorithm"), // "AES-GCM-256"
+
   // Evidence format - see evidenceTypeEnum
   evidenceType: evidenceTypeEnum("evidence_type").notNull(),
 
@@ -290,6 +348,10 @@ export const issueEvidence = pgTable("issue_evidence", {
   // AES-GCM initialization vector for decryption (Base64 encoded)
   // Required to decrypt media files along with household key
   encryptionIv: text("encryption_iv"),
+
+  // ============================================
+  // PLAINTEXT FIELDS (used when isEncrypted=false)
+  // ============================================
 
   // Original filename for user reference - e.g., "IMG_2034.jpg"
   fileName: text("file_name"),
@@ -314,6 +376,19 @@ export const issueEvidence = pgTable("issue_evidence", {
     .references(() => groupMembers.id),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
+
+  // ============================================
+  // ENCRYPTED FIELDS (used when isEncrypted=true)
+  // Each field has ciphertext + IV for AES-GCM decryption
+  // ============================================
+  encryptedFileName: text("encrypted_file_name"),
+  fileNameIv: text("file_name_iv"),
+
+  encryptedContent: text("encrypted_content"),
+  contentIv: text("content_iv"),
+
+  encryptedExtractedInfo: text("encrypted_extracted_info"), // JSON stringified then encrypted
+  extractedInfoIv: text("extracted_info_iv"),
 });
 
 /**
@@ -321,6 +396,9 @@ export const issueEvidence = pgTable("issue_evidence", {
  *
  * AI-generated diagnostic hypotheses (possible causes) ranked by confidence.
  * AI analyzes all evidence and generates 3-5 hypotheses.
+ *
+ * ENCRYPTION: Supports E2E encryption for PII fields (hypothesis, reasoningChain)
+ * When isEncrypted=true, use encrypted* fields. When false, use plaintext fields.
  *
  * Relation: One issue → Many hypotheses
  */
@@ -333,9 +411,20 @@ export const issueHypotheses = pgTable("issue_hypotheses", {
     .notNull()
     .references(() => issues.id, { onDelete: "cascade" }),
 
+  // ============================================
+  // ENCRYPTION METADATA
+  // ============================================
+  isEncrypted: boolean("is_encrypted").default(false).notNull(),
+  keyVersion: integer("key_version").default(1),
+  algorithm: text("algorithm"), // "AES-GCM-256"
+
+  // ============================================
+  // PLAINTEXT FIELDS (used when isEncrypted=false)
+  // ============================================
+
   // Description of possible problem/root cause
   // Examples: "Dead battery", "Clogged filter", "Failed HVAC capacitor"
-  hypothesis: text("hypothesis").notNull(),
+  hypothesis: text("hypothesis"),
 
   // AI's confidence in this specific hypothesis (0-100)
   // Used to rank hypotheses (highest confidence first)
@@ -350,6 +439,16 @@ export const issueHypotheses = pgTable("issue_hypotheses", {
   reasoningChain: jsonb("reasoning_chain"),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
+
+  // ============================================
+  // ENCRYPTED FIELDS (used when isEncrypted=true)
+  // Each field has ciphertext + IV for AES-GCM decryption
+  // ============================================
+  encryptedHypothesis: text("encrypted_hypothesis"),
+  hypothesisIv: text("hypothesis_iv"),
+
+  encryptedReasoningChain: text("encrypted_reasoning_chain"), // JSON stringified then encrypted
+  reasoningChainIv: text("reasoning_chain_iv"),
 });
 
 /**
@@ -357,6 +456,9 @@ export const issueHypotheses = pgTable("issue_hypotheses", {
  *
  * Household member discussions and coordination.
  * Real-time collaboration on repair projects.
+ *
+ * ENCRYPTION: Supports E2E encryption for PII fields (content)
+ * When isEncrypted=true, use encrypted* fields. When false, use plaintext fields.
  *
  * Relation: One issue → Many comments
  */
@@ -369,20 +471,38 @@ export const issueComments = pgTable("issue_comments", {
     .notNull()
     .references(() => issues.id, { onDelete: "cascade" }),
 
+  // ============================================
+  // ENCRYPTION METADATA
+  // ============================================
+  isEncrypted: boolean("is_encrypted").default(false).notNull(),
+  keyVersion: integer("key_version").default(1),
+  algorithm: text("algorithm"), // "AES-GCM-256"
+
   // Which household member wrote this comment
   // Relation: Many issueComments → One groupMember
   userId: uuid("user_id")
     .notNull()
     .references(() => groupMembers.id),
 
+  // ============================================
+  // PLAINTEXT FIELDS (used when isEncrypted=false)
+  // ============================================
+
   // Comment text - supports markdown formatting
   // Validation: 1-10,000 characters, sanitize HTML
-  content: text("content").notNull(),
+  content: text("content"),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
 
   // For edit tracking - show "edited" indicator if updatedAt > createdAt
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+
+  // ============================================
+  // ENCRYPTED FIELDS (used when isEncrypted=true)
+  // Each field has ciphertext + IV for AES-GCM decryption
+  // ============================================
+  encryptedContent: text("encrypted_content"),
+  contentIv: text("content_iv"),
 });
 
 /**
@@ -434,6 +554,9 @@ export const diySchedules = pgTable("diy_schedules", {
  * Creates a complete timeline from creation to resolution.
  * Follows pattern from groupInvitationAuditLog/groupMemberAuditLog.
  *
+ * ENCRYPTION: Supports E2E encryption for PII fields (title, description, metadata)
+ * When isEncrypted=true, use encrypted* fields. When false, use plaintext fields.
+ *
  * Relation: One issue → Many activity log entries
  */
 export const issueActivityLog = pgTable("issue_activity_log", {
@@ -445,6 +568,13 @@ export const issueActivityLog = pgTable("issue_activity_log", {
     .notNull()
     .references(() => issues.id, { onDelete: "cascade" }),
 
+  // ============================================
+  // ENCRYPTION METADATA
+  // ============================================
+  isEncrypted: boolean("is_encrypted").default(false).notNull(),
+  keyVersion: integer("key_version").default(1),
+  algorithm: text("algorithm"), // "AES-GCM-256"
+
   // Type of activity - see issueActivityTypeEnum
   activityType: issueActivityTypeEnum("activity_type").notNull(),
 
@@ -453,9 +583,13 @@ export const issueActivityLog = pgTable("issue_activity_log", {
   performedBy: uuid("performed_by")
     .references(() => groupMembers.id),
 
+  // ============================================
+  // PLAINTEXT FIELDS (used when isEncrypted=false)
+  // ============================================
+
   // Human-readable title for timeline display
   // Example: "Status changed to In Progress", "Added photo evidence"
-  title: text("title").notNull(),
+  title: text("title"),
 
   // Optional longer description
   description: text("description"),
@@ -498,6 +632,11 @@ export const issueActivityLog = pgTable("issue_activity_log", {
     hypothesisCount?: number;
     topHypothesis?: string;
     confidence?: number;
+    // For issue creation
+    severity?: string;
+    urgency?: string;
+    // For emergency
+    emergencyType?: string;
   }>(),
 
   // Link to related entity for deep linking in UI
@@ -505,6 +644,19 @@ export const issueActivityLog = pgTable("issue_activity_log", {
   relatedEntityId: uuid("related_entity_id"),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
+
+  // ============================================
+  // ENCRYPTED FIELDS (used when isEncrypted=true)
+  // Each field has ciphertext + IV for AES-GCM decryption
+  // ============================================
+  encryptedTitle: text("encrypted_title"),
+  titleIv: text("title_iv"),
+
+  encryptedDescription: text("encrypted_description"),
+  descriptionIv: text("description_iv"),
+
+  encryptedMetadata: text("encrypted_metadata"), // JSON stringified then encrypted
+  metadataIv: text("metadata_iv"),
 });
 
 // Type exports for type-safe queries
