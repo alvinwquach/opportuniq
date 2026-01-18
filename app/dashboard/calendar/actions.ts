@@ -132,7 +132,7 @@ export async function getUserSchedules(startDate?: Date, endDate?: Date) {
       return {
         id: s.schedule.id,
         issueId: s.schedule.issueId,
-        issueTitle: s.issue.title,
+        issueTitle: s.issue.title || "Untitled Issue",
         groupId: s.group.id,
         groupName: s.group.name,
         scheduledTime: s.schedule.scheduledTime,
