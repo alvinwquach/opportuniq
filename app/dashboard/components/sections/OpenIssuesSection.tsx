@@ -2,17 +2,7 @@
 
 import Link from "next/link";
 import { IoAlertCircle, IoArrowForward } from "react-icons/io5";
-
-interface OpenIssue {
-  issue: {
-    id: string;
-    title: string;
-    status: string | null;
-  };
-  group: {
-    name: string;
-  };
-}
+import type { OpenIssue } from "@/app/dashboard/types";
 
 interface OpenIssuesSectionProps {
   issues: OpenIssue[];

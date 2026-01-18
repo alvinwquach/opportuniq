@@ -24,7 +24,7 @@ import {
 } from "@/app/db/schema";
 import { eq, and, gte, lte, desc, count, sql, isNotNull, avg, inArray } from "drizzle-orm";
 import { geocodePostalCode } from "@/lib/geocoding";
-import type { SafetyAlert } from "./types";
+import type { SafetyAlert, PendingDecision, OpenIssue } from "./types";
 
 // Frequency multipliers to convert to monthly
 const FREQUENCY_TO_MONTHLY: Record<string, number> = {
@@ -206,8 +206,8 @@ export async function getDashboardData(userId: string) {
         budgetUsedPercent: monthlyIncome > 0 ? (totalSpent / monthlyIncome) * 100 : 0,
         totalBudget,
       },
-      pendingDecisions: [],
-      openIssues: [],
+      pendingDecisions: [] as PendingDecision[],
+      openIssues: [] as OpenIssue[],
       recentActivity: [],
       spendingByCategory: [],
       hasIncomeSetup: incomeStreams.length > 0,
@@ -236,18 +236,9 @@ export async function getDashboardData(userId: string) {
 
   // Full path for users with groups
 
-  let pendingDecisions: {
-    issue: typeof issues.$inferSelect;
-    option: typeof decisionOptions.$inferSelect;
-    group: typeof groups.$inferSelect;
-    voteCount: number;
-    totalMembers: number;
-  }[] = [];
+  let pendingDecisions: PendingDecision[] = [];
 
-  let openIssues: {
-    issue: typeof issues.$inferSelect;
-    group: typeof groups.$inferSelect;
-  }[] = [];
+  let openIssues: OpenIssue[] = [];
 
   let recentActivity: {
     type: "issue" | "decision" | "expense";
@@ -372,14 +363,34 @@ export async function getDashboardData(userId: string) {
 
     // Build pending decisions from joined query results
     pendingDecisions = issuesWithRecommendedOptions.map(({ issue, group, option }) => ({
-      issue,
-      option,
-      group,
+      issue: {
+        id: issue.id,
+        title: issue.title || "Untitled Issue",
+        priority: issue.priority,
+      },
+      option: {
+        type: option.type,
+        costMin: option.costMin,
+        costMax: option.costMax,
+        timeEstimate: option.timeEstimate,
+      },
+      group: {
+        name: group.name,
+      },
       voteCount: 0,
       totalMembers: memberCountMap.get(group.id) || 0,
     }));
 
-    openIssues = openIssuesResult;
+    openIssues = openIssuesResult.map(({ issue, group }) => ({
+      issue: {
+        id: issue.id,
+        title: issue.title || "Untitled Issue",
+        status: issue.status,
+      },
+      group: {
+        name: group.name,
+      },
+    }));
 
     recentActivity = recentIssues.map(({ issue, group }) => ({
       type: "issue" as const,

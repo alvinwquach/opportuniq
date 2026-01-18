@@ -2,23 +2,7 @@
 
 import Link from "next/link";
 import { IoChevronForward, IoThumbsUp } from "react-icons/io5";
-
-interface PendingDecision {
-  issue: {
-    id: string;
-    title: string;
-    priority: string | null;
-  };
-  option: {
-    type: string;
-    costMin: string | number | null;
-    costMax: string | number | null;
-    timeEstimate: string | null;
-  };
-  group: {
-    name: string;
-  };
-}
+import type { PendingDecision } from "@/app/dashboard/types";
 
 interface PendingDecisionsSectionProps {
   decisions: PendingDecision[];
