@@ -700,7 +700,7 @@ export async function getDashboardData(userId: string) {
     id: schedule.id,
     date: schedule.scheduledTime,
     type: "diy" as const,
-    title: issue.title,
+    title: issue.title || "Untitled Issue",
     time: schedule.scheduledTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     duration: schedule.estimatedDuration,
     groupName: group.name,
