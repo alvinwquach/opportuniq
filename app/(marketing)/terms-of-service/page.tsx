@@ -1,18 +1,7 @@
-import Link from "next/link";
-
 export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-4xl px-6 pt-32 pb-24">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-teal-600 mb-8 transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to home
-        </Link>
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-neutral-900">Terms of Service</h1>
         <p className="text-sm text-neutral-500 mb-12">
           Last updated: {new Date().toLocaleDateString()}

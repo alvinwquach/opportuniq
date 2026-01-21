@@ -1,30 +1,13 @@
-import Link from "next/link";
 
-/**
- * Privacy Policy Page
- * Light mode design for readability
- */
 
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-4xl px-6 pt-32 pb-24">
-        {/* Breadcrumb */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-teal-600 mb-8 transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to home
-        </Link>
-
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-neutral-900">Privacy Policy</h1>
         <p className="text-sm text-neutral-500 mb-12">
           Last updated: {new Date().toLocaleDateString()}
         </p>
-
         <div className="prose prose-lg prose-neutral max-w-none">
           <section className="mb-10">
             <h2 className="text-2xl font-semibold mb-4 text-neutral-900">
@@ -34,7 +17,6 @@ export default function PrivacyPolicy() {
               OpportunIQ (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our decision-support platform.
             </p>
           </section>
-
           <section className="mb-10">
             <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Information We Collect
@@ -49,7 +31,6 @@ export default function PrivacyPolicy() {
               <li>Usage data and analytics</li>
             </ul>
           </section>
-
           <section className="mb-10">
             <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               How We Use Your Information
@@ -65,7 +46,6 @@ export default function PrivacyPolicy() {
               <li>Send you updates and notifications</li>
             </ul>
           </section>
-
           <section className="mb-10">
             <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Email Integration
@@ -74,7 +54,6 @@ export default function PrivacyPolicy() {
               When you connect your Gmail or Outlook account, we access your email to draft and send messages on your behalf. We only access emails related to your decision-making activities. You can revoke email access at any time from your account settings.
             </p>
           </section>
-
           <section className="mb-10">
             <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Data Storage and Security
@@ -83,7 +62,6 @@ export default function PrivacyPolicy() {
               We implement appropriate technical and organizational measures to protect your personal information. Your data is encrypted in transit and at rest. We store your information on secure servers and restrict access to authorized personnel only.
             </p>
           </section>
-
           <section className="mb-10">
             <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Sharing Your Information
@@ -98,7 +76,6 @@ export default function PrivacyPolicy() {
               We do not sell your personal information to third parties.
             </p>
           </section>
-
           <section className="mb-10">
             <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Your Rights
@@ -113,7 +90,6 @@ export default function PrivacyPolicy() {
               <li>Revoke email integration permissions</li>
             </ul>
           </section>
-
           <section className="mb-10">
             <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Cookies and Tracking
@@ -122,7 +98,6 @@ export default function PrivacyPolicy() {
               We use cookies and similar technologies to improve your experience, analyze usage, and personalize content. You can control cookie settings through your browser preferences.
             </p>
           </section>
-
           <section className="mb-10">
             <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Children&apos;s Privacy
@@ -131,7 +106,6 @@ export default function PrivacyPolicy() {
               Our service is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13.
             </p>
           </section>
-
           <section className="mb-10">
             <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Changes to This Policy
@@ -140,7 +114,6 @@ export default function PrivacyPolicy() {
               We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the &quot;Last updated&quot; date.
             </p>
           </section>
-
           <section className="mb-10">
             <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
               Contact Us
