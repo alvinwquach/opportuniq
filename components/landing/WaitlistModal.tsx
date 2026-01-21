@@ -96,14 +96,15 @@ export function WaitlistModal({ children }: WaitlistModalProps) {
           <div className="relative px-6 pt-6 pb-4 border-b border-neutral-100">
             <button
               onClick={() => setIsOpen(false)}
+              aria-label="Close dialog"
               className="absolute top-4 right-4 w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors flex items-center justify-center text-neutral-500 hover:text-neutral-700"
             >
-              <IoClose className="w-4 h-4" />
+              <IoClose className="w-4 h-4" aria-hidden="true" />
             </button>
             <DialogTitle className="text-xl font-bold text-neutral-900 mb-1">
               Join the Waitlist
             </DialogTitle>
-            <p className="text-sm text-neutral-500">
+            <p className="text-sm text-neutral-600">
               Be the first to know when OpportunIQ launches.
             </p>
           </div>
@@ -116,7 +117,7 @@ export function WaitlistModal({ children }: WaitlistModalProps) {
                 Email address
               </label>
               <div className="relative">
-                <IoMail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+                <IoMail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
                 <input
                   type="email"
                   id="waitlist-email"
@@ -128,15 +129,13 @@ export function WaitlistModal({ children }: WaitlistModalProps) {
                 />
               </div>
             </div>
-
             {error && (
               <p className="text-sm text-red-500">{error}</p>
             )}
-
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full px-6 py-3 bg-teal-500 hover:bg-teal-600 disabled:bg-teal-400 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+              className="w-full px-6 py-3 bg-teal-600 hover:bg-teal-700 disabled:bg-teal-500 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
                 <>
@@ -150,16 +149,13 @@ export function WaitlistModal({ children }: WaitlistModalProps) {
                 </>
               )}
             </button>
-
-            <p className="flex items-center justify-center gap-1.5 text-xs text-neutral-400">
-              <IoLockClosed className="w-3 h-3" />
+            <p className="flex items-center justify-center gap-1.5 text-xs text-neutral-500">
+              <IoLockClosed className="w-3 h-3" aria-hidden="true" />
               <span>We respect your privacy. No spam, ever.</span>
             </p>
           </form>
-
-          {/* Footer */}
           <div className="px-6 py-4 bg-neutral-50 border-t border-neutral-100">
-            <div className="flex items-center justify-between text-xs text-neutral-500">
+            <div className="flex items-center justify-between text-xs text-neutral-600">
               <span>OpportunIQ</span>
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
@@ -169,7 +165,6 @@ export function WaitlistModal({ children }: WaitlistModalProps) {
           </div>
         </DialogContent>
       </Dialog>
-
       <Toast
         message="You're on the list! We'll notify you when we launch."
         isVisible={showToast}
