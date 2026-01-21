@@ -28,29 +28,29 @@ function DemoSkeleton() {
         </div>
         <div className="grid lg:grid-cols-12 gap-6">
           <div className="lg:col-span-5 space-y-4">
-            <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden shadow-sm">
-              <div className="p-3 border-b border-neutral-200 flex items-center gap-2">
+            <div className="bg-white rounded-2xl border border-neutral-300 overflow-hidden shadow-sm">
+              <div className="p-3 border-b border-neutral-300 flex items-center gap-2">
                 <IoLocation className="w-4 h-4 text-teal-600" />
                 <span className="text-sm font-medium text-neutral-900">Location Map</span>
               </div>
               <div className="h-72 w-full bg-neutral-200 animate-pulse flex items-center justify-center">
-                <span className="text-neutral-400 text-sm">Loading map...</span>
+                <span className="text-neutral-900 text-sm font-medium">Loading map...</span>
               </div>
-              <div className="p-3 border-t border-neutral-200 bg-neutral-50">
+              <div className="p-3 border-t border-neutral-300 bg-neutral-50">
                 <div className="flex gap-3">
                   <div className="h-4 w-24 bg-neutral-200 rounded animate-pulse" />
                   <div className="h-4 w-24 bg-neutral-200 rounded animate-pulse" />
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-2xl border border-neutral-200 p-4 shadow-sm">
+            <div className="bg-white rounded-2xl border border-neutral-300 p-4 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
                 <IoStorefront className="w-4 h-4 text-blue-600" />
                 <span className="text-sm font-medium text-neutral-900">Tools Available Nearby</span>
               </div>
               <div className="space-y-3">
                 {[1, 2].map((i) => (
-                  <div key={i} className="p-3 rounded-lg bg-neutral-50 border border-neutral-100">
+                  <div key={i} className="p-3 rounded-lg bg-neutral-50 border border-neutral-200">
                     <div className="h-4 w-32 bg-neutral-200 rounded animate-pulse mb-2" />
                     <div className="flex gap-2">
                       <div className="h-6 w-16 bg-neutral-200 rounded animate-pulse" />
@@ -60,14 +60,14 @@ function DemoSkeleton() {
                 ))}
               </div>
             </div>
-            <div className="bg-white rounded-2xl border border-neutral-200 p-4 shadow-sm">
+            <div className="bg-white rounded-2xl border border-neutral-300 p-4 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
                 <IoThermometer className="w-4 h-4 text-teal-600" />
                 <span className="text-sm font-medium text-neutral-900">Weather Conditions</span>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="text-center p-2 rounded-lg bg-neutral-50 border border-neutral-100">
+                  <div key={i} className="text-center p-2 rounded-lg bg-neutral-50 border border-neutral-200">
                     <div className="h-8 w-12 mx-auto bg-neutral-200 rounded animate-pulse mb-1" />
                     <div className="h-3 w-10 mx-auto bg-neutral-200 rounded animate-pulse" />
                   </div>
@@ -76,8 +76,8 @@ function DemoSkeleton() {
             </div>
           </div>
           <div className="lg:col-span-7 space-y-4">
-            <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden shadow-sm">
-              <div className="p-3 border-b border-neutral-200 flex items-center gap-2">
+            <div className="bg-white rounded-2xl border border-neutral-300 overflow-hidden shadow-sm">
+              <div className="p-3 border-b border-neutral-300 flex items-center gap-2">
                 <IoShield className="w-4 h-4 text-teal-600" />
                 <span className="text-sm font-medium text-neutral-900">Risk Analysis Stream</span>
               </div>
@@ -89,12 +89,12 @@ function DemoSkeleton() {
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden shadow-sm">
-              <div className="p-3 border-b border-neutral-200">
+            <div className="bg-white rounded-2xl border border-neutral-300 overflow-hidden shadow-sm">
+              <div className="p-3 border-b border-neutral-300">
                 <span className="text-sm font-medium text-neutral-900">Risk Severity Matrix</span>
               </div>
               <div className="p-4 h-52 flex items-center justify-center">
-                <span className="text-neutral-400 text-sm">Loading chart...</span>
+                <span className="text-neutral-600 text-sm">Loading chart...</span>
               </div>
             </div>
           </div>

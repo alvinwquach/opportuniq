@@ -16,7 +16,7 @@ function CalculatorSkeleton() {
             See how much time and money you could save on common home projects.
           </p>
         </div>
-        <div className="bg-white rounded-2xl border border-neutral-200 p-8 shadow-sm">
+        <div className="bg-white rounded-2xl border border-neutral-300 p-8 shadow-sm">
           <div className="flex items-center justify-center gap-2 mb-8">
             <IoCalculator className="w-5 h-5 text-teal-600" />
             <span className="text-sm font-medium text-neutral-700">Loading calculator...</span>

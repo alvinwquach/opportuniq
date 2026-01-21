@@ -161,7 +161,7 @@ export function LiveRiskAnalysisDemo() {
                       <span className="w-3 h-3 rounded-full bg-amber-500" />
                       <span className="w-3 h-3 rounded-full bg-emerald-500" />
                     </div>
-                    <span className="text-xs text-neutral-400 font-mono">analysis.stream</span>
+                    <span className="text-xs text-neutral-500 font-mono">analysis.stream</span>
                   </div>
                   <div className="flex items-center gap-2">
                     {isStreaming && (
@@ -189,7 +189,7 @@ export function LiveRiskAnalysisDemo() {
                 </div>
                 <div className="p-4 h-36 overflow-y-auto font-mono text-xs bg-neutral-900/50">
                   {streamedText.length === 0 && !isStreaming && (
-                    <p className="text-neutral-400">
+                    <p className="text-neutral-500">
                       <span className="text-teal-400">$</span> Waiting to analyze &quot;{selectedScenario.title}&quot;...
                     </p>
                   )}

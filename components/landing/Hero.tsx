@@ -32,7 +32,7 @@ export function Hero() {
           </div>
 
           <div className="relative">
-            <div className="bg-white rounded-2xl border border-neutral-200 p-6 shadow-lg">
+            <div className="bg-white rounded-2xl border border-neutral-300 p-6 shadow-lg">
               <div className="flex items-center gap-3 p-4 rounded-xl bg-neutral-50 border border-neutral-200 mb-6">
                 <IoSearch className="w-5 h-5 text-neutral-500" />
                 <span className="text-neutral-600">ceiling fan installation</span>

@@ -8,8 +8,8 @@ interface ResourcesCardProps {
 export function ResourcesCard({ scenario }: ResourcesCardProps) {
   return (
     <div className="ml-11 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden shadow-sm">
-        <div className="px-4 py-3 border-b border-neutral-200 flex items-center gap-2">
+      <div className="bg-white rounded-2xl border border-neutral-300 overflow-hidden shadow-sm">
+        <div className="px-4 py-3 border-b border-neutral-300 flex items-center gap-2">
           <IoStorefront className="w-4 h-4 text-blue-600" />
           <span className="text-sm font-semibold text-neutral-900">Nearby Resources</span>
         </div>
