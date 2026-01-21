@@ -43,25 +43,7 @@ const footerSections = [
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden" style={{ backgroundColor: "#111111" }}>
-      <div
-        className="absolute inset-0 opacity-[0.02]"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px'
-        }}
-        aria-hidden="true"
-      />
-      <div
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] opacity-20"
-        style={{
-          background: "radial-gradient(ellipse at center, rgba(13,148,136,0.15) 0%, transparent 70%)",
-        }}
-        aria-hidden="true"
-      />
+    <footer className="relative overflow-hidden bg-neutral-900">
       <div className="relative mx-auto max-w-7xl px-6 pt-16 pb-8">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12 pb-12 border-b border-neutral-800">
           <div className="col-span-2">
@@ -71,8 +53,8 @@ export function Footer() {
                 OpportuniQ
               </span>
             </Link>
-            <p className="text-neutral-400 text-sm mb-6 max-w-sm leading-relaxed">
-              Decision intelligence for everyday life. Analyze risk, safety, and budget to make smarter choices without second-guessing.
+            <p className="text-neutral-300 text-sm mb-6 max-w-sm leading-relaxed">
+              Your research assistant for home repairs. Find parts, compare prices, and locate pros near you.
             </p>
           </div>
           {footerSections.map((section) => (
@@ -88,7 +70,7 @@ export function Footer() {
                         href={link.href}
                         target={link.href.startsWith("http") ? "_blank" : undefined}
                         rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                        className="text-sm text-neutral-400 hover:text-white transition-colors inline-flex items-center gap-2 group"
+                        className="text-sm text-neutral-300 hover:text-white transition-colors inline-flex items-center gap-2 group"
                       >
                         <span className="w-1 h-1 rounded-full bg-neutral-700 group-hover:bg-teal-500 transition-colors" />
                         {link.label}
@@ -96,7 +78,7 @@ export function Footer() {
                     ) : (
                       <Link
                         href={link.href}
-                        className="text-sm text-neutral-400 hover:text-white transition-colors inline-flex items-center gap-2 group"
+                        className="text-sm text-neutral-300 hover:text-white transition-colors inline-flex items-center gap-2 group"
                       >
                         <span className="w-1 h-1 rounded-full bg-neutral-700 group-hover:bg-teal-500 transition-colors" />
                         {link.label}
@@ -108,13 +90,11 @@ export function Footer() {
             </div>
           ))}
         </div>
-
-        {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-neutral-400">
             &copy; {new Date().getFullYear()} OpportuniQ. All rights reserved.
           </p>
-          <div className="flex items-center gap-6 text-xs text-neutral-500">
+          <div className="flex items-center gap-6 text-xs text-neutral-400">
             <span className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-teal-500" />
               v0.1.0

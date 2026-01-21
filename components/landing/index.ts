@@ -19,4 +19,5 @@ export { CapabilityPreview } from "./CapabilityPreview";
 export { StaticDemoIllustration } from "./StaticDemoIllustration";
 export { Testimonials } from "./Testimonials";
 export { DecisionFrameDemo } from "./DecisionFrameDemo";
-export { LiveRiskAnalysisDemo } from "./LiveRiskAnalysisDemo";
+export { LiveRiskAnalysisDemo } from "./live-risk-analysis-demo";
+export { LiveRiskAnalysisDemoLazy } from "./LiveRiskAnalysisDemoLazy";

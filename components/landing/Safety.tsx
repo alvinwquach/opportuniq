@@ -271,7 +271,7 @@ export function Safety() {
             We Tell You When to{" "}
             <span className="text-amber-400">Stop</span>
           </h2>
-          <p className="text-lg max-w-2xl mx-auto text-gray-400">
+          <p className="text-lg max-w-2xl mx-auto text-gray-300">
             Every recommendation includes risk assessment, required safety gear, and clear warnings when a job is beyond safe DIY territory.
           </p>
         </div>
@@ -310,7 +310,7 @@ export function Safety() {
               </div>
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-400 mb-3">Required Safety Gear:</div>
+              <div className="text-sm font-medium text-gray-300 mb-3">Required Safety Gear:</div>
               <div className="flex flex-wrap gap-2">
                 {currentScenario.ppe.map((item, i) => (
                   <div
@@ -338,7 +338,7 @@ export function Safety() {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-white">Hard Stops</h3>
-                  <p className="text-sm text-gray-400">Jobs we won&apos;t recommend for DIY</p>
+                  <p className="text-sm text-gray-300">Jobs we won&apos;t recommend for DIY</p>
                 </div>
               </div>
               <div className="hard-stops-container space-y-3">
@@ -352,7 +352,7 @@ export function Safety() {
                     </div>
                     <div>
                       <div className="text-sm font-medium text-white">{stop.label}</div>
-                      <div className="text-xs text-gray-400">{stop.reason}</div>
+                      <div className="text-xs text-gray-300">{stop.reason}</div>
                     </div>
                   </div>
                 ))}

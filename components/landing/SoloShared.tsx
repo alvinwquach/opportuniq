@@ -212,7 +212,7 @@ export function SoloShared() {
             Solo or{" "}
             <span className="text-blue-400">Shared</span>
           </h2>
-          <p className="text-lg max-w-2xl mx-auto text-gray-400">
+          <p className="text-lg max-w-2xl mx-auto text-gray-300">
             Some decisions are yours alone. Others involve roommates, partners, or family.
             OpportunIQ works either way—without forcing collaboration.
           </p>
@@ -244,7 +244,7 @@ export function SoloShared() {
               </div>
               <div>
                 <h3 className="text-xl font-semibold text-white">{currentMode.title}</h3>
-                <p className="text-sm text-gray-400">{currentMode.subtitle}</p>
+                <p className="text-sm text-gray-300">{currentMode.subtitle}</p>
               </div>
             </div>
 
@@ -262,8 +262,8 @@ export function SoloShared() {
               ))}
             </div>
             <div className="pt-4 border-t border-gray-800">
-              <p className="text-xs text-gray-500">
-                <span className="font-medium text-gray-400">Ideal for:</span>{" "}
+              <p className="text-xs text-gray-400">
+                <span className="font-medium text-gray-300">Ideal for:</span>{" "}
                 {currentMode.idealFor}
               </p>
             </div>
@@ -272,7 +272,7 @@ export function SoloShared() {
             {selectedMode === 0 && (
               <div className="bg-gray-900/50 rounded-2xl border border-gray-800 p-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <IoPerson className="w-5 h-5 text-gray-400" />
+                  <IoPerson className="w-5 h-5 text-gray-300" />
                   <span className="text-sm font-medium text-white">Your Private Dashboard</span>
                 </div>
                 <div className="space-y-3">
@@ -289,7 +289,7 @@ export function SoloShared() {
                     <span className="text-lg font-bold text-blue-400">$45/hr</span>
                   </div>
                 </div>
-                <p className="text-xs text-gray-500 mt-4 text-center">
+                <p className="text-xs text-gray-400 mt-4 text-center">
                   Only you can see this data
                 </p>
               </div>
@@ -338,7 +338,7 @@ export function SoloShared() {
                             className="w-3 h-3 rounded-full"
                             style={{ backgroundColor: contrib.color }}
                           />
-                          <span className="text-xs text-gray-400">{contrib.name}</span>
+                          <span className="text-xs text-gray-300">{contrib.name}</span>
                           <span className="text-xs font-medium text-white">${contrib.amount}</span>
                         </div>
                       ))}
@@ -365,7 +365,7 @@ export function SoloShared() {
                     >
                       <div>
                         <div className="text-sm font-medium text-white">{property.name}</div>
-                        <div className="text-xs text-gray-500">{property.location}</div>
+                        <div className="text-xs text-gray-400">{property.location}</div>
                       </div>
                       <div className="flex items-center gap-3">
                         {property.issues > 0 && (
@@ -383,7 +383,7 @@ export function SoloShared() {
                             </div>
                           ))}
                         </div>
-                        <IoArrowForward className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
+                        <IoArrowForward className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" />
                       </div>
                     </div>
                   ))}
@@ -393,7 +393,7 @@ export function SoloShared() {
           </div>
         </div>
         <div className="mt-10 text-center">
-          <p className="text-sm text-gray-500 max-w-lg mx-auto">
+          <p className="text-sm text-gray-400 max-w-lg mx-auto">
             Collaboration is always optional. Start solo, add people later if you want.
             Each person&apos;s financial context stays private unless explicitly shared.
           </p>

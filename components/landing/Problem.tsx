@@ -1,13 +1,4 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { IoCamera, IoMic, IoFlash, IoGlobe, IoCheckmarkCircle } from "react-icons/io5";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 function ShowVisual() {
   return (
@@ -58,9 +49,12 @@ function ShowVisual() {
             {/* Camera controls */}
             <div className="flex gap-4 items-center">
               <div className="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700" />
-              <button className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-lg border-4 border-neutral-300">
+              <button
+                className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-lg border-4 border-neutral-300"
+                aria-label="Take photo"
+              >
                 <div className="w-11 h-11 rounded-full bg-teal-500 flex items-center justify-center">
-                  <IoCamera className="w-5 h-5 text-white" />
+                  <IoCamera className="w-5 h-5 text-white" aria-hidden="true" />
                 </div>
               </button>
               <div className="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center">
@@ -83,8 +77,8 @@ function SayVisual() {
             <div className="w-7 h-7 rounded-full bg-red-500 flex items-center justify-center">
               <IoMic className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="text-sm text-neutral-600">Recording...</span>
-            <span className="text-xs text-neutral-400 ml-auto">0:04</span>
+            <span className="text-sm text-neutral-700">Recording...</span>
+            <span className="text-xs text-neutral-600 ml-auto">0:04</span>
           </div>
           <div className="flex items-center justify-center gap-0.5 h-6">
             {[3, 5, 8, 10, 7, 12, 9, 5, 8, 11, 6, 4, 7, 9, 5].map((h, i) => (
@@ -99,8 +93,8 @@ function SayVisual() {
         <p className="text-sm text-neutral-600 italic mb-2">
           &ldquo;This crack appeared after the rain last week...&rdquo;
         </p>
-        <div className="flex items-center gap-1.5 text-xs text-neutral-400">
-          <IoGlobe className="w-3 h-3" />
+        <div className="flex items-center gap-1.5 text-xs text-neutral-600">
+          <IoGlobe className="w-3 h-3" aria-hidden="true" />
           <span>Auto-detected: English</span>
         </div>
       </div>
@@ -117,7 +111,7 @@ function SolvedVisual() {
             <IoCheckmarkCircle className="w-6 h-6 text-emerald-500" />
             <div>
               <div className="text-base font-semibold text-neutral-900">DIY Recommended</div>
-              <div className="text-sm text-neutral-500">Hairline crack — cosmetic only</div>
+              <div className="text-sm text-neutral-600">Hairline crack — cosmetic only</div>
             </div>
           </div>
           <div className="h-px bg-emerald-200/60 my-4" />
@@ -125,11 +119,11 @@ function SolvedVisual() {
             <p className="text-xl font-medium text-emerald-700">
               You&apos;d save around $200
             </p>
-            <p className="text-sm text-neutral-500">
+            <p className="text-sm text-neutral-600">
               by handling this yourself
             </p>
           </div>
-          <p className="text-sm text-neutral-400">
+          <p className="text-sm text-neutral-600">
             30 min · Low risk · No special tools
           </p>
         </div>
@@ -175,83 +169,30 @@ const STEPS: Step[] = [
 ];
 
 export function Problem() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!sectionRef.current || !mounted) return;
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
-    const ctx = gsap.context(() => {
-      // Animate header
-      gsap.from(".problem-header", {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          once: true,
-        },
-        opacity: 0,
-        y: 24,
-        duration: 0.8,
-        ease: "power2.out",
-      });
-
-      // Animate each step
-      gsap.from(".step-item", {
-        scrollTrigger: {
-          trigger: ".steps-container",
-          start: "top 80%",
-          once: true,
-        },
-        opacity: 0,
-        y: 20,
-        stagger: 0.15,
-        duration: 0.7,
-        ease: "power2.out",
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, [mounted]);
-
-  if (!mounted) return null;
-
   return (
-    <section
-      ref={sectionRef}
-      className="relative py-16 sm:py-20 lg:py-24"
-      style={{
-        background: "linear-gradient(180deg, #FAFAF9 0%, #FFFFFF 100%)",
-      }}
-    >
+    <section className="relative py-16 sm:py-20 lg:py-24 bg-neutral-50">
       <div className="container mx-auto px-6 max-w-5xl">
-        <div className="problem-header text-center mb-14 lg:mb-16">
+        <div className="text-center mb-14 lg:mb-16">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-4 leading-tight text-neutral-900 tracking-tight">
             Real-World Decisions Are Expensive.
             <br />
-            <span className="text-teal-600">We Make Them Simple.</span>
+            <span className="text-teal-700">We Make Them Simple.</span>
           </h2>
-          <p className="text-base sm:text-lg max-w-xl mx-auto leading-relaxed text-neutral-500">
+          <p className="text-base sm:text-lg max-w-xl mx-auto leading-relaxed text-neutral-600">
             The ceiling crack. The car noise. The appliance that stopped working.
             Each demands your time, money, or both.
           </p>
         </div>
-        <div className="steps-container space-y-0">
+        <div className="space-y-0">
           {STEPS.map((step, index) => (
             <div key={step.number}>
               {index > 0 && (
                 <div className="h-px bg-neutral-200/80 my-10 sm:my-12" />
               )}
-              <div className="step-item grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+              <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div className="order-2 md:order-1">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-xs font-medium uppercase tracking-wider text-neutral-400">
+                    <span className="text-xs font-medium uppercase tracking-wider text-neutral-500">
                       Step {step.number}
                     </span>
                     <step.icon className="w-4 h-4 text-teal-500" />
@@ -259,10 +200,10 @@ export function Problem() {
                   <h3 className="text-xl sm:text-2xl font-semibold text-neutral-900 mb-1.5">
                     {step.title}
                   </h3>
-                  <p className="text-sm sm:text-base font-medium text-teal-600 mb-3">
+                  <p className="text-sm sm:text-base font-medium text-teal-700 mb-3">
                     {step.subtitle}
                   </p>
-                  <p className="text-neutral-500 leading-relaxed text-base sm:text-[17px]" style={{ lineHeight: 1.65 }}>
+                  <p className="text-neutral-600 leading-relaxed text-base sm:text-[17px]" style={{ lineHeight: 1.65 }}>
                     {step.description}
                   </p>
                 </div>
