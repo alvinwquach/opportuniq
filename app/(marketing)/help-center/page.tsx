@@ -60,9 +60,7 @@ export default function HelpPage() {
             {SUPPORT_OPTIONS.map((option, i) => (
               <div
                 key={i}
-                className={`p-6 rounded-xl bg-white border shadow-sm ${
-                  option.disabled ? "opacity-60 border-neutral-200" : `${option.borderColor} hover:shadow-md`
-                } transition-all`}
+                className={`p-6 rounded-xl bg-white border shadow-sm ${option.borderColor} hover:shadow-md transition-all`}
               >
                 <div
                   className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 ${option.bgColor}`}
@@ -75,31 +73,22 @@ export default function HelpPage() {
                 <p className="text-sm text-neutral-600 mb-6 leading-relaxed">
                   {option.description}
                 </p>
-                {option.disabled ? (
+                <a
+                  href={option.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
                   <Button
-                    disabled
-                    className="w-full h-11 font-mono bg-neutral-100 text-neutral-400 cursor-not-allowed"
+                    className="w-full h-11 font-mono font-bold transition-all text-white"
+                    style={{ backgroundColor: option.color }}
                   >
                     {option.cta}
+                    <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
                   </Button>
-                ) : (
-                  <a
-                    href={option.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
-                    <Button
-                      className="w-full h-11 font-mono font-bold transition-all text-white"
-                      style={{ backgroundColor: option.color }}
-                    >
-                      {option.cta}
-                      <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </Button>
-                  </a>
-                )}
+                </a>
               </div>
             ))}
           </div>
