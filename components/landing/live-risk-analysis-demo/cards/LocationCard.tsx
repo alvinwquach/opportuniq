@@ -9,8 +9,8 @@ interface LocationCardProps {
 export function LocationCard({ scenario, mapContainerRef }: LocationCardProps) {
   return (
     <div className="ml-11 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden shadow-sm">
-        <div className="px-4 py-3 border-b border-neutral-200 flex items-center gap-2">
+      <div className="bg-white rounded-2xl border border-neutral-300 overflow-hidden shadow-sm">
+        <div className="px-4 py-3 border-b border-neutral-300 flex items-center gap-2">
           <IoLocation className="w-4 h-4 text-teal-700" />
           <span className="text-sm font-semibold text-neutral-900">Location & Conditions</span>
         </div>
@@ -18,7 +18,7 @@ export function LocationCard({ scenario, mapContainerRef }: LocationCardProps) {
           <div className="md:col-span-2">
             <div ref={mapContainerRef} className="h-48 md:h-full w-full min-h-45" />
           </div>
-          <div className="md:col-span-3 p-4 border-t md:border-t-0 md:border-l border-neutral-200">
+          <div className="md:col-span-3 p-4 border-t md:border-t-0 md:border-l border-neutral-300">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-lg font-semibold text-neutral-900">{scenario.location.name}</p>
