@@ -73,17 +73,18 @@ interface AirQuality {
   description: string;
 }
 
+/** Compatible with v2 WeatherData (current/daily/airQuality nullable) and UserLocation (fields nullable). */
 interface LocationWeatherCardProps {
   weather: {
-    current: CurrentWeather;
-    daily: DailyForecast[];
-    airQuality: AirQuality;
+    current: CurrentWeather | null;
+    daily: DailyForecast[] | null;
+    airQuality: AirQuality | null;
   };
   location: {
-    postalCode: string;
-    city: string;
-    latitude: number;
-    longitude: number;
+    postalCode: string | null;
+    city: string | null;
+    latitude: number | null;
+    longitude: number | null;
   };
 }
 
@@ -154,10 +155,19 @@ function isGoodForOutdoorWork(day: DailyForecast): boolean {
   );
 }
 
+const DEFAULT_AIR_QUALITY: AirQuality = { aqi: 0, pm25: 0, pm10: 0, description: "Unknown" };
+
 export function LocationWeatherCard({ weather, location }: LocationWeatherCardProps) {
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
-  const bestDays = weather.daily.filter(isGoodForOutdoorWork).slice(0, 3);
-  const todayForecast = weather.daily[0];
+
+  if (!weather?.current || !weather?.daily?.length) return null;
+
+  const current = weather.current;
+  const daily = weather.daily;
+  const airQuality = weather.airQuality ?? DEFAULT_AIR_QUALITY;
+
+  const bestDays = daily.filter(isGoodForOutdoorWork).slice(0, 3);
+  const todayForecast = daily[0];
 
   return (
     <div className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
@@ -169,7 +179,7 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
           </div>
           <div>
             <h3 className="text-sm font-medium text-white">Your Area</h3>
-            <p className="text-[10px] text-[#9a9a9a]">{location.city}, {location.postalCode}</p>
+            <p className="text-[10px] text-[#9a9a9a]">{[location.city, location.postalCode].filter(Boolean).join(", ") || "Your area"}</p>
           </div>
         </div>
       </div>
@@ -179,30 +189,30 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
         <div className="flex items-start justify-between mb-3 sm:mb-4">
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-[#1f1f1f] flex items-center justify-center">
-              {getWeatherIcon(weather.current.weatherCode, weather.current.isDay)}
+              {getWeatherIcon(current.weatherCode, current.isDay)}
             </div>
             <div>
               <div className="flex items-baseline gap-1">
                 <span className="text-xl sm:text-2xl font-semibold text-white">
-                  {Math.round(weather.current.temperature)}°
+                  {Math.round(current.temperature)}°
                 </span>
                 <span className="text-xs text-[#9a9a9a]">F</span>
               </div>
-              <p className="text-[10px] sm:text-xs text-[#a3a3a3]">{weather.current.weatherDescription}</p>
+              <p className="text-[10px] sm:text-xs text-[#a3a3a3]">{current.weatherDescription}</p>
             </div>
           </div>
           <div className="text-right space-y-0.5 sm:space-y-1">
             <div className="flex items-center justify-end gap-1 text-[10px] sm:text-xs text-[#9a9a9a]">
               <WiThermometer className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>Feels {Math.round(weather.current.feelsLike)}°</span>
+              <span>Feels {Math.round(current.feelsLike)}°</span>
             </div>
             <div className="flex items-center justify-end gap-1 text-[10px] sm:text-xs text-[#9a9a9a]">
               <WiStrongWind className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>{Math.round(weather.current.windSpeed)} mph</span>
+              <span>{Math.round(current.windSpeed)} mph</span>
             </div>
             <div className="flex items-center justify-end gap-1 text-[10px] sm:text-xs text-[#9a9a9a]">
               <WiRaindrop className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>{weather.current.humidity}%</span>
+              <span>{current.humidity}%</span>
             </div>
           </div>
         </div>
@@ -213,22 +223,22 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
             <p className="text-[8px] sm:text-[10px] text-[#9a9a9a] mb-0.5 sm:mb-1">UV Index</p>
             <div className="flex items-center gap-1">
               <WiDaySunny className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400" />
-              <span className={cn("text-xs sm:text-sm font-medium", getUVLevel(weather.current.uvIndex).color)}>
-                {weather.current.uvIndex}
+              <span className={cn("text-xs sm:text-sm font-medium", getUVLevel(current.uvIndex).color)}>
+                {current.uvIndex}
               </span>
-              <span className={cn("text-[8px] sm:text-[10px] hidden sm:inline", getUVLevel(weather.current.uvIndex).color)}>
-                {getUVLevel(weather.current.uvIndex).label}
+              <span className={cn("text-[8px] sm:text-[10px] hidden sm:inline", getUVLevel(current.uvIndex).color)}>
+                {getUVLevel(current.uvIndex).label}
               </span>
             </div>
           </div>
           <div className="flex-1 p-1.5 sm:p-2 rounded-lg bg-[#1a1a1a]">
             <p className="text-[8px] sm:text-[10px] text-[#9a9a9a] mb-0.5 sm:mb-1">Air Quality</p>
             <div className="flex items-center gap-1">
-              <span className={cn("text-xs sm:text-sm font-medium", getAQIColor(weather.airQuality.aqi))}>
-                {weather.airQuality.aqi}
+              <span className={cn("text-xs sm:text-sm font-medium", getAQIColor(airQuality.aqi))}>
+                {airQuality.aqi}
               </span>
-              <span className={cn("text-[8px] sm:text-[10px]", getAQIColor(weather.airQuality.aqi))}>
-                {weather.airQuality.description}
+              <span className={cn("text-[8px] sm:text-[10px]", getAQIColor(airQuality.aqi))}>
+                {airQuality.description}
               </span>
             </div>
           </div>
@@ -264,7 +274,7 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
 
         {/* 7-Day Forecast */}
         <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-3">
-          {weather.daily.slice(0, 7).map((day, index) => {
+          {daily.slice(0, 7).map((day, index) => {
             const isGood = isGoodForOutdoorWork(day);
             const isSelected = selectedDayIndex === index;
             return (
@@ -304,24 +314,24 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
         </div>
 
         {/* Selected Day Detail */}
-        {weather.daily[selectedDayIndex] && (
+        {daily[selectedDayIndex] && (
           <div className="p-3 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                {getWeatherIcon(weather.daily[selectedDayIndex].weatherCode, true, "w-8 h-8")}
+                {getWeatherIcon(daily[selectedDayIndex].weatherCode, true, "w-8 h-8")}
                 <div>
                   <p className="text-sm font-medium text-white">
-                    {getDayName(weather.daily[selectedDayIndex].date) === "Today" || getDayName(weather.daily[selectedDayIndex].date) === "Tmrw"
-                      ? getDayName(weather.daily[selectedDayIndex].date)
-                      : new Date(weather.daily[selectedDayIndex].date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}
+                    {getDayName(daily[selectedDayIndex].date) === "Today" || getDayName(daily[selectedDayIndex].date) === "Tmrw"
+                      ? getDayName(daily[selectedDayIndex].date)
+                      : new Date(daily[selectedDayIndex].date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}
                   </p>
-                  <p className="text-xs text-[#9a9a9a]">{weather.daily[selectedDayIndex].weatherDescription}</p>
+                  <p className="text-xs text-[#9a9a9a]">{daily[selectedDayIndex].weatherDescription}</p>
                 </div>
               </div>
               <div className="text-right">
                 <p className="text-lg font-semibold text-white">
-                  {Math.round(weather.daily[selectedDayIndex].temperatureMax)}°
-                  <span className="text-[#9a9a9a] text-sm ml-1">/ {Math.round(weather.daily[selectedDayIndex].temperatureMin)}°</span>
+                  {Math.round(daily[selectedDayIndex].temperatureMax)}°
+                  <span className="text-[#9a9a9a] text-sm ml-1">/ {Math.round(daily[selectedDayIndex].temperatureMin)}°</span>
                 </p>
               </div>
             </div>
@@ -330,31 +340,31 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
               <div className="p-2 rounded bg-[#0f0f0f]">
                 <WiRaindrop className="w-5 h-5 text-emerald-400 mx-auto mb-0.5" />
                 <p className="text-[10px] text-[#9a9a9a]">Precip</p>
-                <p className="text-xs font-medium text-white">{weather.daily[selectedDayIndex].precipitationProbability}%</p>
+                <p className="text-xs font-medium text-white">{daily[selectedDayIndex].precipitationProbability}%</p>
               </div>
               <div className="p-2 rounded bg-[#0f0f0f]">
                 <WiStrongWind className="w-5 h-5 text-slate-400 mx-auto mb-0.5" />
                 <p className="text-[10px] text-[#9a9a9a]">Wind</p>
-                <p className="text-xs font-medium text-white">{weather.daily[selectedDayIndex].windSpeedMax} mph</p>
+                <p className="text-xs font-medium text-white">{daily[selectedDayIndex].windSpeedMax} mph</p>
               </div>
               <div className="p-2 rounded bg-[#0f0f0f]">
                 <WiSunrise className="w-5 h-5 text-amber-400 mx-auto mb-0.5" />
                 <p className="text-[10px] text-[#9a9a9a]">Sunrise</p>
-                <p className="text-xs font-medium text-white">{weather.daily[selectedDayIndex].sunrise}</p>
+                <p className="text-xs font-medium text-white">{daily[selectedDayIndex].sunrise}</p>
               </div>
               <div className="p-2 rounded bg-[#0f0f0f]">
                 <WiSunset className="w-5 h-5 text-rose-400 mx-auto mb-0.5" />
                 <p className="text-[10px] text-[#9a9a9a]">Sunset</p>
-                <p className="text-xs font-medium text-white">{weather.daily[selectedDayIndex].sunset}</p>
+                <p className="text-xs font-medium text-white">{daily[selectedDayIndex].sunset}</p>
               </div>
             </div>
 
             {/* 24-Hour Forecast */}
-            {weather.daily[selectedDayIndex].hourly && (
+            {daily[selectedDayIndex].hourly && (
               <div className="border-t border-[#2a2a2a] pt-3">
                 <p className="text-[10px] font-medium text-[#888] mb-2">24-HOUR FORECAST</p>
                 <div className="flex gap-1 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-                  {weather.daily[selectedDayIndex].hourly.map((hour) => (
+                  {daily[selectedDayIndex].hourly.map((hour) => (
                     <div
                       key={hour.hour}
                       className={cn(
@@ -377,7 +387,7 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
               </div>
             )}
 
-            {isGoodForOutdoorWork(weather.daily[selectedDayIndex]) && (
+            {isGoodForOutdoorWork(daily[selectedDayIndex]) && (
               <div className="mt-3 flex items-center gap-1.5 text-xs text-green-400">
                 <IoCheckmarkCircle className="w-4 h-4" />
                 <span>Good conditions for outdoor work</span>
