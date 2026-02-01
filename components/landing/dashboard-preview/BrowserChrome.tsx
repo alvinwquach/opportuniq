@@ -13,6 +13,7 @@ const viewPaths: Record<ViewType, string> = {
   issues: 'issues',
   groups: 'groups',
   calendar: 'calendar',
+  finances: 'finances',
   guides: 'guides',
   settings: 'settings',
 };
