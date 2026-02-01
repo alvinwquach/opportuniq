@@ -112,8 +112,8 @@ export async function sendRfqEmails(input: SendRfqEmailsInput): Promise<SendRfqE
             sentBy: currentUser.id,
             recipientName: pro.name,
             recipientEmail: pro.email,
-            recipientPhone: pro.phone,
-            source: pro.source,
+            recipientPhone: pro.phone ?? undefined,
+            source: pro.source ?? undefined,
             subject: emailResult.subject,
             bodyText: emailResult.bodyText,
             issueTitle: input.issueTitle,
@@ -126,7 +126,7 @@ export async function sendRfqEmails(input: SendRfqEmailsInput): Promise<SendRfqE
               proReviews: pro.reviews,
               proDistance: pro.distance,
               proEstimatedPrice: pro.price,
-              proAvailability: pro.available,
+              proAvailability: pro.available ?? undefined,
             },
           });
 
