@@ -142,7 +142,7 @@ export async function searchFirecrawlSource(
     const searchUrl = source.searchUrl(query);
 
     // Scrape the search results page
-    const result = await firecrawl.scrapeUrl(searchUrl, {
+    const result = await firecrawl.scrape(searchUrl, {
       formats: ["markdown", "links"],
       onlyMainContent: true,
       waitFor: 3000,
@@ -240,7 +240,7 @@ export async function scrapeGuideDetails(url: string): Promise<GuideDetailRespon
     }
 
     // Scrape with extraction
-    const result = await firecrawl.scrapeUrl(url, {
+    const result = await firecrawl.scrape(url, {
       formats: ["markdown", "extract"],
       onlyMainContent: true,
       waitFor: 3000,
