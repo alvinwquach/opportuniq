@@ -26,7 +26,7 @@ export function BookmarkedGuidesSidebar({ bookmarkedGuides }: BookmarkedGuidesSi
 
   // Calculate total estimated time
   const totalMinutes = bookmarkedGuides.reduce((sum, guide) => {
-    const match = guide.duration?.match(/(\d+)/);
+    const match = guide.timeEstimate?.match(/(\d+)/);
     return sum + (match ? parseInt(match[1]) : 0);
   }, 0);
   const totalHours = Math.floor(totalMinutes / 60);
