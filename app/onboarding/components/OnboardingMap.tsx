@@ -164,11 +164,17 @@ export function OnboardingMap({
     if (initialCoords) {
       setCoords(initialCoords);
       setLocationInfo(
-        initialLocationInfo || {
-          city: postalCode,
-          region: "",
-          countryName: country,
-        }
+        initialLocationInfo
+          ? {
+              city: initialLocationInfo.city,
+              region: initialLocationInfo.region ?? "",
+              countryName: initialLocationInfo.countryName ?? country,
+            }
+          : {
+              city: postalCode,
+              region: "",
+              countryName: country,
+            }
       );
       const zoom = Math.min(11, Math.max(6, 9.5 - Math.log2(searchRadius / 15)));
       map.current?.jumpTo({ center: [initialCoords.lng, initialCoords.lat], zoom });
