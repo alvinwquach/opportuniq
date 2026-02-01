@@ -236,7 +236,7 @@ export async function calendarPageDataResolver(
     const expenseDate = new Date(expense.date);
     events.push({
       id: expense.id,
-      title: expense.description ?? expense.category,
+      title: expense.description ?? expense.category ?? "Expense",
       date: expenseDate.toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
@@ -284,7 +284,7 @@ export async function calendarPageDataResolver(
     .slice(0, 5)
     .map((e) => ({
       id: e.id,
-      title: e.description ?? e.category,
+      title: e.description ?? e.category ?? "Expense",
       date: new Date(e.date).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",

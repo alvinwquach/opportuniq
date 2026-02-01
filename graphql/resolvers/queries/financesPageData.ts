@@ -180,7 +180,7 @@ export async function financesPageDataResolver(
       return {
         id: e.id,
         category: e.category,
-        description: e.description ?? e.category,
+        description: e.description ?? e.category ?? "",
         amount: e.amount,
         dueDate: nextDue,
         urgency: null,
