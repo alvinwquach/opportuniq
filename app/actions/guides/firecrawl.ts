@@ -148,10 +148,6 @@ export async function searchFirecrawlSource(
       waitFor: 3000,
     });
 
-    if (!result.success) {
-      throw new Error("Failed to scrape search results");
-    }
-
     // Filter links to find guide pages
     const guideLinks = (result.links || [])
       .filter((link: string) => source.guideUrlPattern.test(link))
@@ -241,19 +237,15 @@ export async function scrapeGuideDetails(url: string): Promise<GuideDetailRespon
 
     // Scrape with extraction
     const result = await firecrawl.scrape(url, {
-      formats: ["markdown", "extract"],
+      formats: [
+        "markdown",
+        { type: "json", schema: GUIDE_EXTRACT_SCHEMA },
+      ],
       onlyMainContent: true,
       waitFor: 3000,
-      extract: {
-        schema: GUIDE_EXTRACT_SCHEMA,
-      },
     });
 
-    if (!result.success) {
-      throw new Error("Failed to scrape guide");
-    }
-
-    const extracted = result.extract as {
+    const extracted = result.json as {
       title?: string;
       description?: string;
       difficulty?: string;
