@@ -380,13 +380,13 @@ function parseStepsFromMarkdown(markdown: string): UnifiedGuide["steps"] {
 
   // Look for numbered lists or "Step X" patterns
   const stepPatterns = [
-    /(?:^|\n)(\d+)\.\s+(.+?)(?=\n\d+\.|$)/gs, // Numbered lists
-    /(?:^|\n)(?:Step|STEP)\s*(\d+)[:\s]+(.+?)(?=\n(?:Step|STEP)\s*\d+|$)/gis, // "Step X:" format
+    /(?:^|\n)(\d+)\.\s+(.+?)(?=\n\d+\.|$)/g, // Numbered lists
+    /(?:^|\n)(?:Step|STEP)\s*(\d+)[:\s]+(.+?)(?=\n(?:Step|STEP)\s*\d+|$)/gi, // "Step X:" format
   ];
 
   for (const pattern of stepPatterns) {
-    const matches = markdown.matchAll(pattern);
-    for (const match of matches) {
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(markdown)) !== null) {
       steps.push({
         stepNumber: parseInt(match[1]),
         instruction: match[2].trim(),
