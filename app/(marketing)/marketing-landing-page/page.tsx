@@ -34,7 +34,7 @@ gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 // Logo concepts for opportuniq
 // Pick one by changing the logoStyle value: "scales" | "compass" | "aperture" | "nexus" | "prism"
-const logoStyle = "nexus";
+const logoStyle: "scales" | "compass" | "aperture" | "nexus" | "prism" = "nexus";
 
 function Logo({ className = "" }: { className?: string }) {
   // SCALES - Balance/decision making (weighing DIY vs hire)
