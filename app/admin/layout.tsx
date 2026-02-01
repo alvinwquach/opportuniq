@@ -4,6 +4,8 @@ import { AdminSidebar } from "./components/AdminSidebar";
 import { SidebarProvider } from "./components/SidebarContext";
 import { AdminContent } from "./components/AdminContent";
 
+export const dynamic = "force-dynamic";
+
 const ADMIN_EMAILS = ["alvinwquach@gmail.com", "binarydecisions1111@gmail.com"];
 
 export default async function AdminLayout({

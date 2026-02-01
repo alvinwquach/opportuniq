@@ -5,6 +5,8 @@ import { users } from "@/app/db/schema";
 import { eq } from "drizzle-orm";
 import { LoginClient } from "./LoginClient";
 
+export const dynamic = "force-dynamic";
+
 interface LoginPageProps {
   searchParams: Promise<{ token?: string; group?: string; redirect?: string }>;
 }
