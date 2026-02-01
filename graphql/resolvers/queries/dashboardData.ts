@@ -136,8 +136,8 @@ export async function dashboardDataResolver(
     avatarUrl: userProfile.avatarUrl,
     postalCode: userProfile.postalCode,
     city: userProfile.city,
-    latitude: userProfile.latitude ? parseFloat(userProfile.latitude) : null,
-    longitude: userProfile.longitude ? parseFloat(userProfile.longitude) : null,
+    latitude: userProfile.latitude ?? null,
+    longitude: userProfile.longitude ?? null,
   };
 
   const financials = {
