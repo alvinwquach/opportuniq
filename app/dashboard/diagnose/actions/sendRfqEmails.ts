@@ -9,12 +9,12 @@ import { eq } from "drizzle-orm";
 interface Pro {
   name: string;
   email: string;
-  phone?: string;
+  phone?: string | null;
   rating?: number;
   reviews?: number;
   distance?: string;
   price?: number;
-  available?: string;
+  available?: string | null;
   source?: string;
 }
 
