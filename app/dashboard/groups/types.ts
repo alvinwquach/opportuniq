@@ -8,7 +8,7 @@ export interface RoleInfo {
   label: string;
   description: string;
   color: string;
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 export interface NewGroupForm {

@@ -15,10 +15,10 @@ import {
 } from "react-icons/io5";
 import type { GroupRole } from "../types";
 
-// Role definitions
+// Role definitions – icon must accept className for JSX
 const roleInfo: Record<
   GroupRole,
-  { label: string; description: string; color: string; icon: React.ElementType }
+  { label: string; description: string; color: string; icon: React.ComponentType<{ className?: string }> }
 > = {
   coordinator: {
     label: "Coordinator",
