@@ -1,13 +1,10 @@
 "use client";
 
-import type {
-  CalendarEvent,
-  CalendarStats,
-  UpcomingExpense,
-} from "../types";
+import type { CalendarMonthStats } from "@/lib/graphql/types";
+import type { CalendarEvent, UpcomingExpense } from "../types";
 
 interface CalendarSidebarProps {
-  monthStats: CalendarStats;
+  monthStats: CalendarMonthStats;
   upcomingEvents: CalendarEvent[];
   upcomingExpenses: UpcomingExpense[];
   totalUpcomingExpenses: number;
