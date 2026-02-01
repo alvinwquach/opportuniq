@@ -133,7 +133,7 @@ export function Navbar() {
             </Link>
             <Link
               href="/auth/login"
-              className="h-9 px-4 font-medium text-sm bg-teal-600 hover:bg-teal-500 text-white rounded-lg transition-all duration-200 flex items-center"
+              className="h-9 px-4 font-medium text-sm bg-teal-700 hover:bg-teal-600 text-white rounded-lg transition-all duration-200 flex items-center"
             >
               Get Started
             </Link>
@@ -143,7 +143,7 @@ export function Navbar() {
           <div className="flex md:hidden items-center gap-2">
             <Link
               href="/auth/login"
-              className="h-9 px-4 font-medium text-sm bg-teal-600 hover:bg-teal-500 text-white rounded-lg transition-all flex items-center"
+              className="h-9 px-4 font-medium text-sm bg-teal-700 hover:bg-teal-600 text-white rounded-lg transition-all flex items-center"
             >
               Get Started
             </Link>
@@ -356,7 +356,7 @@ export function Navbar() {
                   <Link
                     href="/auth/login"
                     onClick={handleNavClick}
-                    className="inline-flex items-center justify-center h-10 px-4 font-medium text-sm bg-teal-600 hover:bg-teal-500 text-white rounded-lg transition-all"
+                    className="inline-flex items-center justify-center h-10 px-4 font-medium text-sm bg-teal-700 hover:bg-teal-600 text-white rounded-lg transition-all"
                   >
                     Get Started Free
                   </Link>

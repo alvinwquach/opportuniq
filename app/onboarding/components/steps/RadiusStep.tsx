@@ -54,12 +54,14 @@ export function RadiusStepRight({
         </div>
 
         <input
+          id="onboarding-search-radius"
           type="range"
           value={formData.searchRadius}
           onChange={(e) => setFormData((prev) => ({ ...prev, searchRadius: Number(e.target.value) }))}
           min={5}
           max={100}
           step={5}
+          aria-label="Search radius in miles"
           className="w-full h-3 rounded-full appearance-none cursor-pointer"
           style={{
             background: `linear-gradient(to right, #14b8a6 0%, #14b8a6 ${

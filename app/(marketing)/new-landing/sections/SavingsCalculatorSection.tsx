@@ -108,7 +108,7 @@ export function SavingsCalculatorSection() {
             {/* Repairs per year */}
             <div className="mb-8">
               <div className="flex justify-between mb-3">
-                <label className="text-sm text-neutral-400">
+                <label htmlFor="new-landing-repairs" className="text-sm text-neutral-400">
                   Repairs per year
                 </label>
                 <span className="text-sm font-medium text-emerald-400">
@@ -116,11 +116,13 @@ export function SavingsCalculatorSection() {
                 </span>
               </div>
               <input
+                id="new-landing-repairs"
                 type="range"
                 min="1"
                 max="12"
                 value={repairs}
                 onChange={(e) => setRepairs(parseInt(e.target.value))}
+                aria-label="Number of repairs per year"
                 className="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               />
               <div className="flex justify-between text-xs text-neutral-600 mt-1">
@@ -132,7 +134,7 @@ export function SavingsCalculatorSection() {
             {/* Average repair cost */}
             <div className="mb-8">
               <div className="flex justify-between mb-3">
-                <label className="text-sm text-neutral-400">
+                <label htmlFor="new-landing-avg-cost" className="text-sm text-neutral-400">
                   Average repair cost
                 </label>
                 <span className="text-sm font-medium text-emerald-400">
@@ -140,12 +142,14 @@ export function SavingsCalculatorSection() {
                 </span>
               </div>
               <input
+                id="new-landing-avg-cost"
                 type="range"
                 min="100"
                 max="2000"
                 step="100"
                 value={avgCost}
                 onChange={(e) => setAvgCost(parseInt(e.target.value))}
+                aria-label="Average repair cost in dollars"
                 className="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               />
               <div className="flex justify-between text-xs text-neutral-600 mt-1">
@@ -157,7 +161,7 @@ export function SavingsCalculatorSection() {
             {/* Hourly rate */}
             <div>
               <div className="flex justify-between mb-3">
-                <label className="text-sm text-neutral-400">
+                <label htmlFor="new-landing-hourly-rate" className="text-sm text-neutral-400">
                   Your hourly value
                 </label>
                 <span className="text-sm font-medium text-emerald-400">
@@ -165,12 +169,14 @@ export function SavingsCalculatorSection() {
                 </span>
               </div>
               <input
+                id="new-landing-hourly-rate"
                 type="range"
                 min="15"
                 max="150"
                 step="5"
                 value={hourlyRate}
                 onChange={(e) => setHourlyRate(parseInt(e.target.value))}
+                aria-label="Your hourly rate in dollars"
                 className="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               />
               <div className="flex justify-between text-xs text-neutral-600 mt-1">
