@@ -1,0 +1,18 @@
+"use client";
+
+import { IoSparkles } from "react-icons/io5";
+
+export function AITipCard() {
+  return (
+    <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4 shadow-sm">
+      <div className="flex items-center gap-2 mb-2">
+        <IoSparkles className="w-4 h-4 text-emerald-400" />
+        <h3 className="text-sm font-semibold text-white">AI-Powered</h3>
+      </div>
+      <p className="text-xs text-[#888] leading-relaxed">
+        Can't find a guide? Describe your issue and we'll generate a custom guide using AI,
+        pulling from trusted sources like iFixit and This Old House.
+      </p>
+    </div>
+  );
+}

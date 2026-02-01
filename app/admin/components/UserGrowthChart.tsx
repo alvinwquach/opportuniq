@@ -11,7 +11,7 @@ import {
 const chartConfig = {
   users: {
     label: "New Users",
-    color: "#5eead4",
+    color: "#3ECF8E",
   },
 } satisfies ChartConfig;
 
@@ -43,7 +43,7 @@ export function UserGrowthChart({ data }: UserGrowthChartProps) {
 
   if (filledData.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full text-neutral-500 text-sm">
+      <div className="flex items-center justify-center h-full text-[#666] text-xs">
         No user signups in the last 30 days
       </div>
     );
@@ -58,8 +58,8 @@ export function UserGrowthChart({ data }: UserGrowthChartProps) {
       >
         <defs>
           <linearGradient id="userGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#5eead4" stopOpacity={0.3} />
-            <stop offset="95%" stopColor="#5eead4" stopOpacity={0} />
+            <stop offset="5%" stopColor="#3ECF8E" stopOpacity={0.3} />
+            <stop offset="95%" stopColor="#3ECF8E" stopOpacity={0} />
           </linearGradient>
         </defs>
         <XAxis
@@ -83,16 +83,16 @@ export function UserGrowthChart({ data }: UserGrowthChartProps) {
         />
         <ChartTooltip
           cursor={{ stroke: '#333', strokeWidth: 1 }}
-          content={<ChartTooltipContent className="bg-neutral-900 border-neutral-700 text-white" labelClassName="text-white" />}
+          content={<ChartTooltipContent className="bg-[#171717] border-white/[0.06] text-white text-xs" labelClassName="text-white" />}
         />
         <Area
           type="monotone"
           dataKey="users"
-          stroke="#5eead4"
+          stroke="#3ECF8E"
           strokeWidth={2}
           fill="url(#userGradient)"
           dot={false}
-          activeDot={{ r: 4, fill: '#5eead4', stroke: '#0a0a0a', strokeWidth: 2 }}
+          activeDot={{ r: 4, fill: '#3ECF8E', stroke: '#0a0a0a', strokeWidth: 2 }}
         />
       </AreaChart>
     </ChartContainer>

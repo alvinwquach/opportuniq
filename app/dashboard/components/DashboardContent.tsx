@@ -2,16 +2,17 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { IoSearch } from "react-icons/io5";
-import { FiCommand } from "react-icons/fi";
-import { useSidebar } from "./SidebarContext";
-import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import {
+  IoSearchOutline,
+  IoSettingsOutline,
+  IoCamera,
+} from "react-icons/io5";
 import { NotificationDropdown } from "./NotificationDropdown";
 import { UserMenu } from "./UserMenu";
 import { CalendarPreview } from "./CalendarPreview";
 import { SearchCommand } from "./SearchCommand";
 import { InlineIncomeSetup } from "./InlineIncomeSetup";
-import { Breadcrumbs } from "./Breadcrumbs";
 import { AmplitudeIdentify } from "./AmplitudeIdentify";
 
 interface DashboardContentProps {
@@ -58,7 +59,7 @@ export function DashboardContent({
   notifications = [],
   calendarEvents = [],
 }: DashboardContentProps) {
-  const { isCollapsed } = useSidebar();
+  const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
   const [incomeOpen, setIncomeOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -78,48 +79,52 @@ export function DashboardContent({
   }, [handleKeyDown]);
 
   return (
-    <main
-      className={cn(
-        "flex-1 transition-[margin] duration-200 ease-out",
-        isCollapsed ? "lg:ml-17" : "lg:ml-56"
-      )}
-    >
-      <div className="hidden lg:flex h-12 items-center justify-between px-4 sticky top-0 z-30 bg-[#0c0c0c] border-b border-[#1f1f1f]">
-        <div className="flex items-center gap-4 flex-1 min-w-0 ml-4">
-          <div className="relative flex-1 max-w-[500px] min-w-[200px] xl:min-w-[300px]">
-            <IoSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666] pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Search commands, issues, groups..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                if (!searchOpen) {
-                  setSearchOpen(true);
-                }
-              }}
-              onFocus={() => setSearchOpen(true)}
-              onKeyDown={(e) => {
-                if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-                  e.preventDefault();
-                  setSearchOpen(true);
-                }
-              }}
-              className={cn(
-                "w-full pl-10 pr-20 py-2 rounded-lg bg-[#161616] border border-[#1f1f1f] text-white placeholder:text-[#666]",
-                "hover:border-[#2a2a2a] focus:outline-none focus:border-[#00D4FF]/50 focus:ring-1 focus:ring-[#00D4FF]/20",
-                "transition-all text-[13px]"
-              )}
-            />
-            <kbd className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-[#1f1f1f] text-[#888] border border-[#2a2a2a] pointer-events-none">
-              <FiCommand className="w-2.5 h-2.5" />K
+    <main className="flex-1 lg:ml-14">
+      {/* Desktop TopBar */}
+      <header className="hidden lg:flex h-12 items-center justify-between px-4 sticky top-0 z-30 bg-[#111111] border-b border-white/[0.06]">
+        {/* Center: Search trigger */}
+        <div className="flex flex-1 max-w-md">
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="relative w-full h-8 pl-9 pr-3 text-sm bg-[#171717] border border-white/10 rounded-lg text-[#555] hover:border-white/[0.15] hover:text-[#888] transition-colors text-left flex items-center justify-between"
+          >
+            <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666]" />
+            <span>Search issues, guides...</span>
+            <kbd className="hidden lg:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium text-[#555] bg-[#111111] border border-white/[0.06] rounded">
+              <span className="text-xs">⌘</span>K
             </kbd>
-          </div>
+          </button>
         </div>
-        <div className="flex items-center gap-1">
+
+        {/* Right: Actions */}
+        <div className="flex items-center gap-2">
+          {/* New Issue Button */}
+          <button
+            onClick={() => router.push("/dashboard/diagnose?new=true")}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#3ECF8E] hover:bg-[#3ECF8E]/90 text-[#111111] text-xs font-medium rounded-lg transition-colors"
+          >
+            <IoCamera className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">New Issue</span>
+          </button>
+
+          {/* Calendar */}
           <CalendarPreview events={calendarEvents} />
+
+          {/* Notifications */}
           <NotificationDropdown notifications={notifications} />
-          <div className="w-px h-5 mx-1 bg-[#1f1f1f]" />
+
+          {/* Settings */}
+          <Link
+            href="/dashboard/settings"
+            className="w-8 h-8 flex items-center justify-center text-[#666] hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
+          >
+            <IoSettingsOutline className="w-5 h-5" />
+          </Link>
+
+          {/* Divider */}
+          <div className="w-px h-6 bg-[#171717] mx-1" />
+
+          {/* Profile */}
           <UserMenu
             user={user}
             isAdmin={isAdmin}
@@ -127,12 +132,14 @@ export function DashboardContent({
             onAddIncome={() => setIncomeOpen(true)}
           />
         </div>
-      </div>
-      <div className="min-h-screen pt-12 lg:pt-0 bg-[#0c0c0c] relative scrollbar-dark">
+      </header>
+
+      {/* Main content */}
+      <div className="min-h-screen pt-12 lg:pt-0 bg-[#0f0f0f] relative scrollbar-dark">
         <div
-          className="absolute inset-0 opacity-[0.15] pointer-events-none"
+          className="absolute inset-0 opacity-[0.08] pointer-events-none"
           style={{
-            backgroundImage: `radial-gradient(circle at center, #5eead430 1px, transparent 1px)`,
+            backgroundImage: `radial-gradient(circle at center, #3ECF8E20 1px, transparent 1px)`,
             backgroundSize: '40px 40px'
           }}
           aria-hidden="true"

@@ -39,8 +39,8 @@ export function DonutChart({ data, centerLabel, centerValue }: DonutChartProps) 
           </Pie>
           <Tooltip
             contentStyle={{
-              backgroundColor: "#1a1a1a",
-              border: "1px solid #2a2a2a",
+              backgroundColor: "#171717",
+              border: "1px solid rgba(255,255,255,0.06)",
               borderRadius: "8px",
               color: "#fff",
               fontSize: "12px",

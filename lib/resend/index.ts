@@ -48,3 +48,6 @@ export {
   sendPublicLaunchEmail,
   sendReferralReminderEmail,
 } from "./marketing";
+
+// RFQ (Request for Quote) emails
+export { sendRfqEmail, sendBatchRfqEmails } from "./rfq";

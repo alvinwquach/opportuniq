@@ -40,8 +40,8 @@ const PROBLEM = {
   stats: [
     { value: "$12K", label: "Avg annual waste on unnecessary repairs", color: "#ef4444" },
     { value: "73%", label: "Overpay for contractor work", color: "#f59e0b" },
-    { value: "4.5hrs", label: "Average time researching each repair", color: "#8b5cf6" },
-    { value: "62%", label: "Regret their repair decisions", color: "#ec4899" },
+    { value: "4.5hrs", label: "Average time researching each repair", color: "#3ECF8E" },
+    { value: "62%", label: "Regret their repair decisions", color: "#249361" },
   ],
   painPoints: [
     "No idea if they should DIY, hire, or wait",
@@ -316,7 +316,7 @@ const TECH_DECISIONS = [
 
 function ProgressBar({ value, color }: { value: number; color: string }) {
   return (
-    <div className="h-1.5 bg-neutral-800 rounded-full overflow-hidden">
+    <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
       <div
         className="h-full rounded-full transition-all duration-500"
         style={{ width: `${value}%`, backgroundColor: color }}
@@ -327,11 +327,11 @@ function ProgressBar({ value, color }: { value: number; color: string }) {
 
 function StatusBadge({ status }: { status: string }) {
   const config = {
-    building: { bg: "bg-blue-500/20", text: "text-blue-400", label: "Building" },
+    building: { bg: "bg-emerald-500/20", text: "text-emerald-400", label: "Building" },
     planned: { bg: "bg-amber-500/20", text: "text-amber-400", label: "Planned" },
-    future: { bg: "bg-neutral-500/20", text: "text-neutral-400", label: "Future" },
+    future: { bg: "bg-neutral-500/20", text: "text-[#888]", label: "Future" },
     done: { bg: "bg-green-500/20", text: "text-green-400", label: "Done" },
-  }[status] || { bg: "bg-neutral-500/20", text: "text-neutral-400", label: status };
+  }[status] || { bg: "bg-neutral-500/20", text: "text-[#888]", label: status };
 
   return (
     <span className={`px-2 py-0.5 rounded text-xs font-medium ${config.bg} ${config.text}`}>
@@ -342,10 +342,10 @@ function StatusBadge({ status }: { status: string }) {
 
 export default function DevelopmentPage() {
   return (
-    <div className="p-6 lg:p-8 space-y-12">
+    <div className="min-h-[calc(100vh-48px)] lg:min-h-screen bg-[#0f0f0f] p-3 sm:p-4 lg:p-5 space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white mb-2">Development Roadmap</h1>
-        <p className="text-neutral-400">What we&apos;re building and why - the YC pitch version</p>
+        <h1 className="text-lg sm:text-xl font-semibold text-white">Development Roadmap</h1>
+        <p className="text-[10px] sm:text-xs text-[#666]">What we&apos;re building and why - the YC pitch version</p>
       </div>
       <section className="space-y-6">
         <div className="flex items-center gap-3">
@@ -354,13 +354,13 @@ export default function DevelopmentPage() {
           </div>
           <h2 className="text-lg font-semibold text-white">The Problem</h2>
         </div>
-        <div className="p-6 rounded-xl bg-neutral-900/50 border border-neutral-800">
+        <div className="p-6 rounded-lg bg-[#171717] border border-white/[0.06]">
           <h3 className="text-xl font-bold text-white mb-6">{PROBLEM.headline}</h3>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {PROBLEM.stats.map((stat, i) => (
-              <div key={i} className="text-center p-4 rounded-lg bg-neutral-800/50">
+              <div key={i} className="text-center p-4 rounded-lg bg-white/[0.03]">
                 <p className="text-2xl font-bold" style={{ color: stat.color }}>{stat.value}</p>
-                <p className="text-xs text-neutral-500 mt-1">{stat.label}</p>
+                <p className="text-xs text-[#666] mt-1">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -368,7 +368,7 @@ export default function DevelopmentPage() {
             {PROBLEM.painPoints.map((point, i) => (
               <div key={i} className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 flex-shrink-0" />
-                <p className="text-sm text-neutral-400">{point}</p>
+                <p className="text-sm text-[#888]">{point}</p>
               </div>
             ))}
           </div>
@@ -381,20 +381,20 @@ export default function DevelopmentPage() {
           </div>
           <h2 className="text-lg font-semibold text-white">The Solution</h2>
         </div>
-        <div className="p-6 rounded-xl bg-neutral-900/50 border border-neutral-800">
+        <div className="p-6 rounded-lg bg-[#171717] border border-white/[0.06]">
           <h3 className="text-xl font-bold text-white mb-2">{SOLUTION.headline}</h3>
           <p className="text-[#00F0FF] font-medium mb-6">{SOLUTION.tagline}</p>
           <div className="grid sm:grid-cols-2 gap-4">
             {SOLUTION.valueProps.map((prop, i) => {
               const Icon = prop.icon;
               return (
-                <div key={i} className="p-4 rounded-lg bg-neutral-800/50 flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#00F0FF]/10 flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-5 h-5 text-[#00F0FF]" />
+                <div key={i} className="p-4 rounded-lg bg-[#2a2a2a]/50 flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-5 h-5 text-emerald-400" />
                   </div>
                   <div>
                     <h4 className="font-medium text-white mb-1">{prop.title}</h4>
-                    <p className="text-sm text-neutral-500">{prop.description}</p>
+                    <p className="text-sm text-[#666]">{prop.description}</p>
                   </div>
                 </div>
               );
@@ -411,9 +411,9 @@ export default function DevelopmentPage() {
             >
               {phase.phase}
             </div>
-            <span className="text-sm text-neutral-500">{phase.status}</span>
-            <div className="flex-1 h-px bg-neutral-800" />
-            <span className="text-xs text-neutral-600">{phase.description}</span>
+            <span className="text-sm text-[#666]">{phase.status}</span>
+            <div className="flex-1 h-px bg-white/[0.06]" />
+            <span className="text-xs text-[#555]">{phase.description}</span>
           </div>
           <div className="grid gap-4">
             {phase.features.map((feature, i) => {
@@ -421,11 +421,11 @@ export default function DevelopmentPage() {
               return (
                 <div
                   key={i}
-                  className="p-5 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-neutral-700 transition-colors"
+                  className="p-5 rounded-lg bg-[#171717] border border-white/[0.06] hover:border-white/[0.1] transition-colors"
                 >
                   <div className="flex items-start gap-4">
                     <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                      className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0"
                       style={{ backgroundColor: `${feature.color}15` }}
                     >
                       <Icon className="w-6 h-6" style={{ color: feature.color }} />
@@ -436,26 +436,26 @@ export default function DevelopmentPage() {
                         <StatusBadge status={feature.status} />
                       </div>
 
-                      <div className="p-3 rounded-lg bg-neutral-800/50 mb-3">
-                        <p className="text-sm text-neutral-300 leading-relaxed">
-                          <span className="text-[#00F0FF] font-medium">Why: </span>
+                      <div className="p-3 rounded-lg bg-white/[0.03] mb-3">
+                        <p className="text-sm text-[#aaa] leading-relaxed">
+                          <span className="text-emerald-400 font-medium">Why: </span>
                           {feature.why}
                         </p>
                       </div>
                       <div className="flex flex-wrap items-center gap-4 text-xs">
-                        <div className="flex items-center gap-1.5 text-neutral-500">
+                        <div className="flex items-center gap-1.5 text-[#666]">
                           <IoLocate className="w-3.5 h-3.5" />
                           <span>{feature.metric}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <IoCode className="w-3.5 h-3.5 text-neutral-600" />
-                          <span className="text-neutral-600">{feature.techStack.join(" + ")}</span>
+                          <IoCode className="w-3.5 h-3.5 text-[#555]" />
+                          <span className="text-[#555]">{feature.techStack.join(" + ")}</span>
                         </div>
                       </div>
                       {feature.progress > 0 && (
                         <div className="mt-3">
                           <div className="flex items-center justify-between text-xs mb-1">
-                            <span className="text-neutral-500">Progress</span>
+                            <span className="text-[#666]">Progress</span>
                             <span style={{ color: feature.color }}>{feature.progress}%</span>
                           </div>
                           <ProgressBar value={feature.progress} color={feature.color} />
@@ -471,29 +471,29 @@ export default function DevelopmentPage() {
       ))}
       <section className="space-y-6">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
-            <IoServer className="w-4 h-4 text-purple-400" />
+          <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+            <IoServer className="w-4 h-4 text-emerald-400" />
           </div>
           <h2 className="text-lg font-semibold text-white">Tech Decisions</h2>
-          <div className="flex-1 h-px bg-neutral-800" />
+          <div className="flex-1 h-px bg-[#2a2a2a]" />
         </div>
         <div className="grid gap-4">
           {TECH_DECISIONS.map((decision, i) => (
             <div
               key={i}
-              className="p-4 rounded-xl bg-neutral-900/50 border border-neutral-800"
+              className="p-4 rounded-lg bg-[#171717] border border-white/[0.06]"
             >
               <div className="flex items-start gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     <h3 className="font-medium text-white">{decision.category}</h3>
-                    <IoArrowForward className="w-4 h-4 text-neutral-600" />
-                    <span className="text-[#00F0FF] font-mono text-sm">{decision.decision}</span>
+                    <IoArrowForward className="w-4 h-4 text-[#555]" />
+                    <span className="text-emerald-400 font-mono text-sm">{decision.decision}</span>
                   </div>
-                  <p className="text-sm text-neutral-400 mb-2">{decision.reasoning}</p>
+                  <p className="text-sm text-[#888] mb-2">{decision.reasoning}</p>
                   <div className="flex flex-wrap gap-2">
                     {decision.alternatives.map((alt, j) => (
-                      <span key={j} className="px-2 py-0.5 rounded bg-neutral-800 text-xs text-neutral-500 line-through">
+                      <span key={j} className="px-2 py-0.5 rounded bg-white/[0.03] text-xs text-[#666] line-through">
                         {alt}
                       </span>
                     ))}
@@ -510,7 +510,7 @@ export default function DevelopmentPage() {
             <IoFlash className="w-4 h-4 text-amber-400" />
           </div>
           <h2 className="text-lg font-semibold text-white">Post-GA Stretch Goals</h2>
-          <div className="flex-1 h-px bg-neutral-800" />
+          <div className="flex-1 h-px bg-[#2a2a2a]" />
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {STRETCH_GOALS.map((goal, i) => {
@@ -518,15 +518,15 @@ export default function DevelopmentPage() {
             return (
               <div
                 key={i}
-                className="p-4 rounded-xl bg-neutral-900/30 border border-dashed border-neutral-800"
+                className="p-4 rounded-lg bg-[#171717]/50 border border-dashed border-white/[0.06]"
               >
                 <div className="flex items-start gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-neutral-800/50 flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-4 h-4 text-neutral-500" />
+                  <div className="w-9 h-9 rounded-lg bg-white/[0.03] flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-4 h-4 text-[#666]" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-medium text-neutral-300">{goal.title}</h3>
+                      <h3 className="font-medium text-[#aaa]">{goal.title}</h3>
                       <span className={`text-[10px] px-1.5 py-0.5 rounded ${
                         goal.effort === "Low" ? "bg-green-500/20 text-green-400" :
                         goal.effort === "Medium" ? "bg-amber-500/20 text-amber-400" :
@@ -535,7 +535,7 @@ export default function DevelopmentPage() {
                         {goal.effort}
                       </span>
                     </div>
-                    <p className="text-xs text-neutral-600">{goal.description}</p>
+                    <p className="text-xs text-[#555]">{goal.description}</p>
                   </div>
                 </div>
               </div>
@@ -543,23 +543,23 @@ export default function DevelopmentPage() {
           })}
         </div>
       </section>
-      <section className="p-6 rounded-xl bg-gradient-to-r from-[#00F0FF]/10 to-[#8b5cf6]/10 border border-[#00F0FF]/20">
+      <section className="p-6 rounded-lg bg-gradient-to-r from-emerald-500/10 to-emerald-400/10 border border-emerald-500/20">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
           <div>
-            <p className="text-3xl font-bold text-[#00F0FF]">13</p>
-            <p className="text-sm text-neutral-400">Features Planned</p>
+            <p className="text-3xl font-bold text-emerald-400">13</p>
+            <p className="text-sm text-[#888]">Features Planned</p>
           </div>
           <div>
-            <p className="text-3xl font-bold text-[#8b5cf6]">4</p>
-            <p className="text-sm text-neutral-400">ML/AI Features</p>
+            <p className="text-3xl font-bold text-emerald-500">4</p>
+            <p className="text-sm text-[#888]">ML/AI Features</p>
           </div>
           <div>
             <p className="text-3xl font-bold text-[#22c55e]">6</p>
-            <p className="text-sm text-neutral-400">Stretch Goals</p>
+            <p className="text-sm text-[#888]">Stretch Goals</p>
           </div>
           <div>
             <p className="text-3xl font-bold text-[#f59e0b]">3</p>
-            <p className="text-sm text-neutral-400">Release Phases</p>
+            <p className="text-sm text-[#888]">Release Phases</p>
           </div>
         </div>
       </section>

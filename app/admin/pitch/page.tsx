@@ -42,9 +42,9 @@ const growthData = [
 
 const decisionTypeData = [
   { name: "DIY", value: 42, color: "#10b981" },
-  { name: "Hire", value: 31, color: "#3b82f6" },
+  { name: "Hire", value: 31, color: "#3ECF8E" },
   { name: "Defer", value: 18, color: "#f59e0b" },
-  { name: "Replace", value: 9, color: "#8b5cf6" },
+  { name: "Replace", value: 9, color: "#249361" },
 ];
 
 const savingsData = [
@@ -176,10 +176,10 @@ export default function PitchDeck() {
               </CardContent>
             </Card>
             <Card className="bg-[#111] border-[#222] relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500" />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-emerald-500" />
               <CardContent className="p-4 text-center">
-                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center mx-auto mb-3">
-                  <LuSearch className="w-5 h-5 text-blue-400" />
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center mx-auto mb-3">
+                  <LuSearch className="w-5 h-5 text-emerald-400" />
                 </div>
                 <h3 className="font-semibold text-white text-sm mb-1">Diagnose</h3>
                 <p className="text-xs text-[#888]">AI identifies problem</p>
@@ -196,10 +196,10 @@ export default function PitchDeck() {
               </CardContent>
             </Card>
             <Card className="bg-[#111] border-[#222] relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-purple-500" />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-emerald-400" />
               <CardContent className="p-4 text-center">
-                <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center mx-auto mb-3">
-                  <LuUsers className="w-5 h-5 text-purple-400" />
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center mx-auto mb-3">
+                  <LuUsers className="w-5 h-5 text-emerald-400" />
                 </div>
                 <h3 className="font-semibold text-white text-sm mb-1">Decide</h3>
                 <p className="text-xs text-[#888]">Household votes</p>
@@ -229,7 +229,7 @@ export default function PitchDeck() {
       title: "Product",
       content: (
         <div className="flex flex-col justify-center h-full">
-          <Badge variant="outline" className="w-fit mb-2 px-2.5 py-0.5 text-blue-400 border-blue-500/30 bg-blue-500/10">
+          <Badge variant="outline" className="w-fit mb-2 px-2.5 py-0.5 text-emerald-400 border-emerald-500/30 bg-emerald-500/10">
             Product Deep Dive
           </Badge>
           <h2 className="text-3xl font-bold text-white mb-4 leading-tight">More than just diagnosis</h2>
@@ -277,8 +277,8 @@ export default function PitchDeck() {
             <Card className="bg-[#111] border-[#222]">
               <CardContent className="p-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
-                    <LuChartBar className="w-4 h-4 text-blue-400" />
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                    <LuChartBar className="w-4 h-4 text-emerald-400" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-white text-xs">Budget Integration</h4>
@@ -311,7 +311,7 @@ export default function PitchDeck() {
                           ))}
                         </Pie>
                         <Tooltip
-                          contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px' }}
+                          contentStyle={{ backgroundColor: '#171717', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px' }}
                           itemStyle={{ color: '#fff' }}
                         />
                       </PieChart>
@@ -378,7 +378,7 @@ export default function PitchDeck() {
                       <XAxis dataKey="month" stroke="#666" fontSize={10} />
                       <YAxis stroke="#666" fontSize={10} />
                       <Tooltip
-                        contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px' }}
+                        contentStyle={{ backgroundColor: '#171717', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px' }}
                         itemStyle={{ color: '#fff' }}
                       />
                       <Area type="monotone" dataKey="users" stroke="#10b981" fill="url(#userGradient)" strokeWidth={2} />
@@ -404,7 +404,7 @@ export default function PitchDeck() {
                       <XAxis dataKey="month" stroke="#666" fontSize={10} />
                       <YAxis stroke="#666" fontSize={10} tickFormatter={(v) => `$${v/1000}k`} />
                       <Tooltip
-                        contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px' }}
+                        contentStyle={{ backgroundColor: '#171717', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px' }}
                         itemStyle={{ color: '#fff' }}
                         formatter={(value: number) => [`$${value.toLocaleString()}`, 'Savings']}
                       />
@@ -423,11 +423,11 @@ export default function PitchDeck() {
       title: "Market",
       content: (
         <div className="flex flex-col justify-center h-full">
-          <Badge variant="outline" className="w-fit mb-3 px-2.5 py-0.5 text-blue-400 border-blue-500/30 bg-blue-500/10">
+          <Badge variant="outline" className="w-fit mb-3 px-2.5 py-0.5 text-emerald-400 border-emerald-500/30 bg-emerald-500/10">
             Market Opportunity
           </Badge>
           <h2 className="text-3xl font-bold text-white mb-5 leading-tight">
-            <span className="text-blue-400">$857B</span> addressable market
+            <span className="text-emerald-400">$857B</span> addressable market
           </h2>
 
           <div className="grid grid-cols-2 gap-5">
@@ -441,7 +441,7 @@ export default function PitchDeck() {
                       <XAxis type="number" stroke="#666" fontSize={10} />
                       <YAxis dataKey="segment" type="category" stroke="#666" fontSize={10} width={85} />
                       <Tooltip
-                        contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px' }}
+                        contentStyle={{ backgroundColor: '#171717', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px' }}
                         itemStyle={{ color: '#fff' }}
                         formatter={(value: number) => [`$${value}B`, 'Market Size']}
                       />
@@ -477,8 +477,8 @@ export default function PitchDeck() {
                       <p className="text-xs text-[#888]">Avg Annual Repair Spend</p>
                       <p className="text-xl font-bold text-white">$4,700</p>
                     </div>
-                    <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                      <LuDollarSign className="w-5 h-5 text-blue-400" />
+                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <LuDollarSign className="w-5 h-5 text-emerald-400" />
                     </div>
                   </div>
                 </CardContent>
@@ -507,7 +507,7 @@ export default function PitchDeck() {
       title: "Business Model",
       content: (
         <div className="flex flex-col justify-center h-full">
-          <Badge variant="outline" className="w-fit mb-3 px-2.5 py-0.5 text-purple-400 border-purple-500/30 bg-purple-500/10">
+          <Badge variant="outline" className="w-fit mb-3 px-2.5 py-0.5 text-emerald-400 border-emerald-500/30 bg-emerald-500/10">
             Business Model
           </Badge>
           <h2 className="text-3xl font-bold text-white mb-5 leading-tight">Freemium + Marketplace</h2>
@@ -545,7 +545,7 @@ export default function PitchDeck() {
 
             <Card className="bg-[#111] border-[#222]">
               <CardContent className="p-4">
-                <Badge variant="outline" className="mb-3 px-2 py-0.5 text-xs text-purple-400 border-purple-500/30">Enterprise</Badge>
+                <Badge variant="outline" className="mb-3 px-2 py-0.5 text-xs text-emerald-400 border-emerald-500/30">Enterprise</Badge>
                 <p className="text-2xl font-bold text-white mb-1">Custom</p>
                 <p className="text-xs text-[#888] mb-3">Property managers</p>
                 <ul className="space-y-1.5 text-xs text-[#888]">
@@ -567,11 +567,11 @@ export default function PitchDeck() {
                   <p className="text-xs text-[#888]">Parts & tools (8-12%)</p>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-[#0a0a0a]">
-                  <p className="text-blue-400 font-semibold text-sm">Lead Gen</p>
+                  <p className="text-emerald-400 font-semibold text-sm">Lead Gen</p>
                   <p className="text-xs text-[#888]">Contractor referrals ($25-50)</p>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-[#0a0a0a]">
-                  <p className="text-purple-400 font-semibold text-sm">Data</p>
+                  <p className="text-emerald-400 font-semibold text-sm">Data</p>
                   <p className="text-xs text-[#888]">Anonymized repair insights</p>
                 </div>
               </div>
@@ -648,7 +648,7 @@ export default function PitchDeck() {
       title: "Team",
       content: (
         <div className="flex flex-col justify-center h-full">
-          <Badge variant="outline" className="w-fit mb-3 px-2.5 py-0.5 text-blue-400 border-blue-500/30 bg-blue-500/10">
+          <Badge variant="outline" className="w-fit mb-3 px-2.5 py-0.5 text-emerald-400 border-emerald-500/30 bg-emerald-500/10">
             Team
           </Badge>
           <h2 className="text-3xl font-bold text-white mb-4 leading-tight">Built by homeowners, for homeowners</h2>
@@ -676,11 +676,11 @@ export default function PitchDeck() {
 
             <Card className="bg-[#111] border-[#222]">
               <CardContent className="p-4 text-center">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mx-auto mb-3">
+                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center mx-auto mb-3">
                   <span className="text-lg font-bold text-white">CF</span>
                 </div>
                 <h3 className="text-sm font-semibold text-white mb-0.5">Co-Founder</h3>
-                <p className="text-blue-400 text-xs mb-2">Co-Founder & COO</p>
+                <p className="text-emerald-400 text-xs mb-2">Co-Founder & COO</p>
                 <p className="text-xs text-[#888] leading-relaxed mb-3">
                   Project/Product Manager & Delivery Engineer.
                   Expert in operations and execution. Ensures projects ship on time
@@ -701,7 +701,7 @@ export default function PitchDeck() {
               <div className="flex justify-center gap-8">
                 {["Home Depot", "Thumbtack", "Zillow", "Lowe's"].map((company) => (
                   <div key={company} className="text-center">
-                    <div className="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center mx-auto mb-1.5">
+                    <div className="w-10 h-10 rounded-full bg-[#171717] flex items-center justify-center mx-auto mb-1.5">
                       <LuSettings className="w-4 h-4 text-[#666]" />
                     </div>
                     <p className="text-xs text-[#888]">{company}</p>
@@ -886,7 +886,7 @@ export default function PitchDeck() {
           variant="ghost"
           size="icon"
           onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
-          className="flex-shrink-0 w-12 h-12 rounded-full bg-[#1a1a1a] hover:bg-[#2a2a2a] border border-[#2a2a2a]"
+          className="flex-shrink-0 w-12 h-12 rounded-full bg-[#171717] hover:bg-white/[0.06] border border-white/[0.06]"
         >
           <IoChevronBack className="w-6 h-6" />
         </Button>
@@ -899,7 +899,7 @@ export default function PitchDeck() {
           variant="ghost"
           size="icon"
           onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
-          className="flex-shrink-0 w-12 h-12 rounded-full bg-[#1a1a1a] hover:bg-[#2a2a2a] border border-[#2a2a2a]"
+          className="flex-shrink-0 w-12 h-12 rounded-full bg-[#171717] hover:bg-white/[0.06] border border-white/[0.06]"
         >
           <IoChevronForward className="w-6 h-6" />
         </Button>
@@ -912,7 +912,7 @@ export default function PitchDeck() {
             className={`flex-shrink-0 px-3 py-2 rounded-lg border transition-all text-xs ${
               currentSlide === index
                 ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
-                : "border-[#2a2a2a] bg-[#1a1a1a] text-[#888] hover:border-[#3a3a3a]"
+                : "border-white/[0.06] bg-[#171717] text-[#888] hover:border-white/[0.1]"
             }`}
           >
             {slide.title}

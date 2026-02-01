@@ -1,4 +1,3 @@
-
 "use server";
 
 import { getCurrentUser } from "@/lib/supabase/server";
@@ -9,6 +8,7 @@ import { sendWelcomeEmail } from "@/lib/resend";
 import { geocodePostalCode } from "@/lib/geocoding";
 import { generateReferralCode } from "@/lib/referral";
 import { cookies } from "next/headers";
+import type { RiskTolerance } from "./types";
 
 // Type for pending user data stored in cookie
 interface PendingUserData {
@@ -19,23 +19,32 @@ interface PendingUserData {
   isAdmin: boolean;
 }
 
+export type { RiskTolerance };
+
 export async function completeOnboarding(data: {
+  // Required fields
   country: string;
   postalCode: string;
   searchRadius: number;
+  // Optional fields
   theme?: "light" | "dark" | "auto";
   streetAddress?: string;
   city?: string;
   stateProvince?: string;
   phoneNumber?: string;
+  // New optional fields
+  riskTolerance?: RiskTolerance;
+  primaryUseCase?: string;
+  hourlyRate?: number;
 }) {
-  console.log("[Onboarding Action] Starting completeOnboarding", { 
-    hasPostalCode: !!data.postalCode, 
+  console.log("[Onboarding Action] Starting completeOnboarding", {
+    hasPostalCode: !!data.postalCode,
     country: data.country,
-    searchRadius: data.searchRadius 
+    searchRadius: data.searchRadius,
+    riskTolerance: data.riskTolerance,
+    primaryUseCase: data.primaryUseCase,
   });
 
-  // Use cached getUser() to prevent duplicate API calls
   const user = await getCurrentUser();
 
   if (!user) {
@@ -45,24 +54,36 @@ export async function completeOnboarding(data: {
 
   console.log("[Onboarding Action] User authenticated:", user.id);
 
-  const { country, postalCode, searchRadius, theme, streetAddress, city, stateProvince, phoneNumber } = data;
+  const {
+    country,
+    postalCode,
+    searchRadius,
+    theme,
+    streetAddress,
+    city,
+    stateProvince,
+    phoneNumber,
+    riskTolerance,
+    primaryUseCase,
+    hourlyRate,
+  } = data;
 
   if (!country || !postalCode || !searchRadius) {
     return { success: false as const, error: "Country, postal code, and search radius are required" };
   }
 
-  // Countries that use miles (US, UK, and a few others)
+  // Countries that use miles
   const milesCountries = ["US", "GB", "MM", "LR"];
   const distanceUnit = milesCountries.includes(country) ? "miles" : "kilometers";
 
-  // Set unit system based on country (US, LR, MM use imperial)
+  // Set unit system based on country
   const imperialCountries = ["US", "LR", "MM"];
   const unitSystem = imperialCountries.includes(country) ? "imperial" : "metric";
 
   try {
     console.log("[Onboarding] Starting onboarding for user:", user.id);
 
-    // Check for pending_user cookie (set during auth callback for new users)
+    // Check for pending_user cookie
     let cookieStore;
     let pendingUserData: PendingUserData | null = null;
     let isNewUser = false;
@@ -84,15 +105,13 @@ export async function completeOnboarding(data: {
           });
         } catch (parseError) {
           console.error("[Onboarding] Failed to parse pending_user cookie:", parseError);
-          // Continue as existing user update
         }
       }
     } catch (cookieError) {
       console.error("[Onboarding] Cookie access error:", cookieError);
-      // Continue without cookie - treat as existing user
     }
 
-    // Geocode the postal code with timeout (don't block onboarding if it fails)
+    // Geocode the postal code
     let geocodingResult: Awaited<ReturnType<typeof geocodePostalCode>> = null;
     const mapboxToken = process.env.MAPBOX_ACCESS_TOKEN || process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
     const hasMapboxToken = !!mapboxToken;
@@ -100,11 +119,10 @@ export async function completeOnboarding(data: {
     if (hasMapboxToken) {
       try {
         console.log("[Onboarding] Starting geocoding for:", postalCode, country);
-        // Run geocoding with a 2-second timeout
         const geocodePromise = geocodePostalCode(postalCode, country);
         const timeoutPromise = new Promise<null>((resolve) =>
           setTimeout(() => {
-            console.warn("[Onboarding] Geocoding timeout after 2 seconds - continuing without coordinates");
+            console.warn("[Onboarding] Geocoding timeout after 2 seconds");
             resolve(null);
           }, 2000)
         );
@@ -113,15 +131,12 @@ export async function completeOnboarding(data: {
         console.log("[Onboarding] Geocoding completed:", geocodingResult ? "success" : "failed/null");
       } catch (geocodeError) {
         console.error("[Onboarding] Geocoding error (non-blocking):", geocodeError);
-        // Continue without geocoding - user can still use the app
       }
-    } else {
-      console.log("[Onboarding] Mapbox token not configured - skipping geocoding");
     }
 
     let userData: { role: "admin" | "user"; name?: string | null; id: string; email: string };
 
-    // First, check if user already exists in DB (handles retry/refresh scenarios)
+    // Check if user already exists
     console.log("[Onboarding] Checking if user exists in DB...");
     let existingUser;
     try {
@@ -134,12 +149,19 @@ export async function completeOnboarding(data: {
       console.log("[Onboarding] DB check completed, user exists:", !!existingUser);
     } catch (dbError: any) {
       console.error("[Onboarding] DB check failed:", dbError?.message);
-      // If DB is down, use fallback based on pending cookie
       existingUser = null;
     }
 
+    // Build preferences object with new fields
+    const preferences = {
+      unitSystem,
+      theme: theme || "auto",
+      ...(primaryUseCase && { primaryUseCase }),
+      ...(hourlyRate && { hourlyRate }),
+    } as any;
+
     if (existingUser) {
-      // User already exists - this is a retry or refresh, just update and redirect
+      // User already exists - update
       console.log("[Onboarding] User already exists in DB, updating onboarding data");
 
       const updateData = {
@@ -151,21 +173,19 @@ export async function completeOnboarding(data: {
         phoneNumber: phoneNumber || null,
         defaultSearchRadius: searchRadius,
         distanceUnit: distanceUnit as "miles" | "kilometers",
-        preferences: {
-          unitSystem,
-          theme: theme || "auto",
-        } as any,
+        preferences,
         latitude: geocodingResult?.latitude ?? null,
         longitude: geocodingResult?.longitude ?? null,
         formattedAddress: geocodingResult?.formattedAddress ?? null,
         geocodedAt: geocodingResult ? new Date() : null,
         updatedAt: new Date(),
+        ...(riskTolerance && { riskTolerance }),
       };
 
       await db.update(users).set(updateData).where(eq(users.id, user.id));
       console.log("[Onboarding] Existing user updated with onboarding data");
 
-      // Clear pending_user cookie if it exists
+      // Clear pending_user cookie
       try {
         if (cookieStore) {
           cookieStore.set("pending_user", "", {
@@ -186,16 +206,14 @@ export async function completeOnboarding(data: {
         id: existingUser.id,
         email: existingUser.email,
       };
-
     } else if (isNewUser && pendingUserData) {
-      // NEW USER: Create user record with all data
+      // NEW USER: Create user record
       console.log("[Onboarding] Creating new user record");
 
       const newUserReferralCode = generateReferralCode();
       const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture || null;
 
       try {
-        // Create user record
         await db.insert(users).values({
           id: user.id,
           email: user.email!,
@@ -205,7 +223,6 @@ export async function completeOnboarding(data: {
           accessTier: pendingUserData.accessTier,
           referredBy: pendingUserData.referredBy,
           referralCode: newUserReferralCode,
-          // Onboarding data
           country,
           postalCode,
           streetAddress: streetAddress || null,
@@ -214,28 +231,24 @@ export async function completeOnboarding(data: {
           phoneNumber: phoneNumber || null,
           defaultSearchRadius: searchRadius,
           distanceUnit: distanceUnit as "miles" | "kilometers",
-          preferences: {
-            unitSystem,
-            theme: theme || "auto",
-          } as any,
+          preferences,
           latitude: geocodingResult?.latitude ?? null,
           longitude: geocodingResult?.longitude ?? null,
           formattedAddress: geocodingResult?.formattedAddress ?? null,
           geocodedAt: geocodingResult ? new Date() : null,
+          riskTolerance: riskTolerance || "moderate",
           createdAt: new Date(),
           updatedAt: new Date(),
         });
 
         console.log("[Onboarding] User record created successfully");
 
-        // Create referral code entry for the new user
+        // Create referral code entry
         await db.insert(referralCodes).values({
           code: newUserReferralCode,
           ownerId: user.id,
-          maxUses: null, // Unlimited by default
+          maxUses: null,
         });
-
-        console.log("[Onboarding] Referral code created:", newUserReferralCode);
 
         // Mark invite as accepted if applicable
         if (pendingUserData.inviteId) {
@@ -243,25 +256,21 @@ export async function completeOnboarding(data: {
             .update(invites)
             .set({ acceptedAt: new Date(), userId: user.id })
             .where(eq(invites.id, pendingUserData.inviteId));
-          console.log("[Onboarding] Invite marked as accepted:", pendingUserData.inviteId);
         }
 
-        // Handle referral tracking if applicable
+        // Handle referral tracking
         if (pendingUserData.referralCodeId) {
-          // Get the referral code details
           const [refCode] = await db
             .select()
             .from(referralCodes)
             .where(eq(referralCodes.id, pendingUserData.referralCodeId));
 
           if (refCode) {
-            // Increment referral code usage
             await db
               .update(referralCodes)
               .set({ useCount: refCode.useCount + 1 })
               .where(eq(referralCodes.id, refCode.id));
 
-            // Create referral record
             await db.insert(referrals).values({
               referralCodeId: refCode.id,
               referrerId: refCode.ownerId,
@@ -272,17 +281,14 @@ export async function completeOnboarding(data: {
               convertedAt: new Date(),
             });
 
-            // Increment referrer's referral count
             await db
               .update(users)
               .set({ referralCount: sql`${users.referralCount} + 1` })
               .where(eq(users.id, refCode.ownerId));
-
-            console.log("[Onboarding] Referral tracking completed for code:", refCode.code);
           }
         }
 
-        // Clear the pending_user cookie by setting it to expire immediately
+        // Clear the pending_user cookie
         try {
           if (cookieStore) {
             cookieStore.set("pending_user", "", {
@@ -290,13 +296,11 @@ export async function completeOnboarding(data: {
               secure: process.env.NODE_ENV === "production",
               sameSite: "lax",
               path: "/",
-              maxAge: 0, // Expire immediately
+              maxAge: 0,
             });
-            console.log("[Onboarding] Cleared pending_user cookie");
           }
         } catch (clearCookieError) {
-          console.error("[Onboarding] Failed to clear cookie (non-blocking):", clearCookieError);
-          // Continue anyway - cookie will expire naturally
+          console.error("[Onboarding] Failed to clear cookie:", clearCookieError);
         }
 
         userData = {
@@ -305,12 +309,13 @@ export async function completeOnboarding(data: {
           id: user.id,
           email: user.email!,
         };
-
       } catch (createError: any) {
         console.error("[Onboarding] Failed to create user:", createError);
-        // Check if it's a duplicate key error (user was created in a race condition)
-        if (createError?.code === '23505' || createError?.message?.includes('duplicate') || createError?.message?.includes('unique')) {
-          console.log("[Onboarding] User was created in parallel request, fetching existing user");
+        if (
+          createError?.code === "23505" ||
+          createError?.message?.includes("duplicate") ||
+          createError?.message?.includes("unique")
+        ) {
           const [raceUser] = await db.select().from(users).where(eq(users.id, user.id));
           if (raceUser) {
             userData = {
@@ -326,14 +331,12 @@ export async function completeOnboarding(data: {
           return { success: false as const, error: "Failed to create user account. Please try again." };
         }
       }
-
     } else {
       // Edge case: No user in DB and no pending cookie
-      // This shouldn't happen in normal flow - user should have cookie from auth callback
       console.error("[Onboarding] No user in DB and no pending cookie - invalid state");
 
-      // Try to create user with fallback data (using email to determine admin status)
-      const isAdminEmail = user.email === "alvinwquach@gmail.com" || user.email === "binarydecisions1111@gmail.com";
+      const isAdminEmail =
+        user.email === "alvinwquach@gmail.com" || user.email === "binarydecisions1111@gmail.com";
       const fallbackReferralCode = generateReferralCode();
       const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture || null;
 
@@ -354,14 +357,12 @@ export async function completeOnboarding(data: {
           phoneNumber: phoneNumber || null,
           defaultSearchRadius: searchRadius,
           distanceUnit: distanceUnit as "miles" | "kilometers",
-          preferences: {
-            unitSystem,
-            theme: theme || "auto",
-          } as any,
+          preferences,
           latitude: geocodingResult?.latitude ?? null,
           longitude: geocodingResult?.longitude ?? null,
           formattedAddress: geocodingResult?.formattedAddress ?? null,
           geocodedAt: geocodingResult ? new Date() : null,
+          riskTolerance: riskTolerance || "moderate",
           createdAt: new Date(),
           updatedAt: new Date(),
         });
@@ -371,8 +372,6 @@ export async function completeOnboarding(data: {
           ownerId: user.id,
           maxUses: null,
         });
-
-        console.log("[Onboarding] Created user with fallback data");
 
         userData = {
           role: isAdminEmail ? "admin" : "user",
@@ -386,34 +385,29 @@ export async function completeOnboarding(data: {
       }
     }
 
-    console.log("[Onboarding] User role:", userData.role);
-
-    // Send welcome email asynchronously (don't block onboarding)
+    // Send welcome email asynchronously
     sendWelcomeEmail({
       email: user.email!,
       name: userData.name ?? null,
       postalCode,
       searchRadius,
     }).catch((emailError) => {
-      console.error("[Onboarding] Failed to send welcome email (non-blocking):", emailError);
-      // Don't fail the request if email fails - onboarding still succeeded
+      console.error("[Onboarding] Failed to send welcome email:", emailError);
     });
 
     const redirectTo = userData.role === "admin" ? "/admin" : "/dashboard";
     console.log("[Onboarding] Onboarding complete, redirecting to:", redirectTo);
 
-    const result = {
+    return {
       success: true as const,
       role: userData.role,
-      redirectTo
+      redirectTo,
     };
-    console.log("[Onboarding] Returning result:", JSON.stringify(result));
-    return result;
   } catch (error) {
     console.error("[Onboarding] Onboarding error:", error);
     return {
       success: false as const,
-      error: error instanceof Error ? error.message : "Failed to complete onboarding"
+      error: error instanceof Error ? error.message : "Failed to complete onboarding",
     };
   }
 }

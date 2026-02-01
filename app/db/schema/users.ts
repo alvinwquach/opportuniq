@@ -89,6 +89,9 @@ export const users = pgTable("users", {
   referralCode: text("referral_code").unique(),
   referralCount: integer("referral_count").default(0).notNull(),
 
+  // Admin notes (internal use only)
+  notes: text("notes"),
+
   // Encrypted location fields (ciphertext + IV pairs)
   encryptedStreetAddress: text("encrypted_street_address"),
   streetAddressIv: text("street_address_iv"),

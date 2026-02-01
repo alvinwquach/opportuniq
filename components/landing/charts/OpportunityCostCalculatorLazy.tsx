@@ -24,7 +24,7 @@ function CalculatorSkeleton() {
           <div className="flex flex-wrap justify-center gap-2 mb-8">
             {[1, 2, 3, 4].map((i) => (
               <div
-                key={i}
+                key={`calc-skeleton-${i}`}
                 className="h-10 w-28 bg-neutral-100 rounded-lg animate-pulse"
               />
             ))}

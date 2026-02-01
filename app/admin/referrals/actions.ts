@@ -3,14 +3,16 @@
 import { db } from "@/app/db/client";
 import { users, referrals } from "@/app/db/schema";
 import { desc, eq, count, sql } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 
-export async function getReferralsData() {
+async function fetchReferralsData() {
   const [
     [referralStats],
     topReferrers,
     recentReferrals,
     [tierStats],
     [viralCoef],
+    referralGrowthData,
   ] = await Promise.all([
     db
       .select({
@@ -68,6 +70,18 @@ export async function getReferralsData() {
       })
       .from(users)
       .where(sql`${users.accessTier} = 'alpha'`),
+
+    // Referral growth over last 30 days
+    db
+      .select({
+        date: sql<string>`DATE(${referrals.createdAt})`,
+        total: sql<number>`count(*)`,
+        converted: sql<number>`count(*) filter (where ${referrals.status} = 'converted')`,
+      })
+      .from(referrals)
+      .where(sql`${referrals.createdAt} >= now() - interval '30 days'`)
+      .groupBy(sql`DATE(${referrals.createdAt})`)
+      .orderBy(sql`DATE(${referrals.createdAt})`),
   ]);
 
   const conversionRate =
@@ -86,5 +100,13 @@ export async function getReferralsData() {
     tierStats,
     conversionRate,
     viralCoefficient,
+    referralGrowthData,
   };
 }
+
+// Cache for 30 seconds
+export const getReferralsData = unstable_cache(
+  fetchReferralsData,
+  ["admin-referrals-data"],
+  { revalidate: 30, tags: ["admin-referrals"] }
+);

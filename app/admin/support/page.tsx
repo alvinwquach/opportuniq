@@ -5,8 +5,8 @@ export default async function SupportPage() {
   const { activeSessions, unreadCount, onlineAdmins, currentAdmin } = await getSupportData();
 
   return (
-    <div className="h-screen flex flex-col bg-[#0c0c0c]">
-      <SupportChatRoom 
+    <div className="min-h-[calc(100vh-48px)] lg:min-h-screen flex flex-col bg-[#0f0f0f]">
+      <SupportChatRoom
         initialSessions={activeSessions}
         initialUnreadCount={unreadCount}
         onlineAdmins={onlineAdmins}
@@ -15,4 +15,3 @@ export default async function SupportPage() {
     </div>
   );
 }
-

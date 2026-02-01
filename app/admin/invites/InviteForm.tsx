@@ -76,7 +76,7 @@ export function InviteForm() {
 
   const tierColors: Record<InviteTier, string> = {
     johatsu: "text-rose-400 border-rose-500/30 bg-rose-500/10",
-    alpha: "text-purple-400 border-purple-500/30 bg-purple-500/10",
+    alpha: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
     beta: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
   };
 
@@ -118,7 +118,7 @@ export function InviteForm() {
           {success === "sent" ? "Sent" : "Copied"}
         </span>
       )}
-      <div className="flex items-center border border-[#2a2a2a] rounded-md overflow-hidden w-fit">
+      <div className="flex items-center border border-white/[0.06] rounded-md overflow-hidden w-fit">
         {(["johatsu", "alpha", "beta"] as InviteTier[]).map((t) => (
           <button
             key={t}
@@ -143,7 +143,7 @@ export function InviteForm() {
             setError("");
           }}
           placeholder="email@example.com"
-          className="flex-1 sm:w-44 h-8 px-3 rounded-md bg-[#1a1a1a] border border-[#2a2a2a] text-sm text-white placeholder:text-[#444] focus:outline-none focus:border-[#3a3a3a] transition-colors"
+          className="flex-1 sm:w-44 h-8 px-3 rounded-md bg-[#171717] border border-white/[0.06] text-sm text-white placeholder:text-[#444] focus:outline-none focus:border-white/[0.1] transition-colors"
           disabled={loading}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -156,7 +156,7 @@ export function InviteForm() {
           type="button"
           onClick={() => handleSubmit(false)}
           disabled={loading || !email.trim()}
-          className="h-8 px-2.5 rounded-md bg-[#1a1a1a] hover:bg-[#252525] border border-[#2a2a2a] text-[#888] hover:text-white text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 shrink-0"
+          className="h-8 px-2.5 rounded-md bg-[#171717] hover:bg-[#252525] border border-white/[0.06] text-[#888] hover:text-white text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 shrink-0"
           title="Copy invite link"
         >
           <IoLink className="h-4 w-4" />

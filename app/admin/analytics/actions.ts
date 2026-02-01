@@ -10,27 +10,48 @@ import {
   decisionOptions,
   invites,
 } from "@/app/db/schema";
-import { count, sql, gte, eq, isNotNull, isNull } from "drizzle-orm";
+import { count, sql, eq, isNotNull } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 
-export async function getAnalyticsData() {
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+async function fetchAnalyticsData() {
+  // Split into 3 batches to avoid overwhelming the connection pool
 
-  // Essential queries only - run in parallel
+  // Batch 1: Core counts and user stats (consolidated into fewer queries)
+  const [
+    [coreCounts],
+    [inviteStats],
+    tierDistribution,
+  ] = await Promise.all([
+    // All core counts in one query using subqueries
+    db.select({
+      userCount: sql<number>`(select count(*) from ${users})`,
+      waitlistCount: sql<number>`(select count(*) from ${waitlist})`,
+      groupsCount: sql<number>`(select count(*) from ${groups})`,
+      issuesCount: sql<number>`(select count(*) from ${issues})`,
+      decisionsCount: sql<number>`(select count(*) from ${decisions})`,
+    }).from(sql`(select 1) as dummy`),
+
+    // Invite stats in one query
+    db.select({
+      total: count(),
+      accepted: sql<number>`count(*) filter (where ${invites.acceptedAt} is not null)`,
+    }).from(invites),
+
+    // User tier distribution
+    db
+      .select({
+        tier: users.accessTier,
+        count: count(),
+      })
+      .from(users)
+      .groupBy(users.accessTier),
+  ]);
+
+  // Batch 2: Growth data and distributions
   const [
     userGrowthData,
     waitlistGrowthData,
-    [userTotal],
-    [waitlistTotal],
-    [groupsTotal],
-    [issuesTotal],
-    [decisionsTotal],
     issueStatusData,
-    decisionTypeData,
-    tierDistribution,
-    countryData,
-    [invitesTotal],
-    [invitesAccepted],
   ] = await Promise.all([
     // User growth (last 30 days)
     db
@@ -39,7 +60,7 @@ export async function getAnalyticsData() {
         count: count(),
       })
       .from(users)
-      .where(gte(users.createdAt, thirtyDaysAgo))
+      .where(sql`${users.createdAt} >= now() - interval '30 days'`)
       .groupBy(sql`DATE(${users.createdAt})`)
       .orderBy(sql`DATE(${users.createdAt})`),
 
@@ -50,16 +71,9 @@ export async function getAnalyticsData() {
         count: count(),
       })
       .from(waitlist)
-      .where(gte(waitlist.createdAt, thirtyDaysAgo))
+      .where(sql`${waitlist.createdAt} >= now() - interval '30 days'`)
       .groupBy(sql`DATE(${waitlist.createdAt})`)
       .orderBy(sql`DATE(${waitlist.createdAt})`),
-
-    // Core totals
-    db.select({ count: count() }).from(users),
-    db.select({ count: count() }).from(waitlist),
-    db.select({ count: count() }).from(groups),
-    db.select({ count: count() }).from(issues),
-    db.select({ count: count() }).from(decisions),
 
     // Issue status distribution
     db
@@ -69,7 +83,13 @@ export async function getAnalyticsData() {
       })
       .from(issues)
       .groupBy(issues.status),
+  ]);
 
+  // Batch 3: Less critical data
+  const [
+    decisionTypeData,
+    countryData,
+  ] = await Promise.all([
     // Decision type distribution
     db
       .select({
@@ -79,15 +99,6 @@ export async function getAnalyticsData() {
       .from(decisions)
       .innerJoin(decisionOptions, eq(decisions.selectedOptionId, decisionOptions.id))
       .groupBy(decisionOptions.type),
-
-    // User tier distribution
-    db
-      .select({
-        tier: users.accessTier,
-        count: count(),
-      })
-      .from(users)
-      .groupBy(users.accessTier),
 
     // Country distribution (top 5)
     db
@@ -100,16 +111,12 @@ export async function getAnalyticsData() {
       .groupBy(users.country)
       .orderBy(sql`count(*) DESC`)
       .limit(5),
-
-    // Invites
-    db.select({ count: count() }).from(invites),
-    db.select({ count: count() }).from(invites).where(isNotNull(invites.acceptedAt)),
   ]);
 
   // Calculate invite acceptance rate
   const inviteAcceptanceRate =
-    invitesTotal.count > 0
-      ? Math.round((invitesAccepted.count / invitesTotal.count) * 100)
+    Number(inviteStats.total) > 0
+      ? Math.round((Number(inviteStats.accepted) / Number(inviteStats.total)) * 100)
       : 0;
 
   return {
@@ -119,11 +126,11 @@ export async function getAnalyticsData() {
     countryData,
 
     // Core totals
-    userTotal,
-    waitlistTotal,
-    groupsTotal,
-    issuesTotal,
-    decisionsTotal,
+    userTotal: { count: Number(coreCounts.userCount) || 0 },
+    waitlistTotal: { count: Number(coreCounts.waitlistCount) || 0 },
+    groupsTotal: { count: Number(coreCounts.groupsCount) || 0 },
+    issuesTotal: { count: Number(coreCounts.issuesCount) || 0 },
+    decisionsTotal: { count: Number(coreCounts.decisionsCount) || 0 },
 
     // Distributions
     issueStatusData,
@@ -131,9 +138,16 @@ export async function getAnalyticsData() {
     tierDistribution,
 
     // Invites
-    invitesTotal,
-    invitesAccepted,
-    invitesPending: { count: invitesTotal.count - invitesAccepted.count },
+    invitesTotal: { count: Number(inviteStats.total) || 0 },
+    invitesAccepted: { count: Number(inviteStats.accepted) || 0 },
+    invitesPending: { count: (Number(inviteStats.total) || 0) - (Number(inviteStats.accepted) || 0) },
     inviteAcceptanceRate,
   };
 }
+
+// Cache for 60 seconds (analytics can be slightly stale)
+export const getAnalyticsData = unstable_cache(
+  fetchAnalyticsData,
+  ["admin-analytics-data"],
+  { revalidate: 60, tags: ["admin-analytics"] }
+);

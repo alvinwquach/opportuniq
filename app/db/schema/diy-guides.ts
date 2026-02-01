@@ -28,6 +28,8 @@ export const diyGuideSourceEnum = pgEnum("diy_guide_source", [
   "doityourself",
   "hometalk",
   "diy_chatroom",
+  "ifixit",
+  "youtube",
   "other",
 ]);
 

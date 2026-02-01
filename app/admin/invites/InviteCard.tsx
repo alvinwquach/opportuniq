@@ -23,7 +23,7 @@ export function InviteCard({ invite }: InviteCardProps) {
               {tierConfig.label}
             </span>
             <span className="text-[#333]">·</span>
-            <span className={`text-xs ${isAccepted ? "text-emerald-400" : isPending ? "text-blue-400" : "text-[#555]"}`}>
+            <span className={`text-xs ${isAccepted ? "text-emerald-400" : isPending ? "text-emerald-400" : "text-[#555]"}`}>
               {isAccepted ? "Accepted" : isPending ? "Pending" : "Expired"}
             </span>
             <span className="text-[#333]">·</span>
@@ -40,17 +40,17 @@ export function InviteCard({ invite }: InviteCardProps) {
         </div>
       </div>
       <div className="flex items-center gap-1.5 mb-3">
-        <code className="text-xs font-mono text-[#666] bg-[#1a1a1a] px-2 py-1.5 rounded flex-1 truncate">
+        <code className="text-xs font-mono text-[#666] bg-[#171717] px-2 py-1.5 rounded flex-1 truncate">
           {invite.token}
         </code>
         <CopyButton text={invite.token} title="Copy token" />
       </div>
       <div className="flex items-center justify-between pt-2 border-t border-[#1f1f1f]">
         <div className="text-xs text-[#555]">
-          <span>{invite.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+          <span>{new Date(invite.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
           <span className="mx-1.5">→</span>
           <span className={isExpired ? "text-red-400/70" : ""}>
-            {invite.expiresAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+            {new Date(invite.expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
           </span>
         </div>
         <div className="flex items-center gap-1">

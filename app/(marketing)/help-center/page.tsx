@@ -1,4 +1,12 @@
+import { createPageMetadata } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
+
+export const metadata = createPageMetadata({
+  title: "Help Center",
+  description:
+    "Get help with OpportunIQ. Community Discord, FAQs, and support options for home and auto decision support.",
+  path: "/help-center",
+});
 
 const SUPPORT_OPTIONS = [
   {
@@ -12,8 +20,6 @@ const SUPPORT_OPTIONS = [
     href: "https://discord.gg/TRjNfmtR",
     cta: "Join Discord",
     color: "#5865F2",
-    bgColor: "bg-indigo-50",
-    borderColor: "border-indigo-200",
   },
 ];
 
@@ -38,39 +44,40 @@ const FAQ_ITEMS = [
 
 export default function HelpPage() {
   return (
-    <div className="min-h-screen bg-white">
-      <section className="pt-28 pb-16 px-6 bg-gradient-to-b from-neutral-50 to-white">
+    <div className="min-h-screen bg-neutral-950">
+      <section className="pt-28 pb-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-600 text-xs font-mono mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-teal-600 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 text-xs font-mono mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
             Help Center
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold mb-6 text-neutral-900">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-6 text-white">
             How can we help?
           </h1>
-          <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
+          <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
             Get support from our community, browse documentation, or reach out directly.
             We&apos;re here to help you make smarter decisions.
           </p>
         </div>
       </section>
-      <section className="py-16 px-6 bg-white">
+
+      <section className="py-16 px-6">
         <div className="max-w-xl mx-auto">
           <div className="grid gap-6">
             {SUPPORT_OPTIONS.map((option, i) => (
               <div
                 key={i}
-                className={`p-6 rounded-xl bg-white border shadow-sm ${option.borderColor} hover:shadow-md transition-all`}
+                className="p-6 rounded-xl bg-neutral-900 border border-neutral-800 hover:border-neutral-700 transition-all"
               >
                 <div
-                  className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 ${option.bgColor}`}
+                  className="w-14 h-14 rounded-xl flex items-center justify-center mb-5 bg-indigo-500/20"
                   style={{ color: option.color }}
                 >
                   {option.icon}
                 </div>
 
-                <h3 className="text-xl font-semibold mb-3 text-neutral-900">{option.title}</h3>
-                <p className="text-sm text-neutral-600 mb-6 leading-relaxed">
+                <h3 className="text-xl font-semibold mb-3 text-white">{option.title}</h3>
+                <p className="text-sm text-neutral-400 mb-6 leading-relaxed">
                   {option.description}
                 </p>
                 <a
@@ -80,7 +87,7 @@ export default function HelpPage() {
                   className="block"
                 >
                   <Button
-                    className="w-full h-11 font-mono font-bold transition-all text-white"
+                    className="w-full h-11 font-semibold transition-all text-white"
                     style={{ backgroundColor: option.color }}
                   >
                     {option.cta}
@@ -94,13 +101,14 @@ export default function HelpPage() {
           </div>
         </div>
       </section>
-      <section className="py-16 px-6 border-t border-neutral-100 bg-neutral-50">
+
+      <section className="py-16 px-6 border-t border-neutral-800">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-neutral-900">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-white">
               Frequently Asked Questions
             </h2>
-            <p className="text-neutral-600">
+            <p className="text-neutral-400">
               Quick answers to common questions about OpportunIQ.
             </p>
           </div>
@@ -108,13 +116,13 @@ export default function HelpPage() {
             {FAQ_ITEMS.map((item, i) => (
               <div
                 key={i}
-                className="p-6 rounded-xl bg-white border border-neutral-200 shadow-sm"
+                className="p-6 rounded-xl bg-neutral-900 border border-neutral-800"
               >
-                <h3 className="text-lg font-semibold mb-3 flex items-start gap-3 text-neutral-900">
-                  <span className="text-teal-600 font-mono text-sm mt-0.5">Q:</span>
+                <h3 className="text-lg font-semibold mb-3 flex items-start gap-3 text-white">
+                  <span className="text-teal-400 font-mono text-sm mt-0.5">Q:</span>
                   {item.question}
                 </h3>
-                <p className="text-neutral-600 leading-relaxed pl-6">
+                <p className="text-neutral-400 leading-relaxed pl-6">
                   {item.answer}
                 </p>
               </div>
@@ -122,12 +130,13 @@ export default function HelpPage() {
           </div>
         </div>
       </section>
-      <section className="py-16 px-6 bg-linear-to-b from-white to-neutral-50">
+
+      <section className="py-16 px-6 border-t border-neutral-800">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4 text-neutral-900">
+          <h2 className="text-2xl font-bold mb-4 text-white">
             Still need help?
           </h2>
-          <p className="text-neutral-600 mb-8">
+          <p className="text-neutral-400 mb-8">
             Join our Discord community for real-time support from our team and other users.
           </p>
           <a
@@ -136,7 +145,7 @@ export default function HelpPage() {
             rel="noopener noreferrer"
           >
             <Button
-              className="h-12 px-8 font-mono font-bold text-white rounded-lg transition-all"
+              className="h-12 px-8 font-semibold text-white rounded-lg transition-all"
               style={{ backgroundColor: "#5865F2" }}
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">

@@ -2,87 +2,80 @@
 
 import Link from "next/link";
 import { OpportunIQLogo } from "./OpportunIQLogo";
+import {
+  IoLogoTwitter,
+  IoLogoLinkedin,
+  IoLogoGithub,
+} from "react-icons/io5";
 
-const footerSections = [
-  {
-    title: "Features",
-    links: [
-      { label: "Safety & Risk", href: "/product/safety-risk" },
-      { label: "Opportunity Cost", href: "/product/opportunity-cost" },
-      { label: "Decision Ledger", href: "/product/decision-ledger" },
-      { label: "Collaboration", href: "/product/collaboration" },
-    ],
-  },
-  {
-    title: "Resources",
-    links: [
-      { label: "Help Center", href: "/help-center" },
-      { label: "Case Studies", href: "/case-studies" },
-      { label: "Contact", href: "mailto:support@opportuniq.app" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "Privacy Policy", href: "/privacy-policy" },
-      { label: "Terms of Service", href: "/terms-of-service" },
-    ],
-  },
+const socialLinks = [
+  { label: "Twitter", href: "https://twitter.com", icon: IoLogoTwitter },
+  { label: "LinkedIn", href: "https://linkedin.com", icon: IoLogoLinkedin },
+  { label: "GitHub", href: "https://github.com", icon: IoLogoGithub },
 ];
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-neutral-50 border-t border-neutral-200">
-      <div className="relative mx-auto max-w-7xl px-6 pt-16 pb-8">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12 pb-12 border-b border-neutral-200">
-          <div className="col-span-2">
-            <Link href="/" className="inline-flex items-center gap-3 group mb-6">
-              <OpportunIQLogo className="h-10 w-10 text-teal-700 transition-all duration-300 group-hover:text-teal-600" />
-              <span className="font-bold text-xl text-neutral-900 group-hover:text-teal-700 transition-colors">
+    <footer className="relative overflow-hidden bg-neutral-950 border-t border-neutral-800">
+      <div className="relative mx-auto max-w-7xl px-6 py-12">
+        {/* Top row: Brand + Social */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6">
+          {/* Brand */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+            <Link href="/" className="inline-flex items-center gap-2.5 group">
+              <OpportunIQLogo className="h-7 w-7 text-teal-500 transition-all duration-300 group-hover:text-teal-400" />
+              <span className="font-bold text-base text-white transition-colors group-hover:text-teal-400">
                 OpportunIQ
               </span>
             </Link>
-            <p className="text-neutral-600 text-sm mb-6 max-w-sm leading-relaxed">
-              Your research assistant for home repairs. Find parts, compare prices, and locate pros near you.
+            <p className="text-sm text-neutral-500 max-w-xs">
+              Make smarter decisions about repairs and maintenance.
             </p>
           </div>
-          {footerSections.map((section) => (
-            <div key={section.title}>
-              <h3 className="text-xs font-semibold text-teal-700 uppercase tracking-wider mb-4">
-                {section.title}
-              </h3>
-              <ul className="space-y-3">
-                {section.links.map((link) => (
-                  <li key={link.label}>
-                    {link.href.startsWith("mailto:") || link.href.startsWith("http") ? (
-                      <a
-                        href={link.href}
-                        target={link.href.startsWith("http") ? "_blank" : undefined}
-                        rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                        className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors inline-flex items-center gap-2 group"
-                      >
-                        <span className="w-1 h-1 rounded-full bg-neutral-300 group-hover:bg-teal-500 transition-colors" />
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link
-                        href={link.href}
-                        className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors inline-flex items-center gap-2 group"
-                      >
-                        <span className="w-1 h-1 rounded-full bg-neutral-300 group-hover:bg-teal-500 transition-colors" />
-                        {link.label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+
+          {/* Social links */}
+          <div className="flex items-center gap-2">
+            {socialLinks.map((social) => (
+              <a
+                key={social.label}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-lg bg-neutral-800/50 hover:bg-neutral-800 flex items-center justify-center text-neutral-500 hover:text-white transition-all"
+                aria-label={social.label}
+              >
+                <social.icon className="h-4 w-4" />
+              </a>
+            ))}
+          </div>
         </div>
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-center">
-          <p className="text-sm text-neutral-500">
+
+        {/* Bottom row: Copyright + Links */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-neutral-600">
             &copy; {new Date().getFullYear()} OpportunIQ. All rights reserved.
           </p>
+
+          <div className="flex items-center gap-6">
+            <Link
+              href="/help-center"
+              className="text-xs text-neutral-500 hover:text-white transition-colors"
+            >
+              Help Center
+            </Link>
+            <Link
+              href="/privacy-policy"
+              className="text-xs text-neutral-500 hover:text-white transition-colors"
+            >
+              Privacy
+            </Link>
+            <Link
+              href="/terms-of-service"
+              className="text-xs text-neutral-500 hover:text-white transition-colors"
+            >
+              Terms
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

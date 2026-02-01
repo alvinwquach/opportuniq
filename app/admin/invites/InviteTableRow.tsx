@@ -19,7 +19,7 @@ export function InviteTableRow({ invite }: InviteTableRowProps) {
       </td>
       <td className="px-5 py-3">
         <div className="flex items-center gap-1.5">
-          <code className="text-xs font-mono text-[#888] bg-[#1a1a1a] px-2 py-1 rounded">
+          <code className="text-xs font-mono text-[#888] bg-[#171717] px-2 py-1 rounded">
             {invite.token}
           </code>
           <CopyButton text={invite.token} title="Copy token" />
@@ -36,7 +36,7 @@ export function InviteTableRow({ invite }: InviteTableRowProps) {
       <td className="px-5 py-3">
         <span
           className={`text-sm ${
-            isAccepted ? "text-emerald-400" : isPending ? "text-blue-400" : "text-[#555]"
+            isAccepted ? "text-emerald-400" : isPending ? "text-emerald-400" : "text-[#555]"
           }`}
         >
           {isAccepted ? "Accepted" : isPending ? "Pending" : "Expired"}
@@ -51,7 +51,7 @@ export function InviteTableRow({ invite }: InviteTableRowProps) {
       </td>
       <td className="px-5 py-3">
         <span className="text-sm text-[#666]">
-          {invite.createdAt.toLocaleDateString("en-US", {
+          {new Date(invite.createdAt).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
           })}
@@ -59,7 +59,7 @@ export function InviteTableRow({ invite }: InviteTableRowProps) {
       </td>
       <td className="px-5 py-3">
         <span className={`text-sm ${isExpired ? "text-red-400/70" : "text-[#666]"}`}>
-          {invite.expiresAt.toLocaleDateString("en-US", {
+          {new Date(invite.expiresAt).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
           })}

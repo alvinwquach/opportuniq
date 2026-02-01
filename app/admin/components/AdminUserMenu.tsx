@@ -11,6 +11,7 @@ import {
   IoHelpCircle,
   IoLogOut,
   IoHome,
+  IoChevronDown,
 } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 
@@ -48,8 +49,8 @@ export function AdminUserMenu({ user }: AdminUserMenuProps) {
       <button
         onClick={() => setOpen(!open)}
         className={cn(
-          "flex items-center gap-2 p-1 rounded-md transition-colors",
-          open ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
+          "flex items-center gap-2 pl-1 pr-2 py-1 rounded-lg transition-colors",
+          open ? "bg-[#171717]" : "hover:bg-[#171717]"
         )}
       >
         {user.avatarUrl ? (
@@ -61,14 +62,21 @@ export function AdminUserMenu({ user }: AdminUserMenuProps) {
             className="w-7 h-7 rounded-full"
           />
         ) : (
-          <div className="w-7 h-7 rounded-full bg-[#1f1f1f] flex items-center justify-center text-[11px] font-medium text-[#888]">
+          <div className="w-7 h-7 rounded-full bg-white/[0.06] flex items-center justify-center text-sm">
             {(user.name || user.email).charAt(0).toUpperCase()}
           </div>
         )}
+        <div className="hidden sm:block text-left">
+          <p className="text-xs font-medium text-white leading-tight">
+            {user.name || "Admin"}
+          </p>
+          <p className="text-[10px] text-[#666] leading-tight">Administrator</p>
+        </div>
+        <IoChevronDown className="w-3.5 h-3.5 text-[#666] hidden sm:block" />
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-72 bg-[#0c0c0c] border border-[#1f1f1f] rounded-lg shadow-xl z-50 overflow-hidden">
-          <div className="px-4 py-3 border-b border-[#1f1f1f]">
+        <div className="absolute right-0 top-full mt-2 w-72 bg-[#171717] border border-white/[0.06] rounded-lg shadow-xl z-50 overflow-hidden">
+          <div className="px-4 py-3 border-b border-white/[0.06]">
             <div className="flex items-center gap-3">
               {user.avatarUrl ? (
                 <Image
@@ -79,7 +87,7 @@ export function AdminUserMenu({ user }: AdminUserMenuProps) {
                   className="w-10 h-10 rounded-full"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-[#1f1f1f] flex items-center justify-center text-sm font-medium text-[#888]">
+                <div className="w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center text-sm font-medium text-[#888]">
                   {(user.name || user.email).charAt(0).toUpperCase()}
                 </div>
               )}
@@ -92,7 +100,7 @@ export function AdminUserMenu({ user }: AdminUserMenuProps) {
             </div>
           </div>
           {user.postalCode && (
-            <div className="px-4 py-2 border-b border-[#1f1f1f]">
+            <div className="px-4 py-2 border-b border-white/[0.06]">
               <div className="flex items-center gap-2 text-[#666]">
                 <IoLocation className="w-3.5 h-3.5" />
                 <span className="text-[11px]">{user.postalCode}</span>
@@ -110,7 +118,7 @@ export function AdminUserMenu({ user }: AdminUserMenuProps) {
             <Link
               href="/dashboard/settings"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-[#161616] transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-white/[0.04] transition-colors"
             >
               <IoPerson className="w-4 h-4" />
               <span className="text-sm">Profile</span>
@@ -118,7 +126,7 @@ export function AdminUserMenu({ user }: AdminUserMenuProps) {
             <Link
               href="/dashboard/settings/income"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-[#161616] transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-white/[0.04] transition-colors"
             >
               <IoCard className="w-4 h-4" />
               <span className="text-sm">Income & Budget</span>
@@ -126,7 +134,7 @@ export function AdminUserMenu({ user }: AdminUserMenuProps) {
             <Link
               href="/dashboard/settings"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-[#161616] transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-white/[0.04] transition-colors"
             >
               <IoSettings className="w-4 h-4" />
               <span className="text-sm">Settings</span>
@@ -134,23 +142,23 @@ export function AdminUserMenu({ user }: AdminUserMenuProps) {
             <Link
               href="/help"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-[#161616] transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-white/[0.04] transition-colors"
             >
               <IoHelpCircle className="w-4 h-4" />
               <span className="text-sm">Help & Support</span>
             </Link>
           </div>
-          <div className="border-t border-[#1f1f1f] py-1">
+          <div className="border-t border-white/[0.06] py-1">
             <Link
               href="/dashboard"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-[#00D4FF] hover:text-[#00D4FF]/80 hover:bg-[#00D4FF]/10 transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition-colors"
             >
               <IoHome className="w-4 h-4" />
               <span className="text-sm">Back to Dashboard</span>
             </Link>
           </div>
-          <div className="border-t border-[#1f1f1f] py-1">
+          <div className="border-t border-white/[0.06] py-1">
             <Link
               href="/auth/logout"
               className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-red-400 hover:bg-red-500/10 transition-colors"

@@ -67,7 +67,7 @@ const INPUT_METHODS: InputMethod[] = [
 
 interface ReportIssueModalProps {
   trigger?: React.ReactNode;
-  variant?: "default" | "empty-state" | "sidebar" | "quick-action";
+  variant?: "default" | "empty-state" | "sidebar" | "quick-action" | "topbar";
 }
 
 export function ReportIssueModal({ trigger, variant = "default" }: ReportIssueModalProps) {
@@ -85,6 +85,7 @@ export function ReportIssueModal({ trigger, variant = "default" }: ReportIssueMo
       const source = variant === "sidebar" ? "sidebar"
         : variant === "empty-state" ? "empty_state"
         : variant === "quick-action" ? "quick_action"
+        : variant === "topbar" ? "topbar"
         : "dashboard";
       trackReportIssueModalOpened({ source });
     }
