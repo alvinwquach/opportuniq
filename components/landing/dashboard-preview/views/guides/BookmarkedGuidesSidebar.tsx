@@ -91,7 +91,7 @@ export function BookmarkedGuidesSidebar({ bookmarkedGuides }: BookmarkedGuidesSi
                 <span className="text-[10px] text-[#666] w-4">{index + 1}.</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-white truncate">{guide.title}</p>
-                  <p className="text-[9px] text-[#666]">{guide.duration}</p>
+                  <p className="text-[9px] text-[#666]">{guide.timeEstimate}</p>
                 </div>
               </div>
             ))}
