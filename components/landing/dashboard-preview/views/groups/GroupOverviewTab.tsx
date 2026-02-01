@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import {
   IoConstruct,
   IoCheckmarkCircle,
@@ -20,7 +21,7 @@ import {
 // Role definitions from schema
 type GroupRole = "coordinator" | "collaborator" | "participant" | "contributor" | "observer";
 
-const roleInfo: Record<GroupRole, { label: string; description: string; color: string; icon: React.ElementType }> = {
+const roleInfo: Record<GroupRole, { label: string; description: string; color: string; icon: React.ComponentType<{ className?: string }> }> = {
   coordinator: { label: "Coordinator", description: "Full control over group", color: "bg-emerald-500/20 text-emerald-400", icon: IoShield },
   collaborator: { label: "Collaborator", description: "Can manage issues and members", color: "bg-emerald-500/20 text-emerald-400", icon: IoPersonCircle },
   participant: { label: "Participant", description: "Can create and work on issues", color: "bg-emerald-500/20 text-emerald-400", icon: IoHammer },
