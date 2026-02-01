@@ -129,10 +129,14 @@ export const adminMutations = {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + (input.expiresInDays || 7));
 
+    const validTier = input.tier && ["johatsu", "alpha", "beta", "public"].includes(input.tier)
+      ? (input.tier as "johatsu" | "alpha" | "beta" | "public")
+      : undefined;
+
     const [invite] = await ctx.db.insert(invites).values({
       email: input.email,
       token,
-      tier: input.tier || null,
+      tier: validTier,
       expiresAt,
       invitedBy: ctx.userId!,
       emailSent: false,
@@ -186,12 +190,16 @@ export const adminMutations = {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
 
+    const validTier = tier && ["johatsu", "alpha", "beta", "public"].includes(tier)
+      ? (tier as "johatsu" | "alpha" | "beta" | "public")
+      : undefined;
+
     for (const email of emails) {
       const token = nanoid(32);
       const [invite] = await ctx.db.insert(invites).values({
         email,
         token,
-        tier: tier || null,
+        tier: validTier,
         expiresAt,
         invitedBy: ctx.userId!,
         emailSent: false,
@@ -245,10 +253,14 @@ export const adminMutations = {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
 
+    const validTier = tier && ["johatsu", "alpha", "beta", "public"].includes(tier)
+      ? (tier as "johatsu" | "alpha" | "beta" | "public")
+      : undefined;
+
     const [invite] = await ctx.db.insert(invites).values({
       email: entry.email,
       token,
-      tier: tier || null,
+      tier: validTier,
       expiresAt,
       invitedBy: ctx.userId!,
       emailSent: false,
