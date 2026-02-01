@@ -104,7 +104,7 @@ export function DashboardShowcase() {
 
         {/* Browser Frame with Dashboard */}
         <div ref={browserRef} className="w-full">
-          <BrowserChrome>
+          <BrowserChrome activeView={activeView}>
             <div className="h-[600px] overflow-hidden">
               {activeView === "diagnose" ? (
                 <DiagnoseView />
