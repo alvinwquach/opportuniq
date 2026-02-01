@@ -483,13 +483,21 @@ export async function dashboardDataResolver(
     }));
 
   // Format active guides
-  const activeGuidesFormatted = activeGuidesResult.map(({ progress, guide }) => ({
-    id: guide.id,
-    title: guide.title,
-    progress: progress.progressPercent || 0,
-    totalSteps: guide.totalSteps || 1,
-    completedSteps: progress.currentStep || 0,
-  }));
+  // TODO: Query actual step count from guideSteps table for accurate progress
+  const activeGuidesFormatted = activeGuidesResult.map(({ progress, guide }) => {
+    const completedSteps = progress.completedStepIds?.length || 0;
+    // Estimate totalSteps: if we have completed steps, assume at least that many + 1 more
+    // This is a temporary solution until we query the actual step count
+    const totalSteps = Math.max(completedSteps + 1, 5);
+    const progressPercent = progress.isCompleted ? 100 : Math.round((completedSteps / totalSteps) * 100);
+    return {
+      id: guide.id,
+      title: guide.title,
+      progress: progressPercent,
+      totalSteps,
+      completedSteps,
+    };
+  });
 
   // Format recent outcomes
   const recentOutcomes = outcomesResult.map(({ outcome, option, issue }) => ({

@@ -147,19 +147,10 @@ export async function guidesPageDataResolver(
 
   for (let i = 5; i >= 0; i--) {
     const targetMonth = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const monthGuides = allGuides.filter((g) => {
-      const guideDate = new Date(g.createdAt);
-      return (
-        guideDate.getMonth() === targetMonth.getMonth() &&
-        guideDate.getFullYear() === targetMonth.getFullYear()
-      );
-    });
-
     // TODO: Implement estimatedSavings field in guides schema
+    // For now, use 0 as placeholder
     const saved = 0;
-
-    // Estimate what it would have cost (saved + typical pro cost markup)
-    const wouldCost = saved > 0 ? saved * 2.5 : 0;
+    const wouldCost = 0;
 
     savingsOverTime.push({
       month: monthNames[targetMonth.getMonth()],
