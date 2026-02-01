@@ -154,8 +154,8 @@ export async function dashboardDataResolver(
     ? {
         postalCode: userProfile.postalCode,
         city: userProfile.city,
-        latitude: userProfile.latitude ? parseFloat(userProfile.latitude) : null,
-        longitude: userProfile.longitude ? parseFloat(userProfile.longitude) : null,
+        latitude: userProfile.latitude ?? null,
+        longitude: userProfile.longitude ?? null,
       }
     : null;
 
