@@ -229,7 +229,7 @@ export interface WeatherData {
     uvIndex: number;
     precipitation: number;
     visibility: number;
-  };
+  } | null;
   daily: Array<{
     date: string;
     temperatureMax: number;
@@ -241,20 +241,20 @@ export interface WeatherData {
     sunset: string;
     windSpeedMax: number;
     uvIndexMax: number;
-  }>;
+  }> | null;
   airQuality: {
     aqi: number;
     pm25: number;
     pm10: number;
     description: string;
-  };
+  } | null;
 }
 
 export interface UserLocation {
-  postalCode: string;
-  city: string;
-  latitude: number;
-  longitude: number;
+  postalCode: string | null;
+  city: string | null;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 // =============================================================================
