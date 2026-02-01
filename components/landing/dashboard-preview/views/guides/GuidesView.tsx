@@ -168,13 +168,13 @@ export function GuidesView() {
           )}
           {activeTab === "videos" && (
             <MediaGuidesSidebar
-              guides={mixedGuides.filter(g => g.type === "video")}
+              guides={mixedGuides.filter(g => g.isVideo)}
               mediaType="videos"
             />
           )}
           {activeTab === "articles" && (
             <MediaGuidesSidebar
-              guides={mixedGuides.filter(g => g.type === "article")}
+              guides={mixedGuides.filter(g => !g.isVideo)}
               mediaType="articles"
             />
           )}
