@@ -319,15 +319,11 @@ async function searchInstructablesViaFirecrawl(
     const limit = options?.limit ?? 5;
     const searchUrl = `${INSTRUCTABLES_BASE_URL}/search/?q=${encodeURIComponent(query)}&projects=all`;
 
-    const result = await firecrawl.scrapeUrl(searchUrl, {
+    const result = await firecrawl.scrape(searchUrl, {
       formats: ["markdown", "links"],
       onlyMainContent: true,
       waitFor: 3000,
     });
-
-    if (!result.success) {
-      throw new Error("Failed to scrape Instructables search results");
-    }
 
     // Filter links to find project pages
     const projectPattern = /instructables\.com\/(?!search|member|id\/)[A-Za-z0-9-]+\/?$/;
@@ -422,20 +418,16 @@ export async function scrapeInstructablesGuide(url: string): Promise<GuideDetail
   }
 
   try {
-    const result = await firecrawl.scrapeUrl(url, {
-      formats: ["markdown", "extract"],
+    const result = await firecrawl.scrape(url, {
+      formats: [
+        "markdown",
+        { type: "json", schema: INSTRUCTABLES_EXTRACT_SCHEMA },
+      ],
       onlyMainContent: true,
       waitFor: 3000,
-      extract: {
-        schema: INSTRUCTABLES_EXTRACT_SCHEMA,
-      },
     });
 
-    if (!result.success) {
-      throw new Error("Failed to scrape Instructables guide");
-    }
-
-    const extracted = result.extract as {
+    const extracted = result.json as {
       title?: string;
       description?: string;
       author?: string;
