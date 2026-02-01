@@ -108,9 +108,8 @@ export async function guidesPageDataResolver(
   const savedCount = guides.filter((g) => g.isBookmarked).length;
 
   // Calculate total savings from helpful guides
-  const totalSaved = allGuides.reduce((sum, g) => {
-    return sum + parseFloat(g.estimatedSavings ?? "0");
-  }, 0);
+  // TODO: Implement estimatedSavings field in guides schema
+  const totalSaved = 0;
 
   // Estimate time saved (assume 2 hours per completed guide)
   const timeSavedHours = completedCount * 2;
@@ -156,9 +155,8 @@ export async function guidesPageDataResolver(
       );
     });
 
-    const saved = monthGuides.reduce((sum, g) => {
-      return sum + parseFloat(g.estimatedSavings ?? "0");
-    }, 0);
+    // TODO: Implement estimatedSavings field in guides schema
+    const saved = 0;
 
     // Estimate what it would have cost (saved + typical pro cost markup)
     const wouldCost = saved > 0 ? saved * 2.5 : 0;

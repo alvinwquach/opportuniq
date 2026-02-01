@@ -445,7 +445,7 @@ export async function dashboardDataResolver(
     id: decision.id,
     title: issue.title || "Untitled Issue",
     revisitDate: decision.revisitDate,
-    reason: decision.deferralReason,
+    reason: decision.assumptions?.reasoning ?? null,
   }));
 
   // Format groups
