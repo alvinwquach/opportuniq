@@ -15,7 +15,7 @@
  */
 
 // Client utilities
-export { graphqlClient, createGraphQLClient, gqlRequest } from "./client";
+export { createGraphQLClient, gqlRequest } from "./client";
 export type { GraphQLResponse } from "./client";
 
 // Query key factory (for manual cache invalidation)
