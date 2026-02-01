@@ -27,7 +27,7 @@ export function MediaGuidesSidebar({ guides, mediaType }: MediaGuidesSidebarProp
 
   // Calculate total duration
   const totalMinutes = guides.reduce((sum, guide) => {
-    const match = guide.duration?.match(/(\d+)/);
+    const match = guide.timeEstimate?.match(/(\d+)/);
     return sum + (match ? parseInt(match[1]) : 0);
   }, 0);
   const totalHours = Math.floor(totalMinutes / 60);
