@@ -551,11 +551,8 @@ export const Query = {
     const diyProjectsCompleted = Number(diyResults[0]?.count ?? 0);
 
     // Calculate total saved (from completed DIY guides)
-    const guides = await ctx.loaders.guidesByUserId.load(ctx.userId);
-    const totalSaved = guides.reduce(
-      (sum, g) => sum + parseFloat(g.estimatedSavings ?? "0"),
-      0
-    );
+    // TODO: Implement estimatedSavings field in guides schema
+    const totalSaved = 0;
 
     return {
       openIssues,
