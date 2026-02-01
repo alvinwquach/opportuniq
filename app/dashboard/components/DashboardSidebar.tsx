@@ -2,43 +2,39 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { OpportunIQLogo } from "@/components/landing/OpportunIQLogo";
 import {
-  IoGrid,
-  IoPeople,
-  IoAlertCircle,
-  IoSettings,
+  IoGridOutline,
+  IoPeopleOutline,
+  IoAlertCircleOutline,
+  IoSettingsOutline,
   IoLogOut,
   IoMenu,
   IoClose,
-  IoChevronBack,
-  IoChevronForward,
-  IoBook,
+  IoBookOutline,
   IoNotifications,
-  IoCalendar,
+  IoCalendarOutline,
   IoShield,
-  IoPersonAdd,
-  IoCamera,
-  IoScan,
+  IoScanOutline,
+  IoWalletOutline,
 } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import { useSidebar } from "./SidebarContext";
 import Image from "next/image";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { ReportIssueModal } from "./sections/ReportIssueModal";
 import { InviteFriendsModal } from "./InviteFriendsModal";
 
-const sidebarLinks = [
-  { href: "/dashboard", icon: IoGrid, label: "Dashboard", exact: true },
-  { href: "/dashboard/diagnose", icon: IoScan, label: "Diagnose" },
-  { href: "/issues", icon: IoAlertCircle, label: "Issues" },
-  { href: "/dashboard/groups", icon: IoPeople, label: "Groups" },
-  { href: "/dashboard/calendar", icon: IoCalendar, label: "Calendar" },
-  { href: "/dashboard/guides", icon: IoBook, label: "Guides" },
-  { href: "/dashboard/settings", icon: IoSettings, label: "Settings" },
+const mainNavItems = [
+  { href: "/dashboard", icon: IoGridOutline, label: "Dashboard", exact: true },
+  { href: "/dashboard/diagnose", icon: IoScanOutline, label: "Diagnose" },
+  { href: "/issues", icon: IoAlertCircleOutline, label: "Issues" },
+  { href: "/dashboard/groups", icon: IoPeopleOutline, label: "Groups" },
+  { href: "/dashboard/calendar", icon: IoCalendarOutline, label: "Calendar" },
+  { href: "/dashboard/finances", icon: IoWalletOutline, label: "Finances" },
+  { href: "/dashboard/guides", icon: IoBookOutline, label: "Guides" },
+];
+
+const bottomNavItems = [
+  { href: "/dashboard/settings", icon: IoSettingsOutline, label: "Settings" },
 ];
 
 interface DashboardSidebarProps {
@@ -54,251 +50,216 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({ user, isAdmin = false, accessTier }: DashboardSidebarProps) {
   const pathname = usePathname();
-  const { isCollapsed, isMobileOpen, toggleCollapsed, toggleMobile, closeMobile } = useSidebar();
+  const { isMobileOpen, toggleMobile, closeMobile } = useSidebar();
 
   // Check if user can invite (johatsu, alpha, or beta users)
   const canInvite = accessTier === "johatsu" || accessTier === "alpha" || accessTier === "beta";
-
-  const showExpanded = !isCollapsed;
 
   const isActive = (href: string, exact?: boolean) => {
     if (exact) {
       return pathname === href;
     }
-    return pathname?.startsWith(href);
+    return pathname?.startsWith(href) ?? false;
   };
 
   return (
     <>
-      <aside
-        className={cn(
-          "fixed left-0 top-0 z-40 h-screen hidden lg:flex flex-col bg-[#0c0c0c] border-r border-[#1f1f1f]",
-          "transition-[width] duration-200 ease-out",
-          showExpanded ? "w-56" : "w-17"
-        )}
-      >
-        <div
-          className={cn(
-            "flex h-12 items-center border-b border-[#1f1f1f] transition-all duration-200 flex-shrink-0",
-            showExpanded ? "px-3 justify-between" : "px-1.5 justify-center"
-          )}
-        >
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-md flex items-center justify-center shrink-0 bg-[#00D4FF]/10 border border-[#00D4FF]/20">
-              <svg viewBox="0 0 100 100" className="h-4 w-4" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M50 5 L85 25 L85 65 L50 85 L15 65 L15 25 Z" stroke="#00D4FF" strokeWidth="4" fill="none" />
-                <circle cx="50" cy="45" r="12" stroke="#00D4FF" strokeWidth="4" fill="none" strokeDasharray="60 25" transform="rotate(-90 50 45)" />
-                <path d="M 58 53 L 68 63" stroke="#00D4FF" strokeWidth="4" strokeLinecap="round" />
-                <circle cx="50" cy="45" r="4" fill="#00D4FF" />
-              </svg>
-            </div>
-            {showExpanded && (
-              <span className="text-[13px] font-semibold text-white">OpportunIQ</span>
-            )}
+      {/* Desktop Sidebar - Icon only like demo */}
+      <aside className="w-14 hidden lg:flex flex-col h-screen bg-[#0d0d0d] border-r border-white/[0.06] fixed left-0 top-0 z-40">
+        {/* Logo */}
+        <div className="h-12 flex items-center justify-center border-b border-white/[0.06]">
+          <Link href="/dashboard" className="flex items-center justify-center">
+            <OpportunIQLogo className="w-7 h-7 text-emerald-400" />
           </Link>
         </div>
-        <div className={cn("py-2 transition-all duration-200 flex-shrink-0", showExpanded ? "px-2" : "px-1.5")}>
-          {showExpanded ? (
-            <ReportIssueModal
-              variant="sidebar"
-              trigger={
-                <button className="w-full flex items-center gap-2 px-2.5 py-2 rounded-md text-[13px] bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20 hover:bg-[#00D4FF]/20 transition-colors">
-                  <IoCamera className="h-4 w-4 shrink-0" />
-                  <span className="font-medium">New Issue</span>
-                </button>
-              }
-            />
-          ) : (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div>
-                  <ReportIssueModal
-                    variant="sidebar"
-                    trigger={
-                      <button className="flex items-center justify-center w-9 h-9 mx-auto rounded-md bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20 hover:bg-[#00D4FF]/20 transition-colors">
-                        <IoCamera className="h-4 w-4 shrink-0" />
-                      </button>
-                    }
-                  />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={8}>
-                New Issue
-              </TooltipContent>
-            </Tooltip>
-          )}
-        </div>
-        <nav className={cn("flex-1 py-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[#333] scrollbar-track-transparent", showExpanded ? "px-2" : "px-1.5")}>
-          {isAdmin && showExpanded && (
-            <Link
-              href="/admin"
-              className={cn(
-                "flex items-center gap-2.5 px-2.5 py-2 rounded-md transition-colors mb-2 text-amber-500 hover:text-amber-400 hover:bg-amber-500/10 border border-amber-500/20"
-              )}
-            >
-              <IoShield className="h-4 w-4 shrink-0" />
-              <span className="text-[13px] font-medium">Admin</span>
-            </Link>
-          )}
-          {isAdmin && !showExpanded && (
-            <Tooltip>
-              <TooltipTrigger asChild>
+
+        {/* Main Navigation */}
+        <nav className="flex-1 py-2">
+          <ul className="space-y-0.5 px-2">
+            {/* Admin link */}
+            {isAdmin && (
+              <li>
                 <Link
                   href="/admin"
-                  className="flex items-center justify-center w-9 h-9 mx-auto rounded-md text-amber-500 hover:bg-amber-500/10 border border-amber-500/20 transition-colors mb-2"
+                  className="w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 group relative mx-auto text-amber-500 hover:bg-amber-500/10 border border-amber-500/20 mb-2"
+                  title="Admin"
                 >
-                  <IoShield className="h-4 w-4 shrink-0" />
+                  <IoShield className="w-4 h-4 flex-shrink-0" />
+                  {/* Tooltip */}
+                  <span className="absolute left-full ml-2 px-2 py-1 bg-[#171717] border border-white/[0.06] text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg">
+                    Admin Dashboard
+                  </span>
                 </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={8}>
-                Admin Dashboard
-              </TooltipContent>
-            </Tooltip>
-          )}
-          {/* Invite Friends - visible to johatsu, alpha, and beta users */}
-          {canInvite && showExpanded && (
-            <InviteFriendsModal userId={user.id} variant="sidebar" />
-          )}
-          {canInvite && !showExpanded && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div>
-                  <InviteFriendsModal userId={user.id} variant="sidebar-collapsed" />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={8}>
-                Invite Friends
-              </TooltipContent>
-            </Tooltip>
-          )}
-          {sidebarLinks.map((link) => {
-            const active = isActive(link.href, link.exact);
-            const linkContent = (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "flex items-center rounded-md transition-colors mb-0.5",
-                  showExpanded
-                    ? "gap-2.5 px-2.5 py-2"
-                    : "justify-center w-9 h-9 mx-auto",
-                  active
-                    ? "bg-[#00D4FF]/10 text-[#00D4FF] font-medium"
-                    : "text-[#888] hover:text-white hover:bg-[#1f1f1f]"
-                )}
-              >
-                <link.icon className="h-4 w-4 shrink-0" />
-                {showExpanded && (
-                  <span className="text-[13px]">{link.label}</span>
-                )}
-              </Link>
-            );
+              </li>
+            )}
 
-            if (showExpanded) {
-              return <div key={link.href}>{linkContent}</div>;
-            }
+            {/* Invite Friends - visible to johatsu, alpha, and beta users */}
+            {canInvite && (
+              <li className="mb-2">
+                <InviteFriendsModal userId={user.id} variant="sidebar-collapsed" />
+              </li>
+            )}
 
-            return (
-              <Tooltip key={link.href}>
-                <TooltipTrigger asChild>
-                  {linkContent}
-                </TooltipTrigger>
-                <TooltipContent side="right" sideOffset={8}>
-                  {link.label}
-                </TooltipContent>
-              </Tooltip>
-            );
-          })}
+            {/* Main nav items */}
+            {mainNavItems.map((item) => {
+              const active = isActive(item.href, item.exact);
+              const Icon = item.icon;
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 group relative mx-auto",
+                      active
+                        ? "bg-emerald-500/10 text-emerald-400"
+                        : "text-[#888] hover:bg-white/[0.04] hover:text-white"
+                    )}
+                    title={item.label}
+                  >
+                    <Icon className="w-4 h-4 flex-shrink-0" />
+                    {/* Tooltip */}
+                    <span className="absolute left-full ml-2 px-2 py-1 bg-[#171717] border border-white/[0.06] text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg">
+                      {item.label}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </nav>
-        {/* Collapse/Expand button - positioned absolutely at top right, overlapping sidebar */}
-        <Tooltip delayDuration={300}>
-          <TooltipTrigger asChild>
-            <button
-              onClick={toggleCollapsed}
-              className="absolute top-3 -right-3 w-6 h-6 flex items-center justify-center rounded-full bg-[#1f1f1f] border border-[#333] text-[#888] hover:text-white hover:bg-[#2a2a2a] transition-colors shadow-md z-50"
-              aria-label={showExpanded ? "Collapse sidebar" : "Expand sidebar"}
-            >
-              {showExpanded ? (
-                <IoChevronBack className="h-3 w-3" />
-              ) : (
-                <IoChevronForward className="h-3 w-3" />
-              )}
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" sideOffset={8} className="z-[60]">
-            {showExpanded ? "Collapse sidebar" : "Expand sidebar"}
-          </TooltipContent>
-        </Tooltip>
+
+        {/* Bottom Navigation */}
+        <div className="py-3 border-t border-white/[0.06]">
+          <ul className="space-y-0.5 px-2">
+            {bottomNavItems.map((item) => {
+              const active = isActive(item.href);
+              const Icon = item.icon;
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 group relative mx-auto",
+                      active
+                        ? "bg-emerald-500/10 text-emerald-400"
+                        : "text-[#888] hover:bg-white/[0.04] hover:text-white"
+                    )}
+                    title={item.label}
+                  >
+                    <Icon className="w-4 h-4 flex-shrink-0" />
+                    {/* Tooltip */}
+                    <span className="absolute left-full ml-2 px-2 py-1 bg-[#171717] border border-white/[0.06] text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg">
+                      {item.label}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </aside>
+
+      {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/30 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/60 lg:hidden"
           onClick={closeMobile}
         />
       )}
+
+      {/* Mobile Sidebar - Full width with labels */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-50 h-screen w-64 lg:hidden transition-transform duration-300 ease-in-out bg-[#0c0c0c] border-r border-[#1f1f1f]",
+          "fixed left-0 top-0 z-50 h-screen w-64 border-r border-white/[0.06] lg:hidden transition-transform duration-300 ease-in-out",
+          "bg-[#0d0d0d]",
           isMobileOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex h-full flex-col">
-          <div className="flex h-12 items-center justify-between px-3 border-b border-[#1f1f1f]">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-md flex items-center justify-center bg-[#00D4FF]/10 border border-[#00D4FF]/20">
-                <svg viewBox="0 0 100 100" className="h-4 w-4" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M50 5 L85 25 L85 65 L50 85 L15 65 L15 25 Z" stroke="#00D4FF" strokeWidth="4" fill="none" />
-                  <circle cx="50" cy="45" r="12" stroke="#00D4FF" strokeWidth="4" fill="none" strokeDasharray="60 25" transform="rotate(-90 50 45)" />
-                  <path d="M 58 53 L 68 63" stroke="#00D4FF" strokeWidth="4" strokeLinecap="round" />
-                  <circle cx="50" cy="45" r="4" fill="#00D4FF" />
-                </svg>
-              </div>
+          {/* Header */}
+          <div className="flex h-12 items-center justify-between border-b border-white/[0.06] px-3">
+            <Link href="/dashboard" className="flex items-center gap-2">
+              <OpportunIQLogo className="w-7 h-7 text-emerald-400" />
               <span className="text-[13px] font-semibold text-white">OpportunIQ</span>
             </Link>
             <button
               onClick={closeMobile}
-              className="p-1.5 rounded-md text-[#888] hover:text-white hover:bg-[#1f1f1f] transition-colors"
+              className="p-1.5 rounded-md text-[#888] hover:text-white hover:bg-white/[0.04] transition-colors"
             >
               <IoClose className="h-4 w-4" />
             </button>
           </div>
-          <div className="px-2 py-2">
-            <ReportIssueModal
-              variant="sidebar"
-              trigger={
-                <button className="w-full flex items-center gap-2 px-2.5 py-2 rounded-md text-[13px] font-medium bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20 hover:bg-[#00D4FF]/20 transition-colors">
-                  <IoCamera className="h-4 w-4" />
-                  New Issue
-                </button>
-              }
-            />
-          </div>
-          <nav className="flex-1 px-2 py-1">
+
+          {/* Navigation */}
+          <nav className="flex-1 px-3 py-2 overflow-y-auto">
+            {/* Admin link - mobile */}
+            {isAdmin && (
+              <Link
+                href="/admin"
+                onClick={closeMobile}
+                className="flex items-center gap-2.5 px-2.5 py-2 rounded-md transition-colors mb-2 text-amber-500 hover:text-amber-400 hover:bg-amber-500/10 border border-amber-500/20"
+              >
+                <IoShield className="h-4 w-4" />
+                <span className="text-[13px] font-medium">Admin</span>
+              </Link>
+            )}
+
             {/* Invite Friends - mobile */}
             {canInvite && (
-              <InviteFriendsModal userId={user.id} variant="sidebar" />
+              <div className="mb-2">
+                <InviteFriendsModal userId={user.id} variant="sidebar" />
+              </div>
             )}
-            {sidebarLinks.map((link) => {
-              const active = isActive(link.href, link.exact);
+
+            {/* Main nav items */}
+            {mainNavItems.map((item) => {
+              const active = isActive(item.href, item.exact);
+              const Icon = item.icon;
               return (
                 <Link
-                  key={link.href}
-                  href={link.href}
+                  key={item.href}
+                  href={item.href}
                   onClick={closeMobile}
                   className={cn(
                     "flex items-center gap-2.5 px-2.5 py-2 rounded-md transition-colors mb-0.5",
                     active
-                      ? "bg-[#00D4FF]/10 text-[#00D4FF] font-medium"
-                      : "text-[#888] hover:text-white hover:bg-[#1f1f1f]"
+                      ? "bg-emerald-500/10 text-emerald-400"
+                      : "text-[#888] hover:text-white hover:bg-white/[0.04]"
                   )}
                 >
-                  <link.icon className="h-4 w-4" />
-                  <span className="text-[13px]">{link.label}</span>
+                  <Icon className="h-4 w-4" />
+                  <span className="text-[13px]">{item.label}</span>
+                </Link>
+              );
+            })}
+
+            <div className="h-px bg-white/[0.06] my-2" />
+
+            {/* Bottom nav items */}
+            {bottomNavItems.map((item) => {
+              const active = isActive(item.href);
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={closeMobile}
+                  className={cn(
+                    "flex items-center gap-2.5 px-2.5 py-2 rounded-md transition-colors mb-0.5",
+                    active
+                      ? "bg-emerald-500/10 text-emerald-400"
+                      : "text-[#888] hover:text-white hover:bg-white/[0.04]"
+                  )}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="text-[13px]">{item.label}</span>
                 </Link>
               );
             })}
           </nav>
-          <div className="p-2 border-t border-[#1f1f1f]">
+
+          {/* User Section */}
+          <div className="border-t border-white/[0.06] p-3">
             <div className="flex items-center gap-2.5 px-2 py-1.5 mb-1">
               {user.avatarUrl ? (
                 <Image
@@ -309,20 +270,20 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
                   className="w-7 h-7 rounded-full"
                 />
               ) : (
-                <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-medium bg-[#1f1f1f] text-[#888]">
+                <div className="w-7 h-7 rounded-full bg-[#1a1a1a] flex items-center justify-center text-[11px] font-medium text-[#888]">
                   {(user.name || user.email).charAt(0).toUpperCase()}
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-medium truncate text-white">
+                <p className="text-[13px] font-medium text-white truncate">
                   {user.name || "User"}
                 </p>
-                <p className="text-[11px] truncate text-[#888]">{user.email}</p>
+                <p className="text-[11px] text-[#666] truncate">{user.email}</p>
               </div>
             </div>
             <Link
               href="/auth/logout"
-              className="flex items-center gap-2 px-2.5 py-2 rounded-md transition-colors text-[13px] text-red-400 hover:bg-red-500/10"
+              className="flex items-center gap-2 px-2.5 py-2 rounded-md text-[#888] hover:text-red-400 hover:bg-red-500/10 transition-colors text-[13px]"
             >
               <IoLogOut className="h-4 w-4" />
               Sign out
@@ -330,30 +291,26 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
           </div>
         </div>
       </aside>
-      <header className="fixed top-0 left-0 right-0 z-30 h-12 flex items-center px-3 lg:hidden bg-[#0c0c0c] border-b border-[#1f1f1f]">
+
+      {/* Mobile Header */}
+      <header className="fixed top-0 left-0 right-0 z-30 h-12 border-b border-white/[0.06] bg-[#111111] flex items-center px-3 lg:hidden">
         <button
           onClick={toggleMobile}
-          className="p-1.5 -ml-1 rounded-md text-[#888] hover:text-white hover:bg-[#1f1f1f] transition-colors"
+          className="p-1.5 -ml-1 rounded-md text-[#888] hover:text-white hover:bg-white/[0.04] transition-colors"
         >
           <IoMenu className="h-4 w-4" />
         </button>
-        <Link href="/" className="flex items-center gap-2 ml-2">
-          <div className="w-7 h-7 rounded-md flex items-center justify-center bg-[#00D4FF]/10 border border-[#00D4FF]/20">
-            <svg viewBox="0 0 100 100" className="h-3.5 w-3.5" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50 5 L85 25 L85 65 L50 85 L15 65 L15 25 Z" stroke="#00D4FF" strokeWidth="4" fill="none" />
-              <circle cx="50" cy="45" r="12" stroke="#00D4FF" strokeWidth="4" fill="none" strokeDasharray="60 25" transform="rotate(-90 50 45)" />
-              <path d="M 58 53 L 68 63" stroke="#00D4FF" strokeWidth="4" strokeLinecap="round" />
-              <circle cx="50" cy="45" r="4" fill="#00D4FF" />
-            </svg>
-          </div>
+        <Link href="/dashboard" className="flex items-center gap-2 ml-2">
+          <OpportunIQLogo className="w-6 h-6 text-emerald-400" />
           <span className="text-[13px] font-semibold text-white">OpportunIQ</span>
         </Link>
         <div className="ml-auto flex items-center gap-2">
           <Link
             href="/notifications"
-            className="p-1.5 rounded-md text-[#888] hover:text-white hover:bg-[#1f1f1f] transition-colors relative"
+            className="p-1.5 rounded-md text-[#666] hover:text-white hover:bg-white/[0.04] transition-colors relative"
           >
             <IoNotifications className="h-4 w-4" />
+            <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-red-500 rounded-full" />
           </Link>
           {user.avatarUrl ? (
             <Image
@@ -364,7 +321,7 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
               className="w-7 h-7 rounded-full"
             />
           ) : (
-            <div className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium bg-[#1f1f1f] text-[#888]">
+            <div className="w-7 h-7 rounded-full bg-[#1a1a1a] flex items-center justify-center text-[10px] font-medium text-[#888]">
               {(user.name || user.email).charAt(0).toUpperCase()}
             </div>
           )}

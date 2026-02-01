@@ -27,7 +27,7 @@ export default async function AdminLayout({
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-[#0c0c0c] flex">
+      <div className="min-h-screen bg-[#111111] flex">
         <AdminSidebar
           user={{
             name,

@@ -29,6 +29,11 @@ node_modules.nosync/
 .DS_Store
 *.pem
 
+# lighthouse
+/lighthouse-report*
+lighthouse-report.*
+/lighthouse-reports/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

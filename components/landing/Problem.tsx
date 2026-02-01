@@ -83,7 +83,7 @@ function SayVisual() {
           <div className="flex items-center justify-center gap-0.5 h-6">
             {[3, 5, 8, 10, 7, 12, 9, 5, 8, 11, 6, 4, 7, 9, 5].map((h, i) => (
               <div
-                key={i}
+                key={`bar-${i}-${h}`}
                 className="w-1 bg-teal-500 rounded-full"
                 style={{ height: `${h * 1.5}px`, opacity: 0.5 + (h / 24) }}
               />

@@ -1,6 +1,20 @@
 import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { SettingsNav } from "./components/SettingsNav";
+import { db } from "@/app/db/client";
+import { users, userIncomeStreams } from "@/app/db/schema";
+import { eq, and } from "drizzle-orm";
+import { SettingsPageClient } from "./SettingsPageClient";
+
+// Frequency multipliers to convert to monthly
+const FREQUENCY_TO_MONTHLY: Record<string, number> = {
+  weekly: 4.33,
+  bi_weekly: 2.17,
+  semi_monthly: 2,
+  monthly: 1,
+  quarterly: 1 / 3,
+  annual: 1 / 12,
+  one_time: 0,
+};
 
 export default async function SettingsPage() {
   const user = await getCurrentUser();
@@ -9,18 +23,39 @@ export default async function SettingsPage() {
     redirect("/auth/login");
   }
 
-  return (
-    <div className="min-h-screen bg-[#0c0c0c]">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-white mb-2">Settings</h1>
-          <p className="text-sm text-[#666]">
-            Manage your account, preferences, and integrations.
-          </p>
-        </div>
+  // Fetch user data and income streams
+  const [userData, incomeStreams] = await Promise.all([
+    db.select().from(users).where(eq(users.id, user.id)).then(rows => rows[0]),
+    db
+      .select()
+      .from(userIncomeStreams)
+      .where(
+        and(
+          eq(userIncomeStreams.userId, user.id),
+          eq(userIncomeStreams.isActive, true)
+        )
+      ),
+  ]);
 
-        <SettingsNav />
-      </div>
-    </div>
+  if (!userData) {
+    redirect("/onboarding");
+  }
+
+  // Calculate monthly income and hourly rate
+  let monthlyIncome = 0;
+  for (const stream of incomeStreams) {
+    const multiplier = FREQUENCY_TO_MONTHLY[stream.frequency] || 0;
+    monthlyIncome += Number(stream.amount) * multiplier;
+  }
+  const annualIncome = monthlyIncome * 12;
+  const hourlyRate = annualIncome / 2080; // 40 hrs/week * 52 weeks
+
+  return (
+    <SettingsPageClient
+      monthlyIncome={monthlyIncome}
+      annualIncome={annualIncome}
+      hourlyRate={hourlyRate}
+      postalCode={userData.postalCode}
+    />
   );
 }

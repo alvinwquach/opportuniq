@@ -7,7 +7,7 @@ interface MiniBarChartProps {
   color?: string;
 }
 
-export function MiniBarChart({ data, color = "#5eead4" }: MiniBarChartProps) {
+export function MiniBarChart({ data, color = "#3ECF8E" }: MiniBarChartProps) {
   if (data.length === 0) {
     return (
       <div className="flex items-center justify-center h-full text-[#666] text-[13px]">
@@ -28,8 +28,8 @@ export function MiniBarChart({ data, color = "#5eead4" }: MiniBarChartProps) {
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: "#1a1a1a",
-            border: "1px solid #2a2a2a",
+            backgroundColor: "#171717",
+            border: "1px solid rgba(255,255,255,0.06)",
             borderRadius: "8px",
             color: "#fff",
             fontSize: "12px",

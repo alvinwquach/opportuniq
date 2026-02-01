@@ -135,9 +135,9 @@ interface AIUsageClientProps {
 
 // Chart colors
 const COLORS = {
-  purple: "#a855f7",
-  blue: "#3b82f6",
-  cyan: "#06b6d4",
+  purple: "#3ECF8E",
+  blue: "#3ECF8E",
+  cyan: "#249361",
   green: "#22c55e",
   yellow: "#eab308",
   orange: "#f97316",
@@ -145,7 +145,7 @@ const COLORS = {
   red: "#ef4444",
 };
 
-const PIE_COLORS = [COLORS.purple, COLORS.blue, COLORS.cyan, COLORS.green, COLORS.orange];
+const PIE_COLORS = [COLORS.purple, COLORS.cyan, COLORS.green, COLORS.orange, COLORS.yellow];
 
 function StatCard({
   icon: Icon,
@@ -161,7 +161,7 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="bg-[#141414] border border-[#1f1f1f] rounded-lg p-4">
+    <div className="bg-[#171717] border border-white/[0.06] rounded-lg p-3 sm:p-4">
       <div className="flex items-center gap-2 mb-2">
         <div className={cn("p-1.5 rounded-md", color)}>
           <Icon className="h-4 w-4" />
@@ -194,10 +194,10 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="border-b border-[#1f1f1f] last:border-0">
+    <div className="border-b border-white/[0.06] last:border-0">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full px-4 py-3 flex items-center gap-4 hover:bg-[#1a1a1a] transition-colors text-left"
+        className="w-full px-4 py-3 flex items-center gap-4 hover:bg-[#171717] transition-colors text-left"
       >
         <div className="flex-1 min-w-0">
           <p className="text-[13px] text-white truncate">
@@ -210,7 +210,7 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
 
         <div className="flex items-center gap-1.5">
           {conversation.usedVoice && (
-            <span className="p-1 rounded bg-blue-500/20 text-blue-400" title="Voice input">
+            <span className="p-1 rounded bg-emerald-500/20 text-emerald-400" title="Voice input">
               <IoMic className="h-3.5 w-3.5" />
             </span>
           )}
@@ -220,7 +220,7 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
             </span>
           )}
           {conversation.toolCallCount > 0 && (
-            <span className="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 text-[10px] font-medium" title="Tool calls">
+            <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-medium" title="Tool calls">
               <IoHammer className="h-3 w-3 inline mr-0.5" />
               {conversation.toolCallCount}
             </span>
@@ -286,17 +286,17 @@ function ToolCallRow({ toolCall }: { toolCall: ToolCall }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="border-b border-[#1f1f1f] last:border-0">
+    <div className="border-b border-white/[0.06] last:border-0">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full px-4 py-3 flex items-center gap-4 hover:bg-[#1a1a1a] transition-colors text-left"
+        className="w-full px-4 py-3 flex items-center gap-4 hover:bg-[#171717] transition-colors text-left"
       >
         <div className="flex-1 min-w-0">
           <div className="flex gap-2 flex-wrap">
             {toolCall.toolCalls?.map((tc, i) => (
               <span
                 key={i}
-                className="px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded text-[11px] font-mono"
+                className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded text-[11px] font-mono"
               >
                 {tc.name}
               </span>
@@ -322,7 +322,7 @@ function ToolCallRow({ toolCall }: { toolCall: ToolCall }) {
       </button>
       {expanded && (
         <div className="px-4 pb-3 bg-[#0f0f0f]">
-          <pre className="text-[11px] text-[#888] overflow-x-auto p-2 bg-[#1a1a1a] rounded">
+          <pre className="text-[11px] text-[#888] overflow-x-auto p-2 bg-[#171717] rounded">
             {JSON.stringify(toolCall.toolCalls, null, 2)}
           </pre>
         </div>
@@ -342,10 +342,10 @@ function VoiceCallRow({ voiceCall }: { voiceCall: VoiceCall }) {
   const isGoogle = voiceCall.provider.startsWith("google");
 
   return (
-    <div className="border-b border-[#1f1f1f] last:border-0 px-4 py-3 flex items-center gap-4">
+    <div className="border-b border-white/[0.06] last:border-0 px-4 py-3 flex items-center gap-4">
       <div className={cn(
         "p-1.5 rounded-md",
-        isGoogle ? "bg-blue-500/20 text-blue-400" : "bg-green-500/20 text-green-400"
+        isGoogle ? "bg-emerald-500/20 text-emerald-400" : "bg-green-500/20 text-green-400"
       )}>
         {voiceCall.apiType === "stt" ? (
           <IoMic className="h-4 w-4" />
@@ -358,7 +358,7 @@ function VoiceCallRow({ voiceCall }: { voiceCall: VoiceCall }) {
         <div className="flex items-center gap-2">
           <span className={cn(
             "px-2 py-0.5 rounded text-[11px] font-medium",
-            isGoogle ? "bg-blue-500/20 text-blue-400" : "bg-green-500/20 text-green-400"
+            isGoogle ? "bg-emerald-500/20 text-emerald-400" : "bg-green-500/20 text-green-400"
           )}>
             {providerLabel}
           </span>
@@ -451,16 +451,18 @@ export function AIUsageClient({
   ];
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="min-h-[calc(100vh-48px)] lg:min-h-screen bg-[#0f0f0f] p-3 sm:p-4 lg:p-5 space-y-4">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-          <IoSparkles className="text-purple-400" />
-          AI Usage Dashboard
-        </h1>
-        <p className="text-[14px] text-[#888] mt-1">
-          Monitor token usage, costs, and API calls across all AI conversations
-        </p>
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+          <IoSparkles className="w-4 h-4 text-emerald-400" />
+        </div>
+        <div>
+          <h1 className="text-lg sm:text-xl font-semibold text-white">AI Usage</h1>
+          <p className="text-[10px] sm:text-xs text-[#666]">
+            Monitor token usage, costs, and API calls
+          </p>
+        </div>
       </div>
 
       {/* Main Stats Grid */}
@@ -469,14 +471,14 @@ export function AIUsageClient({
           icon={IoChatbubble}
           label="Conversations"
           value={stats.totalConversations.toLocaleString()}
-          color="bg-blue-500/20 text-blue-400"
+          color="bg-emerald-500/20 text-emerald-400"
         />
         <StatCard
           icon={IoSparkles}
           label="Total Tokens"
           value={(stats.totalInputTokens + stats.totalOutputTokens).toLocaleString()}
           subValue={`${stats.totalInputTokens.toLocaleString()} in / ${stats.totalOutputTokens.toLocaleString()} out`}
-          color="bg-purple-500/20 text-purple-400"
+          color="bg-emerald-500/20 text-emerald-400"
         />
         <StatCard
           icon={IoCash}
@@ -488,7 +490,7 @@ export function AIUsageClient({
           icon={IoChatbubble}
           label="Messages"
           value={stats.totalMessages.toLocaleString()}
-          color="bg-cyan-500/20 text-cyan-400"
+          color="bg-emerald-500/20 text-emerald-400"
         />
         <StatCard
           icon={IoTime}
@@ -501,7 +503,7 @@ export function AIUsageClient({
       {/* Charts Row 1: Token Usage & Distribution */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Daily Token Usage Area Chart */}
-        <div className="lg:col-span-2 bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+        <div className="lg:col-span-2 bg-[#171717] border border-white/[0.06] rounded-xl p-5">
           <h3 className="text-[15px] font-semibold text-white mb-4">Daily Token Usage</h3>
           {formattedDailyUsage.length === 0 ? (
             <div className="h-64 flex items-center justify-center text-[#666]">
@@ -568,7 +570,7 @@ export function AIUsageClient({
         </div>
 
         {/* Token Distribution Pie */}
-        <div className="bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+        <div className="bg-[#171717] border border-white/[0.06] rounded-xl p-5">
           <h3 className="text-[15px] font-semibold text-white mb-4">Token Distribution</h3>
           {stats.totalInputTokens === 0 && stats.totalOutputTokens === 0 ? (
             <div className="h-64 flex items-center justify-center text-[#666]">
@@ -609,7 +611,7 @@ export function AIUsageClient({
       {/* Charts Row 2: Cost & Conversations */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Daily Cost Bar Chart */}
-        <div className="bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+        <div className="bg-[#171717] border border-white/[0.06] rounded-xl p-5">
           <h3 className="text-[15px] font-semibold text-white mb-4">Daily Cost</h3>
           {formattedDailyUsage.length === 0 ? (
             <div className="h-64 flex items-center justify-center text-[#666]">
@@ -649,7 +651,7 @@ export function AIUsageClient({
         </div>
 
         {/* Daily Conversations & Images */}
-        <div className="bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+        <div className="bg-[#171717] border border-white/[0.06] rounded-xl p-5">
           <h3 className="text-[15px] font-semibold text-white mb-4">Daily Conversations & Images</h3>
           {formattedDailyUsage.length === 0 ? (
             <div className="h-64 flex items-center justify-center text-[#666]">
@@ -711,14 +713,14 @@ export function AIUsageClient({
             label="STT Calls"
             value={voiceStats.totalSttCalls.toLocaleString()}
             subValue={`${(voiceStats.totalSttDurationMs / 1000 / 60).toFixed(1)} min audio`}
-            color="bg-blue-500/20 text-blue-400"
+            color="bg-emerald-500/20 text-emerald-400"
           />
           <StatCard
             icon={IoVolumeHigh}
             label="TTS Calls"
             value={voiceStats.totalTtsCalls.toLocaleString()}
             subValue={`${voiceStats.totalTtsCharacters.toLocaleString()} chars`}
-            color="bg-cyan-500/20 text-cyan-400"
+            color="bg-emerald-500/20 text-emerald-400"
           />
           <StatCard
             icon={IoCash}
@@ -742,14 +744,14 @@ export function AIUsageClient({
             icon={IoCloud}
             label="Total Voice Calls"
             value={(voiceStats.totalSttCalls + voiceStats.totalTtsCalls).toLocaleString()}
-            color="bg-purple-500/20 text-purple-400"
+            color="bg-emerald-500/20 text-emerald-400"
           />
         </div>
 
         {/* Voice Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Daily Voice Usage */}
-          <div className="lg:col-span-2 bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+          <div className="lg:col-span-2 bg-[#171717] border border-white/[0.06] rounded-xl p-5">
             <h3 className="text-[15px] font-semibold text-white mb-4">Daily Voice API Calls</h3>
             {formattedVoiceUsage.length === 0 ? (
               <div className="h-64 flex items-center justify-center text-[#666]">
@@ -797,7 +799,7 @@ export function AIUsageClient({
           </div>
 
           {/* Voice Provider Distribution */}
-          <div className="bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+          <div className="bg-[#171717] border border-white/[0.06] rounded-xl p-5">
             <h3 className="text-[15px] font-semibold text-white mb-4">Provider Distribution</h3>
             {voiceProviderData.length === 0 ? (
               <div className="h-64 flex items-center justify-center text-[#666]">
@@ -838,9 +840,9 @@ export function AIUsageClient({
 
       {/* Tool Usage Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+        <div className="lg:col-span-2 bg-[#171717] border border-white/[0.06] rounded-xl p-5">
           <div className="flex items-center gap-2 mb-4">
-            <div className="p-1.5 rounded-md bg-purple-500/20 text-purple-400">
+            <div className="p-1.5 rounded-md bg-emerald-500/20 text-emerald-400">
               <IoHammer className="h-4 w-4" />
             </div>
             <h3 className="text-[15px] font-semibold text-white">Tool Usage</h3>
@@ -885,7 +887,7 @@ export function AIUsageClient({
         </div>
 
         {/* Input Types Pie */}
-        <div className="bg-[#141414] border border-[#1f1f1f] rounded-xl p-5">
+        <div className="bg-[#171717] border border-white/[0.06] rounded-xl p-5">
           <h3 className="text-[15px] font-semibold text-white mb-4">Input Types</h3>
           {stats.totalVoiceInputs === 0 && stats.totalPhotoInputs === 0 ? (
             <div className="h-64 flex items-center justify-center text-[#666]">
@@ -926,14 +928,14 @@ export function AIUsageClient({
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-[#1f1f1f]">
+      <div className="border-b border-white/[0.06]">
         <div className="flex gap-4">
           <button
             onClick={() => setActiveTab("conversations")}
             className={cn(
               "pb-2 px-1 text-[13px] font-medium border-b-2 transition-colors",
               activeTab === "conversations"
-                ? "text-white border-purple-500"
+                ? "text-white border-emerald-500"
                 : "text-[#888] border-transparent hover:text-white"
             )}
           >
@@ -944,7 +946,7 @@ export function AIUsageClient({
             className={cn(
               "pb-2 px-1 text-[13px] font-medium border-b-2 transition-colors",
               activeTab === "tools"
-                ? "text-white border-purple-500"
+                ? "text-white border-emerald-500"
                 : "text-[#888] border-transparent hover:text-white"
             )}
           >
@@ -955,7 +957,7 @@ export function AIUsageClient({
             className={cn(
               "pb-2 px-1 text-[13px] font-medium border-b-2 transition-colors",
               activeTab === "voice"
-                ? "text-white border-cyan-500"
+                ? "text-white border-emerald-500"
                 : "text-[#888] border-transparent hover:text-white"
             )}
           >
@@ -965,7 +967,7 @@ export function AIUsageClient({
       </div>
 
       {/* Tab Content */}
-      <div className="bg-[#141414] border border-[#1f1f1f] rounded-xl overflow-hidden">
+      <div className="bg-[#171717] border border-white/[0.06] rounded-xl overflow-hidden">
         {activeTab === "conversations" ? (
           recentConversations.length === 0 ? (
             <p className="p-6 text-[13px] text-[#666]">No conversations yet</p>

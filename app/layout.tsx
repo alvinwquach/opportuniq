@@ -1,8 +1,14 @@
+/**
+ * Root layout. Wraps all routes with fonts, global styles, and providers.
+ * Metadata here is the default for the app; segment layouts and pages override
+ * with export const metadata or generateMetadata.
+ */
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { Amplitude } from '@/amplitude';
+import { Amplitude } from "@/amplitude";
+import { getStructuredData } from "@/lib/seo";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
@@ -96,12 +102,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const structuredData = getStructuredData();
+
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <Amplitude />
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
         <Providers>
           {children}
         </Providers>

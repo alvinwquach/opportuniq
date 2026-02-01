@@ -19,7 +19,7 @@ const colorClasses = {
   success: "text-emerald-400",
   warning: "text-amber-400",
   danger: "text-red-400",
-  info: "text-blue-400",
+  info: "text-emerald-400",
 };
 
 export function MetricCard({
@@ -31,7 +31,7 @@ export function MetricCard({
   color = "default",
 }: MetricCardProps) {
   return (
-    <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f] hover:border-[#2a2a2a] transition-colors">
+    <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f] hover:border-white/[0.1] transition-colors">
       <div className="flex items-start justify-between mb-2">
         <p className="text-[11px] font-medium text-[#666] uppercase tracking-wider">
           {title}

@@ -19,8 +19,8 @@ interface RoleDistributionChartProps {
 
 const ROLE_COLORS = {
   Admins: "#ef4444",
-  Moderators: "#3b82f6",
-  Users: "#10b981",
+  Moderators: "#3ECF8E",
+  Users: "#249361",
   Banned: "#6b7280",
 };
 
@@ -57,7 +57,7 @@ export function RoleDistributionChart({ stats }: RoleDistributionChartProps) {
       <div className="flex-1">
         <ChartContainer id="role-distribution" config={chartConfig} className="h-full w-full">
           <PieChart>
-            <ChartTooltip content={<ChartTooltipContent hideLabel className="bg-neutral-900 border-neutral-700 text-white" />} />
+            <ChartTooltip content={<ChartTooltipContent hideLabel className="bg-[#171717] border-white/[0.06] text-white text-xs" />} />
             <Pie
               data={validData}
               cx="50%"
@@ -80,8 +80,8 @@ export function RoleDistributionChart({ stats }: RoleDistributionChartProps) {
           <div key={item.name} className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
             <div className="flex flex-col">
-              <span className="text-sm text-white font-medium">{item.value}</span>
-              <span className="text-xs text-neutral-500">{item.name}</span>
+              <span className="text-xs text-white font-medium">{item.value}</span>
+              <span className="text-[10px] text-[#666]">{item.name}</span>
             </div>
           </div>
         ))}

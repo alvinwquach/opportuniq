@@ -6,8 +6,15 @@ import { eq, and, gte, sql } from "drizzle-orm";
 import { FREQUENCY_TO_MONTHLY, ANNUAL_HOURS } from "./utils";
 
 /**
- * Fetch user profile, groups, income, and budgets
- * This is PHASE 1 of dashboard data loading
+ * Fetches user profile, groups, income streams, budgets, and this month's
+ * personal expenses for the dashboard. Used by getDashboardData (dashboard
+ * page) to decide new-user vs main dashboard and to pass pending invitations.
+ *
+ * Not cached: user-specific data; callers use force-dynamic / revalidate 0.
+ * Revalidation: none (read-only); mutations elsewhere call revalidatePath("/dashboard").
+ *
+ * @param userId - Supabase auth user id
+ * @returns User profile, active/pending groups, income, budgets, monthly expenses
  */
 export async function getUserData(userId: string) {
   const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);

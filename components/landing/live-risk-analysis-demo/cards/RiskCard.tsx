@@ -43,11 +43,11 @@ export function RiskCard({ scenario, riskChartRef }: RiskCardProps) {
                 Safety Equipment
               </h4>
               <div className="space-y-1.5">
-                {scenario.safetyEquipment.map((item, i) => {
+                {scenario.safetyEquipment.map((item) => {
                   const Icon = item.icon;
                   return (
                     <div
-                      key={i}
+                      key={item.name}
                       className={cn(
                         "flex items-center gap-2 p-2 rounded-lg text-xs",
                         item.required ? "bg-red-50 border border-red-200" : "bg-neutral-50 border border-neutral-100"
@@ -67,8 +67,8 @@ export function RiskCard({ scenario, riskChartRef }: RiskCardProps) {
                 Potential Complications
               </h4>
               <div className="space-y-1.5">
-                {scenario.complications.map((comp, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs">
+                {scenario.complications.map((comp) => (
+                  <div key={comp.issue} className="flex items-start gap-2 text-xs">
                     {comp.impact === "high" ? (
                       <IoCloseCircle className="w-3.5 h-3.5 text-red-600 mt-0.5 shrink-0" />
                     ) : comp.impact === "medium" ? (

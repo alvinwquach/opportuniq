@@ -12,16 +12,25 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
   // Allow preview mode without authentication
   const isPreview = params.preview === "true";
 
+  let userName: string | null = null;
+
   if (!isPreview) {
-    // Use cached getUser() to prevent duplicate API calls
     const user = await getCurrentUser();
 
     if (!user) {
       redirect("/auth/login");
     }
+
+    userName = user.user_metadata?.full_name || user.user_metadata?.name || null;
   }
 
   const customRedirect = params.redirect ?? null;
 
-  return <OnboardingClient customRedirect={customRedirect} isPreview={isPreview} />;
+  return (
+    <OnboardingClient
+      customRedirect={customRedirect}
+      isPreview={isPreview}
+      userName={userName}
+    />
+  );
 }

@@ -14,8 +14,8 @@ export function ResourcesCard({ scenario }: ResourcesCardProps) {
           <span className="text-sm font-semibold text-neutral-900">Nearby Resources</span>
         </div>
         <div className="p-4 space-y-3">
-          {scenario.toolsNearby.map((store, i) => (
-            <div key={i} className="p-4 rounded-xl bg-neutral-50 border border-neutral-100">
+          {scenario.toolsNearby.map((store) => (
+            <div key={store.storeName} className="p-4 rounded-xl bg-neutral-50 border border-neutral-100">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-semibold text-neutral-900">{store.storeName}</span>
                 <span className="px-2 py-0.5 rounded-full bg-teal-100 text-teal-700 text-xs font-medium">
@@ -23,9 +23,9 @@ export function ResourcesCard({ scenario }: ResourcesCardProps) {
                 </span>
               </div>
               <div className="flex flex-wrap gap-2">
-                {store.tools.map((tool, j) => (
+                {store.tools.map((tool) => (
                   <span
-                    key={j}
+                    key={tool}
                     className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-neutral-200 text-xs text-neutral-700"
                   >
                     <IoConstruct className="w-3 h-3 text-neutral-500" />

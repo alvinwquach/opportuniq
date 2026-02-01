@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { WaitlistModal } from "@/components/landing/WaitlistModal";
 import { Button } from "@/components/ui/button";
-import { IoShield, IoWarning, IoCheckmarkCircle, IoAlertCircle } from "react-icons/io5";
+import { IoShieldCheckmarkOutline, IoWarningOutline, IoCheckmarkCircle, IoAlertCircleOutline, IoChevronForward } from "react-icons/io5";
 
 const RISK_LEVELS = [
   { level: "Critical", color: "bg-red-500", desc: "Emergency - evacuate, call 911, shut off utilities" },
@@ -28,17 +29,17 @@ const PPE_ITEMS = [
 
 const FEATURES = [
   {
-    icon: IoShield,
+    icon: IoShieldCheckmarkOutline,
     title: "PPE Recommendations",
     description: "Get specific protective equipment recommendations with priority levels: required, recommended, or suggested—based on your actual repair task.",
   },
   {
-    icon: IoWarning,
+    icon: IoWarningOutline,
     title: "4-Level Risk Assessment",
     description: "Every diagnosis includes a risk level from low to critical, with clear guidance on whether to DIY or call a pro.",
   },
   {
-    icon: IoAlertCircle,
+    icon: IoAlertCircleOutline,
     title: "Emergency Detection",
     description: "Gas leaks, electrical hazards, and structural emergencies trigger immediate action instructions—no DIY options shown.",
   },
@@ -51,58 +52,72 @@ const FEATURES = [
 
 export default function SafetyRiskPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <>
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6">
+      <section className="pt-28 pb-16 px-6 bg-neutral-950">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-50 border border-red-200 text-red-700 text-sm font-medium mb-6">
-            <IoShield className="w-4 h-4" />
-            Built Into Every Diagnosis
+          {/* Breadcrumb */}
+          <nav className="flex items-center justify-center gap-2 text-sm text-neutral-500 mb-6">
+            <Link href="/product" className="hover:text-teal-400 transition-colors">
+              Product
+            </Link>
+            <IoChevronForward className="w-3 h-3" />
+            <span className="text-neutral-300">Safety & Risk</span>
+          </nav>
+
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-500/40 text-teal-400 text-xs font-mono mb-6">
+            <IoShieldCheckmarkOutline className="w-4 h-4" />
+            Safety & Risk
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-neutral-900 mb-6 tracking-tight">
-            Safety & Risk Analysis
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+            Safety{" "}
+            <span className="text-teal-400">
+              built into every diagnosis
+            </span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-neutral-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Every diagnosis includes risk assessment, PPE recommendations, and clear guidance on when to call a professional. Safety isn&apos;t an add-on—it&apos;s built into every response.
+          <p className="text-lg text-neutral-200 max-w-2xl mx-auto mb-10">
+            Every diagnosis includes risk assessment, PPE recommendations, and clear guidance
+            on when to call a professional. Safety isn&apos;t an add-on—it&apos;s built into every response.
           </p>
 
           <WaitlistModal>
-            <Button className="h-12 px-8 bg-teal-700 hover:bg-teal-800 text-white font-medium rounded-lg">
-              Join the Waitlist
+            <Button className="h-12 px-8 font-mono font-bold bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
+              Get Early Access
             </Button>
           </WaitlistModal>
         </div>
       </section>
 
       {/* Risk Levels */}
-      <section className="py-20 px-6 border-t border-neutral-200">
-        <div className="max-w-5xl mx-auto">
+      <section className="py-20 px-6 border-t border-neutral-800">
+        <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 mb-4">
+              <h2 className="text-3xl font-bold text-white mb-4">
                 Four-level risk classification
               </h2>
-              <p className="text-neutral-600 mb-8 leading-relaxed">
-                Every issue gets classified from low to critical. This determines if DIY is viable and what precautions you need to take.
+              <p className="text-neutral-300 mb-8">
+                Every issue gets classified from low to critical. This determines if DIY is
+                viable and what precautions you need to take.
               </p>
 
               <div className="space-y-3">
                 {RISK_LEVELS.map((item) => (
                   <div key={item.level} className="flex items-center gap-3">
                     <div className={`w-3 h-3 rounded-full ${item.color}`} />
-                    <span className="text-neutral-900 font-medium w-16">{item.level}</span>
+                    <span className="text-white font-medium w-16">{item.level}</span>
                     <span className="text-neutral-500">— {item.desc}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-neutral-200 shadow-lg overflow-hidden">
-              <div className="px-4 py-3 border-b border-neutral-200 flex items-center gap-2 bg-neutral-50">
-                <IoShield className="w-4 h-4 text-red-600" />
-                <span className="text-sm font-medium text-neutral-900">Safety Assessment</span>
+            <div className="bg-neutral-950/80 rounded-xl border border-neutral-800 overflow-hidden">
+              <div className="px-4 py-3 border-b border-neutral-800 flex items-center gap-2">
+                <IoShieldCheckmarkOutline className="w-4 h-4 text-red-400" />
+                <span className="text-sm font-medium text-neutral-400">Safety Assessment</span>
               </div>
               <div className="p-4 space-y-3">
                 {SAFETY_CHECKS.map((check, i) => (
@@ -110,16 +125,16 @@ export default function SafetyRiskPage() {
                     key={i}
                     className={`flex items-center justify-between p-3 rounded-lg border ${
                       check.severity === "critical"
-                        ? "border-red-200 bg-red-50"
+                        ? "border-red-500/30 bg-red-500/10"
                         : check.severity === "high"
-                        ? "border-orange-200 bg-orange-50"
-                        : "border-amber-200 bg-amber-50"
+                        ? "border-orange-500/30 bg-orange-500/10"
+                        : "border-amber-500/30 bg-amber-500/10"
                     }`}
                   >
-                    <span className="text-sm text-neutral-700">{check.question}</span>
+                    <span className="text-sm text-neutral-300">{check.question}</span>
                     <span className={`text-xs font-medium uppercase ${
-                      check.severity === "critical" ? "text-red-600" :
-                      check.severity === "high" ? "text-orange-600" : "text-amber-600"
+                      check.severity === "critical" ? "text-red-400" :
+                      check.severity === "high" ? "text-orange-400" : "text-amber-400"
                     }`}>
                       {check.severity}
                     </span>
@@ -132,25 +147,25 @@ export default function SafetyRiskPage() {
       </section>
 
       {/* PPE Recommendations */}
-      <section className="py-20 px-6 bg-neutral-50">
-        <div className="max-w-5xl mx-auto">
+      <section className="py-20 px-6 bg-gradient-to-b from-neutral-950 to-black">
+        <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
-            <div className="bg-white rounded-2xl border border-neutral-200 shadow-lg overflow-hidden">
-              <div className="px-4 py-3 border-b border-neutral-200 flex items-center justify-between bg-neutral-50">
-                <span className="text-sm font-medium text-neutral-900">PPE for This Task</span>
-                <span className="text-xs text-neutral-500">Auto-generated</span>
+            <div className="bg-neutral-950/80 rounded-xl border border-neutral-800 overflow-hidden">
+              <div className="px-4 py-3 border-b border-neutral-800 flex items-center justify-between">
+                <span className="text-sm font-medium text-neutral-400">PPE for This Task</span>
+                <span className="text-xs text-teal-400">Auto-generated</span>
               </div>
               <div className="p-4 space-y-3">
                 {PPE_ITEMS.map((ppe, i) => (
-                  <div key={i} className="p-3 rounded-lg border border-neutral-200">
+                  <div key={i} className="p-3 rounded-lg border border-neutral-800">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-neutral-900">{ppe.item}</span>
+                      <span className="text-sm font-medium text-white">{ppe.item}</span>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
                         ppe.priority === "required"
-                          ? "bg-red-100 text-red-700"
+                          ? "bg-red-500/20 text-red-400"
                           : ppe.priority === "recommended"
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-neutral-100 text-neutral-600"
+                          ? "bg-amber-500/20 text-amber-400"
+                          : "bg-neutral-500/20 text-neutral-400"
                       }`}>
                         {ppe.priority}
                       </span>
@@ -162,11 +177,12 @@ export default function SafetyRiskPage() {
             </div>
 
             <div>
-              <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 mb-4">
+              <h2 className="text-3xl font-bold text-white mb-4">
                 PPE with context
               </h2>
-              <p className="text-neutral-600 mb-8 leading-relaxed">
-                Not just a list of gear—each recommendation includes why it&apos;s needed for your specific situation. Required items become hard stops if you don&apos;t have them.
+              <p className="text-neutral-300 mb-8">
+                Not just a list of gear—each recommendation includes why it&apos;s needed for
+                your specific situation. Required items become hard stops if you don&apos;t have them.
               </p>
 
               <div className="space-y-4">
@@ -176,9 +192,9 @@ export default function SafetyRiskPage() {
                   { label: "Suggested", desc: "Nice to have for comfort and convenience" },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <IoCheckmarkCircle className="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
+                    <IoCheckmarkCircle className="w-5 h-5 text-teal-400 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-neutral-900 font-medium">{item.label}</p>
+                      <p className="text-white font-medium">{item.label}</p>
                       <p className="text-sm text-neutral-500">{item.desc}</p>
                     </div>
                   </div>
@@ -190,25 +206,25 @@ export default function SafetyRiskPage() {
       </section>
 
       {/* Features */}
-      <section className="py-20 px-6 border-t border-neutral-200">
+      <section className="py-16 px-6 border-t border-neutral-800">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 mb-4">
+            <h2 className="text-3xl font-bold text-white mb-4">
               Safety built in
             </h2>
-            <p className="text-neutral-600 max-w-xl mx-auto">
+            <p className="text-neutral-300 max-w-xl mx-auto">
               Every diagnosis response includes safety information automatically—no extra steps required.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             {FEATURES.map((feature, i) => (
-              <div key={i} className="bg-white rounded-xl border border-neutral-200 p-6 hover:border-neutral-300 hover:shadow-md transition-all">
-                <div className="w-10 h-10 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center mb-4">
-                  <feature.icon className="w-5 h-5 text-red-600" />
+              <div key={i} className="p-6 rounded-xl bg-neutral-900 border border-neutral-700">
+                <div className="w-12 h-12 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 mb-4">
+                  <feature.icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-lg font-medium text-neutral-900 mb-2">{feature.title}</h3>
-                <p className="text-sm text-neutral-600 leading-relaxed">{feature.description}</p>
+                <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
+                <p className="text-sm text-neutral-300">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -216,21 +232,21 @@ export default function SafetyRiskPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-6 bg-neutral-50 border-t border-neutral-200">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 mb-4">
+      <section className="py-20 px-6 bg-gradient-to-b from-black to-neutral-950">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
             Safety-first diagnosis
           </h2>
-          <p className="text-neutral-600 mb-8">
+          <p className="text-neutral-300 mb-8">
             Get repair guidance that prioritizes your safety with every response.
           </p>
           <WaitlistModal>
-            <Button className="h-12 px-8 bg-teal-700 hover:bg-teal-800 text-white font-medium rounded-lg">
+            <Button className="h-14 px-8 font-mono font-bold text-lg bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
               Join the Waitlist
             </Button>
           </WaitlistModal>
         </div>
       </section>
-    </div>
+    </>
   );
 }

@@ -422,7 +422,7 @@ export function SupportChatRoom({
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Type your message..."
                   disabled={isSending}
-                  className="flex-1 h-12 px-4 rounded-lg bg-[#161616] border border-[#1f1f1f] text-[13px] text-white placeholder:text-[#555] focus:outline-none focus:border-[#2a2a2a] transition-colors disabled:opacity-50"
+                  className="flex-1 h-12 px-4 rounded-lg bg-[#161616] border border-[#1f1f1f] text-[13px] text-white placeholder:text-[#555] focus:outline-none focus:border-white/[0.1] transition-colors disabled:opacity-50"
                 />
                 <button
                   type="submit"

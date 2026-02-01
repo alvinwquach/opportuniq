@@ -194,7 +194,7 @@ export function LiveRiskAnalysisDemo() {
                     </p>
                   )}
                   {streamedText.map((text, i) => (
-                    <div key={i} className="flex items-start gap-2 mb-1.5">
+                    <div key={`stream-${i}-${text.slice(0, 10)}`} className="flex items-start gap-2 mb-1.5">
                       <IoChevronForward className="w-3 h-3 text-teal-400 mt-0.5 shrink-0" />
                       <span className="text-neutral-300">{text}</span>
                     </div>

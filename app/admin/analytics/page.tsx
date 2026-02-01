@@ -70,9 +70,9 @@ export default async function AnalyticsPage() {
 
   const tierColors: Record<string, string> = {
     johatsu: "#f43f5e",
-    alpha: "#a855f7",
-    beta: "#22c55e",
-    public: "#3b82f6",
+    alpha: "#3ECF8E",
+    beta: "#249361",
+    public: "#166534",
   };
   const tierData = (data.tierDistribution || []).map((item) => ({
     name: (item.tier || "unknown").charAt(0).toUpperCase() + (item.tier || "unknown").slice(1),
@@ -82,9 +82,9 @@ export default async function AnalyticsPage() {
   const totalTierUsers = tierData.reduce((sum, t) => sum + t.value, 0);
 
   const statusColors: Record<string, string> = {
-    open: "#3b82f6",
-    investigating: "#8b5cf6",
-    options_generated: "#06b6d4",
+    open: "#3ECF8E",
+    investigating: "#249361",
+    options_generated: "#166534",
     decided: "#f59e0b",
     in_progress: "#eab308",
     completed: "#22c55e",
@@ -99,9 +99,9 @@ export default async function AnalyticsPage() {
 
   const decisionColors: Record<string, string> = {
     diy: "#22c55e",
-    hire: "#a855f7",
+    hire: "#3ECF8E",
     defer: "#f59e0b",
-    replace: "#3b82f6",
+    replace: "#249361",
   };
   const decisionChartData = (data.decisionTypeData || []).map((item) => ({
     name: (item.decisionType || "unknown").toUpperCase(),
@@ -116,14 +116,14 @@ export default async function AnalyticsPage() {
     .map((c, i) => ({
       label: c.country || "Unknown",
       value: c.count,
-      color: ["#5eead4", "#a78bfa", "#fbbf24", "#f87171", "#3b82f6"][i % 5],
+      color: ["#3ECF8E", "#249361", "#166534", "#f59e0b", "#22c55e"][i % 5],
     }));
 
   return (
-    <div className="p-4 lg:p-6 space-y-6">
+    <div className="min-h-[calc(100vh-48px)] lg:min-h-screen bg-[#0f0f0f] p-3 sm:p-4 lg:p-5 space-y-4">
       <div>
-        <h1 className="text-lg font-semibold text-white">Analytics</h1>
-        <p className="text-[13px] text-[#666]">Platform metrics and insights</p>
+        <h1 className="text-lg sm:text-xl font-semibold text-white">Analytics</h1>
+        <p className="text-[10px] sm:text-xs text-[#666]">Platform metrics and insights</p>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
         <MetricCard
@@ -154,7 +154,7 @@ export default async function AnalyticsPage() {
         />
       </div>
       <div className="grid lg:grid-cols-2 gap-4">
-        <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+        <div className="p-4 rounded-lg bg-[#171717] border border-white/[0.06]">
           <div className="mb-4">
             <h2 className="text-[13px] font-medium text-white">User Growth</h2>
             <p className="text-[11px] text-[#666]">New signups over 30 days</p>
@@ -164,7 +164,7 @@ export default async function AnalyticsPage() {
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+        <div className="p-4 rounded-lg bg-[#171717] border border-white/[0.06]">
           <div className="mb-4">
             <h2 className="text-[13px] font-medium text-white">Waitlist Growth</h2>
             <p className="text-[11px] text-[#666]">Signups over 30 days</p>
@@ -175,7 +175,7 @@ export default async function AnalyticsPage() {
         </div>
       </div>
       <div className="grid lg:grid-cols-3 gap-4">
-        <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+        <div className="p-4 rounded-lg bg-[#171717] border border-white/[0.06]">
           <div className="mb-4">
             <h2 className="text-[13px] font-medium text-white">User Tiers</h2>
             <p className="text-[11px] text-[#666]">Distribution by access level</p>
@@ -193,7 +193,7 @@ export default async function AnalyticsPage() {
             ))}
           </div>
         </div>
-        <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+        <div className="p-4 rounded-lg bg-[#171717] border border-white/[0.06]">
           <div className="mb-4">
             <h2 className="text-[13px] font-medium text-white">Invite Funnel</h2>
             <p className="text-[11px] text-[#666]">Admin invite conversion</p>
@@ -207,7 +207,7 @@ export default async function AnalyticsPage() {
               label="Sent"
               value={data.invitesTotal?.count || 0}
               total={data.invitesTotal?.count || 1}
-              color="#3b82f6"
+              color="#3ECF8E"
             />
             <ProgressBar
               label="Accepted"
@@ -223,7 +223,7 @@ export default async function AnalyticsPage() {
             />
           </div>
         </div>
-        <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+        <div className="p-4 rounded-lg bg-[#171717] border border-white/[0.06]">
           <div className="mb-4">
             <h2 className="text-[13px] font-medium text-white">Top Regions</h2>
             <p className="text-[11px] text-[#666]">Users by country</p>
@@ -238,7 +238,7 @@ export default async function AnalyticsPage() {
         </div>
       </div>
       <div className="grid lg:grid-cols-2 gap-4">
-        <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+        <div className="p-4 rounded-lg bg-[#171717] border border-white/[0.06]">
           <div className="mb-4">
             <h2 className="text-[13px] font-medium text-white">Issue Status</h2>
             <p className="text-[11px] text-[#666]">Current project states</p>
@@ -266,7 +266,7 @@ export default async function AnalyticsPage() {
             </div>
           )}
         </div>
-        <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+        <div className="p-4 rounded-lg bg-[#171717] border border-white/[0.06]">
           <div className="mb-4">
             <h2 className="text-[13px] font-medium text-white">Decision Types</h2>
             <p className="text-[11px] text-[#666]">DIY vs Hire vs Defer</p>
@@ -296,7 +296,7 @@ export default async function AnalyticsPage() {
         </div>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+        <div className="p-4 rounded-lg bg-[#171717] border border-white/[0.06]">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
               <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -308,31 +308,31 @@ export default async function AnalyticsPage() {
           <span className="text-2xl font-semibold text-emerald-400">{data.inviteAcceptanceRate}%</span>
           <p className="text-[11px] text-[#555] mt-1">of invites accepted</p>
         </div>
-        <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+        <div className="p-4 rounded-lg bg-[#171717] border border-white/[0.06]">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-              <svg className="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+              <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
               </svg>
             </div>
             <span className="text-[11px] text-[#666]">Total Users</span>
           </div>
-          <span className="text-2xl font-semibold text-blue-400">{data.userTotal?.count || 0}</span>
+          <span className="text-2xl font-semibold text-emerald-400">{data.userTotal?.count || 0}</span>
           <p className="text-[11px] text-[#555] mt-1">registered accounts</p>
         </div>
-        <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+        <div className="p-4 rounded-lg bg-[#171717] border border-white/[0.06]">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-              <svg className="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+              <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
               </svg>
             </div>
             <span className="text-[11px] text-[#666]">Groups</span>
           </div>
-          <span className="text-2xl font-semibold text-purple-400">{data.groupsTotal?.count || 0}</span>
+          <span className="text-2xl font-semibold text-emerald-400">{data.groupsTotal?.count || 0}</span>
           <p className="text-[11px] text-[#555] mt-1">households created</p>
         </div>
-        <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+        <div className="p-4 rounded-lg bg-[#171717] border border-white/[0.06]">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
               <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

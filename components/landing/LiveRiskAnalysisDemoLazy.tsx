@@ -21,7 +21,7 @@ function DemoSkeleton() {
         <div className="flex flex-wrap justify-center gap-3 mb-8">
           {[1, 2, 3].map((i) => (
             <div
-              key={i}
+              key={`skeleton-btn-${i}`}
               className="px-4 py-2 rounded-lg bg-neutral-200 animate-pulse w-32 h-10"
             />
           ))}
@@ -50,7 +50,7 @@ function DemoSkeleton() {
               </div>
               <div className="space-y-3">
                 {[1, 2].map((i) => (
-                  <div key={i} className="p-3 rounded-lg bg-neutral-50 border border-neutral-200">
+                  <div key={`skeleton-tool-${i}`} className="p-3 rounded-lg bg-neutral-50 border border-neutral-200">
                     <div className="h-4 w-32 bg-neutral-200 rounded animate-pulse mb-2" />
                     <div className="flex gap-2">
                       <div className="h-6 w-16 bg-neutral-200 rounded animate-pulse" />
@@ -67,7 +67,7 @@ function DemoSkeleton() {
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="text-center p-2 rounded-lg bg-neutral-50 border border-neutral-200">
+                  <div key={`skeleton-weather-${i}`} className="text-center p-2 rounded-lg bg-neutral-50 border border-neutral-200">
                     <div className="h-8 w-12 mx-auto bg-neutral-200 rounded animate-pulse mb-1" />
                     <div className="h-3 w-10 mx-auto bg-neutral-200 rounded animate-pulse" />
                   </div>
@@ -84,7 +84,7 @@ function DemoSkeleton() {
               <div className="p-4 h-40 bg-neutral-50">
                 <div className="space-y-2">
                   {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-4 bg-neutral-200 rounded animate-pulse" style={{ width: `${80 - i * 15}%` }} />
+                    <div key={`skeleton-stream-${i}`} className="h-4 bg-neutral-200 rounded animate-pulse" style={{ width: `${80 - i * 15}%` }} />
                   ))}
                 </div>
               </div>

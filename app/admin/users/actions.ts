@@ -3,9 +3,10 @@
 import { db } from "@/app/db/client";
 import { users } from "@/app/db/schema";
 import { desc, sql } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 
-export async function getUsersData() {
-  const [allUsers, [userStats]] = await Promise.all([
+async function fetchUsersData() {
+  const [allUsers, [userStats], userGrowthData] = await Promise.all([
     db
       .select({
         id: users.id,
@@ -33,10 +34,28 @@ export async function getUsersData() {
         beta: sql<number>`count(*) filter (where ${users.accessTier} = 'beta')`,
       })
       .from(users),
+    // User growth over last 30 days
+    db
+      .select({
+        date: sql<string>`DATE(${users.createdAt})`,
+        count: sql<number>`count(*)`,
+      })
+      .from(users)
+      .where(sql`${users.createdAt} >= now() - interval '30 days'`)
+      .groupBy(sql`DATE(${users.createdAt})`)
+      .orderBy(sql`DATE(${users.createdAt})`),
   ]);
 
   return {
     allUsers,
     userStats,
+    userGrowthData,
   };
 }
+
+// Cache for 30 seconds
+export const getUsersData = unstable_cache(
+  fetchUsersData,
+  ["admin-users-data"],
+  { revalidate: 30, tags: ["admin-users"] }
+);

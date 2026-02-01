@@ -4,7 +4,7 @@ import { db } from "@/app/db/client";
 import { invites, users } from "@/app/db/schema";
 import { desc, eq, sql, count } from "drizzle-orm";
 import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 
 export async function revokeInvite(inviteId: string) {
   // Verify admin user
@@ -29,6 +29,7 @@ export async function revokeInvite(inviteId: string) {
   await db.delete(invites).where(eq(invites.id, inviteId));
 
   revalidatePath("/admin/invites");
+  revalidateTag("admin-invites");
   return { success: true };
 }
 
@@ -58,11 +59,12 @@ export async function markInviteAccepted(inviteId: string) {
     .where(eq(invites.id, inviteId));
 
   revalidatePath("/admin/invites");
+  revalidateTag("admin-invites");
   return { success: true };
 }
 
-export async function getInvitesData() {
-  const [allInvites, [stats]] = await Promise.all([
+async function fetchInvitesData() {
+  const [allInvites, [stats], tierBreakdown, dailyInvites] = await Promise.all([
     db
       .select({
         id: invites.id,
@@ -89,12 +91,48 @@ export async function getInvitesData() {
         ),
       })
       .from(invites),
+    // Tier breakdown
+    db
+      .select({
+        tier: invites.tier,
+        total: count(),
+        accepted: count(sql`CASE WHEN ${invites.acceptedAt} IS NOT NULL THEN 1 END`),
+      })
+      .from(invites)
+      .groupBy(invites.tier),
+    // Daily invites for last 14 days
+    db
+      .select({
+        date: sql<string>`DATE(${invites.createdAt})`,
+        sent: count(),
+        accepted: count(sql`CASE WHEN ${invites.acceptedAt} IS NOT NULL THEN 1 END`),
+      })
+      .from(invites)
+      .where(sql`${invites.createdAt} >= NOW() - INTERVAL '14 days'`)
+      .groupBy(sql`DATE(${invites.createdAt})`)
+      .orderBy(sql`DATE(${invites.createdAt})`),
   ]);
+
+  const totalInvites = allInvites.length;
+  const acceptanceRate = totalInvites > 0
+    ? Math.round(((stats?.acceptedCount ?? 0) / totalInvites) * 100)
+    : 0;
 
   return {
     allInvites,
     pendingCount: stats?.pendingCount ?? 0,
     acceptedCount: stats?.acceptedCount ?? 0,
     expiredCount: stats?.expiredCount ?? 0,
+    totalInvites,
+    acceptanceRate,
+    tierBreakdown,
+    dailyInvites,
   };
 }
+
+// Cache for 30 seconds
+export const getInvitesData = unstable_cache(
+  fetchInvitesData,
+  ["admin-invites-data"],
+  { revalidate: 30, tags: ["admin-invites"] }
+);

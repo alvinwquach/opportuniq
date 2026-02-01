@@ -1,15 +1,12 @@
 import { getCurrentUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { db } from "@/app/db/client";
-import { users } from "@/app/db/schema";
-import { eq } from "drizzle-orm";
-import { DiagnosePageClient } from "@/components/chat/DiagnosePageClient";
+import { DiagnoseClient } from "./DiagnoseClient";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Photo Diagnosis | OpportunIQ",
-  description: "Upload a photo to diagnose home and auto issues",
+  title: "Diagnose | OpportunIQ",
+  description: "AI-powered home issue diagnosis with guides, parts, and pros",
 };
 
 export default async function DiagnosePage() {
@@ -19,26 +16,6 @@ export default async function DiagnosePage() {
     redirect("/auth/login?redirect=/dashboard/diagnose");
   }
 
-  // Get user details including postal code for location-based lookups
-  const [userData] = await db
-    .select({
-      id: users.id,
-      name: users.name,
-      email: users.email,
-      postalCode: users.postalCode,
-    })
-    .from(users)
-    .where(eq(users.id, user.id));
-
-  if (!userData) {
-    redirect("/auth/login");
-  }
-
-  return (
-    <DiagnosePageClient
-      userId={userData.id}
-      userName={userData.name}
-      userPostalCode={userData.postalCode}
-    />
-  );
+  // Data is fetched client-side via GraphQL
+  return <DiagnoseClient />;
 }
