@@ -62,9 +62,11 @@ export async function sendRfqEmails(input: SendRfqEmailsInput): Promise<SendRfqE
     }
 
     // 2. Get user profile from database
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, currentUser.id),
-    });
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, currentUser.id))
+      .limit(1);
 
     if (!user) {
       return {
