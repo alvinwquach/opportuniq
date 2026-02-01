@@ -197,7 +197,8 @@ export async function financesPageDataResolver(
       return expDate >= startOfMonth && expDate <= endOfMonth;
     })
     .forEach((e) => {
-      categoryTotals[e.category] = (categoryTotals[e.category] ?? 0) + e.amount;
+      const category = e.category ?? "Uncategorized";
+      categoryTotals[category] = (categoryTotals[category] ?? 0) + e.amount;
     });
 
   const spendingByCategory = Object.entries(categoryTotals)
