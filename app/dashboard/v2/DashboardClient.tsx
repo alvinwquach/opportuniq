@@ -12,11 +12,11 @@
  * GraphQL response. No server data stored in state.
  */
 import { useState, useMemo } from "react";
-import { DashboardHeader, DashboardTabs } from "@/components/landing/dashboard-preview/views/dashboard";
-import { OverviewTab, DecisionsTab, SpendingTab, Sidebar } from "./components";
+import { DashboardHeader } from "@/components/landing/dashboard-preview/views/dashboard";
+import { DashboardTabs, OverviewTab, DecisionsTab, SpendingTab, Sidebar } from "./components";
 import { useDashboardData } from "@/lib/graphql/hooks/dashboard";
 import { adaptGraphQLDashboardData } from "./adapters";
-import type { DashboardTab as TabType } from "./types";
+import type { DashboardTab } from "./types";
 
 // Loading skeleton component
 function DashboardSkeleton() {
@@ -78,7 +78,7 @@ function DashboardError({ error }: { error: Error }) {
 }
 
 export function DashboardClient() {
-  const [activeTab, setActiveTab] = useState<TabType>("overview");
+  const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
 
   // Fetch dashboard data via GraphQL
   const { data, isLoading, error } = useDashboardData();
