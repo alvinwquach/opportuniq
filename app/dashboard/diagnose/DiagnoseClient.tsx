@@ -58,7 +58,7 @@ export function DiagnoseClient() {
   const { streamResponse, stop } = useChatStream({
     activeConversationId,
     onConversationCreated: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.diagnose.all() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.diagnose.all });
     },
     addMessage,
     startStreaming,
