@@ -1072,7 +1072,7 @@ export interface CalendarUpcomingExpense {
   title: string;
   date: string;
   amount: number;
-  type: string;
+  type: "contractor" | "diy" | "reminder" | "income" | "expense";
 }
 
 export interface CalendarEventTypeDistribution {
