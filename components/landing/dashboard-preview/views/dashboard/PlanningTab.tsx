@@ -8,9 +8,9 @@ interface CalendarEvent {
   id: string;
   title: string;
   date: string;
-  time: string;
-  type: string;
-  color: string;
+  time?: string;
+  type: "contractor" | "diy" | "reminder";
+  color?: string;
 }
 
 interface Reminder {
