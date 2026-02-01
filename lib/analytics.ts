@@ -349,7 +349,7 @@ export function trackNotificationClicked(props: {
 }
 
 export function trackReportIssueModalOpened(props: {
-  source: "sidebar" | "dashboard" | "quick_action" | "empty_state";
+  source: "sidebar" | "dashboard" | "quick_action" | "empty_state" | "topbar";
 }) {
   amplitude.track("Report Issue Modal Opened", props);
 }
