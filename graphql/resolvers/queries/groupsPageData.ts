@@ -277,16 +277,16 @@ export async function groupsPageDataResolver(
     const issuesCreatedByMember = new Map<string, number>();
     const issuesResolvedByMember = new Map<string, number>();
     for (const issue of groupIssues) {
-      if (issue.createdById) {
+      if (issue.createdBy) {
         issuesCreatedByMember.set(
-          issue.createdById,
-          (issuesCreatedByMember.get(issue.createdById) || 0) + 1
+          issue.createdBy,
+          (issuesCreatedByMember.get(issue.createdBy) || 0) + 1
         );
       }
-      if (issue.resolvedById && issue.status === "completed") {
+      if (issue.resolvedBy && issue.status === "completed") {
         issuesResolvedByMember.set(
-          issue.resolvedById,
-          (issuesResolvedByMember.get(issue.resolvedById) || 0) + 1
+          issue.resolvedBy,
+          (issuesResolvedByMember.get(issue.resolvedBy) || 0) + 1
         );
       }
     }
@@ -498,7 +498,7 @@ function buildRecentActivity(
     id: string;
     title: string | null;
     status: string;
-    resolvedById: string | null;
+    resolvedBy: string | null;
     resolvedAt: Date | null;
     createdAt: Date;
   }>,
@@ -536,8 +536,8 @@ function buildRecentActivity(
   // Add resolved issues
   for (const issue of issues.filter((i) => i.status === "completed")) {
     if (issue.resolvedAt) {
-      const memberName = issue.resolvedById
-        ? memberNameMap.get(issue.resolvedById)
+      const memberName = issue.resolvedBy
+        ? memberNameMap.get(issue.resolvedBy)
         : null;
       activities.push({
         id: `issue-${issue.id}`,
