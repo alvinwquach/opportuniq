@@ -5,9 +5,9 @@ import type { StepProps } from "../../types";
 
 export function WelcomeStepLeft() {
   const features = [
-    { icon: IoHome, label: "Home Repairs", stat: "50K+ issues" },
-    { icon: IoCar, label: "Auto Diagnostics", stat: "95% accuracy" },
-    { icon: IoPhonePortrait, label: "Electronics", stat: "<2s analysis" },
+    { icon: IoHome, label: "Home Repairs", stat: "AI-assisted" },
+    { icon: IoCar, label: "Auto Diagnostics", stat: "Smart guidance" },
+    { icon: IoPhonePortrait, label: "Electronics", stat: "Photo analysis" },
     { icon: IoLeaf, label: "Outdoor", stat: "$2,400 saved" },
   ];
 

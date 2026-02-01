@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   gsap,
   ScrollTrigger,
-  animateCounter,
   scrambleText,
   typewriter,
 } from "@/lib/gsap";
@@ -72,14 +71,14 @@ const processSteps = [
     title: "Describe your issue",
     description: "Type it out or snap a photo. We immediately start analyzing.",
     icon: IoCamera,
-    details: ["Photo analysis in seconds", "Natural language understanding", "Trained on 50,000+ real issues"],
+    details: ["Photo analysis", "Natural language understanding", "AI-assisted diagnosis"],
   },
   {
     step: "02",
     title: "Get an accurate diagnosis",
     description: "Receive a detailed diagnosis with confidence scores, potential causes, and severity assessment.",
     icon: IoSearch,
-    details: ["95% accuracy rate", "Multi-cause detection", "Severity classification"],
+    details: ["Multi-cause detection", "Severity classification", "Confidence scoring"],
   },
   {
     step: "03",
@@ -106,8 +105,8 @@ const processSteps = [
 
 // Core Features (primary)
 const coreFeatures = [
-  { icon: IoCamera, title: "Photo Diagnosis", description: "Snap a photo and get instant identification. Our system analyzes images with 98% accuracy.", stat: "50K+", statLabel: "issues trained" },
-  { icon: IoAnalytics, title: "Smart Diagnostics", description: "Adaptive questioning engine learns from 50,000+ real cases. Multi-cause detection with confidence scoring.", stat: "95%", statLabel: "accuracy" },
+  { icon: IoCamera, title: "Photo Diagnosis", description: "Snap a photo for AI-assisted identification. We analyze images to suggest possible causes and next steps.", stat: "AI-powered", statLabel: "analysis" },
+  { icon: IoAnalytics, title: "Smart Diagnostics", description: "Adaptive questioning to narrow down causes. Multi-cause detection with confidence scoring.", stat: "Multi-cause", statLabel: "detection" },
   { icon: IoOptions, title: "DIY vs Hire Analysis", description: "Side-by-side cost comparison with location-based pricing, time estimates, and risk assessment.", stat: "$2,400", statLabel: "avg savings" },
   { icon: IoShield, title: "Safety & Risk Assessment", description: "4-level severity classification with PPE recommendations and 'do not proceed' hazard alerts.", stat: "4-level", statLabel: "classification" },
   { icon: IoBook, title: "Curated DIY Guides", description: "Step-by-step instructions from iFixit, YouTube, This Old House, Family Handyman, and more.", stat: "9+", statLabel: "trusted sources" },
@@ -142,7 +141,7 @@ const problems = [
 const faqItems = [
   {
     question: "How accurate is the diagnosis?",
-    answer: "We achieve 95% accuracy on common issues, trained on 50,000+ real cases. For complex problems, we recommend professional evaluation.",
+    answer: "We're in beta and improving every day. For complex or safety-critical problems, we recommend professional evaluation.",
   },
   {
     question: "How do DIY vs hire recommendations work?",
@@ -192,24 +191,8 @@ export default function LandingPage() {
         stagger: 0.1,
         duration: 0.6,
         delay: 1,
-        onComplete: () => {
-          // Animate counters after stats appear
-          const statValues = [50, 95, 2];
-          const suffixes = ["K+", "%", "s"];
-          const prefixes = ["", "", "<"];
-          heroStatRefs.current.forEach((ref, i) => {
-            if (ref) {
-              setTimeout(() => {
-                animateCounter(ref, statValues[i], {
-                  duration: 1.5,
-                  prefix: prefixes[i],
-                  suffix: suffixes[i],
-                  decimals: 0,
-                });
-              }, i * 100);
-            }
-          });
-        },
+        // Hero stats are now static (Beta, Free, Home & auto) — no counter animation
+        onComplete: () => {},
       });
 
       // Scroll-triggered animations
@@ -309,7 +292,7 @@ export default function LandingPage() {
               <span className="text-teal-400">smart guidance</span>
             </h1>
 
-            <p className="hero-subtitle text-sm sm:text-base text-white/50 max-w-xl mb-6 leading-relaxed">
+            <p className="hero-subtitle text-sm sm:text-base text-white/70 max-w-xl mb-6 leading-relaxed">
               Home repairs, car issues, electronics, appliances—stop wasting hours researching. Get instant diagnoses, cost comparisons, and expert recommendations.
             </p>
 
@@ -326,9 +309,9 @@ export default function LandingPage() {
 
             <div className="hero-stats flex flex-wrap gap-6 sm:gap-10 pt-6 border-t border-white/[0.06]">
               {[
-                { value: "0", label: "Diagnostic cases" },
-                { value: "0", label: "Accuracy rate" },
-                { value: "0", label: "Photo analysis" },
+                { value: "Beta", label: "Now" },
+                { value: "Free", label: "to start" },
+                { value: "Home & auto", label: "Supported" },
               ].map((stat, i) => (
                 <div key={i}>
                   <p
@@ -337,7 +320,7 @@ export default function LandingPage() {
                   >
                     {stat.value}
                   </p>
-                  <p className="text-[11px] text-white/40">{stat.label}</p>
+                  <p className="text-[11px] text-white/60">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -353,7 +336,7 @@ export default function LandingPage() {
             <h2 className="fade-up text-2xl sm:text-3xl font-bold mb-3">
               Repairs and projects are harder than they should be
             </h2>
-            <p className="fade-up text-sm text-white/50 max-w-lg mx-auto">
+            <p className="fade-up text-sm text-white/70 max-w-lg mx-auto">
               From fixing your car to troubleshooting electronics—we built OpportunIQ to help you make the right call.
             </p>
           </div>
@@ -361,10 +344,10 @@ export default function LandingPage() {
           <div className="stagger-fade grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {problems.map((problem, i) => (
               <div key={i} className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/10 transition-colors">
-                <problem.icon className="w-6 h-6 text-white/30 mb-3" />
+                <problem.icon className="w-6 h-6 text-white/70 mb-3" />
                 <p className="text-2xl font-bold text-red-400 mb-1">{problem.stat}</p>
                 <h3 className="text-sm font-medium mb-1">{problem.title}</h3>
-                <p className="text-xs text-white/40">{problem.description}</p>
+                <p className="text-xs text-white/60">{problem.description}</p>
               </div>
             ))}
           </div>
@@ -379,7 +362,7 @@ export default function LandingPage() {
             <h2 className="fade-up text-2xl sm:text-3xl font-bold mb-3">
               From problem to solution in minutes
             </h2>
-            <p className="fade-up text-sm text-white/50 max-w-lg mx-auto">
+            <p className="fade-up text-sm text-white/70 max-w-lg mx-auto">
               We guide you through every step, from identifying the issue to making the right decision.
             </p>
           </div>
@@ -401,16 +384,16 @@ export default function LandingPage() {
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
                       activeStep === i ? "bg-teal-500/20" : "bg-white/[0.05]"
                     }`}>
-                      <step.icon className={`w-5 h-5 ${activeStep === i ? "text-teal-400" : "text-white/40"}`} />
+                      <step.icon className={`w-5 h-5 ${activeStep === i ? "text-teal-400" : "text-white/60"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-[10px] font-medium ${activeStep === i ? "text-teal-400" : "text-white/30"}`}>
+                        <span className={`text-[10px] font-medium ${activeStep === i ? "text-teal-400" : "text-white/70"}`}>
                           STEP {step.step}
                         </span>
                       </div>
                       <h3 className="text-sm font-semibold mb-1">{step.title}</h3>
-                      <p className="text-xs text-white/50 leading-relaxed">{step.description}</p>
+                      <p className="text-xs text-white/70 leading-relaxed">{step.description}</p>
                     </div>
                   </div>
                 </div>
@@ -475,7 +458,7 @@ export default function LandingPage() {
             <h2 className="fade-up text-2xl sm:text-3xl font-bold mb-3">
               Everything you need to fix with confidence
             </h2>
-            <p className="fade-up text-sm text-white/50 max-w-lg mx-auto">
+            <p className="fade-up text-sm text-white/70 max-w-lg mx-auto">
               From diagnosis to decision, we've got you covered.
             </p>
           </div>
@@ -493,7 +476,7 @@ export default function LandingPage() {
                 <p className="text-xs text-white/60 mb-4 leading-relaxed">{feature.description}</p>
                 <div className="pt-3 border-t border-white/[0.08]">
                   <span className="text-lg font-bold text-teal-400">{feature.stat}</span>
-                  <span className="text-[10px] text-white/50 ml-2">{feature.statLabel}</span>
+                  <span className="text-[10px] text-white/70 ml-2">{feature.statLabel}</span>
                 </div>
               </div>
             ))}
@@ -520,7 +503,7 @@ export default function LandingPage() {
             <h2 className="fade-up text-2xl sm:text-3xl font-bold mb-3">
               Powered by trusted communities
             </h2>
-            <p className="fade-up text-sm text-white/50 max-w-lg mx-auto">
+            <p className="fade-up text-sm text-white/70 max-w-lg mx-auto">
               We use Firecrawl to index and curate the best DIY guides from across the web.
             </p>
           </div>
@@ -545,7 +528,7 @@ export default function LandingPage() {
           <div className="fade-up p-4 rounded-lg bg-amber-500/5 border border-amber-500/10">
             <div className="flex items-start gap-3">
               <IoWarning className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
-              <p className="text-[11px] text-white/50 leading-relaxed">
+              <p className="text-[11px] text-white/70 leading-relaxed">
                 <span className="font-medium text-white/70">Disclaimer:</span> OpportunIQ is not affiliated with any of the websites shown above. All trademarks are property of their respective owners. We crawl publicly available content to provide curated recommendations.
               </p>
             </div>
@@ -567,7 +550,7 @@ export default function LandingPage() {
             <h2 className="fade-up text-2xl sm:text-3xl font-bold mb-3">
               See how much you could save
             </h2>
-            <p className="fade-up text-sm text-white/50 max-w-lg mx-auto">
+            <p className="fade-up text-sm text-white/70 max-w-lg mx-auto">
               Adjust the sliders to match your situation.
             </p>
           </div>
@@ -580,47 +563,53 @@ export default function LandingPage() {
               <div className="space-y-6">
                 <div>
                   <div className="flex justify-between mb-2">
-                    <label className="text-sm text-white/60">Repairs per year</label>
+                    <label htmlFor="savings-repairs" className="text-sm text-white/70">Repairs per year</label>
                     <span className="text-sm font-medium text-teal-400">{repairs}</span>
                   </div>
                   <input
+                    id="savings-repairs"
                     type="range"
                     min="1"
                     max="12"
                     value={repairs}
                     onChange={(e) => setRepairs(parseInt(e.target.value))}
+                    aria-label="Number of repairs per year"
                     className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-teal-500"
                   />
                 </div>
 
                 <div>
                   <div className="flex justify-between mb-2">
-                    <label className="text-sm text-white/60">Average repair cost</label>
+                    <label htmlFor="savings-avg-cost" className="text-sm text-white/70">Average repair cost</label>
                     <span className="text-sm font-medium text-teal-400">${avgCost}</span>
                   </div>
                   <input
+                    id="savings-avg-cost"
                     type="range"
                     min="100"
                     max="2000"
                     step="100"
                     value={avgCost}
                     onChange={(e) => setAvgCost(parseInt(e.target.value))}
+                    aria-label="Average repair cost in dollars"
                     className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-teal-500"
                   />
                 </div>
 
                 <div>
                   <div className="flex justify-between mb-2">
-                    <label className="text-sm text-white/60">Your hourly value</label>
+                    <label htmlFor="savings-hourly-rate" className="text-sm text-white/70">Your hourly value</label>
                     <span className="text-sm font-medium text-teal-400">${hourlyRate}/hr</span>
                   </div>
                   <input
+                    id="savings-hourly-rate"
                     type="range"
                     min="15"
                     max="150"
                     step="5"
                     value={hourlyRate}
                     onChange={(e) => setHourlyRate(parseInt(e.target.value))}
+                    aria-label="Your hourly rate in dollars"
                     className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-teal-500"
                   />
                 </div>
@@ -635,7 +624,7 @@ export default function LandingPage() {
                 <div className="flex justify-between items-center p-3 rounded-lg bg-white/[0.03]">
                   <div>
                     <p className="text-sm text-white/80">Overpayment avoided</p>
-                    <p className="text-[11px] text-white/40">35% avg markup eliminated</p>
+                    <p className="text-[11px] text-white/60">35% avg markup eliminated</p>
                   </div>
                   <span className="text-base font-semibold text-teal-400">
                     ${Math.round(overPaymentSaved).toLocaleString()}
@@ -645,7 +634,7 @@ export default function LandingPage() {
                 <div className="flex justify-between items-center p-3 rounded-lg bg-white/[0.03]">
                   <div>
                     <p className="text-sm text-white/80">Time value saved</p>
-                    <p className="text-[11px] text-white/40">{repairs * 14} hours of research</p>
+                    <p className="text-[11px] text-white/60">{repairs * 14} hours of research</p>
                   </div>
                   <span className="text-base font-semibold text-teal-400">
                     ${Math.round(timeSaved * 0.1).toLocaleString()}
@@ -655,7 +644,7 @@ export default function LandingPage() {
                 <div className="flex justify-between items-center p-3 rounded-lg bg-white/[0.03]">
                   <div>
                     <p className="text-sm text-white/80">Better decisions</p>
-                    <p className="text-[11px] text-white/40">Optimal DIY vs hire choices</p>
+                    <p className="text-[11px] text-white/60">Optimal DIY vs hire choices</p>
                   </div>
                   <span className="text-base font-semibold text-teal-400">
                     ${Math.round(wrongDecisions * 0.5).toLocaleString()}
@@ -678,7 +667,7 @@ export default function LandingPage() {
       <section className="py-20 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <div className="fade-up inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 text-[11px] text-white/50 bg-white/[0.02] mb-4">
+            <div className="fade-up inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 text-[11px] text-white/70 bg-white/[0.02] mb-4">
               <IoHelpCircle className="w-3.5 h-3.5" />
               FAQ
             </div>
@@ -699,7 +688,7 @@ export default function LandingPage() {
                 >
                   <span className="text-sm font-medium pr-4">{faq.question}</span>
                   <IoChevronDown
-                    className={`w-4 h-4 text-white/40 transition-transform flex-shrink-0 ${
+                    className={`w-4 h-4 text-white/60 transition-transform flex-shrink-0 ${
                       openFaq === i ? "rotate-180" : ""
                     }`}
                   />
@@ -709,7 +698,7 @@ export default function LandingPage() {
                     openFaq === i ? "max-h-40" : "max-h-0"
                   }`}
                 >
-                  <p className="px-4 pb-4 text-sm text-white/50 leading-relaxed">
+                  <p className="px-4 pb-4 text-sm text-white/70 leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>
@@ -727,7 +716,7 @@ export default function LandingPage() {
             <h2 className="fade-up text-2xl sm:text-3xl font-bold mb-3">
               Any repair, any project
             </h2>
-            <p className="fade-up text-sm text-white/50 max-w-lg mx-auto">
+            <p className="fade-up text-sm text-white/70 max-w-lg mx-auto">
               From leaky faucets to check engine lights—get guidance for whatever you're facing.
             </p>
           </div>
@@ -760,7 +749,7 @@ export default function LandingPage() {
                 <h3 className="text-sm font-semibold mb-3">{useCase.category}</h3>
                 <ul className="space-y-1.5">
                   {useCase.examples.map((example, j) => (
-                    <li key={j} className="text-xs text-white/50 flex items-center gap-2">
+                    <li key={j} className="text-xs text-white/70 flex items-center gap-2">
                       <span className="w-1 h-1 rounded-full bg-teal-400/50" />
                       {example}
                     </li>
@@ -779,7 +768,7 @@ export default function LandingPage() {
           <h2 className="fade-up text-2xl sm:text-3xl font-bold mb-3">
             Ready to fix smarter?
           </h2>
-          <p className="fade-up text-sm text-white/50 mb-6 max-w-md mx-auto">
+          <p className="fade-up text-sm text-white/70 mb-6 max-w-md mx-auto">
             Stop guessing, start fixing. Get AI-powered guidance for any repair or project.
           </p>
           <div className="fade-up flex flex-wrap justify-center gap-3">
@@ -788,7 +777,7 @@ export default function LandingPage() {
               <IoArrowForward className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
-          <p className="fade-up mt-4 text-[11px] text-white/30">
+          <p className="fade-up mt-4 text-[11px] text-white/70">
             No credit card required
           </p>
         </div>

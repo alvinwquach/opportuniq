@@ -8,7 +8,7 @@ export default function MarketingLayout({
   return (
     <div className="min-h-screen bg-neutral-950">
       <Navbar />
-      {children}
+      <main id="main">{children}</main>
       <Footer />
     </div>
   );

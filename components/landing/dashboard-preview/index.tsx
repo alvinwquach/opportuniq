@@ -130,10 +130,10 @@ export function DashboardPreview({ variant = 'light' }: DashboardPreviewProps) {
                       onClick={() => setActiveView(item.id)}
                       className={`
                         flex flex-col items-center gap-1 px-4 py-3 text-xs font-medium transition-colors relative
-                        ${isActive ? 'text-emerald-400' : 'text-white/40'}
+                        ${isActive ? 'text-emerald-400' : 'text-white/60'}
                       `}
                     >
-                      <Icon className={`w-5 h-5 ${isActive ? 'text-emerald-400' : 'text-white/30'}`} />
+                      <Icon className={`w-5 h-5 ${isActive ? 'text-emerald-400' : 'text-white/50'}`} />
                       {item.label}
                       {isActive && (
                         <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-400" />

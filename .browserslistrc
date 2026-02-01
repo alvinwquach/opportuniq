@@ -1,0 +1,5 @@
+# Target modern browsers to reduce legacy polyfills (Array.at, Object.hasOwn, etc.)
+# and improve Lighthouse "Legacy JavaScript" score.
+defaults
+not dead
+not ie 11
