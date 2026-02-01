@@ -29,7 +29,7 @@ export async function revokeInvite(inviteId: string) {
   await db.delete(invites).where(eq(invites.id, inviteId));
 
   revalidatePath("/admin/invites");
-  revalidateTag("admin-invites");
+  revalidateTag("admin-invites", { expire: 0 });
   return { success: true };
 }
 
@@ -59,7 +59,7 @@ export async function markInviteAccepted(inviteId: string) {
     .where(eq(invites.id, inviteId));
 
   revalidatePath("/admin/invites");
-  revalidateTag("admin-invites");
+  revalidateTag("admin-invites", { expire: 0 });
   return { success: true };
 }
 
