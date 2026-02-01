@@ -5,7 +5,7 @@ interface SafetyAlert {
   title: string;
   severity: string;
   groupName: string;
-  emergencyInstructions?: string;
+  emergencyInstructions?: string | null;
 }
 
 interface SafetyAlertsCardProps {
