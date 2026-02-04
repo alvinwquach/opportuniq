@@ -504,7 +504,7 @@ export default function LandingPage() {
               Powered by trusted communities
             </h2>
             <p className="fade-up text-sm text-white/70 max-w-lg mx-auto">
-              We use Firecrawl to index and curate the best DIY guides from across the web.
+              We index and curate the best DIY guides from across the web.
             </p>
           </div>
         </div>
