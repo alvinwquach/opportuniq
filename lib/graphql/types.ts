@@ -1271,6 +1271,12 @@ export interface DiagnoseChatMessage {
   createdAt: string;
 }
 
+export interface DiagnoseGuideStep {
+  stepNumber: number;
+  title: string;
+  description: string;
+}
+
 export interface DiagnoseGuide {
   id: string;
   source: string;
@@ -1278,6 +1284,8 @@ export interface DiagnoseGuide {
   url: string | null;
   duration: string | null;
   steps: number | null;
+  stepContent: DiagnoseGuideStep[] | null;
+  toolsNeeded: string[] | null;
   rating: number | null;
   icon: string;
 }
@@ -1290,6 +1298,7 @@ export interface DiagnosePart {
   distance: string | null;
   inStock: boolean;
   storeUrl: string | null;
+  isPPE?: boolean;
 }
 
 export interface DiagnosePro {

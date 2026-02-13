@@ -63,31 +63,60 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
     );
   };
 
-  // Default safety gear based on category (can be expanded)
-  const getSafetyGear = (): string[] => {
+  // PPE pricing and availability data
+  const ppeData: Record<string, { price: number; store: string; distance: string }> = {
+    "Safety Glasses": { price: 12.97, store: "Home Depot", distance: "2.3 mi" },
+    "Work Gloves": { price: 14.97, store: "Home Depot", distance: "2.3 mi" },
+    "Insulated Gloves": { price: 24.97, store: "Home Depot", distance: "2.3 mi" },
+    "Voltage Tester": { price: 19.97, store: "Home Depot", distance: "2.3 mi" },
+    "N95 Mask": { price: 3.97, store: "Home Depot", distance: "2.3 mi" },
+    "Hard Hat": { price: 14.97, store: "Home Depot", distance: "2.3 mi" },
+    "Safety Harness": { price: 79.97, store: "Home Depot", distance: "2.3 mi" },
+    "Non-slip Boots": { price: 89.97, store: "Home Depot", distance: "2.3 mi" },
+  };
+
+  // Generate safety gear as Part objects with inventory data
+  const getSafetyGearParts = (): import("../types").Part[] => {
     const category = issue.category?.toLowerCase() ?? "";
-    const gear: string[] = [];
+    const gearNames: string[] = [];
 
     if (category.includes("plumbing") || category.includes("water")) {
-      gear.push("Safety Glasses", "Work Gloves");
+      gearNames.push("Safety Glasses", "Work Gloves");
     }
     if (category.includes("electrical") || category.includes("electric")) {
-      gear.push("Insulated Gloves", "Safety Glasses", "Voltage Tester");
+      gearNames.push("Insulated Gloves", "Safety Glasses", "Voltage Tester");
     }
     if (category.includes("hvac") || category.includes("air")) {
-      gear.push("N95 Mask", "Safety Glasses", "Work Gloves");
+      gearNames.push("N95 Mask", "Safety Glasses", "Work Gloves");
     }
     if (category.includes("roofing") || category.includes("roof")) {
-      gear.push("Hard Hat", "Safety Harness", "Non-slip Boots");
+      gearNames.push("Hard Hat", "Safety Harness", "Non-slip Boots");
     }
 
     // Default gear for any DIY
-    if (gear.length === 0 && hasDiyContent) {
-      gear.push("Safety Glasses", "Work Gloves");
+    if (gearNames.length === 0 && hasDiyContent) {
+      gearNames.push("Safety Glasses", "Work Gloves");
     }
 
-    return gear;
+    // Remove duplicates and convert to Part objects
+    const uniqueGear = [...new Set(gearNames)];
+    return uniqueGear.map((name, index) => {
+      const data = ppeData[name] ?? { price: 15.00, store: "Home Depot", distance: "2.3 mi" };
+      return {
+        id: `ppe-${index}`,
+        name,
+        price: data.price,
+        store: data.store,
+        distance: data.distance,
+        inStock: true,
+        storeUrl: `https://www.homedepot.com/s/${encodeURIComponent(name)}`,
+        isPPE: true,
+      };
+    });
   };
+
+  // Combine regular parts with PPE parts
+  const allParts = [...getSafetyGearParts(), ...(issue.parts ?? [])];
 
   return (
     <div className="w-[340px] flex-shrink-0 border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
@@ -122,10 +151,9 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
         {activeTab === "diy" && (
           <DIYTab
             guides={issue.guides ?? []}
-            parts={issue.parts ?? []}
+            parts={allParts}
             diyCost={issue.diyCost}
             savings={savings}
-            safetyGear={getSafetyGear()}
             onOrderParts={handleOrderParts}
             onGetDirections={handleGetDirections}
             onSwitchToHire={() => setActiveTab("hire")}

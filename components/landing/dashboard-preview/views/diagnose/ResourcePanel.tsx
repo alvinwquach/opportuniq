@@ -13,8 +13,20 @@ interface ResourcePanelProps {
   isCreatingNewIssue: boolean;
 }
 
-// Helper function to get safety gear based on issue category
-function getSafetyGear(issue: IssueData): string[] {
+// PPE pricing and availability data
+const ppeData: Record<string, { price: number; store: string; distance: string }> = {
+  "Safety Glasses": { price: 12.97, store: "Home Depot", distance: "2.3 mi" },
+  "Work Gloves": { price: 14.97, store: "Home Depot", distance: "2.3 mi" },
+  "Insulated Gloves": { price: 24.97, store: "Home Depot", distance: "2.3 mi" },
+  "Voltage Tester": { price: 19.97, store: "Home Depot", distance: "2.3 mi" },
+  "N95 Mask": { price: 3.97, store: "Home Depot", distance: "2.3 mi" },
+  "Hard Hat": { price: 14.97, store: "Home Depot", distance: "2.3 mi" },
+  "Safety Harness": { price: 79.97, store: "Home Depot", distance: "2.3 mi" },
+  "Non-slip Boots": { price: 89.97, store: "Home Depot", distance: "2.3 mi" },
+};
+
+// Helper function to get safety gear names based on issue category
+function getSafetyGearNames(issue: IssueData): string[] {
   // Use the safety.ppe from the data if available
   if (issue.safety?.ppe?.length > 0) {
     return issue.safety.ppe;
@@ -43,6 +55,26 @@ function getSafetyGear(issue: IssueData): string[] {
   }
 
   return gear;
+}
+
+// Convert safety gear names to PartItem objects
+function getSafetyGearParts(issue: IssueData): IssueData["parts"] {
+  const gearNames = getSafetyGearNames(issue);
+  const uniqueGear = [...new Set(gearNames)];
+
+  return uniqueGear.map((name) => {
+    const data = ppeData[name] ?? { price: 15.00, store: "Home Depot", distance: "2.3 mi" };
+    return {
+      name,
+      price: data.price,
+      store: data.store,
+      address: "123 Main St",
+      distance: data.distance,
+      inStock: true,
+      link: `https://www.homedepot.com/s/${encodeURIComponent(name)}`,
+      isPPE: true,
+    };
+  });
 }
 
 export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps) {
@@ -82,7 +114,10 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
   const hasParts = issue.parts.length > 0;
   const hasDiyContent = hasGuides || hasParts;
   const hasProContent = issue.pros.length > 0;
-  const safetyGear = getSafetyGear(issue);
+
+  // Combine PPE parts with regular parts
+  const ppeParts = getSafetyGearParts(issue);
+  const allParts = [...ppeParts, ...issue.parts];
 
   return (
     <div className="w-[340px] flex-shrink-0 border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
@@ -116,8 +151,7 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
       <div className="flex-1 overflow-y-auto p-4">
         {activeTab === "diy" && (
           <DIYTab
-            issue={issue}
-            safetyGear={safetyGear}
+            issue={{ ...issue, parts: allParts }}
             onSwitchToHire={() => setActiveTab("hire")}
           />
         )}
