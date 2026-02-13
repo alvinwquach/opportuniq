@@ -133,7 +133,7 @@ export default function PrivacyPolicy() {
             </p>
             <p className="mt-2">
               <a href="mailto:privacy@opportuniq.com" className="text-teal-400 hover:text-teal-300 transition-colors">
-                privacy@opportuniq.com
+                privacy@opportuniq.app
               </a>
             </p>
           </section>

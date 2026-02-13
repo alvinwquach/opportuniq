@@ -15,6 +15,7 @@ export interface PartItem {
   inStock: boolean;
   link: string;
   comparePrices?: ComparePriceItem[];
+  isPPE?: boolean;
 }
 
 export interface ResearchItem {
@@ -24,11 +25,20 @@ export interface ResearchItem {
   url: string;
 }
 
+export interface GuideStep {
+  stepNumber: number;
+  title: string;
+  description: string;
+}
+
 export interface GuideItem {
   source: string;
   title: string;
+  url?: string;
   duration?: string;
   steps?: number;
+  stepContent?: GuideStep[];
+  toolsNeeded?: string[];
   rating?: number;
   icon: "youtube" | "ifixit" | "article";
 }

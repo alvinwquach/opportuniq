@@ -48,6 +48,12 @@ export interface ChatMessage {
   createdAt: string;
 }
 
+export interface GuideStep {
+  stepNumber: number;
+  title: string;
+  description: string;
+}
+
 export interface Guide {
   id: string;
   source: string;
@@ -55,6 +61,8 @@ export interface Guide {
   url: string | null;
   duration: string | null;
   steps: number | null;
+  stepContent: GuideStep[] | null;
+  toolsNeeded: string[] | null;
   rating: number | null;
   icon: string;
 }
@@ -67,6 +75,7 @@ export interface Part {
   distance: string | null;
   inStock: boolean;
   storeUrl: string | null;
+  isPPE?: boolean;
 }
 
 export interface Pro {

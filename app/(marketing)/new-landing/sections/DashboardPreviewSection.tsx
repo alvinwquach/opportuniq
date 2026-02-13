@@ -161,7 +161,7 @@ export function DashboardPreviewSection() {
               </div>
               <div className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-[#0f0f0f] text-xs text-neutral-500">
                 <OpportunIQLogo className="w-4 h-4 text-emerald-400" />
-                <span>app.opportuniq.com/dashboard</span>
+                <span>www.opportuniq.app/dashboard</span>
               </div>
               <div className="w-16" />
             </div>
