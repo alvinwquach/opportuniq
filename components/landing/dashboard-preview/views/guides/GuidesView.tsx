@@ -73,9 +73,9 @@ export function GuidesView() {
   const showFeatured = activeTab === "featured" && featuredGuides.length > 0;
 
   return (
-    <div className="p-6 min-h-[calc(100vh-48px)] bg-[#0f0f0f]">
+    <div className="p-3 sm:p-4 lg:p-6 min-h-[calc(100vh-48px)] bg-[#0f0f0f]">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <GuidesHeader
           sourcesCount={Object.keys(guideSourceInfo).length}
           guidesCount={mixedGuides.length}
@@ -93,10 +93,10 @@ export function GuidesView() {
         />
       </div>
 
-      {/* Two Column Layout */}
-      <div className="grid lg:grid-cols-[1fr_300px] gap-6">
+      {/* Two Column Layout - sidebar hidden on mobile/tablet */}
+      <div className="grid xl:grid-cols-[1fr_280px] gap-4 sm:gap-6">
         {/* Main Content */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6 min-w-0">
           {/* Tabs */}
           <GuidesTabs
             activeTab={activeTab}
@@ -138,8 +138,8 @@ export function GuidesView() {
           />
         </div>
 
-        {/* Right Sidebar - Contextual based on active tab */}
-        <div className="min-w-0">
+        {/* Right Sidebar - Hidden on mobile/tablet, shown on xl screens */}
+        <div className="hidden xl:block min-w-0">
           {activeTab === "all" && (
             <AllGuidesSidebar
               completedCount={completedCount}

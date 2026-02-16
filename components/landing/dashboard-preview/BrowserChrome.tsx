@@ -20,7 +20,7 @@ const viewPaths: Record<ViewType, string> = {
 
 export function BrowserChrome({ children, activeView }: BrowserChromeProps) {
   return (
-    <div className="rounded-xl border border-white/10 bg-[#0a0a0a] shadow-2xl shadow-black/50 overflow-hidden">
+    <div className="rounded-xl border border-white/10 bg-[#0a0a0a] shadow-2xl shadow-black/50">
       {/* Browser header */}
       <div className="flex items-center gap-3 px-4 py-3 bg-[#141414] border-b border-white/[0.06]">
         {/* Traffic lights */}

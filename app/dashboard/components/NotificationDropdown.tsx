@@ -12,6 +12,7 @@ import {
   IoTime,
   IoClose,
 } from "react-icons/io5";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
@@ -76,22 +77,27 @@ export function NotificationDropdown({
 
   return (
     <div ref={dropdownRef} className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        className={cn(
-          "p-1.5 rounded-md transition-colors relative",
-          open
-            ? "bg-[#1f1f1f] text-white"
-            : "text-[#888] hover:text-white hover:bg-[#1f1f1f]"
-        )}
-      >
-        <IoNotifications className="h-4 w-4" />
-        {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 w-4 h-4 flex items-center justify-center text-[9px] font-bold bg-[#00D4FF] text-[#0c0c0c] rounded-full">
-            {unreadCount > 9 ? "9+" : unreadCount}
-          </span>
-        )}
-      </button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            onClick={() => setOpen(!open)}
+            className={cn(
+              "p-1.5 rounded-md transition-colors relative",
+              open
+                ? "bg-[#1f1f1f] text-white"
+                : "text-[#888] hover:text-white hover:bg-[#1f1f1f]"
+            )}
+          >
+            <IoNotifications className="h-4 w-4" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 flex items-center justify-center text-[9px] font-bold bg-[#00D4FF] text-[#0c0c0c] rounded-full">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">Notifications</TooltipContent>
+      </Tooltip>
       {open && (
         <div className="absolute right-0 top-full mt-2 w-80 bg-[#0c0c0c] border border-[#1f1f1f] rounded-lg shadow-xl z-50 overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">

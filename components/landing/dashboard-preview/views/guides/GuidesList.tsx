@@ -60,14 +60,14 @@ export function GuidesList({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-white">{getTitle()}</h3>
-        <span className="text-xs text-[#666]">
-          Showing {visibleGuides.length} of {guides.length} guides
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <h3 className="text-xs sm:text-sm font-semibold text-white">{getTitle()}</h3>
+        <span className="text-[10px] sm:text-xs text-[#666]">
+          {visibleGuides.length} of {guides.length}
         </span>
       </div>
 
-      <div className={viewMode === "grid" ? "grid md:grid-cols-2 gap-4" : "space-y-3"}>
+      <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4" : "space-y-2 sm:space-y-3"}>
         {visibleGuides.map((guide) => (
           <GuideCard key={guide.id} guide={guide} viewMode={viewMode} />
         ))}
@@ -75,14 +75,14 @@ export function GuidesList({
 
       {/* Load More Button */}
       {hasMore && (
-        <div className="mt-6 text-center">
+        <div className="mt-4 sm:mt-6 text-center">
           <button
             onClick={handleLoadMore}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl text-sm font-medium text-white hover:bg-[#222] hover:border-emerald-500/50 transition-all"
+            className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium text-white hover:bg-[#222] hover:border-emerald-500/50 transition-all"
           >
             <span>Load More</span>
-            <span className="text-xs text-[#888]">({remaining} remaining)</span>
-            <IoChevronDown className="w-4 h-4 text-[#666]" />
+            <span className="text-[10px] sm:text-xs text-[#888]">({remaining})</span>
+            <IoChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#666]" />
           </button>
         </div>
       )}

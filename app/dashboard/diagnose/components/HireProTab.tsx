@@ -195,6 +195,11 @@ export function HireProTab({
                     Thumbtack
                   </span>
                 )}
+                {pro.source === "homeadvisor" && (
+                  <span className="text-xs px-2 py-1 bg-blue-500/20 text-blue-400 rounded-lg font-medium">
+                    HomeAdvisor
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-4 text-xs text-[#888] mb-3">
                 <span className="flex items-center gap-1">

@@ -1,6 +1,7 @@
 export * from './types';
 export * from './data';
 export * from './utils';
+export { FinancesTabs, type FinancesTab } from './FinancesTabs';
 export * from './AvailableFundsCard';
 export * from './SummaryCards';
 export * from './BudgetChart';

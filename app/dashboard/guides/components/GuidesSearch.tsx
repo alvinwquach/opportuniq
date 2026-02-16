@@ -6,6 +6,7 @@ import {
   IoGridOutline,
   IoListOutline,
 } from "react-icons/io5";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import type { GuidesSearchProps } from "../types";
 
 export function GuidesSearch({
@@ -42,22 +43,32 @@ export function GuidesSearch({
         Search
       </button>
       <div className="flex items-center gap-1 border border-[#2a2a2a] rounded-xl p-1 bg-[#1a1a1a] shadow-sm">
-        <button
-          onClick={() => setViewMode("grid")}
-          className={`p-2 rounded-lg transition-colors ${
-            viewMode === "grid" ? "bg-emerald-500/20 text-emerald-400" : "text-[#666] hover:text-white"
-          }`}
-        >
-          <IoGridOutline className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => setViewMode("list")}
-          className={`p-2 rounded-lg transition-colors ${
-            viewMode === "list" ? "bg-emerald-500/20 text-emerald-400" : "text-[#666] hover:text-white"
-          }`}
-        >
-          <IoListOutline className="w-4 h-4" />
-        </button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`p-2 rounded-lg transition-colors ${
+                viewMode === "grid" ? "bg-emerald-500/20 text-emerald-400" : "text-[#666] hover:text-white"
+              }`}
+            >
+              <IoGridOutline className="w-4 h-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">Grid View</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={() => setViewMode("list")}
+              className={`p-2 rounded-lg transition-colors ${
+                viewMode === "list" ? "bg-emerald-500/20 text-emerald-400" : "text-[#666] hover:text-white"
+              }`}
+            >
+              <IoListOutline className="w-4 h-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">List View</TooltipContent>
+        </Tooltip>
       </div>
     </div>
   );

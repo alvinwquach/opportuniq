@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   IoPlayCircle,
   IoConstruct,
@@ -15,23 +15,30 @@ import {
   IoChevronUp,
   IoBuildOutline,
   IoCheckmark,
+  IoCheckmarkDone,
+  IoSquareOutline,
+  IoCheckbox,
 } from "react-icons/io5";
 import type { Guide, Part } from "../types";
 
 interface DIYTabProps {
   guides: Guide[];
   parts: Part[];
-  diyCost: number | null;
   savings: number;
   onOrderParts: () => void;
   onGetDirections: () => void;
   onSwitchToHire: () => void;
 }
 
+// Helper to generate a stable key for localStorage based on issue title
+const getStorageKey = (issueTitle: string, type: "steps" | "tools") => {
+  const slug = issueTitle.toLowerCase().replace(/\s+/g, "-");
+  return `diy-progress-${slug}-${type}`;
+};
+
 export function DIYTab({
   guides,
   parts,
-  diyCost,
   savings,
   onOrderParts,
   onGetDirections,
@@ -39,9 +46,80 @@ export function DIYTab({
 }: DIYTabProps) {
   const [expandedGuide, setExpandedGuide] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<Record<string, Set<number>>>({});
+  const [checkedTools, setCheckedTools] = useState<Set<string>>(new Set());
+  const [isToolChecklistExpanded, setIsToolChecklistExpanded] = useState(false);
   const hasGuides = guides.length > 0;
   const hasParts = parts.length > 0;
   const hasDiyContent = hasGuides || hasParts;
+
+  // Calculate total cost from all parts (including PPE)
+  const totalPartsCost = parts.reduce((sum, part) => sum + part.price, 0);
+  const ppeParts = parts.filter((part) => part.isPPE);
+  const regularParts = parts.filter((part) => !part.isPPE);
+  const ppeCost = ppeParts.reduce((sum, part) => sum + part.price, 0);
+  const partsCost = regularParts.reduce((sum, part) => sum + part.price, 0);
+
+  // Collect all unique tools from all guides
+  const allTools = Array.from(
+    new Set(guides.flatMap((guide) => guide.toolsNeeded || []))
+  );
+
+  // Use a stable title for storage key (from the first guide or fallback)
+  const storageTitle = guides[0]?.title ?? "unknown";
+
+  // Load persisted progress from localStorage on mount
+  useEffect(() => {
+    try {
+      const stepsKey = getStorageKey(storageTitle, "steps");
+      const savedSteps = localStorage.getItem(stepsKey);
+      if (savedSteps) {
+        const parsed = JSON.parse(savedSteps);
+        const restored: Record<string, Set<number>> = {};
+        for (const [key, steps] of Object.entries(parsed)) {
+          restored[key] = new Set(steps as number[]);
+        }
+        setCompletedSteps(restored);
+      }
+
+      const toolsKey = getStorageKey(storageTitle, "tools");
+      const savedTools = localStorage.getItem(toolsKey);
+      if (savedTools) {
+        setCheckedTools(new Set(JSON.parse(savedTools)));
+      }
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, [storageTitle]);
+
+  // Persist completed steps to localStorage
+  const persistSteps = useCallback(
+    (steps: Record<string, Set<number>>) => {
+      try {
+        const stepsKey = getStorageKey(storageTitle, "steps");
+        const serializable: Record<string, number[]> = {};
+        for (const [key, set] of Object.entries(steps)) {
+          serializable[key] = Array.from(set);
+        }
+        localStorage.setItem(stepsKey, JSON.stringify(serializable));
+      } catch {
+        // Ignore localStorage errors
+      }
+    },
+    [storageTitle]
+  );
+
+  // Persist checked tools to localStorage
+  const persistTools = useCallback(
+    (tools: Set<string>) => {
+      try {
+        const toolsKey = getStorageKey(storageTitle, "tools");
+        localStorage.setItem(toolsKey, JSON.stringify(Array.from(tools)));
+      } catch {
+        // Ignore localStorage errors
+      }
+    },
+    [storageTitle]
+  );
 
   const toggleStepComplete = (guideId: string, stepNumber: number) => {
     setCompletedSteps((prev) => {
@@ -51,9 +129,27 @@ export function DIYTab({
       } else {
         guideSteps.add(stepNumber);
       }
-      return { ...prev, [guideId]: guideSteps };
+      const newState = { ...prev, [guideId]: guideSteps };
+      persistSteps(newState);
+      return newState;
     });
   };
+
+  const toggleToolChecked = (tool: string) => {
+    setCheckedTools((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(tool)) {
+        newSet.delete(tool);
+      } else {
+        newSet.add(tool);
+      }
+      persistTools(newSet);
+      return newSet;
+    });
+  };
+
+  const allToolsChecked = allTools.length > 0 && allTools.every((tool) => checkedTools.has(tool));
+  const checkedToolsCount = allTools.filter((tool) => checkedTools.has(tool)).length;
 
   const getCompletedCount = (guideId: string) => {
     return completedSteps[guideId]?.size || 0;
@@ -63,16 +159,34 @@ export function DIYTab({
     return completedSteps[guideId]?.has(stepNumber) || false;
   };
 
+  const handlePartClick = (partName: string, store: string) => {
+    const storeUrls: Record<string, string> = {
+      "Home Depot": `https://www.homedepot.com/s/${encodeURIComponent(partName)}`,
+      "Lowe's": `https://www.lowes.com/search?searchTerm=${encodeURIComponent(partName)}`,
+      "Ace Hardware": `https://www.acehardware.com/search?query=${encodeURIComponent(partName)}`,
+      "Amazon": `https://www.amazon.com/s?k=${encodeURIComponent(partName)}`,
+      "Walmart": `https://www.walmart.com/search?q=${encodeURIComponent(partName)}`,
+    };
+    const url = storeUrls[store] ?? `https://www.google.com/search?q=${encodeURIComponent(partName + " " + store)}`;
+    window.open(url, "_blank");
+  };
+
   const handleGuideClick = (guide: Guide) => {
     // If guide has step content, toggle expand instead of opening external link
     if (guide.stepContent && guide.stepContent.length > 0) {
       setExpandedGuide(expandedGuide === guide.id ? null : guide.id);
       return;
     }
-    // Open external URL for video/external guides
-    if (guide.url) {
-      window.open(guide.url, "_blank");
-    }
+
+    // Generate search URLs based on source for video/external guides
+    const searchUrls: Record<string, string> = {
+      "YouTube": `https://www.youtube.com/results?search_query=${encodeURIComponent(guide.title)}`,
+      "iFixit": `https://www.ifixit.com/Search?query=${encodeURIComponent(guide.title)}`,
+      "Family Handyman": `https://www.familyhandyman.com/search/?q=${encodeURIComponent(guide.title)}`,
+      "This Old House": `https://www.thisoldhouse.com/search?q=${encodeURIComponent(guide.title)}`,
+    };
+    const url = guide.url ?? searchUrls[guide.source] ?? `https://www.google.com/search?q=${encodeURIComponent(guide.title)}`;
+    window.open(url, "_blank");
   };
 
   if (!hasDiyContent) {
@@ -95,13 +209,13 @@ export function DIYTab({
 
   return (
     <div className="space-y-4">
-      {/* Cost Summary */}
+      {/* Cost Summary with Breakdown */}
       <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-2">
           <div>
-            <p className="text-xs text-emerald-400/70">Estimated DIY Cost</p>
+            <p className="text-xs text-emerald-400/70">Total DIY Cost</p>
             <p className="text-xl font-bold text-emerald-400">
-              ${diyCost?.toFixed(2) ?? "0.00"}
+              ${totalPartsCost.toFixed(2)}
             </p>
           </div>
           {savings > 0 && (
@@ -111,7 +225,103 @@ export function DIYTab({
             </div>
           )}
         </div>
+        {/* Cost Breakdown */}
+        {hasParts && (partsCost > 0 || ppeCost > 0) && (
+          <div className="pt-2 border-t border-emerald-500/20 space-y-1">
+            {partsCost > 0 && (
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#888]">Parts & Materials ({regularParts.length})</span>
+                <span className="text-[#aaa]">${partsCost.toFixed(2)}</span>
+              </div>
+            )}
+            {ppeCost > 0 && (
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#888] flex items-center gap-1">
+                  <IoShieldCheckmark className="w-3 h-3 text-amber-400" />
+                  Safety/PPE ({ppeParts.length})
+                </span>
+                <span className="text-[#aaa]">${ppeCost.toFixed(2)}</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Tool Checklist */}
+      {allTools.length > 0 && (
+        <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a]">
+          <button
+            onClick={() => setIsToolChecklistExpanded(!isToolChecklistExpanded)}
+            className="w-full p-3 flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                allToolsChecked ? "bg-emerald-500/20" : "bg-amber-500/20"
+              }`}>
+                {allToolsChecked ? (
+                  <IoCheckmarkDone className="w-4 h-4 text-emerald-400" />
+                ) : (
+                  <IoBuildOutline className="w-4 h-4 text-amber-400" />
+                )}
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-medium text-white">Tool Checklist</p>
+                <p className="text-[10px] text-[#666]">
+                  {checkedToolsCount} of {allTools.length} tools ready
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              {allToolsChecked && (
+                <span className="text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-full">
+                  Ready to start!
+                </span>
+              )}
+              {isToolChecklistExpanded ? (
+                <IoChevronUp className="w-4 h-4 text-[#555]" />
+              ) : (
+                <IoChevronDown className="w-4 h-4 text-[#555]" />
+              )}
+            </div>
+          </button>
+          {isToolChecklistExpanded && (
+            <div className="px-3 pb-3 border-t border-[#2a2a2a]">
+              <div className="pt-3 space-y-1.5">
+                {allTools.map((tool, idx) => {
+                  const isChecked = checkedTools.has(tool);
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => toggleToolChecked(tool)}
+                      className={`w-full flex items-center gap-2 p-2 rounded-lg transition-colors text-left ${
+                        isChecked ? "bg-emerald-500/10" : "hover:bg-[#222]"
+                      }`}
+                    >
+                      {isChecked ? (
+                        <IoCheckbox className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <IoSquareOutline className="w-4 h-4 text-[#555] flex-shrink-0" />
+                      )}
+                      <span
+                        className={`text-sm transition-colors ${
+                          isChecked ? "text-emerald-400 line-through" : "text-white"
+                        }`}
+                      >
+                        {tool}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              {!allToolsChecked && (
+                <p className="mt-3 pt-2 border-t border-[#2a2a2a] text-[10px] text-[#666]">
+                  Check off each tool to verify you have everything before starting
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Guides Section */}
       {hasGuides && (
@@ -310,20 +520,9 @@ export function DIYTab({
             {parts.map((part) => (
               <div
                 key={part.id}
-                onClick={() => {
-                  // Generate a search URL for the part at the store
-                  const storeUrls: Record<string, string> = {
-                    "Home Depot": `https://www.homedepot.com/s/${encodeURIComponent(part.name)}`,
-                    "Lowe's": `https://www.lowes.com/search?searchTerm=${encodeURIComponent(part.name)}`,
-                    "Ace Hardware": `https://www.acehardware.com/search?query=${encodeURIComponent(part.name)}`,
-                    "Amazon": `https://www.amazon.com/s?k=${encodeURIComponent(part.name)}`,
-                  };
-                  const url = storeUrls[part.store] ?? `https://www.homedepot.com/s/${encodeURIComponent(part.name)}`;
-                  window.open(url, "_blank");
-                }}
-                className="p-3 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] hover:border-emerald-500/30 cursor-pointer transition-colors"
+                className="p-3 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a]"
               >
-                <div className="flex items-start justify-between">
+                <div className="flex items-start justify-between mb-2">
                   <div>
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-medium text-white">{part.name}</p>
@@ -334,29 +533,23 @@ export function DIYTab({
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-[#888]">
-                      <IoStorefront className="w-3 h-3" />
-                      <span>{part.store}</span>
-                      {part.distance && (
-                        <>
-                          <span>·</span>
-                          <span>{part.distance}</span>
-                        </>
-                      )}
-                    </div>
                   </div>
-                  <div className="text-right flex flex-col items-end">
-                    <p className="text-sm font-semibold text-emerald-400">
-                      ${part.price.toFixed(2)}
-                    </p>
-                    {part.inStock && (
-                      <p className="text-[10px] text-emerald-400 flex items-center gap-1 justify-end mt-0.5">
-                        <IoCheckmarkCircle className="w-3 h-3" />
-                        In Stock
-                      </p>
-                    )}
-                    <IoOpenOutline className="w-3 h-3 text-[#555] mt-1" />
-                  </div>
+                  <p className="text-sm font-semibold text-emerald-400">
+                    ~${part.price.toFixed(2)}
+                  </p>
+                </div>
+
+                {/* Store Options */}
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  <button
+                    onClick={() => handlePartClick(part.name, part.store)}
+                    className="flex items-center gap-1.5 px-2 py-1 text-[10px] bg-emerald-500/20 text-emerald-400 rounded-md hover:bg-emerald-500/30 transition-colors"
+                  >
+                    <IoStorefront className="w-3 h-3" />
+                    {part.store}
+                    {part.inStock && <IoCheckmarkCircle className="w-2.5 h-2.5" />}
+                    <IoOpenOutline className="w-2.5 h-2.5" />
+                  </button>
                 </div>
               </div>
             ))}

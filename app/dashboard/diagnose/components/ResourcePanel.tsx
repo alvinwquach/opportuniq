@@ -1,10 +1,75 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { IoHammerOutline, IoShieldCheckmark } from "react-icons/io5";
 import { DIYTab } from "./DIYTab";
 import { HireProTab } from "./HireProTab";
 import type { DiagnoseIssueDetail, TabType } from "../types";
+
+// PPE pricing and availability data
+const ppeData: Record<string, { price: number; store: string; distance: string }> = {
+  "Safety Glasses": { price: 12.97, store: "Home Depot", distance: "2.3 mi" },
+  "Work Gloves": { price: 9.97, store: "Home Depot", distance: "2.3 mi" },
+  "Insulated Gloves": { price: 29.97, store: "Home Depot", distance: "2.3 mi" },
+  "Voltage Tester": { price: 22.97, store: "Home Depot", distance: "2.3 mi" },
+  "N95 Mask": { price: 22.47, store: "Home Depot", distance: "2.3 mi" },
+  "Hard Hat": { price: 26.97, store: "Home Depot", distance: "2.3 mi" },
+  "Safety Harness": { price: 69.97, store: "Home Depot", distance: "2.3 mi" },
+  "Non-slip Boots": { price: 49.97, store: "Home Depot", distance: "2.3 mi" },
+};
+
+// Helper function to get safety gear names based on issue category
+function getSafetyGearNames(issue: DiagnoseIssueDetail): string[] {
+  if (issue.difficulty.includes("Professional")) {
+    return [];
+  }
+
+  const titleLower = issue.title.toLowerCase();
+  const gear: string[] = [];
+
+  if (titleLower.includes("faucet") || titleLower.includes("plumbing") || titleLower.includes("water")) {
+    gear.push("Safety Glasses", "Work Gloves");
+  }
+  if (titleLower.includes("electrical") || titleLower.includes("outlet") || titleLower.includes("light")) {
+    gear.push("Insulated Gloves", "Safety Glasses", "Voltage Tester");
+  }
+  if (titleLower.includes("hvac") || titleLower.includes("ac") || titleLower.includes("air")) {
+    gear.push("N95 Mask", "Safety Glasses", "Work Gloves");
+  }
+  if (titleLower.includes("garage")) {
+    gear.push("Safety Glasses", "Work Gloves");
+  }
+
+  if (gear.length === 0) {
+    gear.push("Safety Glasses", "Work Gloves");
+  }
+
+  return gear;
+}
+
+// Convert safety gear names to Part-compatible objects
+function getSafetyGearParts(issue: DiagnoseIssueDetail) {
+  const gearNames = getSafetyGearNames(issue);
+  if (gearNames.length === 0) {
+    return [];
+  }
+
+  const uniqueGear = [...new Set(gearNames)];
+
+  return uniqueGear.map((name, idx) => {
+    const data = ppeData[name] ?? { price: 15.0, store: "Home Depot", distance: "2.3 mi" };
+    return {
+      id: `ppe-${idx}`,
+      name,
+      price: data.price,
+      store: data.store,
+      distance: data.distance,
+      inStock: true,
+      storeUrl: null,
+      isPPE: true as const,
+    };
+  });
+}
 
 interface ResourcePanelProps {
   issue: DiagnoseIssueDetail | null;
@@ -13,9 +78,25 @@ interface ResourcePanelProps {
 export function ResourcePanel({ issue }: ResourcePanelProps) {
   const [activeTab, setActiveTab] = useState<TabType>("diy");
 
+  // Reset tab when issue changes
+  useEffect(() => {
+    setActiveTab("diy");
+  }, [issue?.title]);
+
+  // Memoize PPE parts calculation
+  const ppeParts = useMemo(() => {
+    if (!issue) return [];
+    return getSafetyGearParts(issue);
+  }, [issue]);
+
+  const allParts = useMemo(() => {
+    if (!issue) return [];
+    return [...ppeParts, ...(issue.parts ?? [])];
+  }, [issue, ppeParts]);
+
   if (!issue) {
     return (
-      <div className="w-[340px] flex-shrink-0 border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
+      <div className="w-[340px] shrink-0 border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
         {/* Disabled Tabs */}
         <div className="flex border-b border-white/[0.06]">
           {["DIY", "Hire Pro"].map((tab) => (
@@ -63,63 +144,8 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
     );
   };
 
-  // PPE pricing and availability data
-  const ppeData: Record<string, { price: number; store: string; distance: string }> = {
-    "Safety Glasses": { price: 12.97, store: "Home Depot", distance: "2.3 mi" },
-    "Work Gloves": { price: 14.97, store: "Home Depot", distance: "2.3 mi" },
-    "Insulated Gloves": { price: 24.97, store: "Home Depot", distance: "2.3 mi" },
-    "Voltage Tester": { price: 19.97, store: "Home Depot", distance: "2.3 mi" },
-    "N95 Mask": { price: 3.97, store: "Home Depot", distance: "2.3 mi" },
-    "Hard Hat": { price: 14.97, store: "Home Depot", distance: "2.3 mi" },
-    "Safety Harness": { price: 79.97, store: "Home Depot", distance: "2.3 mi" },
-    "Non-slip Boots": { price: 89.97, store: "Home Depot", distance: "2.3 mi" },
-  };
-
-  // Generate safety gear as Part objects with inventory data
-  const getSafetyGearParts = (): import("../types").Part[] => {
-    const category = issue.category?.toLowerCase() ?? "";
-    const gearNames: string[] = [];
-
-    if (category.includes("plumbing") || category.includes("water")) {
-      gearNames.push("Safety Glasses", "Work Gloves");
-    }
-    if (category.includes("electrical") || category.includes("electric")) {
-      gearNames.push("Insulated Gloves", "Safety Glasses", "Voltage Tester");
-    }
-    if (category.includes("hvac") || category.includes("air")) {
-      gearNames.push("N95 Mask", "Safety Glasses", "Work Gloves");
-    }
-    if (category.includes("roofing") || category.includes("roof")) {
-      gearNames.push("Hard Hat", "Safety Harness", "Non-slip Boots");
-    }
-
-    // Default gear for any DIY
-    if (gearNames.length === 0 && hasDiyContent) {
-      gearNames.push("Safety Glasses", "Work Gloves");
-    }
-
-    // Remove duplicates and convert to Part objects
-    const uniqueGear = [...new Set(gearNames)];
-    return uniqueGear.map((name, index) => {
-      const data = ppeData[name] ?? { price: 15.00, store: "Home Depot", distance: "2.3 mi" };
-      return {
-        id: `ppe-${index}`,
-        name,
-        price: data.price,
-        store: data.store,
-        distance: data.distance,
-        inStock: true,
-        storeUrl: `https://www.homedepot.com/s/${encodeURIComponent(name)}`,
-        isPPE: true,
-      };
-    });
-  };
-
-  // Combine regular parts with PPE parts
-  const allParts = [...getSafetyGearParts(), ...(issue.parts ?? [])];
-
   return (
-    <div className="w-[340px] flex-shrink-0 border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
+    <div className="w-[340px] shrink-0 border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
       {/* Tabs */}
       <div className="flex border-b border-white/[0.06]">
         {[
@@ -128,6 +154,7 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
         ].map((tab) => (
           <button
             key={tab.id}
+            type="button"
             onClick={() => setActiveTab(tab.id)}
             disabled={!tab.available}
             className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative ${
@@ -152,7 +179,6 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
           <DIYTab
             guides={issue.guides ?? []}
             parts={allParts}
-            diyCost={issue.diyCost}
             savings={savings}
             onOrderParts={handleOrderParts}
             onGetDirections={handleGetDirections}

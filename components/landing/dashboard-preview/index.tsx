@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BrowserChrome } from './BrowserChrome';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
 import { ViewType } from './types';
+import { NavigationContext } from './NavigationContext';
 import { DashboardView } from './views/DashboardView';
 import { DiagnoseView } from './views/DiagnoseView';
 import { IssuesView } from './views/IssuesView';
@@ -61,6 +62,14 @@ export function DashboardPreview({ variant = 'light' }: DashboardPreviewProps) {
   const isDark = variant === 'dark';
   const ActiveViewComponent = viewComponents[activeView];
 
+  const handleViewChange = useCallback((view: ViewType) => {
+    setActiveView(view);
+  }, []);
+
+  const navigationContextValue = useMemo(() => ({
+    navigate: handleViewChange,
+  }), [handleViewChange]);
+
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
@@ -95,7 +104,7 @@ export function DashboardPreview({ variant = 'light' }: DashboardPreviewProps) {
   }, []);
 
   return (
-    <section ref={sectionRef} id="demo" className={`relative py-20 lg:py-28 overflow-hidden ${isDark ? 'bg-[#09090b]' : 'bg-slate-50'}`}>
+    <section ref={sectionRef} id="demo" className={`relative py-20 lg:py-28 overflow-x-clip ${isDark ? 'bg-[#09090b]' : 'bg-slate-50'}`}>
       {/* Background gradient */}
       <div className={`absolute inset-0 pointer-events-none ${isDark ? 'bg-gradient-to-b from-white/[0.02] via-transparent to-transparent' : 'bg-gradient-to-b from-white via-slate-50 to-slate-100'}`} />
 
@@ -127,7 +136,7 @@ export function DashboardPreview({ variant = 'light' }: DashboardPreviewProps) {
                   return (
                     <button
                       key={item.id}
-                      onClick={() => setActiveView(item.id)}
+                      onClick={() => handleViewChange(item.id)}
                       className={`
                         flex flex-col items-center gap-1 px-4 py-3 text-xs font-medium transition-colors relative
                         ${isActive ? 'text-emerald-400' : 'text-white/60'}
@@ -146,19 +155,21 @@ export function DashboardPreview({ variant = 'light' }: DashboardPreviewProps) {
 
             {/* Top bar - desktop only */}
             <div className="hidden lg:block">
-              <TopBar />
+              <TopBar onNavigate={handleViewChange} />
             </div>
 
             {/* Desktop layout with sidebar */}
             <div className="flex h-[500px] lg:h-[530px]">
               {/* Sidebar - desktop only */}
               <div className="hidden lg:block h-full">
-                <Sidebar activeView={activeView} onViewChange={setActiveView} />
+                <Sidebar activeView={activeView} onViewChange={handleViewChange} />
               </div>
 
               {/* Main content area - scrollable */}
               <div className="flex-1 min-w-0 h-full overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-                <ActiveViewComponent />
+                <NavigationContext.Provider value={navigationContextValue}>
+                  <ActiveViewComponent />
+                </NavigationContext.Provider>
               </div>
             </div>
             </BrowserChrome>

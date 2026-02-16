@@ -71,6 +71,13 @@ export const diagnoseTypes = /* GraphQL */ `
     createdAt: DateTime!
   }
 
+  "Step in a repair guide"
+  type DiagnoseGuideStep {
+    stepNumber: Int!
+    title: String!
+    description: String!
+  }
+
   "Repair guide recommendation"
   type DiagnoseGuide {
     id: ID!
@@ -79,6 +86,8 @@ export const diagnoseTypes = /* GraphQL */ `
     url: String
     duration: String
     steps: Int
+    stepContent: [DiagnoseGuideStep!]
+    toolsNeeded: [String!]
     rating: Float
     icon: String!
   }
@@ -92,6 +101,7 @@ export const diagnoseTypes = /* GraphQL */ `
     distance: String
     inStock: Boolean!
     storeUrl: String
+    isPPE: Boolean
   }
 
   "Professional service provider"

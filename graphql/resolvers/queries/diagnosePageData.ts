@@ -315,7 +315,7 @@ export async function diagnosePageDataResolver(
     ? parseFloat(vendors[0].quoteAmount ?? "0")
     : diyCost * 3;
 
-  // Transform parts
+  // Transform parts (including PPE items marked by productCategory)
   const parts = products.map((p) => ({
     id: p.id,
     name: p.productName,
@@ -324,6 +324,7 @@ export async function diagnosePageDataResolver(
     distance: p.storeDistance,
     inStock: p.inStock ?? false,
     storeUrl: p.storeUrl,
+    isPPE: p.productCategory === "safety_equipment",
   }));
 
   // Transform pros
@@ -354,8 +355,10 @@ export async function diagnosePageDataResolver(
     source: g.source ?? "Article",
     title: g.title,
     url: g.url,
-    duration: null, // Would need video duration
-    steps: null, // Would need step count
+    duration: g.duration ?? null,
+    steps: g.steps ?? null,
+    stepContent: g.stepContent as { stepNumber: number; title: string; description: string }[] | null,
+    toolsNeeded: g.toolsNeeded ?? null,
     rating: g.relevanceScore ? g.relevanceScore / 20 : 4.5,
     icon: getGuideIcon(g.source ?? ""),
   }));
