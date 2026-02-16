@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { useSidebar } from "./SidebarContext";
 import Image from "next/image";
 import { InviteFriendsModal } from "./InviteFriendsModal";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 const mainNavItems = [
   { href: "/dashboard", icon: IoGridOutline, label: "Dashboard", exact: true },
@@ -79,17 +80,17 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
             {/* Admin link */}
             {isAdmin && (
               <li>
-                <Link
-                  href="/admin"
-                  className="w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 group relative mx-auto text-amber-500 hover:bg-amber-500/10 border border-amber-500/20 mb-2"
-                  title="Admin"
-                >
-                  <IoShield className="w-4 h-4 flex-shrink-0" />
-                  {/* Tooltip */}
-                  <span className="absolute left-full ml-2 px-2 py-1 bg-[#171717] border border-white/[0.06] text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg">
-                    Admin Dashboard
-                  </span>
-                </Link>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href="/admin"
+                      className="w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 mx-auto text-amber-500 hover:bg-amber-500/10 border border-amber-500/20 mb-2"
+                    >
+                      <IoShield className="w-4 h-4 flex-shrink-0" />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Admin Dashboard</TooltipContent>
+                </Tooltip>
               </li>
             )}
 
@@ -106,22 +107,22 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
               const Icon = item.icon;
               return (
                 <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 group relative mx-auto",
-                      active
-                        ? "bg-emerald-500/10 text-emerald-400"
-                        : "text-[#888] hover:bg-white/[0.04] hover:text-white"
-                    )}
-                    title={item.label}
-                  >
-                    <Icon className="w-4 h-4 flex-shrink-0" />
-                    {/* Tooltip */}
-                    <span className="absolute left-full ml-2 px-2 py-1 bg-[#171717] border border-white/[0.06] text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg">
-                      {item.label}
-                    </span>
-                  </Link>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          "w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 mx-auto",
+                          active
+                            ? "bg-emerald-500/10 text-emerald-400"
+                            : "text-[#888] hover:bg-white/[0.04] hover:text-white"
+                        )}
+                      >
+                        <Icon className="w-4 h-4 flex-shrink-0" />
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">{item.label}</TooltipContent>
+                  </Tooltip>
                 </li>
               );
             })}
@@ -136,22 +137,22 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
               const Icon = item.icon;
               return (
                 <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 group relative mx-auto",
-                      active
-                        ? "bg-emerald-500/10 text-emerald-400"
-                        : "text-[#888] hover:bg-white/[0.04] hover:text-white"
-                    )}
-                    title={item.label}
-                  >
-                    <Icon className="w-4 h-4 flex-shrink-0" />
-                    {/* Tooltip */}
-                    <span className="absolute left-full ml-2 px-2 py-1 bg-[#171717] border border-white/[0.06] text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg">
-                      {item.label}
-                    </span>
-                  </Link>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          "w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 mx-auto",
+                          active
+                            ? "bg-emerald-500/10 text-emerald-400"
+                            : "text-[#888] hover:bg-white/[0.04] hover:text-white"
+                        )}
+                      >
+                        <Icon className="w-4 h-4 flex-shrink-0" />
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">{item.label}</TooltipContent>
+                  </Tooltip>
                 </li>
               );
             })}
@@ -270,7 +271,7 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
                   className="w-7 h-7 rounded-full"
                 />
               ) : (
-                <div className="w-7 h-7 rounded-full bg-[#1a1a1a] flex items-center justify-center text-[11px] font-medium text-[#888]">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-[11px] font-medium text-black">
                   {(user.name || user.email).charAt(0).toUpperCase()}
                 </div>
               )}
@@ -294,24 +295,34 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
 
       {/* Mobile Header */}
       <header className="fixed top-0 left-0 right-0 z-30 h-12 border-b border-white/[0.06] bg-[#111111] flex items-center px-3 lg:hidden">
-        <button
-          onClick={toggleMobile}
-          className="p-1.5 -ml-1 rounded-md text-[#888] hover:text-white hover:bg-white/[0.04] transition-colors"
-        >
-          <IoMenu className="h-4 w-4" />
-        </button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={toggleMobile}
+              className="p-1.5 -ml-1 rounded-md text-[#888] hover:text-white hover:bg-white/[0.04] transition-colors"
+            >
+              <IoMenu className="h-4 w-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">Menu</TooltipContent>
+        </Tooltip>
         <Link href="/dashboard" className="flex items-center gap-2 ml-2">
           <OpportunIQLogo className="w-6 h-6 text-emerald-400" />
           <span className="text-[13px] font-semibold text-white">OpportunIQ</span>
         </Link>
         <div className="ml-auto flex items-center gap-2">
-          <Link
-            href="/notifications"
-            className="p-1.5 rounded-md text-[#666] hover:text-white hover:bg-white/[0.04] transition-colors relative"
-          >
-            <IoNotifications className="h-4 w-4" />
-            <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-red-500 rounded-full" />
-          </Link>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="/notifications"
+                className="p-1.5 rounded-md text-[#666] hover:text-white hover:bg-white/[0.04] transition-colors relative"
+              >
+                <IoNotifications className="h-4 w-4" />
+                <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-red-500 rounded-full" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">Notifications</TooltipContent>
+          </Tooltip>
           {user.avatarUrl ? (
             <Image
               src={user.avatarUrl}
@@ -321,7 +332,7 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
               className="w-7 h-7 rounded-full"
             />
           ) : (
-            <div className="w-7 h-7 rounded-full bg-[#1a1a1a] flex items-center justify-center text-[10px] font-medium text-[#888]">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-[10px] font-medium text-black">
               {(user.name || user.email).charAt(0).toUpperCase()}
             </div>
           )}

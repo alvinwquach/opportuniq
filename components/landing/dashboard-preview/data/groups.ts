@@ -6,8 +6,8 @@ export const households: Household[] = [
     id: '1',
     name: 'Main House',
     members: [
-      { id: '1', name: 'Mike R.', role: 'coordinator', avatar: '👨' },
-      { id: '2', name: 'Sarah R.', role: 'collaborator', avatar: '👩' },
+      { id: '1', name: 'Mike R.', role: 'coordinator', avatar: 'MR' },
+      { id: '2', name: 'Sarah R.', role: 'collaborator', avatar: 'SR' },
     ],
     issueCount: 5,
     savings: 2847,
@@ -16,8 +16,8 @@ export const households: Household[] = [
     id: '2',
     name: 'Rental Property',
     members: [
-      { id: '1', name: 'Mike R.', role: 'coordinator', avatar: '👨' },
-      { id: '3', name: 'Tom K.', role: 'contributor', avatar: '🧑' },
+      { id: '1', name: 'Mike R.', role: 'coordinator', avatar: 'MR' },
+      { id: '3', name: 'Tom K.', role: 'contributor', avatar: 'TK' },
     ],
     issueCount: 3,
     savings: 580,
@@ -30,8 +30,8 @@ export const groups = [
 ];
 
 export const groupActivity: Activity[] = [
-  { id: '1', message: 'Mike completed "Replace furnace filter"', time: '2h ago', avatar: '👨' },
-  { id: '2', message: 'Sarah added a new issue: "Storm door closer"', time: '1d ago', avatar: '👩' },
+  { id: '1', message: 'Mike completed "Replace furnace filter"', time: '2h ago', avatar: 'MR' },
+  { id: '2', message: 'Sarah added a new issue: "Storm door closer"', time: '1d ago', avatar: 'SR' },
 ];
 
 export const budgetContributions = [

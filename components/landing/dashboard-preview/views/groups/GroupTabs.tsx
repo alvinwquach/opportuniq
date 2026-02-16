@@ -1,4 +1,7 @@
+"use client";
+
 import { IoGrid, IoAlertCircleOutline, IoWallet, IoCalendarOutline } from "react-icons/io5";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 export type GroupTab = "overview" | "issues" | "budget" | "planning";
 
@@ -7,31 +10,37 @@ interface GroupTabsProps {
   onTabChange: (tab: GroupTab) => void;
 }
 
-const tabs: { id: GroupTab; label: string; shortLabel: string; icon: typeof IoGrid }[] = [
-  { id: "overview", label: "Overview", shortLabel: "Overview", icon: IoGrid },
-  { id: "issues", label: "Issues", shortLabel: "Issues", icon: IoAlertCircleOutline },
-  { id: "budget", label: "Budget", shortLabel: "Budget", icon: IoWallet },
-  { id: "planning", label: "Planning", shortLabel: "Plan", icon: IoCalendarOutline },
+const tabs: { id: GroupTab; label: string; icon: typeof IoGrid }[] = [
+  { id: "overview", label: "Overview", icon: IoGrid },
+  { id: "issues", label: "Issues", icon: IoAlertCircleOutline },
+  { id: "budget", label: "Budget", icon: IoWallet },
+  { id: "planning", label: "Planning", icon: IoCalendarOutline },
 ];
 
 export function GroupTabs({ activeTab, onTabChange }: GroupTabsProps) {
   return (
-    <div className="flex gap-0.5 sm:gap-1 p-0.5 sm:p-1 bg-[#1a1a1a] rounded-lg mb-4 w-full sm:w-fit border border-[#2a2a2a] overflow-x-auto">
-      {tabs.map(({ id, label, shortLabel, icon: Icon }) => (
-        <button
-          key={id}
-          onClick={() => onTabChange(id)}
-          className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-sm font-medium rounded-md transition-colors whitespace-nowrap flex-1 sm:flex-none justify-center sm:justify-start ${
-            activeTab === id
-              ? "bg-[#2a2a2a] text-white"
-              : "text-[#888] hover:text-white"
-          }`}
-        >
-          <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
-          <span className="hidden sm:inline">{label}</span>
-          <span className="sm:hidden">{shortLabel}</span>
-        </button>
-      ))}
+    <div className="mb-4">
+      <div className="flex gap-0.5 p-1 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a]">
+        {tabs.map(({ id, label, icon: Icon }) => (
+          <Tooltip key={id}>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onTabChange(id)}
+                className={`flex-1 flex items-center justify-center gap-1 px-1.5 py-2 text-[11px] font-medium rounded-md transition-colors ${
+                  activeTab === id
+                    ? "bg-[#2a2a2a] text-white"
+                    : "text-[#888] hover:text-white"
+                }`}
+              >
+                <Icon className="w-4 h-4 shrink-0" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              {label}
+            </TooltipContent>
+          </Tooltip>
+        ))}
+      </div>
     </div>
   );
 }

@@ -11,6 +11,7 @@ import {
   IoHelpCircle,
   IoLogOut,
   IoChevronForward,
+  IoChevronDown,
   IoCard,
   IoShield,
   IoWallet,
@@ -57,7 +58,7 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
       <button
         onClick={() => setOpen(!open)}
         className={cn(
-          "flex items-center gap-2 p-1 rounded-md transition-colors",
+          "flex items-center gap-2 pl-1 pr-2 py-1 rounded-md transition-colors",
           open ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
         )}
       >
@@ -70,10 +71,14 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
             className="w-7 h-7 rounded-full"
           />
         ) : (
-          <div className="w-7 h-7 rounded-full bg-[#1f1f1f] flex items-center justify-center text-[11px] font-medium text-[#888]">
+          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-sm font-medium text-black">
             {(user.name || user.email).charAt(0).toUpperCase()}
           </div>
         )}
+        <IoChevronDown className={cn(
+          "w-3.5 h-3.5 text-[#666] hidden sm:block transition-transform duration-200",
+          open && "rotate-180"
+        )} />
       </button>
       {open && (
         <div className="absolute right-0 top-full mt-2 w-72 bg-[#0c0c0c] border border-[#1f1f1f] rounded-lg shadow-xl z-50 overflow-hidden">
@@ -88,7 +93,7 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
                   className="w-10 h-10 rounded-full"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-[#1f1f1f] flex items-center justify-center text-sm font-medium text-[#888]">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-base font-medium text-black">
                   {(user.name || user.email).charAt(0).toUpperCase()}
                 </div>
               )}

@@ -8,6 +8,7 @@ import {
   IoSettingsOutline,
   IoCamera,
 } from "react-icons/io5";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { NotificationDropdown } from "./NotificationDropdown";
 import { UserMenu } from "./UserMenu";
 import { CalendarPreview } from "./CalendarPreview";
@@ -62,7 +63,6 @@ export function DashboardContent({
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
   const [incomeOpen, setIncomeOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
   // Global keyboard shortcut for command palette
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -71,6 +71,23 @@ export function DashboardContent({
       e.preventDefault();
       setSearchOpen(true);
     }
+  }, []);
+
+  const handleSearchOpenChange = useCallback((open: boolean) => {
+    setSearchOpen(open);
+  }, []);
+
+  const handleIncomeOpenChange = useCallback((open: boolean) => {
+    setIncomeOpen(open);
+  }, []);
+
+  const handleAddIncomeFromSearch = useCallback(() => {
+    setSearchOpen(false);
+    setIncomeOpen(true);
+  }, []);
+
+  const handleAddIncomeFromMenu = useCallback(() => {
+    setIncomeOpen(true);
   }, []);
 
   useEffect(() => {
@@ -99,13 +116,18 @@ export function DashboardContent({
         {/* Right: Actions */}
         <div className="flex items-center gap-2">
           {/* New Issue Button */}
-          <button
-            onClick={() => router.push("/dashboard/diagnose?new=true")}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#3ECF8E] hover:bg-[#3ECF8E]/90 text-[#111111] text-xs font-medium rounded-lg transition-colors"
-          >
-            <IoCamera className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">New Issue</span>
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => router.push("/dashboard/diagnose?new=true")}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#3ECF8E] hover:bg-[#3ECF8E]/90 text-[#111111] text-xs font-medium rounded-lg transition-colors"
+              >
+                <IoCamera className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">New Issue</span>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="sm:hidden">New Issue</TooltipContent>
+          </Tooltip>
 
           {/* Calendar */}
           <CalendarPreview events={calendarEvents} />
@@ -114,12 +136,17 @@ export function DashboardContent({
           <NotificationDropdown notifications={notifications} />
 
           {/* Settings */}
-          <Link
-            href="/dashboard/settings"
-            className="w-8 h-8 flex items-center justify-center text-[#666] hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
-          >
-            <IoSettingsOutline className="w-5 h-5" />
-          </Link>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="/dashboard/settings"
+                className="w-8 h-8 flex items-center justify-center text-[#666] hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
+              >
+                <IoSettingsOutline className="w-5 h-5" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">Settings</TooltipContent>
+          </Tooltip>
 
           {/* Divider */}
           <div className="w-px h-6 bg-[#171717] mx-1" />
@@ -129,7 +156,7 @@ export function DashboardContent({
             user={user}
             isAdmin={isAdmin}
             financials={financials}
-            onAddIncome={() => setIncomeOpen(true)}
+            onAddIncome={handleAddIncomeFromMenu}
           />
         </div>
       </header>
@@ -150,21 +177,12 @@ export function DashboardContent({
       </div>
       <SearchCommand
         open={searchOpen}
-        onOpenChange={(open) => {
-          setSearchOpen(open);
-          if (!open) {
-            setSearchQuery("");
-          }
-        }}
-        initialQuery={searchQuery}
-        onAddIncome={() => {
-          setSearchOpen(false);
-          setIncomeOpen(true);
-        }}
+        onOpenChange={handleSearchOpenChange}
+        onAddIncome={handleAddIncomeFromSearch}
       />
       <InlineIncomeSetup
         open={incomeOpen}
-        onOpenChange={setIncomeOpen}
+        onOpenChange={handleIncomeOpenChange}
         userId={user.id}
       />
       <AmplitudeIdentify

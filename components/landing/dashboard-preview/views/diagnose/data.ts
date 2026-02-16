@@ -18,12 +18,12 @@ export const issuesData: Record<string, IssueData> = {
     parts: [
       {
         name: "Moen 1225 Cartridge",
-        price: 24.99,
+        price: 29.98,
         store: "Home Depot",
         address: "1234 Main St, San Jose",
         distance: "0.8 mi",
         inStock: true,
-        link: "homedepot.com/p/123",
+        link: "https://www.homedepot.com/s/moen%201225%20cartridge",
         comparePrices: [
           { store: "Lowe's", price: 26.99, inStock: true },
           { store: "Amazon", price: 22.49, inStock: true },
@@ -32,20 +32,20 @@ export const issuesData: Record<string, IssueData> = {
       },
       {
         name: "O-Ring Kit",
-        price: 8.49,
-        store: "Lowe's",
-        address: "5678 Oak Ave, San Jose",
-        distance: "2.1 mi",
+        price: 5.98,
+        store: "Home Depot",
+        address: "1234 Main St, San Jose",
+        distance: "0.8 mi",
         inStock: true,
-        link: "lowes.com/pd/456",
+        link: "https://www.homedepot.com/s/faucet%20o-ring%20kit",
         comparePrices: [
-          { store: "Home Depot", price: 7.99, inStock: true },
+          { store: "Lowe's", price: 7.99, inStock: true },
           { store: "Amazon", price: 6.99, inStock: true },
         ],
       },
     ],
     safety: {
-      ppe: ["Safety glasses", "Gloves (nitrile)"],
+      ppe: ["Safety Glasses", "Work Gloves"],
       doNotProceed: ["Turn off water supply at shutoff valves under sink"],
     },
     research: [
@@ -161,12 +161,12 @@ export const issuesData: Record<string, IssueData> = {
     parts: [
       {
         name: "White Lithium Grease",
-        price: 7.99,
+        price: 6.98,
         store: "Home Depot",
         address: "1234 Main St, San Jose",
         distance: "0.8 mi",
         inStock: true,
-        link: "homedepot.com/p/789",
+        link: "https://www.homedepot.com/s/white%20lithium%20grease",
         comparePrices: [
           { store: "Lowe's", price: 8.49, inStock: true },
           { store: "Amazon", price: 6.49, inStock: true },
@@ -175,12 +175,12 @@ export const issuesData: Record<string, IssueData> = {
       },
       {
         name: "Silicone Spray Lubricant",
-        price: 4.99,
+        price: 7.98,
         store: "Home Depot",
         address: "1234 Main St, San Jose",
         distance: "0.8 mi",
         inStock: true,
-        link: "homedepot.com/p/012",
+        link: "https://www.homedepot.com/s/silicone%20spray%20lubricant",
         comparePrices: [
           { store: "Amazon", price: 4.29, inStock: true },
           { store: "Lowe's", price: 5.49, inStock: true },
@@ -188,7 +188,7 @@ export const issuesData: Record<string, IssueData> = {
       },
     ],
     safety: {
-      ppe: ["Safety glasses", "Gloves"],
+      ppe: ["Safety Glasses", "Work Gloves"],
       doNotProceed: ["Disconnect automatic opener before manual operation", "Never lubricate the tracks - door can slip off"],
     },
     research: [
@@ -242,7 +242,7 @@ export const issuesData: Record<string, IssueData> = {
     confidence: 78,
     parts: [],
     safety: {
-      ppe: ["Non-contact voltage tester (required)", "Insulated gloves", "Safety glasses", "Flashlight"],
+      ppe: ["Voltage Tester", "Insulated Gloves", "Safety Glasses"],
       doNotProceed: ["Turn off circuit breaker AND verify power is off with voltage tester", "Never assume power is off - always test", "If you see burn marks or smell burning, call electrician immediately"],
     },
     research: [

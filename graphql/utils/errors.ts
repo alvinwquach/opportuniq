@@ -12,7 +12,8 @@
  * - INTERNAL_SERVER_ERROR: Unexpected error (500 equivalent)
  */
 
-import { GraphQLError } from "graphql";
+// Note: Using full path to avoid conflict with local graphql/ folder
+import { GraphQLError } from "graphql/error";
 
 /**
  * Supported error codes

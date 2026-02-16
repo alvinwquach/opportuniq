@@ -16,6 +16,7 @@ import {
   IoBuildOutline,
   IoCheckmark,
 } from "react-icons/io5";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import type { Guide, Part } from "../types";
 
 interface DIYTabProps {
@@ -371,13 +372,17 @@ export function DIYTab({
               <IoStorefront className="w-4 h-4" />
               Order Parts
             </button>
-            <button
-              onClick={onGetDirections}
-              className="px-3 py-2.5 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white text-sm rounded-lg border border-[#2a2a2a] transition-colors"
-              title="Get Directions"
-            >
-              <IoNavigate className="w-4 h-4" />
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={onGetDirections}
+                  className="px-3 py-2.5 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white text-sm rounded-lg border border-[#2a2a2a] transition-colors"
+                >
+                  <IoNavigate className="w-4 h-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Get Directions</TooltipContent>
+            </Tooltip>
           </div>
         </div>
       )}

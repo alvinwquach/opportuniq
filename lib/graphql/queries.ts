@@ -1263,6 +1263,12 @@ export const DIAGNOSE_PAGE_DATA_QUERY = /* GraphQL */ `
           url
           duration
           steps
+          stepContent {
+            stepNumber
+            title
+            description
+          }
+          toolsNeeded
           rating
           icon
         }
@@ -1274,6 +1280,7 @@ export const DIAGNOSE_PAGE_DATA_QUERY = /* GraphQL */ `
           distance
           inStock
           storeUrl
+          isPPE
         }
         pros {
           id

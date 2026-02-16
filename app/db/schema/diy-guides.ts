@@ -11,7 +11,7 @@
  * - Let users bookmark/save helpful guides
  */
 
-import { pgTable, uuid, text, timestamp, integer, boolean, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, integer, boolean, pgEnum, jsonb } from "drizzle-orm/pg-core";
 import { aiConversations } from "./ai-conversations";
 import { users } from "./users";
 
@@ -78,6 +78,12 @@ export const diyGuides = pgTable("diy_guides", {
   // Search context (what query led to this guide)
   searchQuery: text("search_query"),
   issueCategory: text("issue_category"), // e.g., "plumbing", "electrical"
+
+  // Step-by-step guide content
+  steps: integer("steps"), // Total number of steps
+  stepContent: jsonb("step_content"), // Array of { stepNumber, title, description }
+  toolsNeeded: text("tools_needed").array(), // Array of tool names needed
+  duration: text("duration"), // Estimated time e.g., "15-20 min"
 
   // Timestamps
   createdAt: timestamp("created_at").defaultNow().notNull(),

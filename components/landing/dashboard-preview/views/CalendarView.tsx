@@ -178,7 +178,7 @@ export function CalendarView() {
       <CalendarTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Main Layout */}
-      <div className="grid xl:grid-cols-[1fr_300px] gap-4 lg:gap-5">
+      <div className="grid lg:grid-cols-[1fr_300px] gap-4 lg:gap-5">
         {/* Main Content */}
         <div className="space-y-4 min-w-0">
           {/* Calendar Tab */}

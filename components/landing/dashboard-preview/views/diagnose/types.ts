@@ -29,6 +29,9 @@ export interface GuideStep {
   stepNumber: number;
   title: string;
   description: string;
+  timeEstimate?: string; // e.g., "2-3 min"
+  difficulty?: "easy" | "medium" | "hard";
+  warning?: string; // Safety warning for this specific step
 }
 
 export interface GuideItem {

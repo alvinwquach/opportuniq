@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useState, useEffect, useCallback } from "react";
 import { IoCalendar, IoTime, IoConstruct, IoPeople, IoHome, IoBriefcase, IoAdd, IoChevronBack, IoChevronForward } from "react-icons/io5";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { format, isToday, isTomorrow, addDays } from "date-fns";
 import {
@@ -281,30 +281,43 @@ export function CalendarButton({
   const todayEvents = upcomingEvents.filter((e) => isToday(e.date));
 
   return (
-    <button
-      onClick={onOpenCalendar}
-      className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[#888] hover:text-white hover:bg-[#1f1f1f] transition-colors"
-    >
-      <IoCalendar className="h-4 w-4" />
-      <span className="text-[12px] hidden sm:inline">
-        {todayEvents.length > 0
-          ? `${todayEvents.length} today`
-          : format(now, "EEE, MMM d, yyyy")}
-      </span>
-      {todayEvents.length > 0 && (
-        <span className="w-1.5 h-1.5 rounded-full bg-[#00D4FF]" />
-      )}
-    </button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          onClick={onOpenCalendar}
+          className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[#888] hover:text-white hover:bg-[#1f1f1f] transition-colors"
+        >
+          <IoCalendar className="h-4 w-4" />
+          <span className="text-[12px] hidden sm:inline">
+            {todayEvents.length > 0
+              ? `${todayEvents.length} today`
+              : format(now, "EEE, MMM d, yyyy")}
+          </span>
+          {todayEvents.length > 0 && (
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00D4FF]" />
+          )}
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom">Calendar</TooltipContent>
+    </Tooltip>
   );
 }
 
 export function CalendarPreview({ events }: { events: CalendarEvent[] }) {
   const [open, setOpen] = useState(false);
 
+  const handleOpenCalendar = useCallback(() => {
+    setOpen(true);
+  }, []);
+
+  const handleOpenChange = useCallback((isOpen: boolean) => {
+    setOpen(isOpen);
+  }, []);
+
   return (
     <>
-      <CalendarButton events={events} onOpenCalendar={() => setOpen(true)} />
-      <CalendarDialog events={events} open={open} onOpenChange={setOpen} />
+      <CalendarButton events={events} onOpenCalendar={handleOpenCalendar} />
+      <CalendarDialog events={events} open={open} onOpenChange={handleOpenChange} />
     </>
   );
 }

@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { IoAdd, IoArrowUp, IoArrowDown, IoChevronDown } from "react-icons/io5";
 import {
-  TabType,
   IncomeStream,
   Expense,
   IncomeFrequency,
@@ -15,6 +14,8 @@ import {
   calculateMonthlyExpenses,
   calculateOneTimeExpensesThisMonth,
   calculateAvailableFunds,
+  FinancesTabs,
+  type FinancesTab,
   AvailableFundsCard,
   SummaryCards,
   BudgetChart,
@@ -41,7 +42,7 @@ export function FinancesView() {
   const [showIncomeModal, setShowIncomeModal] = useState(false);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [editingIncome, setEditingIncome] = useState<IncomeStream | null>(null);
-  const [activeTab, setActiveTab] = useState<TabType>("overview");
+  const [activeTab, setActiveTab] = useState<FinancesTab>("overview");
   const [showAddDropdown, setShowAddDropdown] = useState(false);
   const addDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -215,22 +216,10 @@ export function FinancesView() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-1 mb-6 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-1 w-fit overflow-x-auto">
-          {(["overview", "budget", "trends", "income", "expenses"] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap ${
-                activeTab === tab ? "bg-emerald-500/20 text-emerald-400" : "text-[#888] hover:text-white"
-              }`}
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
-        </div>
+        <FinancesTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
         {/* Main Layout - Two Column with Sidebar */}
-        <div className="grid xl:grid-cols-[1fr_300px] gap-6">
+        <div className="grid lg:grid-cols-[1fr_300px] gap-6">
           {/* Main Content */}
           <div className="space-y-6 min-w-0">
             {/* Overview Tab - Key metrics at a glance */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   stats,
   pipeline,
@@ -31,9 +31,27 @@ import {
   PlanningTab,
   type DashboardTab,
 } from "./dashboard";
+import { useNavigation } from "../NavigationContext";
 
 export function DashboardView() {
   const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
+  const { navigate } = useNavigation();
+
+  const handleTabChange = useCallback((tab: DashboardTab) => {
+    setActiveTab(tab);
+  }, []);
+
+  const handleReportIssue = useCallback(() => {
+    navigate("diagnose");
+  }, [navigate]);
+
+  const handleScheduleDIY = useCallback(() => {
+    navigate("calendar");
+  }, [navigate]);
+
+  const handleBrowseGuides = useCallback(() => {
+    navigate("guides");
+  }, [navigate]);
   const totalSavings = savingsOverTime[savingsOverTime.length - 1].savings;
   const monthlyIncome = 7800;
   const totalSpent = 485;
@@ -47,7 +65,7 @@ export function DashboardView() {
         monthlyIncome={monthlyIncome}
       />
 
-      <DashboardTabs activeTab={activeTab} onTabChange={setActiveTab} />
+      <DashboardTabs activeTab={activeTab} onTabChange={handleTabChange} />
 
       {/* Two Column Layout - Stack on mobile */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] xl:grid-cols-[1fr_300px] gap-4 lg:gap-5">
@@ -103,7 +121,11 @@ export function DashboardView() {
             savings={{ totalSavings, successfulDiyCount: 12 }}
           />
 
-          <QuickActionsCard />
+          <QuickActionsCard
+            onReportIssue={handleReportIssue}
+            onScheduleDIY={handleScheduleDIY}
+            onBrowseGuides={handleBrowseGuides}
+          />
         </div>
       </div>
     </div>

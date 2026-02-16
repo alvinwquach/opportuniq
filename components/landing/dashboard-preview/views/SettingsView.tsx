@@ -346,11 +346,11 @@ export function SettingsView() {
             <div className="space-y-2 text-xs">
               <div className="flex items-center justify-between">
                 <span className="text-[#666]">Member since</span>
-                <span className="text-[#888] font-medium">Jan 2024</span>
+                <span className="text-[#888] font-medium">Dec 2025</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[#666]">Plan</span>
-                <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-full text-[10px] font-medium">Free</span>
+                <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-full text-[10px] font-medium">Beta</span>
               </div>
             </div>
           </div>

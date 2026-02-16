@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { IoHammerOutline, IoShieldCheckmark } from "react-icons/io5";
 import { DIYTab } from "./DIYTab";
 import { HireProTab } from "./HireProTab";
+import { useDemoFlowContextSafe } from "./DemoFlowContext";
 import type { IssueData } from "./types";
 
 type TabType = "diy" | "hire";
@@ -16,23 +17,30 @@ interface ResourcePanelProps {
 // PPE pricing and availability data
 const ppeData: Record<string, { price: number; store: string; distance: string }> = {
   "Safety Glasses": { price: 12.97, store: "Home Depot", distance: "2.3 mi" },
-  "Work Gloves": { price: 14.97, store: "Home Depot", distance: "2.3 mi" },
-  "Insulated Gloves": { price: 24.97, store: "Home Depot", distance: "2.3 mi" },
-  "Voltage Tester": { price: 19.97, store: "Home Depot", distance: "2.3 mi" },
-  "N95 Mask": { price: 3.97, store: "Home Depot", distance: "2.3 mi" },
-  "Hard Hat": { price: 14.97, store: "Home Depot", distance: "2.3 mi" },
-  "Safety Harness": { price: 79.97, store: "Home Depot", distance: "2.3 mi" },
-  "Non-slip Boots": { price: 89.97, store: "Home Depot", distance: "2.3 mi" },
+  "Work Gloves": { price: 9.97, store: "Home Depot", distance: "2.3 mi" },
+  "Insulated Gloves": { price: 29.97, store: "Home Depot", distance: "2.3 mi" },
+  "Voltage Tester": { price: 22.97, store: "Home Depot", distance: "2.3 mi" },
+  "N95 Mask": { price: 22.47, store: "Home Depot", distance: "2.3 mi" },
+  "Hard Hat": { price: 26.97, store: "Home Depot", distance: "2.3 mi" },
+  "Safety Harness": { price: 69.97, store: "Home Depot", distance: "2.3 mi" },
+  "Non-slip Boots": { price: 49.97, store: "Home Depot", distance: "2.3 mi" },
 };
 
 // Helper function to get safety gear names based on issue category
 function getSafetyGearNames(issue: IssueData): string[] {
-  // Use the safety.ppe from the data if available
-  if (issue.safety?.ppe?.length > 0) {
-    return issue.safety.ppe;
+  if (issue.difficulty.includes("Professional")) {
+    return [];
   }
 
-  // Fallback based on title/difficulty
+  if (issue.safety?.ppe?.length > 0) {
+    const validPpe = issue.safety.ppe.filter(
+      (item) => !item.toLowerCase().includes("n/a") && !item.toLowerCase().includes("professional")
+    );
+    if (validPpe.length > 0) {
+      return validPpe;
+    }
+  }
+
   const titleLower = issue.title.toLowerCase();
   const gear: string[] = [];
 
@@ -49,7 +57,6 @@ function getSafetyGearNames(issue: IssueData): string[] {
     gear.push("Safety Glasses", "Work Gloves");
   }
 
-  // Default gear
   if (gear.length === 0) {
     gear.push("Safety Glasses", "Work Gloves");
   }
@@ -60,6 +67,10 @@ function getSafetyGearNames(issue: IssueData): string[] {
 // Convert safety gear names to PartItem objects
 function getSafetyGearParts(issue: IssueData): IssueData["parts"] {
   const gearNames = getSafetyGearNames(issue);
+  if (gearNames.length === 0) {
+    return [];
+  }
+
   const uniqueGear = [...new Set(gearNames)];
 
   return uniqueGear.map((name) => {
@@ -79,15 +90,35 @@ function getSafetyGearParts(issue: IssueData): IssueData["parts"] {
 
 export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps) {
   const [activeTab, setActiveTab] = useState<TabType>("diy");
+  const demoFlow = useDemoFlowContextSafe();
+
+  // Progressive reveal from demo flow
+  const isLoading = demoFlow?.isLoading ?? false;
+  const visibleGuides = demoFlow?.visibleGuides ?? issue?.guides.length ?? 0;
+  const visibleParts = demoFlow?.visibleParts ?? (issue?.parts.length ?? 0);
+  const showTools = demoFlow?.showTools ?? true;
+  const showSafety = demoFlow?.showSafety ?? true;
+  const showCost = demoFlow?.showCost ?? true;
 
   // Reset tab when issue changes
   useEffect(() => {
     setActiveTab("diy");
   }, [issue?.title]);
 
+  // Memoize PPE parts calculation
+  const ppeParts = useMemo(() => {
+    if (!issue) return [];
+    return getSafetyGearParts(issue);
+  }, [issue]);
+
+  const allParts = useMemo(() => {
+    if (!issue) return [];
+    return [...ppeParts, ...issue.parts];
+  }, [issue, ppeParts]);
+
   if (isCreatingNewIssue || !issue) {
     return (
-      <div className="w-[340px] flex-shrink-0 border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
+      <div className="w-full lg:w-[340px] h-full shrink-0 lg:border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
         {/* Disabled Tabs */}
         <div className="flex border-b border-white/[0.06]">
           {["DIY", "Hire Pro"].map((tab) => (
@@ -115,12 +146,11 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
   const hasDiyContent = hasGuides || hasParts;
   const hasProContent = issue.pros.length > 0;
 
-  // Combine PPE parts with regular parts
-  const ppeParts = getSafetyGearParts(issue);
-  const allParts = [...ppeParts, ...issue.parts];
+  // Show content after diagnosis completes (researching phase or later)
+  const showContent = !isLoading;
 
   return (
-    <div className="w-[340px] flex-shrink-0 border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
+    <div className="w-full lg:w-[340px] h-full shrink-0 lg:border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
       {/* Tabs */}
       <div className="flex border-b border-white/[0.06]">
         {[
@@ -129,6 +159,7 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
         ].map((tab) => (
           <button
             key={tab.id}
+            type="button"
             onClick={() => setActiveTab(tab.id)}
             disabled={!tab.available}
             className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative ${
@@ -149,14 +180,30 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
 
       {/* Tab Content */}
       <div className="flex-1 overflow-y-auto p-4">
-        {activeTab === "diy" && (
+        {/* Loading State */}
+        {isLoading && activeTab === "diy" && (
+          <div className="space-y-4 animate-pulse">
+            <div className="h-20 bg-[#1a1a1a] rounded-xl" />
+            <div className="h-8 bg-[#1a1a1a] rounded-lg w-2/3" />
+            <div className="space-y-2">
+              <div className="h-16 bg-[#1a1a1a] rounded-xl" />
+              <div className="h-16 bg-[#1a1a1a] rounded-xl" />
+            </div>
+          </div>
+        )}
+
+        {showContent && activeTab === "diy" && (
           <DIYTab
             issue={{ ...issue, parts: allParts }}
             onSwitchToHire={() => setActiveTab("hire")}
+            visibleGuides={visibleGuides}
+            visibleParts={visibleParts}
+            showTools={showTools}
+            showCost={showCost}
           />
         )}
 
-        {activeTab === "hire" && (
+        {showContent && activeTab === "hire" && (
           <HireProTab
             issue={issue}
             onSwitchToDIY={() => setActiveTab("diy")}
@@ -165,46 +212,50 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
       </div>
 
       {/* Safety Notice */}
-      <div className="p-4 border-t border-white/[0.06]">
+      {showSafety && (
         <div
-          className={`p-3 rounded-lg ${
-            issue.difficulty.includes("Professional")
-              ? "bg-red-500/10 border border-red-500/20"
-              : "bg-amber-500/10 border border-amber-500/20"
-          }`}
+          className="p-4 border-t border-white/[0.06] animate-in fade-in slide-in-from-bottom-2 duration-300"
         >
-          <div className="flex items-center gap-2 mb-1">
-            <IoShieldCheckmark
-              className={`w-4 h-4 ${
-                issue.difficulty.includes("Professional")
-                  ? "text-red-400"
-                  : "text-amber-400"
-              }`}
-            />
-            <span
-              className={`text-xs font-medium ${
-                issue.difficulty.includes("Professional")
-                  ? "text-red-400"
-                  : "text-amber-400"
-              }`}
-            >
-              Safety Note
-            </span>
-          </div>
-          <p
-            className={`text-[10px] leading-relaxed ${
+          <div
+            className={`p-3 rounded-lg ${
               issue.difficulty.includes("Professional")
-                ? "text-red-400/80"
-                : "text-amber-400/80"
+                ? "bg-red-500/10 border border-red-500/20"
+                : "bg-amber-500/10 border border-amber-500/20"
             }`}
           >
-            {issue.safety?.doNotProceed?.[0] ??
-              (issue.difficulty.includes("Professional")
-                ? "This repair requires professional expertise. Attempting DIY may void warranties or cause injury."
-                : "Always turn off water/power before starting. Wear appropriate safety gear.")}
-          </p>
+            <div className="flex items-center gap-2 mb-1">
+              <IoShieldCheckmark
+                className={`w-4 h-4 ${
+                  issue.difficulty.includes("Professional")
+                    ? "text-red-400"
+                    : "text-amber-400"
+                }`}
+              />
+              <span
+                className={`text-xs font-medium ${
+                  issue.difficulty.includes("Professional")
+                    ? "text-red-400"
+                    : "text-amber-400"
+                }`}
+              >
+                Safety Note
+              </span>
+            </div>
+            <p
+              className={`text-[10px] leading-relaxed ${
+                issue.difficulty.includes("Professional")
+                  ? "text-red-400/80"
+                  : "text-amber-400/80"
+              }`}
+            >
+              {issue.safety?.doNotProceed?.[0] ??
+                (issue.difficulty.includes("Professional")
+                  ? "This repair requires professional expertise. Attempting DIY may void warranties or cause injury."
+                  : "Always turn off water/power before starting. Wear appropriate safety gear.")}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

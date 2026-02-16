@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { IoHammerOutline, IoShieldCheckmark } from "react-icons/io5";
+import { IoHammerOutline, IoShieldCheckmark, IoBuildOutline, IoPersonOutline } from "react-icons/io5";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { DIYTab } from "./DIYTab";
 import { HireProTab } from "./HireProTab";
 import type { DiagnoseIssueDetail, TabType } from "../types";
@@ -18,14 +19,22 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
       <div className="w-[340px] flex-shrink-0 border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
         {/* Disabled Tabs */}
         <div className="flex border-b border-white/[0.06]">
-          {["DIY", "Hire Pro"].map((tab) => (
-            <div
-              key={tab}
-              className="flex-1 px-4 py-3 text-sm font-medium text-[#444] text-center"
-            >
-              {tab}
-            </div>
-          ))}
+          {[
+            { id: "diy", label: "DIY", icon: IoBuildOutline },
+            { id: "hire", label: "Hire Pro", icon: IoPersonOutline },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <Tooltip key={tab.id}>
+                <TooltipTrigger asChild>
+                  <div className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-[#444]">
+                    <Icon className="w-4 h-4 shrink-0" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">{tab.label}</TooltipContent>
+              </Tooltip>
+            );
+          })}
         </div>
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="text-center">
@@ -63,87 +72,42 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
     );
   };
 
-  // PPE pricing and availability data
-  const ppeData: Record<string, { price: number; store: string; distance: string }> = {
-    "Safety Glasses": { price: 12.97, store: "Home Depot", distance: "2.3 mi" },
-    "Work Gloves": { price: 14.97, store: "Home Depot", distance: "2.3 mi" },
-    "Insulated Gloves": { price: 24.97, store: "Home Depot", distance: "2.3 mi" },
-    "Voltage Tester": { price: 19.97, store: "Home Depot", distance: "2.3 mi" },
-    "N95 Mask": { price: 3.97, store: "Home Depot", distance: "2.3 mi" },
-    "Hard Hat": { price: 14.97, store: "Home Depot", distance: "2.3 mi" },
-    "Safety Harness": { price: 79.97, store: "Home Depot", distance: "2.3 mi" },
-    "Non-slip Boots": { price: 89.97, store: "Home Depot", distance: "2.3 mi" },
-  };
-
-  // Generate safety gear as Part objects with inventory data
-  const getSafetyGearParts = (): import("../types").Part[] => {
-    const category = issue.category?.toLowerCase() ?? "";
-    const gearNames: string[] = [];
-
-    if (category.includes("plumbing") || category.includes("water")) {
-      gearNames.push("Safety Glasses", "Work Gloves");
-    }
-    if (category.includes("electrical") || category.includes("electric")) {
-      gearNames.push("Insulated Gloves", "Safety Glasses", "Voltage Tester");
-    }
-    if (category.includes("hvac") || category.includes("air")) {
-      gearNames.push("N95 Mask", "Safety Glasses", "Work Gloves");
-    }
-    if (category.includes("roofing") || category.includes("roof")) {
-      gearNames.push("Hard Hat", "Safety Harness", "Non-slip Boots");
-    }
-
-    // Default gear for any DIY
-    if (gearNames.length === 0 && hasDiyContent) {
-      gearNames.push("Safety Glasses", "Work Gloves");
-    }
-
-    // Remove duplicates and convert to Part objects
-    const uniqueGear = [...new Set(gearNames)];
-    return uniqueGear.map((name, index) => {
-      const data = ppeData[name] ?? { price: 15.00, store: "Home Depot", distance: "2.3 mi" };
-      return {
-        id: `ppe-${index}`,
-        name,
-        price: data.price,
-        store: data.store,
-        distance: data.distance,
-        inStock: true,
-        storeUrl: `https://www.homedepot.com/s/${encodeURIComponent(name)}`,
-        isPPE: true,
-      };
-    });
-  };
-
-  // Combine regular parts with PPE parts
-  const allParts = [...getSafetyGearParts(), ...(issue.parts ?? [])];
+  // Parts come from the backend (including PPE items marked with isPPE: true)
+  const parts = issue.parts ?? [];
 
   return (
     <div className="w-[340px] flex-shrink-0 border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
       {/* Tabs */}
       <div className="flex border-b border-white/[0.06]">
         {[
-          { id: "diy" as TabType, label: "DIY", available: hasDiyContent },
-          { id: "hire" as TabType, label: "Hire Pro", available: hasProContent },
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            disabled={!tab.available}
-            className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative ${
-              !tab.available
-                ? "text-[#444] cursor-not-allowed"
-                : activeTab === tab.id
-                ? "text-emerald-400"
-                : "text-[#888] hover:text-white"
-            }`}
-          >
-            {tab.label}
-            {activeTab === tab.id && tab.available && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />
-            )}
-          </button>
-        ))}
+          { id: "diy" as TabType, label: "DIY", icon: IoBuildOutline, available: hasDiyContent },
+          { id: "hire" as TabType, label: "Hire Pro", icon: IoPersonOutline, available: hasProContent },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          return (
+            <Tooltip key={tab.id}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setActiveTab(tab.id)}
+                  disabled={!tab.available}
+                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors relative ${
+                    !tab.available
+                      ? "text-[#444] cursor-not-allowed"
+                      : activeTab === tab.id
+                      ? "text-emerald-400"
+                      : "text-[#888] hover:text-white"
+                  }`}
+                >
+                  <Icon className="w-4 h-4 shrink-0" />
+                  {activeTab === tab.id && tab.available && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">{tab.label}</TooltipContent>
+            </Tooltip>
+          );
+        })}
       </div>
 
       {/* Tab Content */}
@@ -151,7 +115,7 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
         {activeTab === "diy" && (
           <DIYTab
             guides={issue.guides ?? []}
-            parts={allParts}
+            parts={parts}
             diyCost={issue.diyCost}
             savings={savings}
             onOrderParts={handleOrderParts}

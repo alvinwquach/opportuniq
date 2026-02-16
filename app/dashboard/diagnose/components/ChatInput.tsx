@@ -9,6 +9,7 @@ import {
   IoVideocam,
   IoStopCircle,
 } from "react-icons/io5";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 interface ChatInputProps {
   onSend: (message: string, attachments: File[]) => void;
@@ -111,40 +112,57 @@ export function ChatInput({
             className="w-full px-4 py-3 bg-transparent text-[15px] text-white placeholder:text-[#555] focus:outline-none disabled:opacity-50"
           />
           <div className="flex items-center justify-between px-3 pb-3">
-            <button
-              type="button"
-              onClick={handleAttachmentClick}
-              className="p-2 text-[#555] hover:text-emerald-400 rounded-full hover:bg-emerald-500/10 transition-colors"
-              title="Attach photo or video"
-            >
-              <IoAttach className="w-5 h-5" />
-            </button>
-            <div className="flex items-center gap-1">
-              {isStreaming ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
                 <button
                   type="button"
-                  onClick={onStop}
-                  className="p-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-full transition-colors"
-                  title="Stop generating"
+                  onClick={handleAttachmentClick}
+                  className="p-2 text-[#555] hover:text-emerald-400 rounded-full hover:bg-emerald-500/10 transition-colors"
                 >
-                  <IoStopCircle className="w-5 h-5" />
+                  <IoAttach className="w-5 h-5" />
                 </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">Attach photo or video</TooltipContent>
+            </Tooltip>
+            <div className="flex items-center gap-1">
+              {isStreaming ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={onStop}
+                      className="p-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-full transition-colors"
+                    >
+                      <IoStopCircle className="w-5 h-5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">Stop generating</TooltipContent>
+                </Tooltip>
               ) : (
                 <>
-                  <button
-                    type="button"
-                    className="p-2.5 text-[#555] hover:text-emerald-400 rounded-full hover:bg-emerald-500/10 transition-colors"
-                    title="Voice message"
-                  >
-                    <IoMic className="w-5 h-5" />
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={!input.trim() && attachments.length === 0}
-                    className="p-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                  >
-                    <IoSend className="w-5 h-5" />
-                  </button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        className="p-2.5 text-[#555] hover:text-emerald-400 rounded-full hover:bg-emerald-500/10 transition-colors"
+                      >
+                        <IoMic className="w-5 h-5" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">Voice message</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="submit"
+                        disabled={!input.trim() && attachments.length === 0}
+                        className="p-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                      >
+                        <IoSend className="w-5 h-5" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">Send message</TooltipContent>
+                  </Tooltip>
                 </>
               )}
             </div>

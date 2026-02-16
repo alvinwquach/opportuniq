@@ -10,6 +10,7 @@ import {
   IoEaselOutline,
   IoSwapVertical,
 } from "react-icons/io5";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import type { IssueFilters, ViewMode, SortBy, SortOrder } from "../types";
 import { STATUS_CONFIG, PRIORITY_CONFIG } from "../types";
 
@@ -270,39 +271,51 @@ export function IssuesFilters({
 
           {/* View Toggle */}
           <div className="flex items-center bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-1">
-            <button
-              onClick={() => onViewModeChange("cards")}
-              className={`p-2 rounded-lg transition-colors ${
-                viewMode === "cards"
-                  ? "bg-[#2a2a2a] text-white"
-                  : "text-[#666] hover:text-white"
-              }`}
-              title="Cards"
-            >
-              <IoGridOutline className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onViewModeChange("list")}
-              className={`p-2 rounded-lg transition-colors ${
-                viewMode === "list"
-                  ? "bg-[#2a2a2a] text-white"
-                  : "text-[#666] hover:text-white"
-              }`}
-              title="List"
-            >
-              <IoListOutline className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onViewModeChange("kanban")}
-              className={`p-2 rounded-lg transition-colors ${
-                viewMode === "kanban"
-                  ? "bg-[#2a2a2a] text-white"
-                  : "text-[#666] hover:text-white"
-              }`}
-              title="Kanban"
-            >
-              <IoEaselOutline className="w-4 h-4" />
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => onViewModeChange("cards")}
+                  className={`p-2 rounded-lg transition-colors ${
+                    viewMode === "cards"
+                      ? "bg-[#2a2a2a] text-white"
+                      : "text-[#666] hover:text-white"
+                  }`}
+                >
+                  <IoGridOutline className="w-4 h-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Card View</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => onViewModeChange("list")}
+                  className={`p-2 rounded-lg transition-colors ${
+                    viewMode === "list"
+                      ? "bg-[#2a2a2a] text-white"
+                      : "text-[#666] hover:text-white"
+                  }`}
+                >
+                  <IoListOutline className="w-4 h-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">List View</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => onViewModeChange("kanban")}
+                  className={`p-2 rounded-lg transition-colors ${
+                    viewMode === "kanban"
+                      ? "bg-[#2a2a2a] text-white"
+                      : "text-[#666] hover:text-white"
+                  }`}
+                >
+                  <IoEaselOutline className="w-4 h-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Kanban Board</TooltipContent>
+            </Tooltip>
           </div>
 
           {/* Sort By Dropdown */}
@@ -338,17 +351,23 @@ export function IssuesFilters({
           </div>
 
           {/* Sort Order Toggle */}
-          <button
-            onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
-            className="flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium bg-[#1a1a1a] border border-[#2a2a2a] text-[#888] rounded-xl hover:border-[#333] transition-colors"
-            title={sortOrder === "asc" ? "Ascending" : "Descending"}
-          >
-            {sortBy === "priority" ? (
-              sortOrder === "asc" ? "Low First" : "High First"
-            ) : (
-              sortOrder === "asc" ? "Oldest" : "Newest"
-            )}
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
+                className="flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium bg-[#1a1a1a] border border-[#2a2a2a] text-[#888] rounded-xl hover:border-[#333] transition-colors"
+              >
+                {sortBy === "priority" ? (
+                  sortOrder === "asc" ? "Low First" : "High First"
+                ) : (
+                  sortOrder === "asc" ? "Oldest" : "Newest"
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              {sortOrder === "asc" ? "Switch to Descending" : "Switch to Ascending"}
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </>

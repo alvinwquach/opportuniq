@@ -33,7 +33,7 @@ export function IssuesSidebar({
   });
 
   return (
-    <div className="w-72 flex-shrink-0 border-r border-white/[0.06] flex flex-col bg-[#0f0f0f]">
+    <div className="w-72 h-full flex-shrink-0 border-r border-white/[0.06] flex flex-col bg-[#0f0f0f]">
       {/* Search & Filter Header */}
       <div className="p-3 border-b border-white/[0.06] space-y-2">
         <div className="relative">
