@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { gsap } from "@/lib/gsap";
 import { Toast } from "@/components/ui/Toast";
+import { OpportunIQLogo } from "@/components/landing/OpportunIQLogo";
 import { completeOnboarding } from "./actions";
 import { TOTAL_STEPS, MILES_COUNTRIES } from "./constants";
 import { StepLayout } from "./components/StepLayout";
@@ -252,13 +253,7 @@ export default function OnboardingClient({
       <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-[#0a0a0a]/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <svg viewBox="0 0 100 100" className="w-8 h-8" fill="none">
-              <path d="M50 5 L85 25 L85 65 L50 85 L15 65 L15 25 Z" stroke="#5eead4" strokeWidth="3" fill="none" />
-              <path d="M50 15 L75 30 L75 60 L50 75 L25 60 L25 30 Z" stroke="#5eead4" strokeWidth="2.5" fill="#5eead4" fillOpacity="0.15" />
-              <circle cx="50" cy="45" r="15" stroke="#5eead4" strokeWidth="4" fill="none" strokeDasharray="70 30" transform="rotate(-90 50 45)" />
-              <path d="M 60 55 L 70 65" stroke="#5eead4" strokeWidth="4" strokeLinecap="round" />
-              <circle cx="50" cy="45" r="5" fill="#5eead4" />
-            </svg>
+            <OpportunIQLogo className="w-8 h-8 text-teal-300" />
             <span className="font-bold text-lg">OpportunIQ</span>
           </Link>
 
