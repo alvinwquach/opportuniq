@@ -17,6 +17,7 @@ import {
   decisionOptions,
   decisionVotes,
 } from "@/app/db/schema/decisions";
+import { decisionOutcomes } from "@/app/db/schema/outcomes";
 import { eq, and, desc, asc, inArray } from "drizzle-orm";
 import type { NewIssueActivityLog } from "@/app/db/schema";
 
@@ -755,5 +756,83 @@ export async function getIssueDetails(
   } catch (error) {
     console.error("[Issues] getIssueDetails error:", error);
     return { success: false, error: "Failed to fetch issue details" };
+  }
+}
+
+// ============================================
+// DECISION LOOKUP FOR OUTCOME FORM
+// ============================================
+
+export interface DecisionSummary {
+  decisionId: string;
+  groupId: string;
+  costMin: string | null;
+  costMax: string | null;
+  hasOutcome: boolean;
+}
+
+/**
+ * Get the finalized decision for an issue so the OutcomeForm can reference it.
+ */
+export async function getDecisionForIssue(
+  issueId: string
+): Promise<{ success: boolean; error?: string; decision?: DecisionSummary }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    const [row] = await db
+      .select({
+        decisionId: decisions.id,
+        groupId: issues.groupId,
+        costMin: decisionOptions.costMin,
+        costMax: decisionOptions.costMax,
+        outcomeId: decisionOutcomes.id,
+      })
+      .from(decisions)
+      .innerJoin(decisionOptions, eq(decisions.selectedOptionId, decisionOptions.id))
+      .innerJoin(issues, eq(decisions.issueId, issues.id))
+      .leftJoin(decisionOutcomes, eq(decisionOutcomes.decisionId, decisions.id))
+      .where(eq(decisions.issueId, issueId));
+
+    if (!row) {
+      return { success: false, error: "No decision found for this issue" };
+    }
+
+    // Verify membership
+    const [membership] = await db
+      .select({ id: groupMembers.id })
+      .from(groupMembers)
+      .where(
+        and(
+          eq(groupMembers.groupId, row.groupId),
+          eq(groupMembers.userId, user.id),
+          eq(groupMembers.status, "active")
+        )
+      );
+
+    if (!membership) {
+      return { success: false, error: "Not a member of this group" };
+    }
+
+    return {
+      success: true,
+      decision: {
+        decisionId: row.decisionId,
+        groupId: row.groupId,
+        costMin: row.costMin,
+        costMax: row.costMax,
+        hasOutcome: !!row.outcomeId,
+      },
+    };
+  } catch (error) {
+    console.error("[Issues] getDecisionForIssue error:", error);
+    return { success: false, error: "Failed to fetch decision" };
   }
 }

@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/card";
 import type { IssueDetails } from "../../actions";
 import { reopenIssue } from "../../actions";
+import { trackIssueReopened } from "@/lib/analytics";
 
 interface IssueHeaderProps {
   issue: IssueDetails;
@@ -134,6 +135,7 @@ export function IssueHeader({ issue, onResolveClick }: IssueHeaderProps) {
     try {
       const result = await reopenIssue(issue.id);
       if (result.success) {
+        trackIssueReopened({ issueId: issue.id });
         window.location.reload();
       }
     } catch (error) {
