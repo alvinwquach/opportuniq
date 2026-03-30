@@ -261,26 +261,3 @@ describe("Chat API Route", () => {
   });
 });
 
-describe("System Prompt", () => {
-  // These tests verify the system prompt contains required elements
-  // by checking the actual prompt string
-
-  it("includes PPE recommendations section", async () => {
-    // Import the route to access the SYSTEM_PROMPT
-    // Note: In a real scenario, you'd export the prompt for testing
-    // For now, we verify the behavior through integration tests
-    expect(true).toBe(true); // Placeholder
-  });
-
-  it("includes safety warnings for older homes", async () => {
-    expect(true).toBe(true); // Placeholder
-  });
-
-  it("includes asbestos warning for pre-1980 homes", async () => {
-    expect(true).toBe(true); // Placeholder
-  });
-
-  it("includes lead paint warning for pre-1978 homes", async () => {
-    expect(true).toBe(true); // Placeholder
-  });
-});

@@ -9,7 +9,11 @@ import {
 } from "@/components/ui/dialog";
 import { Toast } from "@/components/ui/Toast";
 import { IoArrowForward, IoClose, IoReload, IoMail, IoLockClosed } from "react-icons/io5";
-import amplitude from "@/amplitude";
+import {
+  trackWaitlistModalOpened,
+  trackWaitlistSignup,
+  trackWaitlistSignupFailed,
+} from "@/lib/analytics";
 
 interface WaitlistModalProps {
   children: React.ReactNode;
@@ -34,7 +38,7 @@ export function WaitlistModal({ children }: WaitlistModalProps) {
   // Track modal open
   useEffect(() => {
     if (isOpen) {
-      amplitude.track("Waitlist Modal Opened");
+      trackWaitlistModalOpened();
     }
   }, [isOpen]);
 
@@ -61,7 +65,7 @@ export function WaitlistModal({ children }: WaitlistModalProps) {
       const data = await response.json();
 
       if (data.success) {
-        amplitude.track("Waitlist Signup", {
+        trackWaitlistSignup({
           source: "landing",
           hasReferral: !!referralCode,
         });
@@ -70,13 +74,13 @@ export function WaitlistModal({ children }: WaitlistModalProps) {
         setEmail("");
       } else {
         setError(data.error || "Failed to join waitlist");
-        amplitude.track("Waitlist Signup Failed", {
+        trackWaitlistSignupFailed({
           error: data.error,
         });
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
-      amplitude.track("Waitlist Signup Failed", {
+      trackWaitlistSignupFailed({
         error: "Network error",
       });
     } finally {

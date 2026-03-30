@@ -24,7 +24,11 @@ import {
   CompleteStepRight,
 } from "./components/steps";
 import type { OnboardingFormData } from "./types";
-import amplitude from "@/amplitude";
+import {
+  trackOnboardingStarted,
+  trackOnboardingCompleted,
+  trackOnboardingError,
+} from "@/lib/analytics";
 
 interface OnboardingClientProps {
   customRedirect?: string | null;
@@ -68,7 +72,7 @@ export default function OnboardingClient({
   // Track onboarding started
   useEffect(() => {
     if (!isPreview) {
-      amplitude.track("Onboarding Started", { hasCustomRedirect: !!customRedirect });
+      trackOnboardingStarted({ hasCustomRedirect: !!customRedirect });
     }
   }, [isPreview, customRedirect]);
 
@@ -219,7 +223,7 @@ export default function OnboardingClient({
         throw new Error(result?.error || "Failed to save preferences");
       }
 
-      amplitude.track("Onboarding Completed", {
+      trackOnboardingCompleted({
         country: formData.country,
         searchRadius: formData.searchRadius,
         riskTolerance: formData.riskTolerance,
@@ -231,7 +235,7 @@ export default function OnboardingClient({
       const errorMessage = err instanceof Error ? err.message : "Something went wrong.";
       setError(errorMessage);
       setIsSubmitting(false);
-      amplitude.track("Onboarding Error", { error: errorMessage });
+      trackOnboardingError({ error: errorMessage });
     }
   };
 

@@ -7,7 +7,17 @@ import { Input } from "@/components/ui/input";
 import { IoCheckmarkCircle, IoPeople, IoSparkles, IoArrowForward } from "react-icons/io5";
 import Link from "next/link";
 import { OpportunIQLogo } from "@/components/landing/OpportunIQLogo";
-import amplitude from "@/amplitude";
+import {
+  trackInviteTokenValidated,
+  trackInviteTokenInvalid,
+  trackInviteTokenValidationFailed,
+  trackInviteTokenValidatedManualEntry,
+  trackReferralCodeValidated,
+  trackCodeInvalid,
+  trackCodeValidationFailed,
+  trackJoinSignUpStarted,
+  trackJoinSignUpFailed,
+} from "@/lib/analytics";
 
 interface JoinClientProps {
   inviteToken?: string | null;
@@ -56,19 +66,19 @@ export function JoinClient({ inviteToken, urlReferralCode }: JoinClientProps) {
         setInviteEmail(data.email);
         setReferrerName(data.invitedBy);
         setInviteTier(data.tier);
-        amplitude.track("Invite Token Validated", {
+        trackInviteTokenValidated({
           hasInviteEmail: !!data.email,
           tier: data.tier,
         });
       } else {
         setError(data.error);
-        amplitude.track("Invite Token Invalid", {
+        trackInviteTokenInvalid({
           error: data.error,
         });
       }
     } catch {
       setError("Failed to validate invite");
-      amplitude.track("Invite Token Validation Failed", {
+      trackInviteTokenValidationFailed({
         error: "Network error",
       });
     } finally {
@@ -105,7 +115,7 @@ export function JoinClient({ inviteToken, urlReferralCode }: JoinClientProps) {
           setInviteTier(inviteData.tier);
           // Store the token so OAuth flow uses it
           setReferralCode(trimmedCode);
-          amplitude.track("Invite Token Validated (Manual Entry)", {
+          trackInviteTokenValidatedManualEntry({
             tier: inviteData.tier,
           });
           return;
@@ -124,7 +134,7 @@ export function JoinClient({ inviteToken, urlReferralCode }: JoinClientProps) {
       if (data.valid) {
         setValidated(true);
         setReferrerName(data.referrer);
-        amplitude.track("Referral Code Validated", {
+        trackReferralCodeValidated({
           codeLength: trimmedCode.length,
         });
       } else {
@@ -134,14 +144,14 @@ export function JoinClient({ inviteToken, urlReferralCode }: JoinClientProps) {
         } else {
           setError(data.error);
         }
-        amplitude.track("Code Invalid", {
+        trackCodeInvalid({
           error: data.error,
           codeLength: trimmedCode.length,
         });
       }
     } catch {
       setError("Failed to validate code");
-      amplitude.track("Code Validation Failed", {
+      trackCodeValidationFailed({
         error: "Network error",
       });
     } finally {
@@ -158,7 +168,7 @@ export function JoinClient({ inviteToken, urlReferralCode }: JoinClientProps) {
     setLoading(provider);
     setError("");
 
-    amplitude.track("Join Sign Up Started", {
+    trackJoinSignUpStarted({
       provider,
       hasInviteToken: !!inviteToken,
       hasReferralCode: !!referralCode,
@@ -202,7 +212,7 @@ export function JoinClient({ inviteToken, urlReferralCode }: JoinClientProps) {
     if (error) {
       setError(error.message);
       setLoading(null);
-      amplitude.track("Join Sign Up Failed", {
+      trackJoinSignUpFailed({
         provider,
         error: error.message,
       });

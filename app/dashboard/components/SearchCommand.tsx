@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { cn } from "@/lib/utils";
-import amplitude from "@/amplitude";
+import { trackCommandPaletteOpened, trackCommandExecuted } from "@/lib/analytics";
 
 interface SearchCommandProps {
   open: boolean;
@@ -52,7 +52,7 @@ export function SearchCommand({ open, onOpenChange, onAddIncome, initialQuery = 
   // Sync with initialQuery when modal opens
   useEffect(() => {
     if (open) {
-      amplitude.track("Command Palette Opened");
+      trackCommandPaletteOpened();
       if (initialQuery) {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setSearch(initialQuery);
@@ -225,7 +225,7 @@ export function SearchCommand({ open, onOpenChange, onAddIncome, initialQuery = 
           e.preventDefault();
           if (flatFiltered[selectedIndex]) {
             const cmd = flatFiltered[selectedIndex];
-            amplitude.track("Command Executed", {
+            trackCommandExecuted({
               command: cmd.label,
               category: cmd.category,
               searchQuery: search || undefined,
@@ -277,7 +277,7 @@ export function SearchCommand({ open, onOpenChange, onAddIncome, initialQuery = 
             <button
               key={cmd.id}
               onClick={() => {
-                amplitude.track("Command Executed", {
+                trackCommandExecuted({
                   command: cmd.label,
                   category: cmd.category,
                   searchQuery: search || undefined,

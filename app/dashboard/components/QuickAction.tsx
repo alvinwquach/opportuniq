@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { IoArrowUp } from "react-icons/io5";
-import amplitude from "@/amplitude";
+import { trackQuickActionClicked } from "@/lib/analytics";
 
 interface QuickActionProps {
   href: string;
@@ -13,7 +13,7 @@ interface QuickActionProps {
 
 export function QuickAction({ href, icon: Icon, label, description }: QuickActionProps) {
   const handleClick = () => {
-    amplitude.track("Quick Action Clicked", {
+    trackQuickActionClicked({
       action: label,
       destination: href,
     });

@@ -14,7 +14,7 @@ import { UserMenu } from "./UserMenu";
 import { CalendarPreview } from "./CalendarPreview";
 import { SearchCommand } from "./SearchCommand";
 import { InlineIncomeSetup } from "./InlineIncomeSetup";
-import { AmplitudeIdentify } from "./AmplitudeIdentify";
+import { PostHogIdentify } from "./PostHogIdentify";
 
 interface DashboardContentProps {
   children: React.ReactNode;
@@ -185,7 +185,7 @@ export function DashboardContent({
         onOpenChange={handleIncomeOpenChange}
         userId={user.id}
       />
-      <AmplitudeIdentify
+      <PostHogIdentify
         userId={user.id}
         email={user.email}
         name={user.name}

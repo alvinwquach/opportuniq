@@ -4,6 +4,7 @@ import { useState } from "react";
 import { IoLogOut, IoArrowBack, IoCheckmark, IoCheckmarkCircle } from "react-icons/io5";
 import Link from "next/link";
 import { signOut } from "./actions";
+import posthog from "@/lib/posthog/client";
 
 interface LogoutClientProps {
   isLoggedIn: boolean;
@@ -28,6 +29,7 @@ export function LogoutClient({ isLoggedIn }: LogoutClientProps) {
   const handleLogout = async () => {
     setIsLoggingOut(true);
 
+    posthog.reset();
     await signOut();
 
     setIsLoggingOut(false);

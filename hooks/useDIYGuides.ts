@@ -2,7 +2,7 @@
  * Hook for fetching and managing DIY guides for a conversation.
  */
 
-import useSWR from "swr";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import type { DIYGuide } from "@/app/db/schema/diy-guides";
 
@@ -23,14 +23,20 @@ const fetcher = async (url: string) => {
 };
 
 export function useDIYGuides(conversationId: string | null): UseDIYGuidesResult {
-  const { data, error, isLoading, mutate } = useSWR(
-    conversationId ? `/api/conversations/${conversationId}/guides` : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 5000,
-    }
-  );
+  const queryClient = useQueryClient();
+  const queryKey = ["guides", conversationId];
+
+  const { data, error, isLoading } = useQuery({
+    queryKey,
+    queryFn: () => fetcher(`/api/conversations/${conversationId}/guides`),
+    enabled: !!conversationId,
+    staleTime: 5000,
+    refetchOnWindowFocus: false,
+  });
+
+  const mutate = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey });
+  }, [queryClient, conversationId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateGuide = useCallback(
     async (guideId: string, action: "clicked" | "bookmarked" | "helpful" | "not_helpful") => {
@@ -43,13 +49,12 @@ export function useDIYGuides(conversationId: string | null): UseDIYGuidesResult 
           body: JSON.stringify({ guideId, action }),
         });
 
-        // Optimistically update local data
-        mutate();
+        queryClient.invalidateQueries({ queryKey });
       } catch (err) {
         console.error("[useDIYGuides] Failed to update guide:", err);
       }
     },
-    [conversationId, mutate]
+    [conversationId, queryClient] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const markClicked = useCallback(
@@ -71,7 +76,7 @@ export function useDIYGuides(conversationId: string | null): UseDIYGuidesResult 
   return {
     guides: data?.guides || [],
     isLoading,
-    error: error || null,
+    error: error as Error | null,
     markClicked,
     toggleBookmark,
     markHelpful,
