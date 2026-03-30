@@ -5,6 +5,7 @@
  * Falls back to AI estimates when no data is available.
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { tool } from "ai";
 import { z } from "zod";
 import type { ToolContext } from "./types";
@@ -61,6 +62,7 @@ export function createCostLookupTool(ctx: ToolContext) {
         };
       } catch (error) {
         console.error("[CostLookup] Error:", error);
+        Sentry.captureException(error, { extra: { tool: "getCostEstimate", serviceType, zipCode } });
         return {
           success: false,
           data: null,

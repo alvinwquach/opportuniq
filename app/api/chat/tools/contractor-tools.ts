@@ -5,6 +5,7 @@
  * then falls back to Firecrawl scraping for additional sources.
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { tool } from "ai";
 import { z } from "zod";
 import { searchContractors as searchContractorsAPI, getAvailableProviders } from "@/lib/integrations/contractor-search";
@@ -74,6 +75,7 @@ export function createContractorVerificationTool(ctx: ToolContext) {
           }
         } catch (error) {
           console.error("[verifyContractor] API search failed:", error);
+          Sentry.captureException(error, { extra: { tool: "verifyContractor", contractorName, zipCode } });
         }
       }
 
@@ -135,6 +137,10 @@ export function createContractorVerificationTool(ctx: ToolContext) {
 
       // If nothing worked, provide guidance
       if (results.length === 0) {
+        Sentry.captureMessage("Tool returned error", {
+          level: "warning",
+          extra: { tool: "verifyContractor", error: "Verification not available", contractorName, zipCode },
+        });
         return {
           error: "Verification not available",
           availableProviders,
@@ -215,6 +221,7 @@ export function createContractorSearchTool(_ctx: ToolContext) {
           }
         } catch (error) {
           console.error("[searchContractors] API search failed:", error);
+          Sentry.captureException(error, { extra: { tool: "searchContractors", serviceType, zipCode } });
         }
       }
 

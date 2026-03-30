@@ -4,6 +4,7 @@
  * Check for product and vehicle safety recalls via CPSC and NHTSA.
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { tool } from "ai";
 import { z } from "zod";
 import type { ToolContext } from "./types";
@@ -25,6 +26,10 @@ export function createRecallCheckTool(ctx: ToolContext) {
 
       if (!ctx.firecrawl) {
         console.log(`[checkRecalls] Firecrawl not available`);
+        Sentry.captureMessage("Tool returned error", {
+          level: "warning",
+          extra: { tool: "checkRecalls", error: "Firecrawl not available", itemType, searchTerm },
+        });
         return {
           error: "Recall check not available",
           suggestion: itemType === "vehicle"
@@ -37,31 +42,44 @@ export function createRecallCheckTool(ctx: ToolContext) {
         };
       }
 
-      const result = await scrapeWithTimeout(ctx.firecrawl, recallUrl, 20000);
+      try {
+        const result = await scrapeWithTimeout(ctx.firecrawl, recallUrl, 20000);
 
-      if (result?.markdown) {
-        console.log(`[checkRecalls] Success, got ${result.markdown.length} chars`);
+        if (result?.markdown) {
+          console.log(`[checkRecalls] Success, got ${result.markdown.length} chars`);
+          return {
+            itemType,
+            searchTerm,
+            source: itemType === "vehicle" ? "NHTSA" : "CPSC",
+            recallUrl,
+            results: result.markdown.substring(0, 2000),
+            tip: itemType === "vehicle"
+              ? "Enter your VIN at nhtsa.gov/recalls for vehicle-specific recall information"
+              : "Register products at cpsc.gov to receive future recall notifications",
+          };
+        }
+
+        console.log(`[checkRecalls] Failed or timed out`);
+        Sentry.captureMessage("Tool returned error", {
+          level: "warning",
+          extra: { tool: "checkRecalls", error: "Timed out or failed", itemType, searchTerm },
+        });
         return {
-          itemType,
-          searchTerm,
-          source: itemType === "vehicle" ? "NHTSA" : "CPSC",
+          error: "Recall check timed out or failed",
+          suggestion: `Visit ${itemType === "vehicle" ? "nhtsa.gov" : "cpsc.gov"} directly`,
           recallUrl,
-          results: result.markdown.substring(0, 2000),
           tip: itemType === "vehicle"
             ? "Enter your VIN at nhtsa.gov/recalls for vehicle-specific recall information"
             : "Register products at cpsc.gov to receive future recall notifications",
         };
+      } catch (error) {
+        Sentry.captureException(error, { extra: { tool: "checkRecalls", itemType, searchTerm, url: recallUrl } });
+        return {
+          error: "Recall check timed out or failed",
+          suggestion: `Visit ${itemType === "vehicle" ? "nhtsa.gov" : "cpsc.gov"} directly`,
+          recallUrl,
+        };
       }
-
-      console.log(`[checkRecalls] Failed or timed out`);
-      return {
-        error: "Recall check timed out or failed",
-        suggestion: `Visit ${itemType === "vehicle" ? "nhtsa.gov" : "cpsc.gov"} directly`,
-        recallUrl,
-        tip: itemType === "vehicle"
-          ? "Enter your VIN at nhtsa.gov/recalls for vehicle-specific recall information"
-          : "Register products at cpsc.gov to receive future recall notifications",
-      };
     },
   });
 }

@@ -4,6 +4,7 @@
  * Compare prices across multiple stores for building, fixing, and diagnosing.
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { tool } from "ai";
 import { z } from "zod";
 import type { ToolContext } from "./types";
@@ -57,7 +58,8 @@ export function createPriceComparisonTool(ctx: ToolContext) {
               url: store.url,
               results: result.markdown?.substring(0, 1500) || "No results found",
             };
-          } catch {
+          } catch (err) {
+            Sentry.captureException(err, { extra: { tool: "compareProductPrices", query, url: store.url } });
             return { store: store.name, url: store.url, error: "Failed to fetch" };
           }
         })

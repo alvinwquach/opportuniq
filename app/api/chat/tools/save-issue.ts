@@ -12,6 +12,7 @@
  * 5. User can view/manage issue in their dashboard
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { tool } from "ai";
 import { z } from "zod";
 import { db } from "@/app/db/client";
@@ -300,6 +301,7 @@ The saved issue will appear in the user's dashboard where they can:
         };
       } catch (error) {
         console.error("[saveIssue] Error:", error);
+        Sentry.captureException(error, { extra: { tool: "saveIssue", userId: ctx.userId, title: input.title } });
         return {
           success: false,
           message: "Failed to save issue",

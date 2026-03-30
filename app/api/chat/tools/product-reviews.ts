@@ -4,6 +4,7 @@
  * Aggregate product reviews from multiple sources.
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { tool } from "ai";
 import { z } from "zod";
 import type { ToolContext } from "./types";
@@ -42,7 +43,8 @@ export function createProductReviewsTool(ctx: ToolContext) {
               url: source.url,
               content: result.markdown?.substring(0, 1500) || "No reviews found",
             };
-          } catch {
+          } catch (err) {
+            Sentry.captureException(err, { extra: { tool: "getProductReviews", productName, url: source.url } });
             return { source: source.name, error: "Failed to fetch reviews" };
           }
         })

@@ -6,6 +6,7 @@
  * Uses simple follow-up requests for conversation continuity.
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { openai } from "@ai-sdk/openai";
 import { streamText, generateText, stepCountIs } from "ai";
 import { createClient } from "@/lib/supabase/server";
@@ -103,38 +104,48 @@ export async function POST(req: Request) {
   console.log("\n[Chat API] ========== REQUEST START ==========");
   console.log("[Chat API] Timestamp:", new Date().toISOString());
 
-  try {
-    // Authenticate user
-    console.time("[Chat API] Auth");
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    console.timeEnd("[Chat API] Auth");
+  return Sentry.withServerActionInstrumentation(
+    "POST /api/chat",
+    { recordResponse: true },
+    async () => {
+      try {
+        // Authenticate user
+        console.time("[Chat API] Auth");
+        const supabase = await createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        console.timeEnd("[Chat API] Auth");
 
-    if (!user) {
-      return new Response("Unauthorized", { status: 401 });
+        if (!user) {
+          return new Response("Unauthorized", { status: 401 });
+        }
+
+        console.time("[Chat API] Parse body");
+        const body: RequestBody = await req.json();
+        console.timeEnd("[Chat API] Parse body");
+        console.log("[Chat API] Request type:", body.type);
+
+        // Tag the conversation type for Sentry filtering
+        Sentry.setTag("conversation_type", body.type);
+
+        // Get user's name from metadata
+        const userName = user.user_metadata?.full_name || user.user_metadata?.name || null;
+
+        if (body.type === "structured") {
+          return handleStructuredRequest(body, user.id, startTime, userName);
+        } else if (body.type === "followup") {
+          return handleFollowUpRequest(body, user.id, startTime, userName);
+        } else {
+          return new Response("Invalid request type", { status: 400 });
+        }
+      } catch (error) {
+        console.error("[Chat API] Error:", error);
+        Sentry.captureException(error);
+        return new Response("Internal Server Error", { status: 500 });
+      }
     }
-
-    console.time("[Chat API] Parse body");
-    const body: RequestBody = await req.json();
-    console.timeEnd("[Chat API] Parse body");
-    console.log("[Chat API] Request type:", body.type);
-
-    // Get user's name from metadata
-    const userName = user.user_metadata?.full_name || user.user_metadata?.name || null;
-
-    if (body.type === "structured") {
-      return handleStructuredRequest(body, user.id, startTime, userName);
-    } else if (body.type === "followup") {
-      return handleFollowUpRequest(body, user.id, startTime, userName);
-    } else {
-      return new Response("Invalid request type", { status: 400 });
-    }
-  } catch (error) {
-    console.error("[Chat API] Error:", error);
-    return new Response("Internal Server Error", { status: 500 });
-  }
+  );
 }
 
 // ============================================================================

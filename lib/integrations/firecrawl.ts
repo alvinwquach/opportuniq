@@ -9,6 +9,7 @@
  */
 
 import FirecrawlApp from "@mendable/firecrawl-js";
+import * as Sentry from "@sentry/nextjs";
 
 // Initialize Firecrawl client
 function getFirecrawlClient() {
@@ -27,13 +28,20 @@ function getFirecrawlClient() {
 export async function scrapePage(url: string) {
   const firecrawl = getFirecrawlClient();
 
-  const result = await firecrawl.scrape(url, {
-    formats: ["markdown", "links", "screenshot",],
-    onlyMainContent: true,
-    waitFor: 2000, // Wait 2s for dynamic content
-  });
+  Sentry.setContext("firecrawl", { feature: "scrapePage", url });
 
-  return result;
+  try {
+    const result = await firecrawl.scrape(url, {
+      formats: ["markdown", "links", "screenshot",],
+      onlyMainContent: true,
+      waitFor: 2000, // Wait 2s for dynamic content
+    });
+
+    return result;
+  } catch (error) {
+    Sentry.captureException(error, { extra: { tool: "scrapePage", url } });
+    throw error;
+  }
 }
 
 /**
@@ -111,16 +119,23 @@ export async function crawlWebsite(
 ) {
   const firecrawl = getFirecrawlClient();
 
-  const result = await firecrawl.crawl(url, {
-    limit: options?.limit || 10,
-    // maxDepth: options?.maxDepth || 2,
-    scrapeOptions: {
-      formats: ["markdown"],
-      onlyMainContent: true,
-    },
-  });
+  Sentry.setContext("firecrawl", { feature: "crawlWebsite", url });
 
-  return result;
+  try {
+    const result = await firecrawl.crawl(url, {
+      limit: options?.limit || 10,
+      // maxDepth: options?.maxDepth || 2,
+      scrapeOptions: {
+        formats: ["markdown"],
+        onlyMainContent: true,
+      },
+    });
+
+    return result;
+  } catch (error) {
+    Sentry.captureException(error, { extra: { tool: "crawlWebsite", url } });
+    throw error;
+  }
 }
 
 /**
@@ -129,16 +144,23 @@ export async function crawlWebsite(
 export async function batchScrape(urls: string[]) {
   const firecrawl = getFirecrawlClient();
 
-  const results = await Promise.all(
-    urls.map(url =>
-      firecrawl.scrape(url, {
-        formats: ["markdown"],
-        onlyMainContent: true,
-      })
-    )
-  );
+  Sentry.setContext("firecrawl", { feature: "batchScrape", url: urls.join(",") });
 
-  return results;
+  try {
+    const results = await Promise.all(
+      urls.map(url =>
+        firecrawl.scrape(url, {
+          formats: ["markdown"],
+          onlyMainContent: true,
+        })
+      )
+    );
+
+    return results;
+  } catch (error) {
+    Sentry.captureException(error, { extra: { tool: "batchScrape", url: urls.join(","), credits: urls.length } });
+    throw error;
+  }
 }
 
 /**
