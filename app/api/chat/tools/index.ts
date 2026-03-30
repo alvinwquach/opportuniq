@@ -28,9 +28,10 @@ export function createChatTools(
   firecrawl: FirecrawlApp | null,
   userId?: string,
   conversationId?: string,
-  userName?: string
+  userName?: string,
+  zipCode?: string
 ) {
-  const ctx: ToolContext = { firecrawl, userId, userName, conversationId };
+  const ctx: ToolContext = { firecrawl, userId, userName, conversationId, zipCode };
 
   return {
     // 1. Get real cost estimates from cached data (fast - DB lookup)

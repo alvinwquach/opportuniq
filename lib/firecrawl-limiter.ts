@@ -154,6 +154,45 @@ export async function limitedCrawl(
   }
 }
 
+export async function limitedSearch(
+  firecrawl: FirecrawlApp,
+  query: string,
+  options?: Parameters<FirecrawlApp["search"]>[1]
+): Promise<Awaited<ReturnType<FirecrawlApp["search"]>>> {
+  await acquire();
+
+  Sentry.addBreadcrumb({
+    category: "firecrawl",
+    message: `search start: ${query}`,
+    level: "info",
+    data: { query, credits: 1, concurrentActive: activeCount },
+  });
+
+  try {
+    const result = await firecrawl.search(query, options);
+    trackCredits("search", query, 1);
+
+    Sentry.addBreadcrumb({
+      category: "firecrawl",
+      message: `search done: ${query}`,
+      level: "info",
+      data: { query, credits: 1, totalCreditsUsed },
+    });
+
+    return result;
+  } catch (error) {
+    Sentry.addBreadcrumb({
+      category: "firecrawl",
+      message: `search error: ${query}`,
+      level: "error",
+      data: { query, error: String(error) },
+    });
+    throw error;
+  } finally {
+    release();
+  }
+}
+
 export async function limitedBatch(
   firecrawl: FirecrawlApp,
   urls: string[],

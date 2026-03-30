@@ -256,6 +256,7 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
   const tools = createChatTools(firecrawl, userId, conversationId, userName || undefined);
   console.log("[Chat API] Tools created:", Object.keys(tools));
 
+
   // Build user message content (text + optional images)
   // If no description but has attachments, provide a default analysis prompt
   let textContent = diagnosis.issue.description;
@@ -676,7 +677,7 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
       : "You are OpportunIQ's diagnostic assistant. Continue helping with the user's issue.";
 
   // Create tools
-  const tools = createChatTools(firecrawl, userId, conversationId, userName || undefined);
+  const tools = createChatTools(firecrawl, userId, conversationId, userName || undefined, postalCode ?? undefined);
 
   // Track tool calls
   const allToolCalls: Array<{ name: string; args: unknown }> = [];

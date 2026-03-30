@@ -9,6 +9,8 @@ import { tool } from "ai";
 import { z } from "zod";
 import type { ToolContext } from "./types";
 import { scrapeWithTimeout } from "./types";
+import { getFeatureFlag } from "@/lib/feature-flags";
+import { firecrawlSearch } from "@/lib/integrations/firecrawl-search";
 
 export function createPermitLookupTool(ctx: ToolContext) {
   return tool({
@@ -21,22 +23,54 @@ export function createPermitLookupTool(ctx: ToolContext) {
     execute: async ({ projectType, city, state }) => {
       console.log(`[checkPermitRequirements] Looking up permits for: ${projectType} in ${city}, ${state}`);
 
+      const generalGuidance = [
+        "Most jurisdictions require permits for: electrical work, plumbing, structural changes, HVAC",
+        "Water heater replacements often require permits in most areas",
+        "Cosmetic work (painting, flooring) typically doesn't need permits",
+        "Unpermitted work can affect home insurance and resale value",
+        "Call your local building department for definitive requirements",
+      ];
+
       if (!ctx.firecrawl) {
         console.log(`[checkPermitRequirements] Firecrawl not available`);
         return {
           error: "Permit lookup not available",
           suggestion: `Search "${city} ${state} building permits ${projectType}" or call your local building department`,
-          generalGuidance: [
-            "Most jurisdictions require permits for: electrical work, plumbing, structural changes, HVAC",
-            "Water heater replacements often require permits in most areas",
-            "Cosmetic work (painting, flooring) typically doesn't need permits",
-            "Unpermitted work can affect home insurance and resale value",
-            "Call your local building department for definitive requirements",
-          ],
+          generalGuidance,
         };
       }
 
-      // Search for city building department permit info
+      // Feature flag: use Firecrawl search() instead of Google scraping
+      const useNewSearch = ctx.userId
+        ? await getFeatureFlag("firecrawl-search-v2", ctx.userId)
+        : false;
+
+      if (useNewSearch) {
+        const searchResults = await firecrawlSearch(
+          ctx.firecrawl,
+          `${city} ${state} building permit ${projectType} requirements`,
+          { limit: 5, location: { country: "US" }, zipCode: ctx.zipCode }
+        );
+
+        if (searchResults?.web?.length) {
+          console.log(`[checkPermitRequirements] firecrawlSearch success, ${searchResults.web.length} results`);
+          return {
+            projectType,
+            location: `${city}, ${state}`,
+            searchResults: searchResults.web.map((r) => ({
+              title: "title" in r ? r.title : undefined,
+              url: "url" in r ? r.url : "",
+              description: "description" in r ? r.description : undefined,
+            })),
+            generalGuidance,
+            tip: "Even if you DIY, you may need a licensed contractor to pull the permit.",
+          };
+        }
+
+        console.log(`[checkPermitRequirements] firecrawlSearch returned no results, falling back`);
+      }
+
+      // FALLBACK: existing Google scraping code
       const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(`${city} ${state} building permit ${projectType} requirements`)}`;
 
       try {
@@ -48,13 +82,7 @@ export function createPermitLookupTool(ctx: ToolContext) {
             projectType,
             location: `${city}, ${state}`,
             searchResults: result.markdown.substring(0, 2000),
-            generalGuidance: [
-              "Most jurisdictions require permits for: electrical work, plumbing, structural changes, HVAC",
-              "Water heater replacements often require permits in most areas",
-              "Cosmetic work (painting, flooring) typically doesn't need permits",
-              "Unpermitted work can affect home insurance and resale value",
-              "Call your local building department for definitive requirements",
-            ],
+            generalGuidance,
             tip: "Even if you DIY, you may need to hire a licensed contractor to pull the permit and have it inspected.",
           };
         }
@@ -67,13 +95,7 @@ export function createPermitLookupTool(ctx: ToolContext) {
         return {
           error: "Permit search timed out or failed",
           suggestion: `Call ${city} building department directly or search "${city} ${state} building permits"`,
-          generalGuidance: [
-            "Most jurisdictions require permits for: electrical work, plumbing, structural changes, HVAC",
-            "Water heater replacements often require permits in most areas",
-            "Cosmetic work (painting, flooring) typically doesn't need permits",
-            "Unpermitted work can affect home insurance and resale value",
-            "Call your local building department for definitive requirements",
-          ],
+          generalGuidance,
         };
       } catch (error) {
         Sentry.captureException(error, { extra: { tool: "checkPermitRequirements", projectType, city, state } });

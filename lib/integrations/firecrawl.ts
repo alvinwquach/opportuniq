@@ -24,8 +24,14 @@ function getFirecrawlClient() {
 
 /**
  * Scrape a single page and extract structured data
+ *
+ * @param url - URL to scrape
+ * @param maxAge - Optional cache TTL in milliseconds. If the cached version is
+ *                 younger than maxAge, Firecrawl serves it without re-scraping.
+ *                 Default (undefined) uses Firecrawl's built-in 2-day cache.
+ *                 Pass 604800000 for 7-day caching on stable pages (cost guides, etc.).
  */
-export async function scrapePage(url: string) {
+export async function scrapePage(url: string, maxAge?: number) {
   const firecrawl = getFirecrawlClient();
 
   Sentry.setContext("firecrawl", { feature: "scrapePage", url });
@@ -35,6 +41,7 @@ export async function scrapePage(url: string) {
       formats: ["markdown", "links", "screenshot",],
       onlyMainContent: true,
       waitFor: 2000, // Wait 2s for dynamic content
+      ...(maxAge !== undefined ? { maxAge } : {}),
     });
 
     return result;
