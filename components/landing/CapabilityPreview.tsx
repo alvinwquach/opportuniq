@@ -84,9 +84,13 @@ export function CapabilityPreview() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<string>(CAPABILITIES[0].id);
+  const [mounted, setMounted] = useState(false);
 
   const activeCapability = CAPABILITIES.find(c => c.id === activeTab) || CAPABILITIES[0];
 
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     if (!contentRef.current) return;

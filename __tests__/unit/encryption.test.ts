@@ -106,8 +106,8 @@ describe("Encryption Utilities", () => {
         const iv1 = generateIV();
         const iv2 = generateIV();
 
-        expect(arrayBufferToBase64(iv1.buffer)).not.toBe(
-          arrayBufferToBase64(iv2.buffer)
+        expect(arrayBufferToBase64(iv1.buffer as ArrayBuffer)).not.toBe(
+          arrayBufferToBase64(iv2.buffer as ArrayBuffer)
         );
       });
     });
@@ -270,7 +270,7 @@ describe("Encryption Utilities", () => {
     describe("encryptFile / decryptFile", () => {
       it("encrypts and decrypts the test image correctly", async () => {
         const key = await generateMasterKey();
-        const originalBlob = new Blob([testImageBuffer], {
+        const originalBlob = new Blob([new Uint8Array(testImageBuffer)], {
           type: "image/jpeg",
         });
 
@@ -290,7 +290,7 @@ describe("Encryption Utilities", () => {
 
       it("returns correct size metadata", async () => {
         const key = await generateMasterKey();
-        const originalBlob = new Blob([testImageBuffer], {
+        const originalBlob = new Blob([new Uint8Array(testImageBuffer)], {
           type: "image/jpeg",
         });
 
@@ -303,7 +303,7 @@ describe("Encryption Utilities", () => {
 
       it("encrypted blob has octet-stream type", async () => {
         const key = await generateMasterKey();
-        const originalBlob = new Blob([testImageBuffer], {
+        const originalBlob = new Blob([new Uint8Array(testImageBuffer)], {
           type: "image/jpeg",
         });
 
@@ -314,7 +314,7 @@ describe("Encryption Utilities", () => {
 
       it("decrypted blob preserves original MIME type", async () => {
         const key = await generateMasterKey();
-        const originalBlob = new Blob([testImageBuffer], {
+        const originalBlob = new Blob([new Uint8Array(testImageBuffer)], {
           type: "image/jpeg",
         });
 
@@ -332,7 +332,7 @@ describe("Encryption Utilities", () => {
       it("fails to decrypt image with wrong key", async () => {
         const key1 = await generateMasterKey();
         const key2 = await generateMasterKey();
-        const originalBlob = new Blob([testImageBuffer], {
+        const originalBlob = new Blob([new Uint8Array(testImageBuffer)], {
           type: "image/jpeg",
         });
 
@@ -345,14 +345,14 @@ describe("Encryption Utilities", () => {
 
       it("fails to decrypt with tampered IV", async () => {
         const key = await generateMasterKey();
-        const originalBlob = new Blob([testImageBuffer], {
+        const originalBlob = new Blob([new Uint8Array(testImageBuffer)], {
           type: "image/jpeg",
         });
 
         const encrypted = await encryptFile(originalBlob, key);
 
         // Tamper with IV by using a different one
-        const tamperedIV = arrayBufferToBase64(generateIV().buffer);
+        const tamperedIV = arrayBufferToBase64(generateIV().buffer as ArrayBuffer);
 
         await expect(
           decryptFile(encrypted.blob, tamperedIV, key, "image/jpeg")
@@ -361,7 +361,7 @@ describe("Encryption Utilities", () => {
 
       it("fails to decrypt tampered ciphertext", async () => {
         const key = await generateMasterKey();
-        const originalBlob = new Blob([testImageBuffer], {
+        const originalBlob = new Blob([new Uint8Array(testImageBuffer)], {
           type: "image/jpeg",
         });
 
@@ -429,7 +429,7 @@ describe("Encryption Utilities", () => {
 
     it("encrypted image is indistinguishable from random data", async () => {
       const key = await generateMasterKey();
-      const originalBlob = new Blob([testImageBuffer], {
+      const originalBlob = new Blob([new Uint8Array(testImageBuffer)], {
         type: "image/jpeg",
       });
 
@@ -450,7 +450,7 @@ describe("Encryption Utilities", () => {
 
     it("metadata is visible but content is protected", async () => {
       const key = await generateMasterKey();
-      const originalBlob = new Blob([testImageBuffer], {
+      const originalBlob = new Blob([new Uint8Array(testImageBuffer)], {
         type: "image/jpeg",
       });
 
@@ -485,7 +485,7 @@ describe("Encryption Utilities", () => {
       const user1Key = await generateMasterKey();
       const user2Key = await generateMasterKey();
 
-      const imageBlob = new Blob([testImageBuffer], { type: "image/jpeg" });
+      const imageBlob = new Blob([new Uint8Array(testImageBuffer)], { type: "image/jpeg" });
 
       const encrypted1 = await encryptFile(imageBlob, user1Key);
       const encrypted2 = await encryptFile(imageBlob, user2Key);

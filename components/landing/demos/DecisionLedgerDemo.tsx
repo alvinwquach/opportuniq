@@ -105,6 +105,10 @@ export function DecisionLedgerDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedDecision, setSelectedDecision] = useState<Decision | null>(null);
   const [visibleCount, setVisibleCount] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setMounted(true); }, []);
 
 
   // Animate entries appearing

@@ -93,6 +93,10 @@ export function LedgerTimelineDemo() {
   const entriesRef = useRef<HTMLDivElement>(null);
   const [visibleCount, setVisibleCount] = useState(0);
   const [selectedEntry, setSelectedEntry] = useState<LedgerEntry | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setMounted(true); }, []);
 
   const totals = LEDGER_DATA.reduce(
     (acc, entry) => ({
@@ -212,7 +216,7 @@ export function LedgerTimelineDemo() {
       .data(pie(decisionCounts))
       .enter()
       .append("path")
-      .attr("d", arc as string)
+      .attr("d", arc as unknown as string)
       .attr("fill", d => d.data.color);
 
     // Center text

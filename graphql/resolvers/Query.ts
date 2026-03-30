@@ -589,7 +589,7 @@ export const Query = {
 
     // Get decisions for resolved issues
     const issueIds = resolvedIssues.map((i) => i.id);
-    let resolvedDecisions: Awaited<ReturnType<typeof ctx.db.select>>[] = [];
+    let resolvedDecisions: (typeof decisions.$inferSelect)[] = [];
 
     if (issueIds.length > 0) {
       resolvedDecisions = await ctx.db
@@ -606,28 +606,26 @@ export const Query = {
     let totalSaved = 0;
 
     for (const decision of resolvedDecisions) {
-      switch (decision.resolutionType) {
+      const relatedIssue = resolvedIssues.find((i) => i.id === decision.issueId);
+      switch (relatedIssue?.resolutionType) {
         case "diy":
           diyCount++;
           break;
-        case "hire":
+        case "hired":
           hiredCount++;
           break;
-        case "replace":
+        case "replaced":
           replacedCount++;
           break;
-        case "defer":
+        case "deferred":
           deferredCount++;
           break;
       }
-      // Calculate savings (estimated cost - actual cost if we have outcome)
-      if (decision.estimatedCost) {
-        const outcome = await ctx.loaders.outcomeByDecisionId.load(decision.id);
-        if (outcome?.actualCost) {
-          const estimated = parseFloat(decision.estimatedCost);
-          const actual = parseFloat(outcome.actualCost);
-          totalSaved += Math.max(0, estimated - actual);
-        }
+      // Calculate savings from outcome
+      const outcome = await ctx.loaders.outcomeByDecisionId.load(decision.id);
+      if (outcome?.actualCost) {
+        const actual = parseFloat(outcome.actualCost);
+        totalSaved += Math.max(0, actual);
       }
     }
 

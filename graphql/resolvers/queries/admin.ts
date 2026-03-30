@@ -36,7 +36,7 @@ function requireAdmin(ctx: Context) {
   }
 }
 
-function buildUserFilters(filters: AdminFilters) {
+function buildUserFilters(filters: AdminFilters | undefined) {
   const conditions = [];
   if (filters?.search) {
     conditions.push(
@@ -47,10 +47,10 @@ function buildUserFilters(filters: AdminFilters) {
     );
   }
   if (filters?.role) {
-    conditions.push(eq(users.role, filters.role));
+    conditions.push(eq(users.role, filters.role as "admin" | "moderator" | "user" | "banned"));
   }
   if (filters?.accessTier) {
-    conditions.push(eq(users.accessTier, filters.accessTier));
+    conditions.push(eq(users.accessTier, filters.accessTier as "johatsu" | "alpha" | "beta" | "public"));
   }
   if (filters?.dateFrom) {
     conditions.push(gte(users.createdAt, new Date(filters.dateFrom)));
@@ -61,7 +61,7 @@ function buildUserFilters(filters: AdminFilters) {
   return conditions.length > 0 ? and(...conditions) : undefined;
 }
 
-function buildWaitlistFilters(filters: AdminFilters) {
+function buildWaitlistFilters(filters: AdminFilters | undefined) {
   const conditions = [];
   if (filters?.search) {
     conditions.push(like(waitlist.email, `%${filters.search}%`));
@@ -78,13 +78,13 @@ function buildWaitlistFilters(filters: AdminFilters) {
   return conditions.length > 0 ? and(...conditions) : undefined;
 }
 
-function buildInviteFilters(filters: AdminFilters) {
+function buildInviteFilters(filters: AdminFilters | undefined) {
   const conditions = [];
   if (filters?.search) {
     conditions.push(like(invites.email, `%${filters.search}%`));
   }
   if (filters?.tier) {
-    conditions.push(eq(invites.tier, filters.tier));
+    conditions.push(eq(invites.tier, filters.tier as "johatsu" | "alpha" | "beta" | "public"));
   }
   if (filters?.status === "accepted") {
     conditions.push(isNotNull(invites.acceptedAt));
@@ -102,13 +102,13 @@ function buildInviteFilters(filters: AdminFilters) {
   return conditions.length > 0 ? and(...conditions) : undefined;
 }
 
-function buildReferralFilters(filters: AdminFilters) {
+function buildReferralFilters(filters: AdminFilters | undefined) {
   const conditions = [];
   if (filters?.search) {
     conditions.push(like(referrals.refereeEmail, `%${filters.search}%`));
   }
   if (filters?.status) {
-    conditions.push(eq(referrals.status, filters.status));
+    conditions.push(eq(referrals.status, filters.status as "pending" | "clicked" | "converted"));
   }
   if (filters?.dateFrom) {
     conditions.push(gte(referrals.createdAt, new Date(filters.dateFrom)));

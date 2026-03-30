@@ -51,7 +51,7 @@ export function CostLogicDemo() {
       .endAngle(Math.PI / 2);
 
     g.append("path")
-      .attr("d", arcBg as string)
+      .attr("d", arcBg as unknown as string)
       .attr("fill", "#1a1a1a");
 
     // Green zone (DIY wins: 0 to contractor cost)
@@ -63,7 +63,7 @@ export function CostLogicDemo() {
       .endAngle(-Math.PI / 2 + greenAngle);
 
     g.append("path")
-      .attr("d", arcGreen as string)
+      .attr("d", arcGreen as unknown as string)
       .attr("fill", "#00FF88")
       .attr("opacity", 0.3);
 
@@ -75,7 +75,7 @@ export function CostLogicDemo() {
       .endAngle(-Math.PI / 2 + greenAngle + Math.PI / 2 * 0.25);
 
     g.append("path")
-      .attr("d", arcOrange as string)
+      .attr("d", arcOrange as unknown as string)
       .attr("fill", "#FF8800")
       .attr("opacity", 0.3);
 
@@ -87,7 +87,7 @@ export function CostLogicDemo() {
       .endAngle(Math.PI / 2);
 
     g.append("path")
-      .attr("d", arcRed as string)
+      .attr("d", arcRed as unknown as string)
       .attr("fill", "#FF4444")
       .attr("opacity", 0.3);
 

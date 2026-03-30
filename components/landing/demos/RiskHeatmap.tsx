@@ -123,8 +123,10 @@ export function RiskHeatmap() {
   const svgRef = useRef<SVGSVGElement>(null);
   const [hoveredCell, setHoveredCell] = useState<HeatmapCell | null>(null);
   const [dimensions, setDimensions] = useState({ width: 700, height: 400 });
+  const [, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
 
     const updateDimensions = () => {

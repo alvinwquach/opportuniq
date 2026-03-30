@@ -41,7 +41,7 @@ describe("Encrypted Attachment Upload Integration", () => {
 
   beforeAll(() => {
     testImageBuffer = readFileSync(testImagePath);
-    testImageBlob = new Blob([testImageBuffer], { type: "image/jpeg" });
+    testImageBlob = new Blob([new Uint8Array(testImageBuffer)], { type: "image/jpeg" });
   });
 
   describe("Client-Side Encryption Flow", () => {
@@ -378,7 +378,7 @@ describe("Encrypted Attachment Upload Integration", () => {
 
       // Create a different IV
       const tamperedIv = arrayBufferToBase64(
-        crypto.getRandomValues(new Uint8Array(12))
+        crypto.getRandomValues(new Uint8Array(12)).buffer as ArrayBuffer
       );
 
       await expect(

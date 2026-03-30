@@ -354,7 +354,7 @@ export function DecisionMetricsDemo() {
       .data(pie(RISK_BREAKDOWN))
       .enter()
       .append("path")
-      .attr("d", arc as string)
+      .attr("d", arc as unknown as string)
       .attr("fill", d => d.data.color);
 
     // Center text

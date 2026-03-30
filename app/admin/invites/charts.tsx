@@ -30,7 +30,7 @@ const STATUS_COLORS = {
 
 interface TooltipProps {
   active?: boolean;
-  payload?: Array<{ name: string; value: number; payload: Record<string, unknown> }>;
+  payload?: Array<{ name: string; value: number; payload: { name: string } }>;
 }
 
 function CustomTooltip({ active, payload }: TooltipProps) {

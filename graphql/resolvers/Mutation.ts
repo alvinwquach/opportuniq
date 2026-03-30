@@ -22,6 +22,16 @@ import {
   groupMembers,
   groupConstraints,
   groupInvitations,
+  groupRoleEnum,
+  voteTypeEnum,
+  resolutionTypeEnum,
+  projectCategoryEnum,
+  projectPriorityEnum,
+  riskToleranceEnum,
+  diyPreferenceEnum,
+  expenseApprovalModeEnum,
+  categoryApprovalRuleEnum,
+  incomeFrequencyEnum,
   issues,
   issueComments,
   decisions,
@@ -301,8 +311,8 @@ export const Mutation = {
           groupId,
           monthlyBudget: input.monthlyBudget,
           emergencyBuffer: input.emergencyBuffer,
-          riskTolerance: input.riskTolerance as string,
-          diyPreference: input.diyPreference as string,
+          riskTolerance: input.riskTolerance as (typeof riskToleranceEnum.enumValues)[number],
+          diyPreference: input.diyPreference as (typeof diyPreferenceEnum.enumValues)[number],
           neverDIY: input.neverDIY,
         })
         .returning();
@@ -377,7 +387,7 @@ export const Mutation = {
           .update(groupMembers)
           .set({
             status: "active",
-            role: role as string,
+            role: role as (typeof groupRoleEnum.enumValues)[number],
             joinedAt: new Date(),
           })
           .where(eq(groupMembers.id, existingMember.id))
@@ -391,7 +401,7 @@ export const Mutation = {
         .values({
           groupId,
           userId: existingUser.id,
-          role: role as string,
+          role: role as (typeof groupRoleEnum.enumValues)[number],
           status: "active",
           joinedAt: new Date(),
           invitedBy: ctx.userId,
@@ -410,7 +420,7 @@ export const Mutation = {
       groupId,
       inviteeEmail: email.toLowerCase(),
       token,
-      role: role as string,
+      role: role as (typeof groupRoleEnum.enumValues)[number],
       invitedBy: ctx.userId,
       expiresAt,
     });
@@ -545,9 +555,9 @@ export const Mutation = {
         groupId: input.groupId,
         title: input.title.trim(),
         description: input.description,
-        category: input.category as string,
+        category: input.category as (typeof projectCategoryEnum.enumValues)[number],
         subcategory: input.subcategory,
-        priority: (input.priority as string) ?? "medium",
+        priority: ((input.priority as (typeof projectPriorityEnum.enumValues)[number]) ?? "medium"),
         assetName: input.assetName,
         assetDetails: input.assetDetails,
         createdBy: membership.id,
@@ -811,7 +821,7 @@ export const Mutation = {
       .update(issues)
       .set({
         status: "completed",
-        resolutionType: input.resolutionType as string,
+        resolutionType: input.resolutionType as (typeof resolutionTypeEnum.enumValues)[number],
         resolutionNotes: input.resolutionNotes,
         resolvedAt: new Date(),
         resolvedBy: membership.id,
@@ -911,7 +921,7 @@ export const Mutation = {
         .update(decisions)
         .set({
           selectedOptionId: optionId,
-          assumptions: assumptions as unknown[],
+          assumptions: assumptions as Record<string, unknown>,
           approvedAt: new Date(),
         })
         .where(eq(decisions.id, existingDecision.id))
@@ -932,7 +942,7 @@ export const Mutation = {
       .values({
         issueId: issue.id,
         selectedOptionId: optionId,
-        assumptions: assumptions as unknown[],
+        assumptions: assumptions as Record<string, unknown>,
         approvedAt: new Date(),
       })
       .returning();
@@ -985,7 +995,7 @@ export const Mutation = {
       const [updated] = await ctx.db
         .update(decisionVotes)
         .set({
-          vote: input.vote as string,
+          vote: input.vote as (typeof voteTypeEnum.enumValues)[number],
           comment: input.comment,
           votedAt: new Date(),
         })
@@ -1001,7 +1011,7 @@ export const Mutation = {
       .values({
         decisionId: input.decisionId,
         memberId: membership.id,
-        vote: input.vote as string,
+        vote: input.vote as (typeof voteTypeEnum.enumValues)[number],
         comment: input.comment,
       })
       .returning();
@@ -1054,7 +1064,7 @@ export const Mutation = {
     const [updated] = await ctx.db
       .update(decisionVotes)
       .set({
-        vote: vote as string,
+        vote: vote as (typeof voteTypeEnum.enumValues)[number],
         comment,
         votedAt: new Date(),
       })
@@ -1329,7 +1339,7 @@ export const Mutation = {
     if (args.country !== undefined) updates.country = args.country;
     if (args.monthlyBudget !== undefined) updates.monthlyBudget = args.monthlyBudget;
     if (args.emergencyBuffer !== undefined) updates.emergencyBuffer = args.emergencyBuffer;
-    if (args.riskTolerance !== undefined) updates.riskTolerance = args.riskTolerance as string;
+    if (args.riskTolerance !== undefined) updates.riskTolerance = args.riskTolerance as (typeof riskToleranceEnum.enumValues)[number];
 
     const [updated] = await ctx.db
       .update(users)
@@ -1414,7 +1424,7 @@ export const Mutation = {
         userId: ctx.userId,
         source: args.source.trim(),
         amount: args.amount,
-        frequency: args.frequency as string,
+        frequency: args.frequency as (typeof incomeFrequencyEnum.enumValues)[number],
         description: args.description,
         startDate: args.startDate ? new Date(args.startDate) : null,
         endDate: args.endDate ? new Date(args.endDate) : null,
@@ -1528,7 +1538,7 @@ export const Mutation = {
         description: args.description,
         date: new Date(args.date),
         isRecurring: args.isRecurring ?? false,
-        recurringFrequency: args.recurringFrequency as string,
+        recurringFrequency: args.recurringFrequency as (typeof incomeFrequencyEnum.enumValues)[number],
         issueId: args.issueId,
         isEncrypted: false, // TODO: Enable encryption
       })
@@ -1813,7 +1823,7 @@ export const Mutation = {
     // Update role
     const [updated] = await ctx.db
       .update(groupMembers)
-      .set({ role: args.role as string })
+      .set({ role: args.role as (typeof groupRoleEnum.enumValues)[number] })
       .where(eq(groupMembers.id, args.memberId))
       .returning();
 
@@ -2084,7 +2094,7 @@ export const Mutation = {
       .insert(groupExpenseSettings)
       .values({
         groupId,
-        approvalMode: (input.approvalMode as string) ?? "none",
+        approvalMode: ((input.approvalMode as (typeof expenseApprovalModeEnum.enumValues)[number]) ?? "none"),
         defaultThreshold: input.defaultThreshold,
         trustOwnerAdmin: input.trustOwnerAdmin ?? false,
         moderatorThreshold: input.moderatorThreshold,
@@ -2121,7 +2131,7 @@ export const Mutation = {
         groupId,
         name: input.name.trim(),
         icon: input.icon,
-        approvalRule: (input.approvalRule as string) ?? "use_default",
+        approvalRule: ((input.approvalRule as (typeof categoryApprovalRuleEnum.enumValues)[number]) ?? "use_default"),
         customThreshold: input.customThreshold,
         sortOrder: input.sortOrder ?? 0,
         createdBy: ctx.userId,

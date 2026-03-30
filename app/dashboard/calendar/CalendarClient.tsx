@@ -64,6 +64,8 @@ export function CalendarClient() {
     linkedIssueId: "",
   });
 
+  const todayDate = new Date();
+
   // Fetch calendar data
   const { data, isLoading, error } = useCalendarPageData(currentYear, currentMonth);
 

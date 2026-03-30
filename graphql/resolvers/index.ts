@@ -66,7 +66,7 @@ export const resolvers = {
       // Simple implementation - parse JSON literals
       if (ast.kind === "StringValue") {
         try {
-          return JSON.parse(ast.value);
+          return JSON.parse(ast.value!);
         } catch {
           return ast.value;
         }

@@ -28,15 +28,29 @@ const CHART_COLORS = {
 };
 
 // Local D3 data interfaces
-interface PieDataItem { likelihood: number; color: string; chosen: boolean; cost: number; issue: string; }
+interface PieDataItem { likelihood: number; color: string; chosen: boolean; cost: number; issue: string; fix?: string; }
 interface CostDataItem { scenario: string; cost: number; color: string; chosen: boolean; }
 interface TimelineDataItem { cumulative: number; duration: number; phase: string; color: string; }
-interface StatItem { color: string; icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; display: string; label: string; }
+interface StatItem { color: string; icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; display: string; label: string; value?: number; }
 interface StepItem { icon: React.ReactNode; phase: string; duration: string; description: string; }
-interface OptionItem { tier: number; [key: string]: unknown; }
+interface OptionItem { tier: number; title: string; cost: number; timeline: string; successRate: number; risk: string; description: string; pros: string[]; cons?: string[]; outcome?: string; }
+
+interface CaseStudy {
+  title: string;
+  subtitle: string;
+  category: string;
+  publishDate: string;
+  readTime: string;
+  customer: { name: string; vehicle: string; quote: string };
+  stats: StatItem[];
+  challenge: { title: string; situation: string; dealerQuote: string; painPoints: { text: string; icon: React.ComponentType<{ className?: string }> }[] };
+  diagnosis: { title: string; dealerSaid: string; actualIssue: string; technical: string; possibleCauses: PieDataItem[] };
+  solution: { title: string; process: StepItem[]; options: OptionItem[] };
+  results: { title: string; outcome: string; impact: { metric: string; value: string; description: string; icon: React.ComponentType<{ className?: string }> }[] };
+}
 
 // Case study data
-const caseStudies: Record<string, unknown> = {
+const caseStudies: Record<string, CaseStudy> = {
   "porsche-cayenne": {
     title: "How Kevin saved $4,220 on his Porsche transmission",
     subtitle: "From \"my car jerks weird\" to a $280 fix—using OpportunIQ's decision framework",
@@ -468,7 +482,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
         .endAngle(Math.PI / 2);
 
       g.append("path")
-        .attr("d", backgroundArc as string)
+        .attr("d", backgroundArc as unknown as string)
         .attr("fill", CHART_COLORS.grid);
 
       const angle = -Math.PI / 2 + (gauge.rate / 100) * Math.PI;
@@ -479,7 +493,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
         .endAngle(angle);
 
       g.append("path")
-        .attr("d", foregroundArc as string)
+        .attr("d", foregroundArc as unknown as string)
         .attr("fill", gauge.color);
 
       g.append("text")
@@ -556,7 +570,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
       .attr("y", (d: TimelineDataItem) => yScale(d.phase)!)
       .attr("width", (d: TimelineDataItem) => xScale(d.duration))
       .attr("height", yScale.bandwidth())
-      .attr("fill", (d: CostDataItem) => d.color)
+      .attr("fill", (d: TimelineDataItem) => d.color)
       .attr("rx", 4);
 
     // Labels
@@ -958,7 +972,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
             <div>
               <h3 className="text-sm font-semibold text-neutral-700 mb-4 uppercase tracking-wide">Pain Points</h3>
               <ul className="space-y-3" role="list">
-                {(study.challenge.painPoints as string[]).map((point: string, i: number) => (
+                {study.challenge.painPoints.map((point, i) => (
                   <li key={i} className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-lg hover:border-amber-300 transition-colors">
                     <point.icon className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" aria-hidden="true" />
                     <span className="text-sm text-neutral-700 leading-relaxed">{point.text}</span>

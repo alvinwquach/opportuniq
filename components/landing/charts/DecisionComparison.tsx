@@ -237,7 +237,7 @@ export function DecisionComparison() {
             .transition()
             .duration(800)
             .delay((_, i) => i * 100)
-            .attr("width", (d: NormalizedMetric) => d.diyNorm * innerWidth);
+            .attr("width", (d: unknown) => (d as NormalizedMetric).diyNorm * innerWidth);
 
           diyBars.selectAll("text")
             .transition()
@@ -250,7 +250,7 @@ export function DecisionComparison() {
             .transition()
             .duration(800)
             .delay((_, i) => i * 100 + 50)
-            .attr("width", (d: NormalizedMetric) => d.hireNorm * innerWidth);
+            .attr("width", (d: unknown) => (d as NormalizedMetric).hireNorm * innerWidth);
 
           hireBars.selectAll("text")
             .transition()
@@ -261,9 +261,9 @@ export function DecisionComparison() {
       });
     } else if (animated) {
       // If already animated, show immediately
-      diyBars.selectAll("rect").attr("width", (d: NormalizedMetric) => d.diyNorm * innerWidth);
+      diyBars.selectAll("rect").attr("width", (d: unknown) => (d as NormalizedMetric).diyNorm * innerWidth);
       diyBars.selectAll("text").attr("opacity", 1);
-      hireBars.selectAll("rect").attr("width", (d: NormalizedMetric) => d.hireNorm * innerWidth);
+      hireBars.selectAll("rect").attr("width", (d: unknown) => (d as NormalizedMetric).hireNorm * innerWidth);
       hireBars.selectAll("text").attr("opacity", 1);
     }
 

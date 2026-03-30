@@ -29,7 +29,7 @@ const FUNNEL_COLORS = ["#3ECF8E", "#f59e0b", "#249361"];
 
 interface TooltipProps {
   active?: boolean;
-  payload?: Array<{ name: string; value: number; payload: Record<string, unknown> }>;
+  payload?: Array<{ name: string; value: number; payload: { name: string } }>;
 }
 
 function CustomTooltip({ active, payload }: TooltipProps) {

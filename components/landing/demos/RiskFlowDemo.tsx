@@ -311,7 +311,7 @@ export function RiskFlowDemo() {
       .attr("fill", "rgba(239,68,68,0.3)")
       .attr("stroke", "#ef4444")
       .attr("stroke-width", 2)
-      .attr("d", areaGenerator as string);
+      .attr("d", areaGenerator as unknown as string);
 
     // Labels
     RISK_FACTORS.forEach(d => {
@@ -351,7 +351,7 @@ export function RiskFlowDemo() {
       .startAngle(-Math.PI / 2)
       .endAngle(Math.PI / 2);
 
-    g.append("path").attr("d", bgArc as string).attr("fill", "#262626");
+    g.append("path").attr("d", bgArc as unknown as string).attr("fill", "#262626");
 
     // Colored segments
     const segments = [
@@ -367,7 +367,7 @@ export function RiskFlowDemo() {
         .startAngle((seg.start * Math.PI) / 180)
         .endAngle((seg.end * Math.PI) / 180);
 
-      g.append("path").attr("d", arc as string).attr("fill", seg.color).attr("opacity", 0.6);
+      g.append("path").attr("d", arc as unknown as string).attr("fill", seg.color).attr("opacity", 0.6);
     });
 
     // Needle
