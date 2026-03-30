@@ -1,0 +1,208 @@
+name: CI
+
+# Trigger on every push to main AND every PR targeting main.
+# Push to main: catches direct pushes that bypass PR flow.
+# Pull request: this is the gate — checks must pass before merge.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Permissions the GITHUB_TOKEN needs to perform auto-merge at the end.
+# contents:write      → push the squash-merge commit
+# pull-requests:write → approve + merge the PR
+# checks:read         → read status of other check runs
+# deployments:read    → read Vercel deployment status (post-deploy gate)
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  deployments: read
+
+# If you push 3 commits in a row, cancel the older CI runs.
+# Only the latest commit matters; running stale jobs wastes minutes.
+# ${{ github.ref }} is GitHub's expression syntax — it evaluates to the branch
+# name (e.g. "refs/heads/main" or "refs/pull/42/merge") at runtime.
+# The group name is a string; two runs with the same string are considered
+# duplicates. cancel-in-progress kills the older one automatically.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # ─── JOB 1: TYPECHECK ────────────────────────────────────────────────────────
+  # Run tsc --noEmit. Catches wrong argument types, missing properties,
+  # null dereferences — anything TypeScript can prove is wrong.
+  # Runs in parallel with lint + test. ~5-10s, fails fast on type errors.
+  typecheck:
+    name: Type Check
+    # ubuntu-latest = a fresh, throwaway Linux VM spun up just for this job.
+    # It's destroyed after the job finishes. Each job gets its own clean VM.
+    runs-on: ubuntu-latest
+    steps:
+      # actions/checkout@v4: clones this repo into the VM so the job has the code.
+      # Without this step, the VM has no files to work with.
+      - uses: actions/checkout@v4
+
+      # Cache node_modules keyed on package-lock.json hash.
+      # Cold install: ~60s. Cache hit: ~5s.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # npm ci: fail if package-lock.json is out of sync. Never surprises.
+      - run: npm ci
+
+      # tsc --noEmit: type-check every .ts/.tsx, emit nothing.
+      - run: npm run typecheck
+
+  # ─── JOB 2: LINT ─────────────────────────────────────────────────────────────
+  # Run ESLint with next/core-web-vitals rules.
+  # Catches: missing hook deps, no <img> (use next/image), no <a> for internal
+  # links, unused vars, accessibility violations.
+  # Runs in parallel with typecheck + test.
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  # ─── JOB 3: TEST ─────────────────────────────────────────────────────────────
+  # Run Jest: unit tests + integration tests.
+  # --coverage: generate lcov report even on failure (useful to see gaps).
+  # --ci: disable watch mode, fail on missing snapshots.
+  # --forceExit: don't hang if an async handle isn't cleaned up.
+  # --detectOpenHandles: log which handle is preventing clean exit.
+  # Runs in parallel with typecheck + lint.
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - run: npm test -- --coverage --ci --forceExit --detectOpenHandles
+        env:
+          # Tells db client and other env-aware code to use test mode.
+          NODE_ENV: test
+
+      # Upload coverage/ directory as an artifact whether tests pass or fail.
+      # Browse it in the Actions UI to see which files lack coverage.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 14
+
+  # ─── JOB 4: BUILD ────────────────────────────────────────────────────────────
+  # Full next build: compiles TS, bundles client + server, tree-shakes,
+  # generates static pages, validates server/client boundaries.
+  # Catches issues the other jobs can't: import cycles, useState in server
+  # components, CSS compilation errors, next.config.ts misconfigs.
+  #
+  # Only runs after typecheck + lint + test all pass.
+  # No point building if we already know the code is broken.
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - run: npm run build
+        env:
+          # next build crashes if NEXT_PUBLIC_* vars referenced in code are
+          # undefined. These are placeholder strings — not real credentials.
+          # Real values live in Vercel's environment settings.
+          NEXT_PUBLIC_SUPABASE_URL: "https://placeholder.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "placeholder-key-for-build"
+          NEXT_PUBLIC_APP_URL: "http://localhost:3000"
+          NEXT_PUBLIC_MAPBOX_TOKEN: "placeholder"
+          NEXT_PUBLIC_AMPLITUDE_KEY: "placeholder"
+
+  # ─── JOB 5: MIGRATION CHECK ──────────────────────────────────────────────────
+  # Verify that every Drizzle schema change has a matching migration file.
+  # Without this: dev changes a schema, forgets to run db:generate,
+  # code deploys, DB doesn't have the new column → crash.
+  #
+  # Currently a WARNING not an error, because the project has ~55 tables
+  # managed via db:push with no migration history yet. Once a baseline
+  # migration is generated, remove the `|| echo` fallback to make it a
+  # hard failure.
+  migration-check:
+    name: Migration Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx drizzle-kit check 2>&1 || echo "::warning::Schema and migrations may be out of sync. Run 'npm run db:generate' locally."
+
+  # ─── JOB 6: SECURITY SCAN ────────────────────────────────────────────────────
+  # Two checks:
+  # 1. npm audit: scan all 100+ dependencies for known CVEs.
+  #    Warns on high/critical (not low/moderate — too noisy, often unfixable).
+  # 2. Grep for hardcoded API key patterns in source files:
+  #    sk-proj- (OpenAI), sk-live- (Stripe), fc-... (Firecrawl).
+  #    Both are warnings so a vulnerable transitive dep doesn't block all PRs.
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - run: npm audit --audit-level=high || echo "::warning::npm audit found high-severity vulnerabilities"
+
+      - name: Check for hardcoded secrets
+        run: |
+          echo "Checking for hardcoded secrets..."
+          if grep -rn "sk-proj-\|sk-live-\|fc-[a-zA-Z0-9]\{20,\}" --include="*.ts" --include="*.tsx" . | grep -v node_modules | grep -v "\.env"; then
+            echo "::error::Potential hardcoded API keys found!"
+            exit 1
+          fi
+          echo "No hardcoded secrets detected."
+
+  # ─── JOB 7: AUTO-MERGE ───────────────────────────────────────────────────────
+  # Solo dev — the CI pipeline IS the reviewer.
+  # If build + migration-check + security all passed, enable auto-merge.
+  # --squash: collapse all branch commits into one clean commit on main.
+  # --auto: don't merge immediately; wait for branch protection checks to pass.
+  # --delete-branch: clean up the branch after merge.
+  # Only runs on PRs (not direct pushes to main — nothing to merge there).
+  auto-merge:
+    name: Auto-merge
+    runs-on: ubuntu-latest
+    needs: [build, migration-check, security]
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - run: gh pr merge ${{ github.event.pull_request.number }} --squash --auto --delete-branch
+        env:
+          GH_TOKEN: ${{ github.token }}

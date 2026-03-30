@@ -1,0 +1,27 @@
+version: 2
+updates:
+  # ─── NPM DEPENDENCIES ──────────────────────────────────────────────────────
+  # Open a PR every Monday when any npm package has a newer version or CVE fix.
+  # These PRs go through CI and auto-merge if all checks pass —
+  # so deps stay updated with zero manual work on your end.
+  # Limit 10 open PRs so Dependabot doesn't flood the repo after a long gap.
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+    # Prefix every commit message so dep updates are visually distinct in git log.
+    # "chore(deps): bump next from 16.0.0 to 16.1.0" vs a feature commit.
+    commit-message:
+      prefix: "chore(deps):"
+
+  # ─── GITHUB ACTIONS ────────────────────────────────────────────────────────
+  # Keep CI action versions updated too (actions/checkout, actions/setup-node, etc.).
+  # Prevents deprecation warnings and security issues in the pipeline itself.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
