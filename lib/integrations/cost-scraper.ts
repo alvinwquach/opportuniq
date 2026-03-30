@@ -9,6 +9,7 @@
  * - scrapeCostGuide("homeadvisor", "drywall-repair") -> scrapes and parses cost page
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { scrapePage } from "./firecrawl";
 import { db } from "@/app/db/client";
 import { costData, type CostData, type NewCostData } from "@/app/db/schema";
@@ -193,6 +194,9 @@ export async function getCostEstimate(
     }
   } catch (error) {
     console.error("[CostScraper] Failed to scrape fresh data:", error);
+    Sentry.captureException(error, {
+      extra: { tool: "getCostEstimate", serviceType: normalizedService, region },
+    });
   }
 
   // Fall back to national average if no regional data
@@ -219,6 +223,8 @@ export async function scrapeCostGuide(
 
   console.log(`[CostScraper] Scraping ${source}: ${url}`);
 
+  Sentry.setContext("firecrawl", { feature: "scrapeCostGuide", url });
+
   try {
     const result = await scrapePage(url);
 
@@ -238,6 +244,7 @@ export async function scrapeCostGuide(
     };
   } catch (error) {
     console.error(`[CostScraper] Error scraping ${url}:`, error);
+    Sentry.captureException(error, { extra: { tool: "scrapeCostGuide", url, source } });
     return null;
   }
 }
@@ -589,6 +596,7 @@ export async function bulkScrapeCostGuides(
       await new Promise((resolve) => setTimeout(resolve, 2000));
     } catch (error) {
       console.error(`[CostScraper] Failed to scrape ${serviceType}:`, error);
+      Sentry.captureException(error, { extra: { tool: "bulkScrapeCostGuides", url: serviceType, region } });
       failed++;
     }
   }

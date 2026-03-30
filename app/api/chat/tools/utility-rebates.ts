@@ -4,6 +4,7 @@
  * Find utility rebates and incentives for energy-efficient upgrades.
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { tool } from "ai";
 import { z } from "zod";
 import type { ToolContext } from "./types";
@@ -39,6 +40,10 @@ export function createUtilityRebatesTool(ctx: ToolContext) {
 
       if (!ctx.firecrawl) {
         console.log(`[findUtilityRebates] Firecrawl not available`);
+        Sentry.captureMessage("Tool returned error", {
+          level: "warning",
+          extra: { tool: "findUtilityRebates", error: "Firecrawl not available", upgradeType, zipCode },
+        });
         return {
           error: "Rebate search not available",
           suggestion: `Search for rebates at dsireusa.org or energystar.gov/rebate-finder using zip code ${zipCode}`,
@@ -49,28 +54,43 @@ export function createUtilityRebatesTool(ctx: ToolContext) {
       }
 
       const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(`${upgradeType} rebate ${zipCode} utility incentive`)}`;
-      const result = await scrapeWithTimeout(ctx.firecrawl, searchUrl, 20000);
 
-      if (result?.markdown) {
-        console.log(`[findUtilityRebates] Success, got ${result.markdown.length} chars`);
+      try {
+        const result = await scrapeWithTimeout(ctx.firecrawl, searchUrl, 20000);
+
+        if (result?.markdown) {
+          console.log(`[findUtilityRebates] Success, got ${result.markdown.length} chars`);
+          return {
+            upgradeType,
+            zipCode,
+            searchResults: result.markdown.substring(0, 2000),
+            resources: baseResources,
+            commonRebates,
+            tip: "Check both your electric and gas utility websites - they often have separate rebate programs. Also look into IRA (Inflation Reduction Act) tax credits which can be combined with utility rebates.",
+          };
+        }
+
+        console.log(`[findUtilityRebates] Failed or timed out`);
+        Sentry.captureMessage("Tool returned error", {
+          level: "warning",
+          extra: { tool: "findUtilityRebates", error: "Timed out or failed", upgradeType, zipCode },
+        });
         return {
-          upgradeType,
-          zipCode,
-          searchResults: result.markdown.substring(0, 2000),
+          error: "Rebate search timed out or failed",
+          suggestion: `Visit energystar.gov/rebate-finder and enter zip code ${zipCode}`,
           resources: baseResources,
           commonRebates,
-          tip: "Check both your electric and gas utility websites - they often have separate rebate programs. Also look into IRA (Inflation Reduction Act) tax credits which can be combined with utility rebates.",
+          tip: "Check both your electric and gas utility websites - they often have separate rebate programs.",
+        };
+      } catch (error) {
+        Sentry.captureException(error, { extra: { tool: "findUtilityRebates", upgradeType, zipCode, url: searchUrl } });
+        return {
+          error: "Rebate search timed out or failed",
+          suggestion: `Visit energystar.gov/rebate-finder and enter zip code ${zipCode}`,
+          resources: baseResources,
+          commonRebates,
         };
       }
-
-      console.log(`[findUtilityRebates] Failed or timed out`);
-      return {
-        error: "Rebate search timed out or failed",
-        suggestion: `Visit energystar.gov/rebate-finder and enter zip code ${zipCode}`,
-        resources: baseResources,
-        commonRebates,
-        tip: "Check both your electric and gas utility websites - they often have separate rebate programs.",
-      };
     },
   });
 }

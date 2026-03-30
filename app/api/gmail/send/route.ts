@@ -4,6 +4,7 @@
  * Sends an email via the user's connected Gmail account.
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { db } from "@/app/db/client";
@@ -89,6 +90,9 @@ export async function POST(req: Request) {
         console.log("[Gmail Send] Token refreshed successfully");
       } catch (refreshError) {
         console.error("[Gmail Send] Token refresh failed:", refreshError);
+        Sentry.captureException(refreshError, {
+          extra: { context: "gmail_token_refresh", userId: user.id, code: "GMAIL_TOKEN_EXPIRED" },
+        });
         return NextResponse.json(
           {
             error: "Gmail connection expired. Please reconnect your Gmail account.",

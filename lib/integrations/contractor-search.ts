@@ -6,6 +6,7 @@
  * Tries each provider in order until one succeeds with results.
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { findContractorsForIssue as findContractorsOnYelp } from "./yelp";
 import { findContractorsOnFoursquare } from "./foursquare";
 import { scrapeAngiContractors, extractVendorsFromMarkdown } from "./firecrawl";
@@ -63,6 +64,7 @@ export async function searchContractors(
       fallbacksUsed.push("yelp (no results)");
     } catch (error) {
       console.error("[ContractorSearch] Yelp failed:", error);
+      Sentry.captureException(error, { extra: { tool: "searchContractors", url: "yelp", category, zipCode } });
       fallbacksUsed.push("yelp (error)");
     }
   } else {
@@ -88,6 +90,7 @@ export async function searchContractors(
       fallbacksUsed.push("foursquare (no results)");
     } catch (error) {
       console.error("[ContractorSearch] Foursquare failed:", error);
+      Sentry.captureException(error, { extra: { tool: "searchContractors", url: "foursquare", category, zipCode } });
       fallbacksUsed.push("foursquare (error)");
     }
   } else {
@@ -122,6 +125,7 @@ export async function searchContractors(
       fallbacksUsed.push("firecrawl (no results)");
     } catch (error) {
       console.error("[ContractorSearch] Firecrawl failed:", error);
+      Sentry.captureException(error, { extra: { tool: "searchContractors", url: "firecrawl/angi", category, zipCode } });
       fallbacksUsed.push("firecrawl (error)");
     }
   } else {

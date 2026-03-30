@@ -4,6 +4,7 @@
  * Find DIY repair tutorials on YouTube.
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { tool } from "ai";
 import { z } from "zod";
 import type { ToolContext } from "./types";
@@ -28,29 +29,42 @@ export function createTutorialFinderTool(ctx: ToolContext) {
         };
       }
 
-      const result = await scrapeWithTimeout(ctx.firecrawl, youtubeUrl, 20000);
+      try {
+        const result = await scrapeWithTimeout(ctx.firecrawl, youtubeUrl, 20000);
 
-      if (result?.markdown) {
-        console.log(`[findRepairTutorials] Success, got ${result.markdown.length} chars`);
+        if (result?.markdown) {
+          console.log(`[findRepairTutorials] Success, got ${result.markdown.length} chars`);
+          return {
+            searchQuery: repairTask,
+            youtubeUrl,
+            results: result.markdown.substring(0, 2000),
+            tips: [
+              "Look for videos from verified channels like This Old House, Home Repair Tutor, or manufacturer channels",
+              "Check the video date - newer videos may show current best practices",
+              "Read comments for additional tips and common mistakes",
+              "Watch the full video before starting the repair",
+            ],
+          };
+        }
+
+        console.log(`[findRepairTutorials] Failed or timed out`);
+        Sentry.captureMessage("Tool returned error", {
+          level: "warning",
+          extra: { tool: "findRepairTutorials", error: "Timed out or failed", repairTask },
+        });
         return {
-          searchQuery: repairTask,
+          error: "Tutorial search timed out",
+          suggestion: `Search YouTube for "${repairTask} DIY tutorial"`,
           youtubeUrl,
-          results: result.markdown.substring(0, 2000),
-          tips: [
-            "Look for videos from verified channels like This Old House, Home Repair Tutor, or manufacturer channels",
-            "Check the video date - newer videos may show current best practices",
-            "Read comments for additional tips and common mistakes",
-            "Watch the full video before starting the repair",
-          ],
+        };
+      } catch (error) {
+        Sentry.captureException(error, { extra: { tool: "findRepairTutorials", repairTask, url: youtubeUrl } });
+        return {
+          error: "Tutorial search timed out",
+          suggestion: `Search YouTube for "${repairTask} DIY tutorial"`,
+          youtubeUrl,
         };
       }
-
-      console.log(`[findRepairTutorials] Failed or timed out`);
-      return {
-        error: "Tutorial search timed out",
-        suggestion: `Search YouTube for "${repairTask} DIY tutorial"`,
-        youtubeUrl,
-      };
     },
   });
 }

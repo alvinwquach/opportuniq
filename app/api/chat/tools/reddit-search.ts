@@ -8,6 +8,7 @@
  * Saves discovered guides to database for later reference.
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { tool } from "ai";
 import { z } from "zod";
 import type { ToolContext } from "./types";
@@ -131,6 +132,10 @@ export function createRedditSearchTool(ctx: ToolContext) {
 
       if (!ctx.firecrawl) {
         console.log(`[redditSearch] Firecrawl not available`);
+        Sentry.captureMessage("Tool returned error", {
+          level: "warning",
+          extra: { tool: "searchReddit", error: "Firecrawl not available", query },
+        });
         return {
           error: "Reddit search not available",
           suggestion: `Search Reddit for "${query}" in r/HomeImprovement`,
@@ -170,6 +175,7 @@ export function createRedditSearchTool(ctx: ToolContext) {
             console.log(`[redditSearch] Saved ${guidesToInsert.length} guides to database`);
           } catch (err) {
             console.error(`[redditSearch] Failed to save guides:`, err);
+            Sentry.captureException(err, { extra: { tool: "searchReddit", query, category } });
             // Don't fail the tool call if DB insert fails
           }
         }
