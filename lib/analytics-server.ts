@@ -150,3 +150,107 @@ export function trackEmailOpenedByRecipient(props: {
     // PostHog unreachable — don't fail the request
   }
 }
+
+// ============================================
+// RAG RETRIEVAL EVENTS
+// ============================================
+
+export function trackRAGContextRetrieved(props: {
+  conversationId: string;
+  similarCasesFound: number;
+  topSimilarity: number;
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: props.conversationId,
+      event: "RAG Context Retrieved",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}
+
+export function trackRAGContextEmpty(props: {
+  conversationId: string;
+  reason: "no_embeddings" | "no_similar";
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: props.conversationId,
+      event: "RAG Context Empty",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}
+
+export function trackDiagnosisEmbedded(props: {
+  conversationId: string;
+  serviceType: string;
+  hasOutcome: boolean;
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: props.conversationId,
+      event: "Diagnosis Embedded",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}
+
+// ============================================
+// EVAL PIPELINE EVENTS
+// ============================================
+
+export function trackEvalRunCompleted(props: {
+  conversationsChecked: number;
+  hallucinations: number;
+  toolFailures: number;
+  accuracyScore: number;
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: "system",
+      event: "Eval Run Completed",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}
+
+export function trackHallucinationDetected(props: {
+  conversationId: string;
+  hallucinatedAmounts: string[];
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: props.conversationId,
+      event: "Hallucination Detected",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}
+
+export function trackBudgetExceeded(props: {
+  category: string;
+  budgetAmount: number;
+  actualAmount: number;
+  overagePercent: number;
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: "system",
+      event: "Budget Exceeded",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}

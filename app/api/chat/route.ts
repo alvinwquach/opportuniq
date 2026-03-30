@@ -248,7 +248,7 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
 
   // Build focused system prompt
   console.time("[Chat API] Build prompt");
-  const systemPrompt = buildDiagnosisPrompt(diagnosis);
+  const systemPrompt = await buildDiagnosisPrompt(diagnosis, { userId, conversationId });
   console.timeEnd("[Chat API] Build prompt");
   console.log("[Chat API] Prompt length:", systemPrompt.length);
 

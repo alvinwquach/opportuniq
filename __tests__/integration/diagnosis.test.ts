@@ -9,6 +9,13 @@
  * Run with: npm test -- --testPathPattern=integration
  */
 
+// Prevent transitive db/openai imports from failing without env vars
+jest.mock("@/lib/feature-flags", () => ({
+  getFeatureFlag: jest.fn().mockResolvedValue(false),
+  getFeatureFlagPayload: jest.fn().mockResolvedValue(null),
+}));
+jest.mock("@/lib/rag-context", () => ({ buildRAGContext: jest.fn().mockResolvedValue(null) }));
+
 import { buildDiagnosisPrompt } from "../../lib/prompts/diagnosis";
 
 describe("Diagnosis Integration Tests", () => {
@@ -19,7 +26,7 @@ describe("Diagnosis Integration Tests", () => {
     let SYSTEM_PROMPT: string;
 
     beforeAll(async () => {
-      SYSTEM_PROMPT = buildDiagnosisPrompt({
+      SYSTEM_PROMPT = await buildDiagnosisPrompt({
         issue: {
           description: "There is a water stain on my ceiling",
           category: "plumbing",

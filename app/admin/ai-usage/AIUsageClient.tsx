@@ -129,6 +129,24 @@ interface AccuracyMetrics {
   byServiceType: Array<{ category: string; count: number; avgDelta: number }>;
 }
 
+interface AccuracyMetric {
+  total: number;
+  avgDelta: number;
+  medianDelta: number;
+  withinThirtyPercent: number;
+}
+
+interface EvalMetrics {
+  hallucinationRate: number;
+  hallucinationCount: number;
+  conversationsChecked: number;
+  toolFailureRates: Array<{ toolName: string; total: number; failed: number; rate: number }>;
+  accuracy: {
+    overall: AccuracyMetric;
+    byServiceType: Record<string, AccuracyMetric>;
+  };
+}
+
 interface AIUsageClientProps {
   stats: Stats;
   toolUsage: Record<string, number>;
@@ -139,6 +157,7 @@ interface AIUsageClientProps {
   dailyVoiceUsage: DailyVoiceUsage[];
   dailyUsage: DailyUsage[];
   accuracyMetrics: AccuracyMetrics;
+  evalMetrics: EvalMetrics;
 }
 
 // Chart colors
@@ -422,8 +441,9 @@ export function AIUsageClient({
   dailyVoiceUsage,
   dailyUsage,
   accuracyMetrics,
+  evalMetrics,
 }: AIUsageClientProps) {
-  const [activeTab, setActiveTab] = useState<"conversations" | "tools" | "voice">("conversations");
+  const [activeTab, setActiveTab] = useState<"conversations" | "tools" | "voice" | "eval">("conversations");
 
   // Format daily usage data for charts
   const formattedDailyUsage = dailyUsage.map((d) => ({
@@ -1024,6 +1044,17 @@ export function AIUsageClient({
           >
             Voice API Calls
           </button>
+          <button
+            onClick={() => setActiveTab("eval")}
+            className={cn(
+              "pb-2 px-1 text-[13px] font-medium border-b-2 transition-colors",
+              activeTab === "eval"
+                ? "text-white border-emerald-500"
+                : "text-[#888] border-transparent hover:text-white"
+            )}
+          >
+            Eval Quality
+          </button>
         </div>
       </div>
 
@@ -1043,10 +1074,125 @@ export function AIUsageClient({
           ) : (
             recentToolCalls.map((tc) => <ToolCallRow key={tc.id} toolCall={tc} />)
           )
-        ) : recentVoiceCalls.length === 0 ? (
-          <p className="p-6 text-[13px] text-[#666]">No voice API calls recorded yet</p>
+        ) : activeTab === "voice" ? (
+          recentVoiceCalls.length === 0 ? (
+            <p className="p-6 text-[13px] text-[#666]">No voice API calls recorded yet</p>
+          ) : (
+            recentVoiceCalls.map((vc) => <VoiceCallRow key={vc.id} voiceCall={vc} />)
+          )
         ) : (
-          recentVoiceCalls.map((vc) => <VoiceCallRow key={vc.id} voiceCall={vc} />)
+          /* ── Eval Quality tab ─────────────────────────────────────────── */
+          <div className="p-5 space-y-6">
+            {/* Hallucination rate */}
+            <div>
+              <h3 className="text-[14px] font-semibold text-white mb-3">Hallucination Rate (last 24 h)</h3>
+              <div className="flex items-center gap-4">
+                <div className={cn(
+                  "text-3xl font-bold",
+                  evalMetrics.hallucinationRate > 10 ? "text-red-400" : "text-emerald-400"
+                )}>
+                  {evalMetrics.hallucinationRate.toFixed(1)}%
+                </div>
+                <div className="text-[12px] text-[#666]">
+                  {evalMetrics.hallucinationCount} / {evalMetrics.conversationsChecked} conversations
+                </div>
+                {evalMetrics.hallucinationRate > 10 && (
+                  <span className="px-2 py-0.5 rounded bg-red-500/20 text-red-400 text-[11px] font-medium">
+                    Above 10% threshold
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Tool failure rates */}
+            <div>
+              <h3 className="text-[14px] font-semibold text-white mb-3">Tool Failure Rates (last 7 days)</h3>
+              {evalMetrics.toolFailureRates.length === 0 ? (
+                <p className="text-[13px] text-[#666]">No tool calls recorded</p>
+              ) : (
+                <div className="space-y-2">
+                  {evalMetrics.toolFailureRates.map((t) => (
+                    <div key={t.toolName} className="flex items-center gap-3">
+                      <span className="text-[13px] text-[#9a9a9a] w-48 truncate">{t.toolName}</span>
+                      <div className="flex-1 h-2 bg-[#2a2a2a] rounded-full overflow-hidden">
+                        <div
+                          className={cn("h-full rounded-full", t.rate > 0.3 ? "bg-red-500" : t.rate > 0.1 ? "bg-yellow-500" : "bg-emerald-500")}
+                          style={{ width: `${(t.rate * 100).toFixed(1)}%` }}
+                        />
+                      </div>
+                      <span className={cn("text-[12px] w-12 text-right", t.rate > 0.3 ? "text-red-400" : t.rate > 0.1 ? "text-yellow-400" : "text-emerald-400")}>
+                        {(t.rate * 100).toFixed(0)}%
+                      </span>
+                      <span className="text-[11px] text-[#555] w-24 text-right">
+                        {t.failed}/{t.total} calls
+                      </span>
+                      {t.rate > 0.3 && (
+                        <span className="px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 text-[10px]">High</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Cost accuracy */}
+            <div>
+              <h3 className="text-[14px] font-semibold text-white mb-3">Cost Accuracy (all time)</h3>
+              {evalMetrics.accuracy.overall.total === 0 ? (
+                <p className="text-[13px] text-[#666]">No outcome data yet</p>
+              ) : (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="bg-[#1f1f1f] rounded-lg p-3">
+                      <p className="text-[11px] text-[#666] mb-1">Outcomes</p>
+                      <p className="text-xl font-semibold text-white">{evalMetrics.accuracy.overall.total}</p>
+                    </div>
+                    <div className="bg-[#1f1f1f] rounded-lg p-3">
+                      <p className="text-[11px] text-[#666] mb-1">Avg Delta</p>
+                      <p className={cn("text-xl font-semibold", evalMetrics.accuracy.overall.avgDelta > 0 ? "text-red-400" : "text-emerald-400")}>
+                        {evalMetrics.accuracy.overall.avgDelta > 0 ? "+" : ""}${evalMetrics.accuracy.overall.avgDelta.toFixed(0)}
+                      </p>
+                    </div>
+                    <div className="bg-[#1f1f1f] rounded-lg p-3">
+                      <p className="text-[11px] text-[#666] mb-1">Median Delta</p>
+                      <p className={cn("text-xl font-semibold", evalMetrics.accuracy.overall.medianDelta > 0 ? "text-red-400" : "text-emerald-400")}>
+                        {evalMetrics.accuracy.overall.medianDelta > 0 ? "+" : ""}${evalMetrics.accuracy.overall.medianDelta.toFixed(0)}
+                      </p>
+                    </div>
+                    <div className="bg-[#1f1f1f] rounded-lg p-3">
+                      <p className="text-[11px] text-[#666] mb-1">Within ±30%</p>
+                      <p className={cn("text-xl font-semibold", evalMetrics.accuracy.overall.withinThirtyPercent >= 0.7 ? "text-emerald-400" : "text-yellow-400")}>
+                        {(evalMetrics.accuracy.overall.withinThirtyPercent * 100).toFixed(0)}%
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* By service type */}
+                  {Object.keys(evalMetrics.accuracy.byServiceType).length > 0 && (
+                    <div>
+                      <p className="text-[12px] text-[#666] mb-2">By service type</p>
+                      <div className="space-y-1.5">
+                        {Object.entries(evalMetrics.accuracy.byServiceType).map(([cat, m]) => (
+                          <div key={cat} className="flex items-center justify-between text-[12px]">
+                            <span className="text-[#9a9a9a] capitalize">{cat}</span>
+                            <div className="flex items-center gap-4">
+                              <span className="text-[#555]">{m.total} outcome{m.total !== 1 ? "s" : ""}</span>
+                              <span className={m.avgDelta > 0 ? "text-red-400" : m.avgDelta < 0 ? "text-teal-400" : "text-[#666]"}>
+                                {m.avgDelta > 0 ? "+" : ""}${m.avgDelta.toFixed(0)} avg
+                              </span>
+                              <span className="text-[#555]">
+                                {(m.withinThirtyPercent * 100).toFixed(0)}% accurate
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         )}
       </div>
     </div>
