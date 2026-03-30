@@ -17,6 +17,7 @@ import { createRecallCheckTool } from "./recall-check";
 import { createUtilityRebatesTool } from "./utility-rebates";
 import { createCostLookupTool } from "./cost-lookup";
 import { createDraftContractorEmailTool } from "./draft-contractor-email";
+import { createCalendarReminderTool } from "./calendar-reminder";
 
 // Re-export types
 export type { ToolContext } from "./types";
@@ -54,6 +55,9 @@ export function createChatTools(
 
     // 7. Draft email to contractor (fast - text generation)
     draftContractorEmail: createDraftContractorEmailTool(ctx),
+
+    // 8. Schedule a calendar reminder for deferred repairs (Google Calendar)
+    scheduleReminder: createCalendarReminderTool(ctx),
   };
 }
 
@@ -68,4 +72,5 @@ export const TOOL_DESCRIPTIONS = {
   checkRecalls: "Check for product/vehicle safety recalls (CPSC, NHTSA)",
   findUtilityRebates: "Find utility rebates and federal tax credits for energy upgrades",
   draftContractorEmail: "Generate a professional email draft to send to a contractor for quotes",
+  scheduleReminder: "Schedule a Google Calendar reminder for a deferred repair or maintenance task",
 };

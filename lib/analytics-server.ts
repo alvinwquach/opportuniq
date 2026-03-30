@@ -76,3 +76,77 @@ export function trackContractorSearchZeroResults(props: {
     // PostHog unreachable — don't fail the request
   }
 }
+
+// ============================================
+// CALENDAR REMINDER EVENTS
+// ============================================
+
+export function trackCalendarReminderCreated(props: {
+  conversationId?: string;
+  issueCategory?: string;
+  daysOut: number;
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: props.conversationId ?? "system",
+      event: "Calendar Reminder Created",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}
+
+// ============================================
+// CONTRACTOR VERIFICATION EVENTS
+// ============================================
+
+export function trackContractorVerified(props: {
+  contractorName: string;
+  state: string;
+  hasLicense: boolean;
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: "system",
+      event: "Contractor Verified",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}
+
+// ============================================
+// EMAIL DELIVERY EVENTS (Resend webhooks)
+// ============================================
+
+export function trackEmailDelivered(props: {
+  rfqEmailId: string;
+  contractorName: string;
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: "system",
+      event: "Email Delivered",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}
+
+export function trackEmailOpenedByRecipient(props: {
+  rfqEmailId: string;
+  contractorName: string;
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: "system",
+      event: "Email Opened By Recipient",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}

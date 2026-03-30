@@ -156,26 +156,40 @@ export async function crawlWebsite(
 }
 
 /**
- * Batch scrape multiple URLs efficiently
+ * Batch scrape multiple URLs using the native batchScrape SDK method.
+ * More efficient than individual scrape() calls — 1 credit per URL.
+ *
+ * @param urls - URLs to scrape
+ * @param options - Optional formats override (default: ['markdown'])
  */
-export async function batchScrape(urls: string[]) {
+export async function batchScrape(
+  urls: string[],
+  options?: { formats?: string[] }
+) {
   const firecrawl = getFirecrawlClient();
 
-  Sentry.setContext("firecrawl", { feature: "batchScrape", url: urls.join(",") });
+  Sentry.setContext("firecrawl", { feature: "batchScrape", urlCount: urls.length });
 
   try {
-    const results = await Promise.all(
-      urls.map(url =>
-        firecrawl.scrape(url, {
-          formats: ["markdown"],
-          onlyMainContent: true,
-        })
-      )
-    );
+    // Use native batchScrape — polls every 2s and returns when all results are ready
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await (firecrawl as any).batchScrape(urls, {
+      formats: options?.formats ?? ["markdown"],
+      pollInterval: 2,
+    });
 
-    return results;
+    Sentry.addBreadcrumb({
+      category: "firecrawl",
+      message: `batchScrape complete: ${urls.length} URLs`,
+      level: "info",
+      data: { urlCount: urls.length, credits: urls.length },
+    });
+
+    return result;
   } catch (error) {
-    Sentry.captureException(error, { extra: { tool: "batchScrape", url: urls.join(","), credits: urls.length } });
+    Sentry.captureException(error, {
+      extra: { tool: "batchScrape", urlCount: urls.length, credits: urls.length },
+    });
     throw error;
   }
 }
