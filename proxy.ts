@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { checkRateLimit } from "@/lib/rate-limiter";
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -29,10 +30,67 @@ export async function proxy(request: NextRequest) {
     }
   );
 
+  const { pathname } = request.nextUrl;
+
+  // ── Per-user rate limit for chat API (20 req/min token bucket) ──────────────
+  if (pathname === "/api/chat" && request.method === "POST") {
+    // Extract user ID from Supabase session cookie without a full auth round-trip
+    const sessionCookie =
+      request.cookies.get("sb-access-token")?.value ||
+      // Supabase SSR stores the session as sb-<project-ref>-auth-token
+      [...request.cookies.getAll()]
+        .find((c) => c.name.endsWith("-auth-token"))
+        ?.value;
+
+    let userId: string | null = null;
+
+    if (sessionCookie) {
+      try {
+        // The cookie value is a base64url-encoded JSON array: [access_token, ...]
+        // We only need the sub claim from the JWT to identify the user cheaply.
+        const raw = sessionCookie.startsWith("[")
+          ? sessionCookie
+          : Buffer.from(sessionCookie, "base64").toString("utf8");
+        const [accessToken] = JSON.parse(raw) as [string];
+        const payloadB64 = accessToken.split(".")[1];
+        const payload = JSON.parse(
+          Buffer.from(payloadB64, "base64url").toString("utf8")
+        ) as { sub?: string };
+        userId = payload.sub ?? null;
+      } catch {
+        // Malformed cookie — fall through, will be caught by route-level auth
+      }
+    }
+
+    if (userId) {
+      const result = checkRateLimit(userId);
+      if (!result.allowed) {
+        return new NextResponse("Too Many Requests", {
+          status: 429,
+          headers: {
+            "Retry-After": String(Math.ceil((result.resetAt - Date.now()) / 1000)),
+            "X-RateLimit-Limit": "20",
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": String(Math.floor(result.resetAt / 1000)),
+          },
+        });
+      }
+
+      supabaseResponse.headers.set("X-RateLimit-Limit", "20");
+      supabaseResponse.headers.set(
+        "X-RateLimit-Remaining",
+        String(result.remaining)
+      );
+      supabaseResponse.headers.set(
+        "X-RateLimit-Reset",
+        String(Math.floor(result.resetAt / 1000))
+      );
+    }
+  }
+
   // OPTIMIZED: Use getSession() for session refresh (lighter than getUser())
   // Only refresh session for protected routes to minimize API calls
   // Layouts will use getCurrentUser() which dedupes within the same request
-  const { pathname } = request.nextUrl;
   
   // Exclude static assets, API routes, and Next.js internals from auth checks
   const isStaticAsset = 
