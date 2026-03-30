@@ -9,6 +9,8 @@ import { tool } from "ai";
 import { z } from "zod";
 import type { ToolContext } from "./types";
 import { scrapeWithTimeout } from "./types";
+import { getFeatureFlag } from "@/lib/feature-flags";
+import { firecrawlSearch } from "@/lib/integrations/firecrawl-search";
 
 export function createUtilityRebatesTool(ctx: ToolContext) {
   return tool({
@@ -53,6 +55,38 @@ export function createUtilityRebatesTool(ctx: ToolContext) {
         };
       }
 
+      // Feature flag: use Firecrawl search() instead of Google scraping
+      const useNewSearch = ctx.userId
+        ? await getFeatureFlag("firecrawl-search-v2", ctx.userId)
+        : false;
+
+      if (useNewSearch) {
+        const searchResults = await firecrawlSearch(
+          ctx.firecrawl,
+          `${upgradeType} rebate ${zipCode} utility incentive`,
+          { limit: 5, location: { country: "US" }, zipCode: ctx.zipCode }
+        );
+
+        if (searchResults?.web?.length) {
+          console.log(`[findUtilityRebates] firecrawlSearch success, ${searchResults.web.length} results`);
+          return {
+            upgradeType,
+            zipCode,
+            searchResults: searchResults.web.map((r) => ({
+              title: "title" in r ? r.title : undefined,
+              url: "url" in r ? r.url : "",
+              description: "description" in r ? r.description : undefined,
+            })),
+            resources: baseResources,
+            commonRebates,
+            tip: "Check both your electric and gas utility websites - they often have separate rebate programs. Also look into IRA (Inflation Reduction Act) tax credits which can be combined with utility rebates.",
+          };
+        }
+
+        console.log(`[findUtilityRebates] firecrawlSearch returned no results, falling back`);
+      }
+
+      // FALLBACK: existing Google scraping code
       const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(`${upgradeType} rebate ${zipCode} utility incentive`)}`;
 
       try {

@@ -9,6 +9,7 @@ export interface ToolContext {
   userId?: string;
   userName?: string;
   conversationId?: string;
+  zipCode?: string;
 }
 
 /**
@@ -100,10 +101,16 @@ export interface ContractorSearchResult {
   searchSuggestions?: string[];
 }
 
+export interface SearchResultItem {
+  title?: string;
+  url: string;
+  description?: string;
+}
+
 export interface PermitRequirementsResult {
   projectType: string;
   location: string;
-  searchResults: string;
+  searchResults: string | SearchResultItem[];
   generalGuidance: string[];
   tip: string;
   error?: string;
@@ -146,7 +153,7 @@ export interface RecallCheckResult {
 export interface UtilityRebatesResult {
   upgradeType: string;
   zipCode: string;
-  searchResults?: string | null;
+  searchResults?: string | SearchResultItem[] | null;
   resources: Array<{
     name: string;
     url: string;

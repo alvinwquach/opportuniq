@@ -11,6 +11,7 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { scrapePage } from "./firecrawl";
+import { trackCostDataCacheHit, trackCostDataCacheMiss } from "@/lib/analytics-server";
 import { db } from "@/app/db/client";
 import { costData, type CostData, type NewCostData } from "@/app/db/schema";
 import { eq, and, gt } from "drizzle-orm";
@@ -183,8 +184,12 @@ export async function getCostEstimate(
   const cached = await getCachedCost(normalizedService, region);
 
   if (cached && !isExpired(cached)) {
+    const ageMs = cached.scrapedAt ? Date.now() - new Date(cached.scrapedAt).getTime() : 0;
+    trackCostDataCacheHit({ serviceType: normalizedService, region, ageMs });
     return formatCostData(cached);
   }
+
+  trackCostDataCacheMiss({ serviceType: normalizedService, region });
 
   // Try to scrape fresh data
   try {
@@ -226,7 +231,7 @@ export async function scrapeCostGuide(
   Sentry.setContext("firecrawl", { feature: "scrapeCostGuide", url });
 
   try {
-    const result = await scrapePage(url);
+    const result = await scrapePage(url, 604800000); // 7-day cache for stable cost guides
 
     if (!result.markdown) {
       console.warn(`[CostScraper] No content from ${url}`);
