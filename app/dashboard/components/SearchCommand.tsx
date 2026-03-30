@@ -54,6 +54,7 @@ export function SearchCommand({ open, onOpenChange, onAddIncome, initialQuery = 
     if (open) {
       amplitude.track("Command Palette Opened");
       if (initialQuery) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSearch(initialQuery);
       }
     }
@@ -206,6 +207,7 @@ export function SearchCommand({ open, onOpenChange, onAddIncome, initialQuery = 
     ...groupedCommands.help,
   ];
 
+  /* eslint-disable react-hooks/preserve-manual-memoization */
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (!open) return;
@@ -240,6 +242,7 @@ export function SearchCommand({ open, onOpenChange, onAddIncome, initialQuery = 
     },
     [open, flatFiltered, selectedIndex, onOpenChange]
   );
+  /* eslint-enable react-hooks/preserve-manual-memoization */
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
@@ -247,12 +250,15 @@ export function SearchCommand({ open, onOpenChange, onAddIncome, initialQuery = 
   }, [handleKeyDown]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedIndex(0);
   }, [search]);
 
   useEffect(() => {
     if (!open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSearch("");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedIndex(0);
     }
   }, [open]);

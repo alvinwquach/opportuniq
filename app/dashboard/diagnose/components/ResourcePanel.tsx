@@ -80,6 +80,7 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
 
   // Reset tab when issue changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setActiveTab("diy");
   }, [issue?.title]);
 

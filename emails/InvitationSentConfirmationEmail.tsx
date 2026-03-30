@@ -35,7 +35,7 @@ export const InvitationSentConfirmationEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Invitation sent to {inviteeEmail} for "{groupName}"</Preview>
+      <Preview>Invitation sent to {inviteeEmail} for &quot;{groupName}&quot;</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -67,14 +67,14 @@ export const InvitationSentConfirmationEmail = ({
             {message && (
               <Section style={messageBox}>
                 <Text style={messageLabel}>Your personal message:</Text>
-                <Text style={messageText}>"{message}"</Text>
+                <Text style={messageText}>&quot;{message}&quot;</Text>
               </Section>
             )}
             <Section style={infoSection}>
               <Text style={infoTitle}>What happens next?</Text>
               <Text style={infoItem}>1. The invitee will receive an email with your invitation</Text>
               <Text style={infoItem}>2. They have 7 days to accept the invitation</Text>
-              <Text style={infoItem}>3. Once accepted, they'll appear in your group members list</Text>
+              <Text style={infoItem}>3. Once accepted, they&apos;ll appear in your group members list</Text>
             </Section>
             <Section style={ctaSection}>
               <Link href={groupUrl} style={button}>

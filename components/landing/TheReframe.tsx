@@ -28,17 +28,12 @@ const NEW_WAY = [
 export function TheReframe() {
   const sectionRef = useRef<HTMLElement>(null);
   const oldWayRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [mounted, setMounted] = useState(false);
   const [typedLines, setTypedLines] = useState<string[]>(Array(OLD_WAY.length).fill(""));
   const [showNewWay, setShowNewWay] = useState(false);
   const [wipeProgress, setWipeProgress] = useState(0);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted || !sectionRef.current) return;
+    if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
       // Main pinned scroll animation
@@ -113,11 +108,7 @@ export function TheReframe() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [mounted]);
-
-  if (!mounted) {
-    return <section className="relative min-h-screen bg-neutral-950" />;
-  }
+  }, []);
 
   return (
     <section

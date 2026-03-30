@@ -301,8 +301,8 @@ export const Mutation = {
           groupId,
           monthlyBudget: input.monthlyBudget,
           emergencyBuffer: input.emergencyBuffer,
-          riskTolerance: input.riskTolerance as any,
-          diyPreference: input.diyPreference as any,
+          riskTolerance: input.riskTolerance as string,
+          diyPreference: input.diyPreference as string,
           neverDIY: input.neverDIY,
         })
         .returning();
@@ -377,7 +377,7 @@ export const Mutation = {
           .update(groupMembers)
           .set({
             status: "active",
-            role: role as any,
+            role: role as string,
             joinedAt: new Date(),
           })
           .where(eq(groupMembers.id, existingMember.id))
@@ -391,7 +391,7 @@ export const Mutation = {
         .values({
           groupId,
           userId: existingUser.id,
-          role: role as any,
+          role: role as string,
           status: "active",
           joinedAt: new Date(),
           invitedBy: ctx.userId,
@@ -410,7 +410,7 @@ export const Mutation = {
       groupId,
       inviteeEmail: email.toLowerCase(),
       token,
-      role: role as any,
+      role: role as string,
       invitedBy: ctx.userId,
       expiresAt,
     });
@@ -545,9 +545,9 @@ export const Mutation = {
         groupId: input.groupId,
         title: input.title.trim(),
         description: input.description,
-        category: input.category as any,
+        category: input.category as string,
         subcategory: input.subcategory,
-        priority: (input.priority as any) ?? "medium",
+        priority: (input.priority as string) ?? "medium",
         assetName: input.assetName,
         assetDetails: input.assetDetails,
         createdBy: membership.id,
@@ -811,7 +811,7 @@ export const Mutation = {
       .update(issues)
       .set({
         status: "completed",
-        resolutionType: input.resolutionType as any,
+        resolutionType: input.resolutionType as string,
         resolutionNotes: input.resolutionNotes,
         resolvedAt: new Date(),
         resolvedBy: membership.id,
@@ -911,7 +911,7 @@ export const Mutation = {
         .update(decisions)
         .set({
           selectedOptionId: optionId,
-          assumptions: assumptions as any,
+          assumptions: assumptions as unknown[],
           approvedAt: new Date(),
         })
         .where(eq(decisions.id, existingDecision.id))
@@ -932,7 +932,7 @@ export const Mutation = {
       .values({
         issueId: issue.id,
         selectedOptionId: optionId,
-        assumptions: assumptions as any,
+        assumptions: assumptions as unknown[],
         approvedAt: new Date(),
       })
       .returning();
@@ -985,7 +985,7 @@ export const Mutation = {
       const [updated] = await ctx.db
         .update(decisionVotes)
         .set({
-          vote: input.vote as any,
+          vote: input.vote as string,
           comment: input.comment,
           votedAt: new Date(),
         })
@@ -1001,7 +1001,7 @@ export const Mutation = {
       .values({
         decisionId: input.decisionId,
         memberId: membership.id,
-        vote: input.vote as any,
+        vote: input.vote as string,
         comment: input.comment,
       })
       .returning();
@@ -1054,7 +1054,7 @@ export const Mutation = {
     const [updated] = await ctx.db
       .update(decisionVotes)
       .set({
-        vote: vote as any,
+        vote: vote as string,
         comment,
         votedAt: new Date(),
       })
@@ -1329,7 +1329,7 @@ export const Mutation = {
     if (args.country !== undefined) updates.country = args.country;
     if (args.monthlyBudget !== undefined) updates.monthlyBudget = args.monthlyBudget;
     if (args.emergencyBuffer !== undefined) updates.emergencyBuffer = args.emergencyBuffer;
-    if (args.riskTolerance !== undefined) updates.riskTolerance = args.riskTolerance as any;
+    if (args.riskTolerance !== undefined) updates.riskTolerance = args.riskTolerance as string;
 
     const [updated] = await ctx.db
       .update(users)
@@ -1414,7 +1414,7 @@ export const Mutation = {
         userId: ctx.userId,
         source: args.source.trim(),
         amount: args.amount,
-        frequency: args.frequency as any,
+        frequency: args.frequency as string,
         description: args.description,
         startDate: args.startDate ? new Date(args.startDate) : null,
         endDate: args.endDate ? new Date(args.endDate) : null,
@@ -1528,7 +1528,7 @@ export const Mutation = {
         description: args.description,
         date: new Date(args.date),
         isRecurring: args.isRecurring ?? false,
-        recurringFrequency: args.recurringFrequency as any,
+        recurringFrequency: args.recurringFrequency as string,
         issueId: args.issueId,
         isEncrypted: false, // TODO: Enable encryption
       })
@@ -1813,7 +1813,7 @@ export const Mutation = {
     // Update role
     const [updated] = await ctx.db
       .update(groupMembers)
-      .set({ role: args.role as any })
+      .set({ role: args.role as string })
       .where(eq(groupMembers.id, args.memberId))
       .returning();
 
@@ -2084,7 +2084,7 @@ export const Mutation = {
       .insert(groupExpenseSettings)
       .values({
         groupId,
-        approvalMode: (input.approvalMode as any) ?? "none",
+        approvalMode: (input.approvalMode as string) ?? "none",
         defaultThreshold: input.defaultThreshold,
         trustOwnerAdmin: input.trustOwnerAdmin ?? false,
         moderatorThreshold: input.moderatorThreshold,
@@ -2121,7 +2121,7 @@ export const Mutation = {
         groupId,
         name: input.name.trim(),
         icon: input.icon,
-        approvalRule: (input.approvalRule as any) ?? "use_default",
+        approvalRule: (input.approvalRule as string) ?? "use_default",
         customThreshold: input.customThreshold,
         sortOrder: input.sortOrder ?? 0,
         createdBy: ctx.userId,

@@ -28,7 +28,7 @@ export const WaitlistLaunchEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>We're live! Your spot is ready - join OpportunIQ now</Preview>
+      <Preview>We&apos;re live! Your spot is ready - join OpportunIQ now</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -42,11 +42,11 @@ export const WaitlistLaunchEmail = ({
           </Section>
           <Section style={contentCard}>
             <Section style={badgeSection}>
-              <Text style={badge}>YOU'RE IN</Text>
+              <Text style={badge}>YOU&apos;RE IN</Text>
             </Section>
             <Heading style={heroTitle}>The Wait Is Over</Heading>
             <Text style={heroSubtitle}>
-              Hey {name}, you signed up for the waitlist{position ? ` as #${position}` : ''} and we haven't forgotten about you. OpportunIQ is now live and your spot is ready.
+              Hey {name}, you signed up for the waitlist{position ? ` as #${position}` : ''} and we haven&apos;t forgotten about you. OpportunIQ is now live and your spot is ready.
             </Text>
             <Section style={highlightBox}>
               <Text style={highlightLabel}>Your Access Is Ready</Text>
@@ -55,7 +55,7 @@ export const WaitlistLaunchEmail = ({
               </Text>
             </Section>
             <Section style={benefitsSection}>
-              <Text style={benefitsTitle}>What you've been waiting for</Text>
+              <Text style={benefitsTitle}>What you&apos;ve been waiting for</Text>
               <Row style={benefitRow}>
                 <Column style={benefitIconColumn}>
                   <Text style={benefitIcon}>+</Text>
@@ -92,7 +92,7 @@ export const WaitlistLaunchEmail = ({
           </Section>
           <Section style={footer}>
             <Text style={footerText}>
-              Thank you for your patience. We can't wait to see what you'll accomplish.
+              Thank you for your patience. We can&apos;t wait to see what you&apos;ll accomplish.
             </Text>
             <Text style={footerLinks}>
               <Link href="https://opportuniq.app" style={footerLink}>OpportunIQ</Link>

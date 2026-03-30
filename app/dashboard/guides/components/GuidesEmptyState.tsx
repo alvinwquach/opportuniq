@@ -18,7 +18,7 @@ export function GuidesEmptyState({ onAddGuide }: GuidesEmptyStateProps) {
             No guides yet
           </h2>
           <p className="text-sm text-[#888] mb-6 leading-relaxed">
-            Start a conversation about a home issue and we'll automatically find
+            Start a conversation about a home issue and we&apos;ll automatically find
             relevant DIY guides from YouTube, iFixit, Reddit, and trusted sources.
             You can bookmark the most helpful ones to save them here.
           </p>

@@ -69,15 +69,11 @@ export function DecisionMetricsDemo() {
   const timeChartRef = useRef<SVGSVGElement>(null);
   const riskChartRef = useRef<SVGSVGElement>(null);
   const trendsChartRef = useRef<SVGSVGElement>(null);
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Success Rate - Horizontal bars (static)
   useEffect(() => {
-    if (!successChartRef.current || !mounted) return;
+    if (!successChartRef.current) return;
 
     const svg = d3.select(successChartRef.current);
     svg.selectAll("*").remove();
@@ -149,11 +145,11 @@ export function DecisionMetricsDemo() {
       .attr("font-weight", 500)
       .text(d => `${d.successRate}%`);
 
-  }, [mounted]);
+  }, []);
 
   // Issue Types - Simple bar chart
   useEffect(() => {
-    if (!issueChartRef.current || !mounted) return;
+    if (!issueChartRef.current) return;
 
     const svg = d3.select(issueChartRef.current);
     svg.selectAll("*").remove();
@@ -211,11 +207,11 @@ export function DecisionMetricsDemo() {
       .attr("font-size", 8)
       .text(d => d.type);
 
-  }, [mounted]);
+  }, []);
 
   // Savings Distribution - Bar chart
   useEffect(() => {
-    if (!savingsChartRef.current || !mounted) return;
+    if (!savingsChartRef.current) return;
 
     const svg = d3.select(savingsChartRef.current);
     svg.selectAll("*").remove();
@@ -268,11 +264,11 @@ export function DecisionMetricsDemo() {
       .attr("font-size", 7)
       .text(d => d.range);
 
-  }, [mounted]);
+  }, []);
 
   // Time Saved - Horizontal bars
   useEffect(() => {
-    if (!timeChartRef.current || !mounted) return;
+    if (!timeChartRef.current) return;
 
     const svg = d3.select(timeChartRef.current);
     svg.selectAll("*").remove();
@@ -331,11 +327,11 @@ export function DecisionMetricsDemo() {
       .attr("font-size", 9)
       .text(d => `${d.hours}h`);
 
-  }, [mounted]);
+  }, []);
 
   // Risk Breakdown - Donut chart
   useEffect(() => {
-    if (!riskChartRef.current || !mounted) return;
+    if (!riskChartRef.current) return;
 
     const svg = d3.select(riskChartRef.current);
     svg.selectAll("*").remove();
@@ -358,7 +354,7 @@ export function DecisionMetricsDemo() {
       .data(pie(RISK_BREAKDOWN))
       .enter()
       .append("path")
-      .attr("d", arc as any)
+      .attr("d", arc as string)
       .attr("fill", d => d.data.color);
 
     // Center text
@@ -378,11 +374,11 @@ export function DecisionMetricsDemo() {
       .attr("font-size", 8)
       .text("assessments");
 
-  }, [mounted]);
+  }, []);
 
   // Monthly Trends - Line + Bar combo
   useEffect(() => {
-    if (!trendsChartRef.current || !mounted) return;
+    if (!trendsChartRef.current) return;
 
     const svg = d3.select(trendsChartRef.current);
     svg.selectAll("*").remove();
@@ -471,9 +467,8 @@ export function DecisionMetricsDemo() {
       .call(g => g.selectAll(".tick line").remove())
       .call(g => g.selectAll(".tick text").attr("fill", "#22c55e").attr("font-size", 8));
 
-  }, [mounted]);
+  }, []);
 
-  if (!mounted) return null;
 
   return (
     <section className="relative py-16 lg:py-20 bg-gradient-to-b from-black via-blue-950/10 to-neutral-950">

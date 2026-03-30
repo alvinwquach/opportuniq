@@ -59,7 +59,6 @@ interface IssueCardProps {
 }
 
 export function IssueCard({ issue, variant = "active" }: IssueCardProps) {
-  const Icon = getCategoryIcon(issue.category);
   const status = STATUS_CONFIG[issue.status] || STATUS_CONFIG.open;
   const priority = PRIORITY_CONFIG[issue.priority] || PRIORITY_CONFIG.medium;
 
@@ -131,7 +130,7 @@ export function IssueCard({ issue, variant = "active" }: IssueCardProps) {
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-            <Icon className="w-5 h-5 text-emerald-400" />
+            {getCategoryIcon(issue.category)({ className: "w-5 h-5 text-emerald-400" })}
           </div>
           <div>
             <p className="text-sm font-medium text-white group-hover:text-emerald-400 transition-colors">

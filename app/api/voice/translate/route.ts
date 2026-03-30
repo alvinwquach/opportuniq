@@ -47,7 +47,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let { text, sourceLanguage, targetLanguage } = parseResult.data;
+    const { text } = parseResult.data;
+    let { sourceLanguage, targetLanguage } = parseResult.data;
 
     // Normalize language codes
     sourceLanguage = normalizeLanguageCode(sourceLanguage);

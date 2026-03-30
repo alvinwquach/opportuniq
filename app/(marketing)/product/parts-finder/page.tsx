@@ -158,7 +158,7 @@ export default function PartsFinderPage() {
                 Parts matched to your repair
               </h2>
               <p className="text-neutral-300 mb-8">
-                When you diagnose an issue, we identify the exact parts you'll need.
+                When you diagnose an issue, we identify the exact parts you&apos;ll need.
                 See prices and availability across multiple stores instantly.
               </p>
 

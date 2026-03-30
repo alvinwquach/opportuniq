@@ -5,9 +5,9 @@ export async function GET() {
   try {
     const data = await getSupportData();
     return NextResponse.json({ sessions: data.activeSessions });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
-      { error: error?.message || "Failed to load sessions" },
+      { error: (error as Error)?.message || "Failed to load sessions" },
       { status: 500 }
     );
   }

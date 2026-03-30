@@ -15,13 +15,13 @@ const SAMPLE_DIAGNOSIS: DiagnosisRequest = {
   },
   property: {
     postalCode: "90210",
-    type: "single_family",
+    type: "house",
     yearBuilt: 1975,
   },
   preferences: {
     diySkillLevel: "intermediate",
     hasBasicTools: true,
-    urgency: "soon",
+    urgency: "flexible",
   },
 };
 

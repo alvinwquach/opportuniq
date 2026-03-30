@@ -32,7 +32,7 @@ export const ReferralReminderEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Share OpportunIQ with friends - they'll thank you later</Preview>
+      <Preview>Share OpportunIQ with friends - they&apos;ll thank you later</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>

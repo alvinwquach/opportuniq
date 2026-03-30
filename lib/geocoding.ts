@@ -68,9 +68,9 @@ export async function geocodePostalCode(
         // Don't use next.revalidate in server actions - it can cause issues
       });
       clearTimeout(timeoutId);
-    } catch (error: any) {
+    } catch (error: unknown) {
       clearTimeout(timeoutId);
-      if (error.name === 'AbortError') {
+      if ((error as Error).name === 'AbortError') {
         console.warn("Mapbox geocoding request aborted due to timeout");
         return null; // Return null instead of throwing
       }

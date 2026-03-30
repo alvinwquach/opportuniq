@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Area, AreaChart, XAxis, YAxis } from "recharts";
 import {
   ChartConfig,
@@ -21,25 +22,25 @@ interface UserGrowthChartProps {
 
 export function UserGrowthChart({ data }: UserGrowthChartProps) {
   // Fill in missing dates to create a continuous line
-  const filledData: { date: string; users: number }[] = [];
+  const filledData = useMemo(() => {
+    const result: { date: string; users: number }[] = [];
 
-  if (data.length > 0) {
-    // Get date range (last 30 days)
-    const endDate = new Date();
-    const startDate = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
+    if (data.length > 0) {
+      const endDate = new Date();
+      const startDate = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
+      const dataMap = new Map(data.map(d => [d.date, d.count]));
 
-    // Create a map of existing data
-    const dataMap = new Map(data.map(d => [d.date, d.count]));
-
-    // Fill in all dates
-    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-      const dateStr = d.toISOString().split('T')[0];
-      filledData.push({
-        date: dateStr,
-        users: dataMap.get(dateStr) || 0,
-      });
+      for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+        const dateStr = d.toISOString().split('T')[0];
+        result.push({
+          date: dateStr,
+          users: dataMap.get(dateStr) || 0,
+        });
+      }
     }
-  }
+
+    return result;
+  }, [data]);
 
   if (filledData.length === 0) {
     return (

@@ -68,18 +68,14 @@ const RISK_COLORS = {
 export function RiskEscalationDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const meterRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [totalCost, setTotalCost] = useState(SCENARIO.initialCost);
   const [showReset, setShowReset] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Animate meter when cost changes
   useEffect(() => {
-    if (!meterRef.current || !mounted) return;
+    if (!meterRef.current) return;
 
     const maxCost = 2000;
     const percentage = Math.min((totalCost / maxCost) * 100, 100);
@@ -89,7 +85,7 @@ export function RiskEscalationDemo() {
       duration: 0.6,
       ease: "power2.out",
     });
-  }, [totalCost, mounted]);
+  }, [totalCost]);
 
   const handleNextStep = useCallback(() => {
     if (currentStep >= SCENARIO.steps.length) {
@@ -119,7 +115,6 @@ export function RiskEscalationDemo() {
 
   const riskColor = RISK_COLORS[getCurrentRiskLevel()];
 
-  if (!mounted) return null;
 
   return (
     <section className="relative py-16 lg:py-24 bg-black">
@@ -128,7 +123,7 @@ export function RiskEscalationDemo() {
           {/* Content */}
           <div>
             <h2 className="text-2xl sm:text-3xl font-semibold text-white mb-4">
-              Don't Make It Worse
+              Don&apos;t Make It Worse
             </h2>
             <p className="text-base text-neutral-400 leading-relaxed mb-4">
               Click through to see how one mistake compounds into the next.

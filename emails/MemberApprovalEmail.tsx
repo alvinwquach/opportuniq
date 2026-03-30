@@ -45,7 +45,7 @@ export const MemberApprovalEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>You've been approved! You now have access to "{groupName}"</Preview>
+      <Preview>You&apos;ve been approved! You now have access to &quot;{groupName}&quot;</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -61,7 +61,7 @@ export const MemberApprovalEmail = ({
             <Section style={successIconSection}>
               <Text style={successIcon}>✓</Text>
             </Section>
-            <Heading style={heroTitle}>You're In, {firstName}!</Heading>
+            <Heading style={heroTitle}>You&apos;re In, {firstName}!</Heading>
             <Text style={heroSubtitle}>
               Great news! Your request to join <strong>{groupName}</strong> has been approved.
             </Text>
@@ -81,7 +81,7 @@ export const MemberApprovalEmail = ({
             </Section>
             <Section style={actionsSection}>
               <Text style={actionsTitle}>What you can do now:</Text>
-              <Text style={actionItem}>📊 View the group's budget and expenses</Text>
+              <Text style={actionItem}>📊 View the group&apos;s budget and expenses</Text>
               <Text style={actionItem}>🏠 Track shared home projects and repairs</Text>
               <Text style={actionItem}>💡 Get smart recommendations for decisions</Text>
               <Text style={actionItem}>📝 Add your own issues and projects</Text>

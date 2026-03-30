@@ -1,0 +1,37 @@
+name: CI Failure Alert
+
+# Fires whenever the CI workflow finishes — on ANY branch, ANY trigger.
+# Separate from ci.yml because ci.yml's auto-merge only runs on PRs.
+# If you push directly to main and CI fails, this is the only notification.
+# Vercel still deploys broken code regardless of CI — this tells you to go fix it.
+# workflow_run: fires after the named workflow finishes on any branch or trigger.
+# Unlike `on: push`, this receives the CI workflow's result (success/failure)
+# as github.event.workflow_run.conclusion, so we can filter to failures only.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    # Only do anything if CI actually failed. Success = no alert needed.
+    if: github.event.workflow_run.conclusion == 'failure'
+    steps:
+      # POST a red Discord embed with: which branch failed, what triggered it
+      # (push vs pull_request), and a direct link to the failed run's logs.
+      - run: |
+          curl -H "Content-Type: application/json" \
+            -d '{
+              "embeds": [{
+                "title": "❌ CI Pipeline Failed",
+                "description": "Typecheck, lint, test, or build failed.",
+                "color": 16711680,
+                "fields": [
+                  {"name": "Branch", "value": "${{ github.event.workflow_run.head_branch }}", "inline": true},
+                  {"name": "Trigger", "value": "${{ github.event.workflow_run.event }}", "inline": true},
+                  {"name": "Logs", "value": "[View run](${{ github.event.workflow_run.html_url }})", "inline": false}
+                ]
+              }]
+            }' \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}

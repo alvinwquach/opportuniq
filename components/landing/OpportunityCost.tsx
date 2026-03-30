@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -10,14 +10,10 @@ if (typeof window !== "undefined") {
 
 export function OpportunityCost() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [mounted, setMounted] = useState(false);
+
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!sectionRef.current || !mounted) return;
+    if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
       gsap.from(".opp-content", {
@@ -46,9 +42,8 @@ export function OpportunityCost() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [mounted]);
+  }, []);
 
-  if (!mounted) return null;
 
   return (
     <section
@@ -92,7 +87,7 @@ export function OpportunityCost() {
               Money and Time
             </h2>
             <p className="text-base text-neutral-400 leading-relaxed">
-              Saving $150 by doing it yourself isn't always a win. If it takes 6 hours
+              Saving $150 by doing it yourself isn&apos;t always a win. If it takes 6 hours
               and your time is worth $40/hour, you spent $240 to save $150.
             </p>
             <p className="text-sm text-neutral-600 mt-4">

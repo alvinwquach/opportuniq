@@ -13,7 +13,7 @@ export default function InviteDeclinedPage() {
           Invitation Declined
         </h2>
         <p className="text-lg text-muted-foreground mb-10 max-w-md mx-auto">
-          You've declined this invitation. The group organizer has been notified.
+          You&apos;ve declined this invitation. The group organizer has been notified.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
           <Button asChild size="lg" className="gap-2">

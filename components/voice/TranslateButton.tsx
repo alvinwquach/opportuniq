@@ -49,11 +49,6 @@ export function TranslateButton({
   const targetLanguage = isTranslated ? originalLanguage : "en";
   const currentSourceLanguage = isTranslated ? "en" : originalLanguage;
 
-  // Don't show if already in English
-  if (originalLanguage === "en") {
-    return null;
-  }
-
   const handleClick = useCallback(async () => {
     if (isTranslating) return;
 
@@ -116,6 +111,11 @@ export function TranslateButton({
     getTranslation,
     onTranslationChange,
   ]);
+
+  // Don't show if already in English
+  if (originalLanguage === "en") {
+    return null;
+  }
 
   const languageName = getLanguageName(originalLanguage);
   const buttonTitle = isTranslated

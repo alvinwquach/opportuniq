@@ -198,7 +198,7 @@ export const Query = {
 
     // Note: For dynamic filtering, we'd need to build the query differently
     // This is a simplified version - in production you might use a query builder
-    let query = ctx.db.select().from(issues).where(and(...conditions));
+    const query = ctx.db.select().from(issues).where(and(...conditions));
 
     // Apply limit/offset
     const limit = Math.min(args.limit ?? 20, 100);
@@ -589,7 +589,7 @@ export const Query = {
 
     // Get decisions for resolved issues
     const issueIds = resolvedIssues.map((i) => i.id);
-    let resolvedDecisions: any[] = [];
+    let resolvedDecisions: Awaited<ReturnType<typeof ctx.db.select>>[] = [];
 
     if (issueIds.length > 0) {
       resolvedDecisions = await ctx.db

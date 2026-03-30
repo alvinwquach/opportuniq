@@ -89,14 +89,10 @@ export function PartsAvailabilityDemo() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [selectedOption, setSelectedOption] = useState<"diy" | "pro">("diy");
-  const [mounted, setMounted] = useState(false);
+
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted || !mapContainer.current || map.current) return;
+    if (!mapContainer.current || map.current) return;
 
     mapboxgl.accessToken =
       process.env.NEXT_PUBLIC_MAPBOX_TOKEN ||
@@ -133,9 +129,8 @@ export function PartsAvailabilityDemo() {
       map.current?.remove();
       map.current = null;
     };
-  }, [mounted]);
+  }, []);
 
-  if (!mounted) return null;
 
   const ppeCost = PPE_REQUIRED.reduce((sum, p) => sum + p.price, 0);
   const materialsCost = MATERIALS.reduce((sum, p) => sum + p.price, 0);

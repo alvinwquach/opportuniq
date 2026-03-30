@@ -44,18 +44,18 @@ export const BetaInviteEmail = ({
             </Section>
             <Heading style={heroTitle}>Welcome to OpportunIQ</Heading>
             <Text style={heroSubtitle}>
-              We're Kevin and Alvin, the founders of OpportunIQ. <strong>{referrerName}</strong> thought you'd be a great fit for what we're building, and we agree.
+              We&apos;re Kevin and Alvin, the founders of OpportunIQ. <strong>{referrerName}</strong> thought you&apos;d be a great fit for what we&apos;re building, and we agree.
             </Text>
             <Section style={storySection}>
               <Text style={storyText}>
-                OpportunIQ started from a simple observation: the best decisions come from having the right information at the right time. We're building tools that help people navigate complex choices with confidence.
+                OpportunIQ started from a simple observation: the best decisions come from having the right information at the right time. We&apos;re building tools that help people navigate complex choices with confidence.
               </Text>
               <Text style={storyText}>
-                As a beta member, you're joining a small group helping us refine the product before public launch. Your feedback matters—we read every response.
+                As a beta member, you&apos;re joining a small group helping us refine the product before public launch. Your feedback matters—we read every response.
               </Text>
             </Section>
             <Section style={benefitsSection}>
-              <Text style={benefitsTitle}>What you'll get</Text>
+              <Text style={benefitsTitle}>What you&apos;ll get</Text>
               <div style={benefitItem}>
                 <Text style={benefitIcon}>•</Text>
                 <Text style={benefitText}>Early access before public launch</Text>

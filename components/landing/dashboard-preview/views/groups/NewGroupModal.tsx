@@ -60,7 +60,7 @@ export function NewGroupModal({ isOpen, form, onChange, onSave, onClose }: NewGr
           </div>
           <div className="p-3 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a]">
             <p className="text-xs text-[#888]">
-              <span className="font-medium text-white">You'll be the Coordinator</span> of this group with full control over settings, members, and issues.
+              <span className="font-medium text-white">You&apos;ll be the Coordinator</span> of this group with full control over settings, members, and issues.
             </p>
           </div>
         </div>

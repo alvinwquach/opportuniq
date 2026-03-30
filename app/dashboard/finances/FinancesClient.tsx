@@ -108,21 +108,25 @@ export function FinancesClient() {
   }, []);
 
   // Transform data
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const incomeStreams = useMemo(() => {
     if (!data?.incomeStreams) return [];
     return data.incomeStreams.map(transformIncomeStream);
   }, [data?.incomeStreams]);
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const expenses = useMemo(() => {
     if (!data?.expenses) return [];
     return data.expenses.map(transformExpense);
   }, [data?.expenses]);
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const upcomingExpenses = useMemo(() => {
     if (!data?.upcomingExpenses) return [];
     return data.upcomingExpenses.map(transformUpcomingExpense);
   }, [data?.upcomingExpenses]);
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const spendingByCategory: SpendingCategory[] = useMemo(() => {
     if (!data?.spendingByCategory) return [];
     return data.spendingByCategory;

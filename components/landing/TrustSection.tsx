@@ -11,7 +11,7 @@ export function TrustSection() {
             Honest recommendations
           </h2>
           <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
-            We don't take kickbacks from contractors or stores. Our AI tells you the truth about what you can fix yourself.
+            We don&apos;t take kickbacks from contractors or stores. Our AI tells you the truth about what you can fix yourself.
           </p>
         </div>
 
@@ -24,7 +24,7 @@ export function TrustSection() {
               No hidden fees
             </h3>
             <p className="text-neutral-400">
-              We don't charge contractors to appear in results. We show you the best options, period.
+              We don&apos;t charge contractors to appear in results. We show you the best options, period.
             </p>
           </div>
 

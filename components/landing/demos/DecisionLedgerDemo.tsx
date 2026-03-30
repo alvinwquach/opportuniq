@@ -103,13 +103,9 @@ const OUTCOME_LABELS = {
 
 export function DecisionLedgerDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [selectedDecision, setSelectedDecision] = useState<Decision | null>(null);
   const [visibleCount, setVisibleCount] = useState(0);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Animate entries appearing
   useEffect(() => {
@@ -126,7 +122,7 @@ export function DecisionLedgerDemo() {
     }, 150);
 
     return () => clearInterval(interval);
-  }, [mounted]);
+  }, []);
 
   // Calculate totals
   const totals = SAMPLE_DECISIONS.reduce(
@@ -142,7 +138,6 @@ export function DecisionLedgerDemo() {
     setSelectedDecision(selectedDecision?.id === decision.id ? null : decision);
   };
 
-  if (!mounted) return null;
 
   return (
     <section className="relative py-16 lg:py-24 bg-black">
@@ -157,7 +152,7 @@ export function DecisionLedgerDemo() {
               Click any entry to see the full story. Watch your savings add up over time.
             </p>
             <p className="text-sm text-neutral-600 mb-8">
-              Next time it happens, you'll know exactly what you did.
+              Next time it happens, you&apos;ll know exactly what you did.
             </p>
 
             {/* Stats Summary */}

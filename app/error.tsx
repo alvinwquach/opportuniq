@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { IoAlertCircle, IoHome, IoRefresh } from "react-icons/io5";
 
@@ -53,10 +54,10 @@ export default function Error({
             variant="outline"
             className="gap-2 border-[#2a2a2a] bg-transparent hover:bg-[#1a1a1a] text-white"
           >
-            <a href="/">
+            <Link href="/">
               <IoHome className="h-4 w-4" />
               Back to home
-            </a>
+            </Link>
           </Button>
         </div>
 

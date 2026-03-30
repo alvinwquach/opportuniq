@@ -41,7 +41,7 @@ export const GroupRoleChangedEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Your role in "{groupName}" has been updated</Preview>
+      <Preview>Your role in &quot;{groupName}&quot; has been updated</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -72,7 +72,7 @@ export const GroupRoleChangedEmail = ({
             </Section>
             <Hr style={divider} />
             <Text style={securityNote}>
-              You're receiving this because you're a member of "{groupName}".
+              You&apos;re receiving this because you&apos;re a member of &quot;{groupName}&quot;.
             </Text>
           </Section>
           <Section style={footer}>

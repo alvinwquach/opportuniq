@@ -78,12 +78,14 @@ export function DIYTab({
         for (const [key, steps] of Object.entries(parsed)) {
           restored[key] = new Set(steps as number[]);
         }
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCompletedSteps(restored);
       }
 
       const toolsKey = getStorageKey(storageTitle, "tools");
       const savedTools = localStorage.getItem(toolsKey);
       if (savedTools) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCheckedTools(new Set(JSON.parse(savedTools)));
       }
     } catch {

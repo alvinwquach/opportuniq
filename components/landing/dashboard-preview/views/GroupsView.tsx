@@ -73,6 +73,7 @@ export function GroupsView() {
   // Initialize settings form when group changes
   useEffect(() => {
     if (selectedGroupData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSettingsForm({
         name: selectedGroupData.name,
         postalCode: "90210",

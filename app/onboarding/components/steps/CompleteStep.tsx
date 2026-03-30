@@ -93,7 +93,7 @@ export function CompleteStepRight({
         <IoCheckmark className="w-10 h-10 text-teal-400" />
       </div>
 
-      <h2 className="text-3xl sm:text-4xl font-bold mb-4">You're all set!</h2>
+      <h2 className="text-3xl sm:text-4xl font-bold mb-4">You&apos;re all set!</h2>
 
       <p className="text-lg text-white/50 mb-8">
         {isPreview

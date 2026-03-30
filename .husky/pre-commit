@@ -1,0 +1,6 @@
+# Run lint-staged before every commit.
+# lint-staged finds all staged .ts/.tsx files and runs eslint --fix on them.
+# Auto-fixes formatting and import issues in-place, then re-stages the fixes.
+# If ESLint finds an unfixable error, the commit is aborted.
+# Keeps CI from failing on trivial style issues — caught locally instead.
+npx lint-staged

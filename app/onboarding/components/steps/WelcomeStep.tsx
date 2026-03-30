@@ -55,7 +55,7 @@ export function WelcomeStepRight({ onNext, userName }: Pick<StepProps, "onNext" 
       </h1>
 
       <p className="text-lg text-white/50 mb-10 max-w-sm">
-        Let's personalize your experience so we can give you the best recommendations.
+        Let&apos;s personalize your experience so we can give you the best recommendations.
       </p>
 
       <button

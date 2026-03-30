@@ -82,22 +82,15 @@ const navigation: NavItem[] = [
   },
 ];
 
-export function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const [expandedItems, setExpandedItems] = useState<string[]>([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+interface SidebarContentProps {
+  expandedItems: string[];
+  toggleExpanded: (href: string) => void;
+  setSidebarOpen: (open: boolean) => void;
+  isActive: (href: string) => boolean;
+}
 
-  const toggleExpanded = (href: string) => {
-    setExpandedItems((prev) =>
-      prev.includes(href) ? prev.filter((item) => item !== href) : [...prev, href]
-    );
-  };
-
-  const isActive = (href: string) => {
-    return pathname === href || pathname?.startsWith(href + "/");
-  };
-
-  const SidebarContent = () => (
+function SidebarContent({ expandedItems, toggleExpanded, setSidebarOpen, isActive }: SidebarContentProps) {
+  return (
     <>
       {/* Logo */}
       <div className="h-16 flex items-center px-6 border-b border-border">
@@ -229,6 +222,22 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       </div>
     </>
   );
+}
+
+export function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleExpanded = (href: string) => {
+    setExpandedItems((prev) =>
+      prev.includes(href) ? prev.filter((item) => item !== href) : [...prev, href]
+    );
+  };
+
+  const isActive = (href: string) => {
+    return pathname === href || pathname?.startsWith(href + "/");
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -257,7 +266,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <IoClose className="h-5 w-5" />
         </Button>
 
-        <SidebarContent />
+        <SidebarContent
+          expandedItems={expandedItems}
+          toggleExpanded={toggleExpanded}
+          setSidebarOpen={setSidebarOpen}
+          isActive={isActive}
+        />
       </aside>
 
       {/* Main content */}

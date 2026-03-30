@@ -9,6 +9,23 @@ import { users, waitlist, invites, referrals, adminAuditLog } from "@/app/db/sch
 import type { Context } from "../../utils/context";
 import { forbidden } from "../../utils/errors";
 
+interface AdminFilters {
+  search?: string;
+  role?: string;
+  accessTier?: string;
+  tier?: string;
+  status?: string;
+  source?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}
+
+interface AdminPagination {
+  limit?: number;
+  offset?: number;
+}
+
+
 // Helper functions
 function requireAdmin(ctx: Context) {
   if (!ctx.user) {
@@ -19,7 +36,7 @@ function requireAdmin(ctx: Context) {
   }
 }
 
-function buildUserFilters(filters: any) {
+function buildUserFilters(filters: AdminFilters) {
   const conditions = [];
   if (filters?.search) {
     conditions.push(
@@ -44,7 +61,7 @@ function buildUserFilters(filters: any) {
   return conditions.length > 0 ? and(...conditions) : undefined;
 }
 
-function buildWaitlistFilters(filters: any) {
+function buildWaitlistFilters(filters: AdminFilters) {
   const conditions = [];
   if (filters?.search) {
     conditions.push(like(waitlist.email, `%${filters.search}%`));
@@ -61,7 +78,7 @@ function buildWaitlistFilters(filters: any) {
   return conditions.length > 0 ? and(...conditions) : undefined;
 }
 
-function buildInviteFilters(filters: any) {
+function buildInviteFilters(filters: AdminFilters) {
   const conditions = [];
   if (filters?.search) {
     conditions.push(like(invites.email, `%${filters.search}%`));
@@ -85,7 +102,7 @@ function buildInviteFilters(filters: any) {
   return conditions.length > 0 ? and(...conditions) : undefined;
 }
 
-function buildReferralFilters(filters: any) {
+function buildReferralFilters(filters: AdminFilters) {
   const conditions = [];
   if (filters?.search) {
     conditions.push(like(referrals.refereeEmail, `%${filters.search}%`));
@@ -187,7 +204,7 @@ export const adminQueries = {
     };
   },
 
-  adminUsers: async (_: unknown, { filters, pagination }: any, ctx: Context) => {
+  adminUsers: async (_: unknown, { filters, pagination }: { filters?: AdminFilters; pagination?: AdminPagination }, ctx: Context) => {
     requireAdmin(ctx);
 
     const limit = pagination?.limit || 50;
@@ -235,7 +252,7 @@ export const adminQueries = {
     return user || null;
   },
 
-  adminWaitlist: async (_: unknown, { filters, pagination }: any, ctx: Context) => {
+  adminWaitlist: async (_: unknown, { filters, pagination }: { filters?: AdminFilters; pagination?: AdminPagination }, ctx: Context) => {
     requireAdmin(ctx);
 
     const limit = pagination?.limit || 50;
@@ -266,7 +283,7 @@ export const adminQueries = {
     };
   },
 
-  adminInvites: async (_: unknown, { filters, pagination }: any, ctx: Context) => {
+  adminInvites: async (_: unknown, { filters, pagination }: { filters?: AdminFilters; pagination?: AdminPagination }, ctx: Context) => {
     requireAdmin(ctx);
 
     const limit = pagination?.limit || 50;
@@ -309,7 +326,7 @@ export const adminQueries = {
     };
   },
 
-  adminReferrals: async (_: unknown, { filters, pagination }: any, ctx: Context) => {
+  adminReferrals: async (_: unknown, { filters, pagination }: { filters?: AdminFilters; pagination?: AdminPagination }, ctx: Context) => {
     requireAdmin(ctx);
 
     const limit = pagination?.limit || 50;
@@ -350,7 +367,7 @@ export const adminQueries = {
     };
   },
 
-  adminAuditLog: async (_: unknown, { pagination, targetType }: { pagination?: any; targetType?: string }, ctx: Context) => {
+  adminAuditLog: async (_: unknown, { pagination, targetType }: { pagination?: AdminPagination; targetType?: string }, ctx: Context) => {
     requireAdmin(ctx);
 
     const limit = pagination?.limit || 50;
@@ -396,7 +413,7 @@ export const adminQueries = {
     };
   },
 
-  exportUsers: async (_: unknown, { filters }: any, ctx: Context) => {
+  exportUsers: async (_: unknown, { filters }: { filters?: AdminFilters }, ctx: Context) => {
     requireAdmin(ctx);
 
     const where = buildUserFilters(filters);
@@ -438,7 +455,7 @@ export const adminQueries = {
     };
   },
 
-  exportWaitlist: async (_: unknown, { filters }: any, ctx: Context) => {
+  exportWaitlist: async (_: unknown, { filters }: { filters?: AdminFilters }, ctx: Context) => {
     requireAdmin(ctx);
 
     const where = buildWaitlistFilters(filters);
@@ -464,7 +481,7 @@ export const adminQueries = {
     };
   },
 
-  exportReferrals: async (_: unknown, { filters }: any, ctx: Context) => {
+  exportReferrals: async (_: unknown, { filters }: { filters?: AdminFilters }, ctx: Context) => {
     requireAdmin(ctx);
 
     const where = buildReferralFilters(filters);

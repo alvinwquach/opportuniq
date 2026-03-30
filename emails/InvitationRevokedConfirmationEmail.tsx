@@ -29,7 +29,7 @@ export const InvitationRevokedConfirmationEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Invitation to {inviteeEmail} for "{groupName}" has been revoked</Preview>
+      <Preview>Invitation to {inviteeEmail} for &quot;{groupName}&quot; has been revoked</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>

@@ -102,7 +102,7 @@ export async function getUserSchedules(startDate?: Date, endDate?: Date) {
       participants.forEach((id) => allParticipantIds.add(id));
     }
 
-    let participantDetailsMap: Record<string, { id: string; userId: string; name: string | null; avatarUrl: string | null }> = {};
+    const participantDetailsMap: Record<string, { id: string; userId: string; name: string | null; avatarUrl: string | null }> = {};
 
     if (allParticipantIds.size > 0) {
       const participantMembers = await db

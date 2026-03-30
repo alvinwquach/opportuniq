@@ -459,7 +459,7 @@ export default function LandingPage() {
               Everything you need to fix with confidence
             </h2>
             <p className="fade-up text-sm text-white/70 max-w-lg mx-auto">
-              From diagnosis to decision, we've got you covered.
+              From diagnosis to decision, we&apos;ve got you covered.
             </p>
           </div>
 
@@ -717,7 +717,7 @@ export default function LandingPage() {
               Any repair, any project
             </h2>
             <p className="fade-up text-sm text-white/70 max-w-lg mx-auto">
-              From leaky faucets to check engine lights—get guidance for whatever you're facing.
+              From leaky faucets to check engine lights—get guidance for whatever you&apos;re facing.
             </p>
           </div>
 

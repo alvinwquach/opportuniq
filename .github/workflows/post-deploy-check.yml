@@ -1,0 +1,162 @@
+name: Post-Deploy Observability Gate
+
+# Runs AFTER the CI workflow completes on main.
+# By this point Vercel has already picked up the push and is building.
+# This workflow waits for the deploy, then checks if production is healthy.
+# CI validates the code. This validates the live deployment.
+# workflow_run: fires AFTER another named workflow finishes — here, after "CI"
+# completes on the main branch. This is different from `on: push`: it lets us
+# wait for the full CI result before running, and it runs even when CI is
+# triggered by a push (not just a PR). Think of it as "CI finished → now check prod."
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
+
+jobs:
+
+  # ─── STEP 1: WAIT FOR VERCEL ─────────────────────────────────────────────────
+  # Vercel typically deploys in 60-90 seconds after a push to main.
+  # Sleep 120s to give it buffer, then pass the production URL downstream.
+  # Output: deploy_url — used by every subsequent job.
+  # Only runs if CI actually succeeded (skip if CI itself failed).
+  wait-for-deploy:
+    name: Wait for Vercel Deploy
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    outputs:
+      deploy_url: ${{ steps.wait.outputs.url }}
+    steps:
+      - name: Wait for Vercel deployment
+        id: wait
+        run: |
+          echo "Waiting 120 seconds for Vercel to deploy..."
+          sleep 120
+          # $GITHUB_OUTPUT is a file path provided by GitHub Actions.
+          # Writing "key=value" lines to it makes the value available to
+          # other jobs as ${{ steps.<id>.outputs.<key> }}.
+          # Here we write deploy_url so health-check and sentry-check can use it.
+          echo "url=${{ vars.PRODUCTION_URL || 'https://opportuniq.app' }}" >> $GITHUB_OUTPUT
+
+  # ─── STEP 2: HEALTH CHECKS ───────────────────────────────────────────────────
+  # Three checks against the live deployment:
+  # 1. Homepage returns HTTP 200. If not, layout.tsx is crashing or env vars missing.
+  # 2. POST /api/chat without auth returns anything except 500.
+  #    Expect 401 (unauthorized). Getting 401 = API loaded, Supabase connected,
+  #    auth ran correctly. Getting 500 = something broke server-side.
+  # 3. Log homepage response time. Sudden increase = bundle bloat or slow DB query.
+  health-check:
+    name: Production Health Check
+    runs-on: ubuntu-latest
+    needs: [wait-for-deploy]
+    steps:
+      - name: Check homepage returns 200
+        run: |
+          # curl flags: -s = silent (no progress bar), -o /dev/null = discard the
+          # response body (we only care about the status code, not the HTML),
+          # -w "%{http_code}" = print just the HTTP status code (e.g. "200", "500").
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ needs.wait-for-deploy.outputs.deploy_url }})
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::Homepage returned $STATUS instead of 200"
+            exit 1
+          fi
+          echo "Homepage OK: $STATUS"
+
+      - name: Check API health (auth endpoint)
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ needs.wait-for-deploy.outputs.deploy_url }}/api/chat -X POST -H "Content-Type: application/json" -d '{}')
+          if [ "$STATUS" = "500" ]; then
+            echo "::error::Chat API returned 500 (server error)"
+            exit 1
+          fi
+          echo "Chat API responding: $STATUS (401 expected without auth = healthy)"
+
+      - name: Check response time
+        run: |
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" ${{ needs.wait-for-deploy.outputs.deploy_url }})
+          echo "Homepage response time: ${TIME}s"
+
+  # ─── STEP 3: SENTRY ERROR GATE ───────────────────────────────────────────────
+  # Query Sentry for NEW error types that appeared in the 5 minutes after deploy.
+  # 0–2 new errors: probably transient (flaky network, third-party blip). Warn.
+  # 3+ new error types: the deploy broke something tests didn't cover. Fail.
+  # continue-on-error: true because SENTRY_AUTH_TOKEN won't exist until
+  # Sentry is set up. Remove that flag once it's configured.
+  sentry-check:
+    name: Sentry Error Check
+    runs-on: ubuntu-latest
+    needs: [wait-for-deploy]
+    continue-on-error: true
+    steps:
+      - name: Check for new Sentry errors post-deploy
+        run: |
+          ERRORS=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}" \
+            "https://sentry.io/api/0/projects/${{ secrets.SENTRY_ORG }}/${{ secrets.SENTRY_PROJECT }}/issues/?query=is:unresolved+firstSeen:>now-5m&limit=5" \
+          )
+
+          COUNT=$(echo "$ERRORS" | python3 -c "import sys,json; print(len(json.load(sys.stdin)))" 2>/dev/null || echo "0")
+
+          echo "New Sentry errors in last 5 minutes: $COUNT"
+
+          if [ "$COUNT" -gt "3" ]; then
+            echo "::error::$COUNT new error types appeared after deploy! Check Sentry."
+            exit 1
+          elif [ "$COUNT" -gt "0" ]; then
+            echo "::warning::$COUNT new error(s) detected. Review in Sentry."
+          else
+            echo "No new errors. Deploy looks healthy."
+          fi
+
+  # ─── STEP 4: DISCORD ALERT ON FAILURE ────────────────────────────────────────
+  # Only runs if health-check OR sentry-check failed.
+  # Sends a red embed to Discord with branch, commit SHA, and link to the logs.
+  # No alert on success — you don't need a ping every deploy. Only on breakage.
+  notify-failure:
+    name: Discord Alert
+    runs-on: ubuntu-latest
+    needs: [health-check, sentry-check]
+    if: failure()
+    steps:
+      - name: Send Discord alert
+        run: |
+          curl -H "Content-Type: application/json" \
+            -d '{
+              "embeds": [{
+                "title": "🚨 Post-Deploy Check Failed",
+                "description": "Production health check or Sentry error gate failed after deploy.",
+                "color": 16711680,
+                "fields": [
+                  {"name": "Branch", "value": "${{ github.event.workflow_run.head_branch }}", "inline": true},
+                  {"name": "Commit", "value": "`${{ github.event.workflow_run.head_sha }}`", "inline": true},
+                  {"name": "Run", "value": "[View logs](${{ github.event.workflow_run.html_url }})", "inline": false}
+                ],
+                "timestamp": "'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"
+              }]
+            }' \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+  # ─── STEP 5: DISCORD CONFIRMATION ON SUCCESS ─────────────────────────────────
+  # Runs only if all checks passed. Green embed: deploy is live and healthy.
+  # Useful for solo dev to know "the thing I pushed is actually running fine."
+  notify-success:
+    name: Deploy Success
+    runs-on: ubuntu-latest
+    needs: [health-check, sentry-check]
+    if: success()
+    steps:
+      - name: Send Discord success
+        run: |
+          curl -H "Content-Type: application/json" \
+            -d '{
+              "embeds": [{
+                "title": "✅ Deploy Healthy",
+                "description": "All post-deploy checks passed.",
+                "color": 65280,
+                "fields": [
+                  {"name": "Commit", "value": "`${{ github.event.workflow_run.head_sha }}`", "inline": true}
+                ]
+              }]
+            }' \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}

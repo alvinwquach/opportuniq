@@ -98,7 +98,6 @@ export function InviteFriendsModal({
   variant = "default",
 }: InviteFriendsModalProps) {
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<InviteData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -109,14 +108,10 @@ export function InviteFriendsModal({
   const [copied, setCopied] = useState(false);
   const [resendingId, setResendingId] = useState<string | null>(null);
 
-  // Prevent hydration mismatch by only rendering dialog after mount
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   // Fetch data when modal opens
   useEffect(() => {
     if (open && !data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(true);
       getUserInviteData(userId)
         .then((result) => {
@@ -225,7 +220,7 @@ export function InviteFriendsModal({
           "flex items-center gap-2.5 px-2.5 py-2 rounded-md transition-colors mb-2 w-full",
           "text-[#5eead4] hover:text-[#5eead4] hover:bg-[#5eead4]/10 border border-[#5eead4]/20"
         )}
-        onClick={() => mounted && setOpen(true)}
+        onClick={() => setOpen(true)}
       >
         <IoPersonAdd className="h-4 w-4 shrink-0" />
         <span className="text-[13px] font-medium">Invite Friends</span>
@@ -236,24 +231,19 @@ export function InviteFriendsModal({
           "flex items-center justify-center w-9 h-9 mx-auto rounded-md transition-colors mb-2",
           "text-[#5eead4] hover:bg-[#5eead4]/10 border border-[#5eead4]/20"
         )}
-        onClick={() => mounted && setOpen(true)}
+        onClick={() => setOpen(true)}
       >
         <IoPersonAdd className="h-4 w-4 shrink-0" />
       </button>
     ) : (
       <button
         className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5eead4]/10 text-[#5eead4] text-sm font-medium hover:bg-[#5eead4]/20 transition-colors"
-        onClick={() => mounted && setOpen(true)}
+        onClick={() => setOpen(true)}
       >
         <IoPersonAdd className="w-4 h-4" />
         Invite Friends
       </button>
     );
-
-  // Before mount, just render the button without Dialog wrapper
-  if (!mounted) {
-    return trigger || buttonElement;
-  }
 
   return (
     <>
@@ -314,7 +304,7 @@ export function InviteFriendsModal({
                 </h3>
               </div>
               <p className="text-[11px] text-[#666] mb-2">
-                Share this link. When they sign up, they'll be a{" "}
+                Share this link. When they sign up, they&apos;ll be a{" "}
                 <span
                   className={`px-1 py-0.5 rounded text-[9px] font-medium border ${tierColor[data.inviteTier]}`}
                 >

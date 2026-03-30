@@ -12,9 +12,9 @@ export async function GET(request: NextRequest) {
 
     const data = await getChatMessages(userId);
     return NextResponse.json(data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
-      { error: error?.message || "Failed to load messages" },
+      { error: (error as Error)?.message || "Failed to load messages" },
       { status: 500 }
     );
   }

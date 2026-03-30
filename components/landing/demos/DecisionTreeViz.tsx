@@ -213,7 +213,7 @@ export function DecisionTreeViz() {
       .enter()
       .append("path")
       .attr("class", "tree-link")
-      .attr("d", linkGenerator as any)
+      .attr("d", linkGenerator as string)
       .attr("fill", "none")
       .attr("stroke", d => {
         const isSelected = selectedPath.includes(d.source.data.id) && selectedPath.includes(d.target.data.id);

@@ -42,18 +42,18 @@ export const AlphaInviteEmail = ({
             </Section>
             <Heading style={heroTitle}>Welcome to OpportunIQ</Heading>
             <Text style={heroSubtitle}>
-              We're Kevin and Alvin, the founders of OpportunIQ. We built this because we believe everyone deserves access to better decision-making tools—not just those who can afford expensive consultants or have the right connections.
+              We&apos;re Kevin and Alvin, the founders of OpportunIQ. We built this because we believe everyone deserves access to better decision-making tools—not just those who can afford expensive consultants or have the right connections.
             </Text>
             <Section style={storySection}>
               <Text style={storyText}>
-                OpportunIQ started from a simple observation: the best decisions come from having the right information at the right time. We've spent years building systems that help people navigate complex choices with confidence.
+                OpportunIQ started from a simple observation: the best decisions come from having the right information at the right time. We&apos;ve spent years building systems that help people navigate complex choices with confidence.
               </Text>
               <Text style={storyText}>
-                As an alpha member, you're joining us at the beginning. Your feedback will directly shape what OpportunIQ becomes. We read every response and take your input seriously.
+                As an alpha member, you&apos;re joining us at the beginning. Your feedback will directly shape what OpportunIQ becomes. We read every response and take your input seriously.
               </Text>
             </Section>
             <Section style={benefitsSection}>
-              <Text style={benefitsTitle}>What you'll get</Text>
+              <Text style={benefitsTitle}>What you&apos;ll get</Text>
               <div style={benefitItem}>
                 <Text style={benefitIcon}>•</Text>
                 <Text style={benefitText}>Early access to new features before public release</Text>

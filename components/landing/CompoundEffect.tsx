@@ -16,8 +16,6 @@ export function CompoundEffect() {
   const line2Ref = useRef<HTMLSpanElement>(null);
   const line3Ref = useRef<HTMLSpanElement>(null);
   const chartRef = useRef<SVGPathElement>(null);
-  const [mounted, setMounted] = useState(false);
-
   const [showLine1, setShowLine1] = useState(false);
   const [showLine2, setShowLine2] = useState(false);
   const [showLine3, setShowLine3] = useState(false);
@@ -28,11 +26,7 @@ export function CompoundEffect() {
   const [chartProgress, setChartProgress] = useState(0);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted || !sectionRef.current) return;
+    if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
@@ -89,11 +83,7 @@ export function CompoundEffect() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [mounted]);
-
-  if (!mounted) {
-    return <section className="relative min-h-screen bg-neutral-950" />;
-  }
+  }, []);
 
   // Generate chart path points
   const chartPoints = [

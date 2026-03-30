@@ -31,7 +31,7 @@ export const GroupUpdatedEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>{updatedBy} updated the settings for "{groupName}"</Preview>
+      <Preview>{updatedBy} updated the settings for &quot;{groupName}&quot;</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -65,7 +65,7 @@ export const GroupUpdatedEmail = ({
             </Section>
             <Hr style={divider} />
             <Text style={securityNote}>
-              You're receiving this because you're a member of "{groupName}".
+              You&apos;re receiving this because you&apos;re a member of &quot;{groupName}&quot;.
             </Text>
           </Section>
           <Section style={footer}>

@@ -1,2 +1,3 @@
 // Stub component - not yet implemented
-export const DiagnosisChat = () => null;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const DiagnosisChat = (_props: Record<string, unknown>) => null;

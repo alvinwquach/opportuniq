@@ -42,9 +42,9 @@ export const BetaLaunchWeekendEmail = ({
             <Section style={badgeSection}>
               <Text style={badge}>BETA LAUNCH WEEKEND</Text>
             </Section>
-            <Heading style={heroTitle}>You're In!</Heading>
+            <Heading style={heroTitle}>You&apos;re In!</Heading>
             <Text style={heroSubtitle}>
-              Welcome to OpportunIQ, {name}. You've joined during our beta launch weekend—and that means something special.
+              Welcome to OpportunIQ, {name}. You&apos;ve joined during our beta launch weekend—and that means something special.
             </Text>
             <Section style={highlightBox}>
               <Text style={highlightLabel}>Live Q&A with the Founders</Text>
@@ -91,7 +91,7 @@ export const BetaLaunchWeekendEmail = ({
               </Link>
             </Section>
             <Text style={ctaSubtext}>
-              We're excited to hear from you
+              We&apos;re excited to hear from you
             </Text>
           </Section>
           <Section style={footer}>

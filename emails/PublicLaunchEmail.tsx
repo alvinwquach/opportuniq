@@ -46,7 +46,7 @@ export const PublicLaunchEmail = ({
           </Section>
           <Section style={contentCard}>
             <Section style={badgeSection}>
-              <Text style={badge}>WE'RE PUBLIC</Text>
+              <Text style={badge}>WE&apos;RE PUBLIC</Text>
             </Section>
             <Heading style={heroTitle}>We Made It</Heading>
             <Text style={heroSubtitle}>
@@ -55,17 +55,17 @@ export const PublicLaunchEmail = ({
             <Section style={thankYouBox}>
               <Text style={thankYouLabel}>Thank You</Text>
               <Text style={thankYouText}>
-                Your early support, feedback, and belief in what we're building made this possible. You're not just a user—you're part of the story.
+                Your early support, feedback, and belief in what we&apos;re building made this possible. You&apos;re not just a user—you&apos;re part of the story.
               </Text>
             </Section>
             <Section style={statsSection}>
-              <Text style={statsTitle}>What's next</Text>
+              <Text style={statsTitle}>What&apos;s next</Text>
               <Row style={statRow}>
                 <Column style={statIconColumn}>
                   <Text style={statIcon}>1</Text>
                 </Column>
                 <Column>
-                  <Text style={statText}>We're scaling up to welcome thousands of new users</Text>
+                  <Text style={statText}>We&apos;re scaling up to welcome thousands of new users</Text>
                 </Column>
               </Row>
               <Row style={statRow}>
@@ -89,7 +89,7 @@ export const PublicLaunchEmail = ({
               <Section style={referralBox}>
                 <Text style={referralLabel}>Spread the Word</Text>
                 <Text style={referralText}>
-                  Know someone who'd love OpportunIQ? Share your personal link:
+                  Know someone who&apos;d love OpportunIQ? Share your personal link:
                 </Text>
                 <Text style={referralLink}>{referralUrl}</Text>
               </Section>
@@ -100,7 +100,7 @@ export const PublicLaunchEmail = ({
               </Link>
             </Section>
             <Text style={ctaSubtext}>
-              Here's to many more milestones together
+              Here&apos;s to many more milestones together
             </Text>
           </Section>
           <Section style={footer}>

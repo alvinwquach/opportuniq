@@ -10,7 +10,7 @@ export function AITipCard() {
         <h3 className="text-sm font-semibold text-white">AI-Powered</h3>
       </div>
       <p className="text-xs text-[#888] leading-relaxed">
-        Can't find a guide? Describe your issue and we'll generate a custom guide using AI,
+        Can&apos;t find a guide? Describe your issue and we&apos;ll generate a custom guide using AI,
         pulling from trusted sources like iFixit and This Old House.
       </p>
     </div>

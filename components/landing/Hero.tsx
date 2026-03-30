@@ -43,7 +43,7 @@ export function Hero() {
                     <IoStorefront className="w-5 h-5 text-blue-400" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-white">Hunter 52" Ceiling Fan</p>
+                    <p className="text-sm font-medium text-white">Hunter 52&quot; Ceiling Fan</p>
                     <p className="text-xs text-neutral-500">Home Depot · In stock</p>
                   </div>
                   <span className="text-sm font-semibold text-emerald-400">$149</span>

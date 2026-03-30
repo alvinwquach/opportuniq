@@ -227,7 +227,7 @@ export function DecisionTimeline() {
     // X Axis
     const xAxis = d3.axisBottom(xScale)
       .ticks(6)
-      .tickFormat(d3.timeFormat("%b %d") as any);
+      .tickFormat(d3.timeFormat("%b %d") as (domainValue: Date | d3.NumberValue, index: number) => string);
 
     g.append("g")
       .attr("transform", `translate(0, ${innerHeight})`)

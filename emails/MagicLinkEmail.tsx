@@ -71,7 +71,7 @@ export default function MagicLinkEmail({
           </Section>
           <Section style={footer}>
             <Text style={footerText}>
-              Didn't request this? You can safely ignore this email.
+              Didn&apos;t request this? You can safely ignore this email.
             </Text>
             <Text style={footerLinks}>
               <Link href="https://opportuniq.app" style={footerLink}>

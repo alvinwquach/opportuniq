@@ -86,7 +86,7 @@ export async function GET(request: Request) {
 
   // Create Supabase client with request cookies for PKCE code verifier
   // This is critical: PKCE code verifier must be read from request cookies
-  let supabaseResponse = NextResponse.next();
+  const supabaseResponse = NextResponse.next();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY! || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
@@ -405,14 +405,15 @@ export async function GET(request: Request) {
   console.log("[Auth Callback] Error fallback - no valid code or session");
   return NextResponse.redirect(`${origin}/auth/error`);
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Catch-all for any unhandled errors to prevent 500s
+    const err = error as { message?: string; stack?: string };
     console.error("[Auth Callback] Unhandled error:", {
-      message: error?.message,
-      stack: error?.stack,
+      message: err?.message,
+      stack: err?.stack,
     });
 
-    const errorMsg = error?.message || "An unexpected error occurred";
+    const errorMsg = err?.message || "An unexpected error occurred";
 
     // Check for PKCE-related errors
     if (errorMsg.includes("code verifier") || errorMsg.includes("PKCE") || errorMsg.includes("pkce")) {

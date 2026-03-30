@@ -21,7 +21,7 @@ export function NewIssueModal({ onClose }: NewIssueModalProps) {
           </button>
         </div>
         <div className="p-6">
-          <p className="text-sm text-[#888] mb-4">Choose how you'd like to report the issue:</p>
+          <p className="text-sm text-[#888] mb-4">Choose how you&apos;d like to report the issue:</p>
           <div className="grid grid-cols-2 gap-3">
             {INPUT_METHODS.map((method) => {
               const Icon = method.icon;

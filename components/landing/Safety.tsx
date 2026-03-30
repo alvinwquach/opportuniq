@@ -68,15 +68,10 @@ export function Safety() {
   const sectionRef = useRef<HTMLElement>(null);
   const gaugeRef = useRef<SVGSVGElement>(null);
   const needleRef = useRef<SVGGElement | null>(null);
-  const [mounted, setMounted] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState(0);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!gaugeRef.current || !mounted) return;
+    if (!gaugeRef.current) return;
 
     const svg = d3.select(gaugeRef.current);
     svg.selectAll("*").remove();
@@ -182,10 +177,10 @@ export function Safety() {
       .attr("fill", "#ffffff");
 
     gsap.set(needle.node(), { rotation: -60 });
-  }, [mounted]);
+  }, []);
 
   useEffect(() => {
-    if (!needleRef.current || !mounted) return;
+    if (!needleRef.current) return;
 
     const scenario = SCENARIOS[selectedScenario];
     const riskLevel = RISK_LEVELS.find(r => r.level === scenario.risk);
@@ -196,10 +191,10 @@ export function Safety() {
       duration: 0.8,
       ease: "elastic.out(1, 0.5)",
     });
-  }, [selectedScenario, mounted]);
+  }, [selectedScenario]);
 
   useEffect(() => {
-    if (!sectionRef.current || !mounted) return;
+    if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
       gsap.from(".safety-header", {
@@ -239,9 +234,7 @@ export function Safety() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [mounted]);
-
-  if (!mounted) return null;
+  }, []);
 
   const currentScenario = SCENARIOS[selectedScenario];
   const currentRisk = RISK_LEVELS.find(r => r.level === currentScenario.risk);

@@ -35,6 +35,7 @@ export function IssuesClient() {
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
   // Filter and sort issues
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const filteredIssues = useMemo(() => {
     if (!data?.issues) return [];
 

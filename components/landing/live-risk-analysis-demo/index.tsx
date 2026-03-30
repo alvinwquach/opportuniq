@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useRef, useState, useCallback, useMemo } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
   IoChevronForward,
@@ -25,7 +25,6 @@ import { VerdictCard } from "./cards/VerdictCard";
 
 export function LiveRiskAnalysisDemo() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState<DemoScenario>(DEMO_SCENARIOS[0]);
   const [userTimeValue, setUserTimeValue] = useState(50);
 
@@ -39,7 +38,6 @@ export function LiveRiskAnalysisDemo() {
     resetAnalysis,
   } = useStreamingAnalysis({
     scenario: selectedScenario,
-    mounted,
     sectionRef,
   });
 
@@ -47,7 +45,6 @@ export function LiveRiskAnalysisDemo() {
   const { mapContainerRef, resetMap } = useMapbox({
     scenario: selectedScenario,
     isVisible: visibleCards.includes("location"),
-    mounted,
   });
 
   // Initialize risk chart
@@ -84,18 +81,12 @@ export function LiveRiskAnalysisDemo() {
     };
   }, [selectedScenario, userTimeValue]);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   // Handle scenario change
   const handleScenarioChange = useCallback((scenario: DemoScenario) => {
     setSelectedScenario(scenario);
     resetAnalysis();
     resetMap();
   }, [resetAnalysis, resetMap]);
-
-  if (!mounted) return null;
 
   return (
     <section

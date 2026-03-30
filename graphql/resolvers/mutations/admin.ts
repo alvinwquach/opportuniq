@@ -38,10 +38,10 @@ async function logAdminAction(
 }
 
 export const adminMutations = {
-  adminUpdateUser: async (_: unknown, { id, input }: { id: string; input: any }, ctx: Context) => {
+  adminUpdateUser: async (_: unknown, { id, input }: { id: string; input: Record<string, unknown> }, ctx: Context) => {
     requireAdmin(ctx);
 
-    const updateData: any = { updatedAt: new Date() };
+    const updateData: Record<string, unknown> = { updatedAt: new Date() };
     if (input.role !== undefined) updateData.role = input.role;
     if (input.accessTier !== undefined) updateData.accessTier = input.accessTier;
 

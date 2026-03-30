@@ -29,8 +29,8 @@ export default function AdminCaseStudiesPage() {
             <span>45 minutes</span>
           </div>
           <p className="text-[#888] leading-relaxed">
-            "I was ready to call a plumber. OpportunIQ showed me it was just a worn O-ring.
-            $8 at Home Depot and 30 minutes later, it was fixed. Saved $150 and learned something new."
+            &quot;I was ready to call a plumber. OpportunIQ showed me it was just a worn O-ring.
+            $8 at Home Depot and 30 minutes later, it was fixed. Saved $150 and learned something new.&quot;
           </p>
         </article>
 
@@ -54,8 +54,8 @@ export default function AdminCaseStudiesPage() {
             <span>Same day service</span>
           </div>
           <p className="text-[#888] leading-relaxed">
-            "OpportunIQ told me this wasn't DIY-able and connected me with 3 HVAC pros.
-            Got same-day service and a fair quote. Love that it was honest about when to call a pro."
+            &quot;OpportunIQ told me this wasn&apos;t DIY-able and connected me with 3 HVAC pros.
+            Got same-day service and a fair quote. Love that it was honest about when to call a pro.&quot;
           </p>
         </article>
 
@@ -79,8 +79,8 @@ export default function AdminCaseStudiesPage() {
             <span>20 minutes</span>
           </div>
           <p className="text-[#888] leading-relaxed">
-            "Thought I needed a new dishwasher. OpportunIQ diagnosed a clogged filter and showed me
-            exactly how to clean it. Zero cost, and it's been running perfectly for 6 months."
+            &quot;Thought I needed a new dishwasher. OpportunIQ diagnosed a clogged filter and showed me
+            exactly how to clean it. Zero cost, and it&apos;s been running perfectly for 6 months.&quot;
           </p>
         </article>
       </div>

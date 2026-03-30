@@ -15,9 +15,9 @@ export async function POST(request: NextRequest) {
 
     const data = await sendSupportMessage(recipientUserId, content);
     return NextResponse.json(data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
-      { error: error?.message || "Failed to send message" },
+      { error: (error as Error)?.message || "Failed to send message" },
       { status: 500 }
     );
   }

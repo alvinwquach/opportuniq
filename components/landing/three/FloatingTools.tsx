@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, Suspense } from "react";
+import { useRef, useState, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Text3D, Center, MeshTransmissionMaterial, Environment } from "@react-three/drei";
 import * as THREE from "three";
@@ -165,20 +165,6 @@ function Scene() {
 }
 
 export function FloatingTools() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return (
-      <div className="w-full h-[300px] bg-neutral-950 rounded-xl border border-neutral-800 flex items-center justify-center">
-        <div className="text-neutral-500 text-sm">Loading 3D...</div>
-      </div>
-    );
-  }
-
   return (
     <div className="relative w-full h-[300px] bg-neutral-950 rounded-xl border border-neutral-800 overflow-hidden">
       <Canvas camera={{ position: [0, 0, 4], fov: 50 }}>

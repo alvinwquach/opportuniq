@@ -20,6 +20,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     // Load saved preference
     const saved = localStorage.getItem("opportuniq-theme-mode") as ThemeMode | null;
     if (saved && ["hybrid", "dark", "light"].includes(saved)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMode(saved);
     }
   }, []);

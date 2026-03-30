@@ -36,6 +36,13 @@ interface ComparisonScenario {
   hireVerdict: string;
 }
 
+interface NormalizedMetric extends ComparisonMetric {
+  diyNorm: number;
+  hireNorm: number;
+  diyWins: boolean;
+  hireWins: boolean;
+}
+
 const SCENARIOS: ComparisonScenario[] = [
   {
     name: "Leaky Faucet Repair",
@@ -78,18 +85,14 @@ const SCENARIOS: ComparisonScenario[] = [
 export function DecisionComparison() {
   const sectionRef = useRef<HTMLElement>(null);
   const chartRef = useRef<SVGSVGElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [activeScenario, setActiveScenario] = useState(0);
   const [animated, setAnimated] = useState(false);
 
   const scenario = SCENARIOS[activeScenario];
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
-    if (!chartRef.current || !mounted) return;
+    if (!chartRef.current) return;
 
     const svg = d3.select(chartRef.current);
     svg.selectAll("*").remove();
@@ -234,7 +237,7 @@ export function DecisionComparison() {
             .transition()
             .duration(800)
             .delay((_, i) => i * 100)
-            .attr("width", (d: any) => d.diyNorm * innerWidth);
+            .attr("width", (d: NormalizedMetric) => d.diyNorm * innerWidth);
 
           diyBars.selectAll("text")
             .transition()
@@ -247,7 +250,7 @@ export function DecisionComparison() {
             .transition()
             .duration(800)
             .delay((_, i) => i * 100 + 50)
-            .attr("width", (d: any) => d.hireNorm * innerWidth);
+            .attr("width", (d: NormalizedMetric) => d.hireNorm * innerWidth);
 
           hireBars.selectAll("text")
             .transition()
@@ -258,15 +261,14 @@ export function DecisionComparison() {
       });
     } else if (animated) {
       // If already animated, show immediately
-      diyBars.selectAll("rect").attr("width", (d: any) => d.diyNorm * innerWidth);
+      diyBars.selectAll("rect").attr("width", (d: NormalizedMetric) => d.diyNorm * innerWidth);
       diyBars.selectAll("text").attr("opacity", 1);
-      hireBars.selectAll("rect").attr("width", (d: any) => d.hireNorm * innerWidth);
+      hireBars.selectAll("rect").attr("width", (d: NormalizedMetric) => d.hireNorm * innerWidth);
       hireBars.selectAll("text").attr("opacity", 1);
     }
 
-  }, [mounted, activeScenario, animated]);
+  }, [activeScenario, animated]);
 
-  if (!mounted) return null;
 
   return (
     <section

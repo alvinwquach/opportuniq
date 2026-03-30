@@ -28,7 +28,7 @@ export const FeedbackRequestEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>We'd love your feedback - help shape OpportunIQ's future</Preview>
+      <Preview>We&apos;d love your feedback - help shape OpportunIQ&apos;s future</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -46,22 +46,22 @@ export const FeedbackRequestEmail = ({
             </Section>
             <Heading style={heroTitle}>How Are We Doing?</Heading>
             <Text style={heroSubtitle}>
-              Hey {name}, you've been using OpportunIQ and we'd love to hear what you think. Your feedback directly shapes what we build next.
+              Hey {name}, you&apos;ve been using OpportunIQ and we&apos;d love to hear what you think. Your feedback directly shapes what we build next.
             </Text>
             <Section style={messageBox}>
               <Text style={messageText}>
-                "We read every piece of feedback personally. The best features in OpportunIQ came from users like you telling us what they needed."
+                &quot;We read every piece of feedback personally. The best features in OpportunIQ came from users like you telling us what they needed.&quot;
               </Text>
               <Text style={messageAuthor}>— The OpportunIQ Team</Text>
             </Section>
             <Section style={questionsSection}>
-              <Text style={questionsTitle}>We're curious about</Text>
+              <Text style={questionsTitle}>We&apos;re curious about</Text>
               <Row style={questionRow}>
                 <Column style={questionIconColumn}>
                   <Text style={questionIcon}>?</Text>
                 </Column>
                 <Column>
-                  <Text style={questionText}>What's working well for you?</Text>
+                  <Text style={questionText}>What&apos;s working well for you?</Text>
                 </Column>
               </Row>
               <Row style={questionRow}>
@@ -69,7 +69,7 @@ export const FeedbackRequestEmail = ({
                   <Text style={questionIcon}>?</Text>
                 </Column>
                 <Column>
-                  <Text style={questionText}>What's frustrating or confusing?</Text>
+                  <Text style={questionText}>What&apos;s frustrating or confusing?</Text>
                 </Column>
               </Row>
               <Row style={questionRow}>

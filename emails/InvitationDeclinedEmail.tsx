@@ -29,7 +29,7 @@ export const InvitationDeclinedEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>{inviteeEmail} declined your invitation to join "{groupName}"</Preview>
+      <Preview>{inviteeEmail} declined your invitation to join &quot;{groupName}&quot;</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>

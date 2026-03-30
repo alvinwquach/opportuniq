@@ -17,7 +17,6 @@ export function CostLogicDemo() {
   const gaugeRef = useRef<SVGSVGElement>(null);
   const needleRef = useRef<SVGGElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
 
   const [hourlyRate, setHourlyRate] = useState(45);
   const [diyHours, setDiyHours] = useState(5);
@@ -28,13 +27,10 @@ export function CostLogicDemo() {
   const diyWins = trueDiyCost < contractorCost;
   const ratio = Math.min(Math.max(trueDiyCost / contractorCost, 0.2), 2.5);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // D3 Gauge setup
   useEffect(() => {
-    if (!gaugeRef.current || !mounted) return;
+    if (!gaugeRef.current) return;
 
     const svg = d3.select(gaugeRef.current);
     svg.selectAll("*").remove();
@@ -55,7 +51,7 @@ export function CostLogicDemo() {
       .endAngle(Math.PI / 2);
 
     g.append("path")
-      .attr("d", arcBg as any)
+      .attr("d", arcBg as string)
       .attr("fill", "#1a1a1a");
 
     // Green zone (DIY wins: 0 to contractor cost)
@@ -67,7 +63,7 @@ export function CostLogicDemo() {
       .endAngle(-Math.PI / 2 + greenAngle);
 
     g.append("path")
-      .attr("d", arcGreen as any)
+      .attr("d", arcGreen as string)
       .attr("fill", "#00FF88")
       .attr("opacity", 0.3);
 
@@ -79,7 +75,7 @@ export function CostLogicDemo() {
       .endAngle(-Math.PI / 2 + greenAngle + Math.PI / 2 * 0.25);
 
     g.append("path")
-      .attr("d", arcOrange as any)
+      .attr("d", arcOrange as string)
       .attr("fill", "#FF8800")
       .attr("opacity", 0.3);
 
@@ -91,7 +87,7 @@ export function CostLogicDemo() {
       .endAngle(Math.PI / 2);
 
     g.append("path")
-      .attr("d", arcRed as any)
+      .attr("d", arcRed as string)
       .attr("fill", "#FF4444")
       .attr("opacity", 0.3);
 
@@ -155,11 +151,11 @@ export function CostLogicDemo() {
       .attr("r", 4)
       .attr("fill", "#0a0a0a");
 
-  }, [mounted]);
+  }, []);
 
   // Animate needle with GSAP
   useEffect(() => {
-    if (!needleRef.current || !mounted) return;
+    if (!needleRef.current) return;
 
     // Map ratio to angle: 0.2 = -90deg, 1 = 0deg, 2.5 = 90deg
     const angle = ((ratio - 0.2) / (2.5 - 0.2)) * 180 - 90;
@@ -170,7 +166,7 @@ export function CostLogicDemo() {
       ease: "elastic.out(1, 0.6)",
       transformOrigin: "center bottom",
     });
-  }, [ratio, mounted]);
+  }, [ratio]);
 
   const handleHourlyChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setHourlyRate(Number(e.target.value));
@@ -180,7 +176,6 @@ export function CostLogicDemo() {
     setDiyHours(Number(e.target.value));
   }, []);
 
-  if (!mounted) return null;
 
   return (
     <section className="relative py-20 lg:py-28 bg-gradient-to-b from-black via-cyan-950/10 to-neutral-950">
