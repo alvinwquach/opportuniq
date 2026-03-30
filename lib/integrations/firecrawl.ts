@@ -10,9 +10,19 @@
 
 import FirecrawlApp from "@mendable/firecrawl-js";
 import * as Sentry from "@sentry/nextjs";
+import { CONTRACTOR_SCHEMA } from "./firecrawl-schemas";
+
+export interface ExtractedContractor {
+  name: string;
+  phone?: string;
+  address?: string;
+  rating?: number;
+  reviewCount?: number;
+  specialties?: string[];
+}
 
 // Initialize Firecrawl client
-function getFirecrawlClient() {
+export function getFirecrawlClient() {
   const apiKey = process.env.FIRECRAWL_API_KEY;
 
   if (!apiKey) {
@@ -168,6 +178,26 @@ export async function batchScrape(urls: string[]) {
     Sentry.captureException(error, { extra: { tool: "batchScrape", url: urls.join(","), credits: urls.length } });
     throw error;
   }
+}
+
+/**
+ * Extract contractor listings from a page using Firecrawl JSON extraction.
+ * Replaces extractVendorsFromMarkdown() when 'firecrawl-json-extraction' flag is ON.
+ *
+ * @param firecrawl - Firecrawl client instance
+ * @param url - URL to scrape (e.g., Angi search results page)
+ * @returns Array of extracted contractors (empty if extraction fails)
+ */
+export async function extractContractorsFromPage(
+  firecrawl: FirecrawlApp,
+  url: string
+): Promise<ExtractedContractor[]> {
+  const result = await firecrawl.scrape(url, {
+    formats: [{ type: "json", schema: CONTRACTOR_SCHEMA }],
+  });
+
+  const json = result.json as { contractors?: ExtractedContractor[] } | null | undefined;
+  return json?.contractors ?? [];
 }
 
 /**

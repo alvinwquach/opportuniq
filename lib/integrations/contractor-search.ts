@@ -9,7 +9,14 @@
 import * as Sentry from "@sentry/nextjs";
 import { findContractorsForIssue as findContractorsOnYelp } from "./yelp";
 import { findContractorsOnFoursquare } from "./foursquare";
-import { scrapeAngiContractors, extractVendorsFromMarkdown } from "./firecrawl";
+import {
+  scrapeAngiContractors,
+  extractVendorsFromMarkdown,
+  extractContractorsFromPage,
+  getFirecrawlClient,
+} from "./firecrawl";
+import { getFeatureFlag } from "@/lib/feature-flags";
+import { trackContractorSearchZeroResults } from "@/lib/analytics-server";
 
 export interface ContractorResult {
   vendorName: string;
@@ -100,25 +107,51 @@ export async function searchContractors(
   // 3. Fall back to Firecrawl (scraping Angi)
   if (process.env.FIRECRAWL_API_KEY) {
     try {
-      const scrapedData = await scrapeAngiContractors(category, zipCode);
+      const useJsonExtraction = await getFeatureFlag("firecrawl-json-extraction", "system");
+      const angiUrl = `https://www.angi.com/search/${encodeURIComponent(category)}-${zipCode}.htm`;
 
-      if (scrapedData.content) {
-        const vendors = extractVendorsFromMarkdown(scrapedData.content);
+      if (useJsonExtraction) {
+        // JSON extraction path: structured contractor data instead of regex parsing
+        const contractors = await extractContractorsFromPage(getFirecrawlClient(), angiUrl);
 
-        if (vendors && vendors.length > 0) {
+        if (contractors.length > 0) {
           return {
-            contractors: vendors.map((v) => ({
-              vendorName: v.name || "Unknown",
+            contractors: contractors.map((c) => ({
+              vendorName: c.name,
               contactInfo: {
-                phone: v.phone,
-                address: v.address,
+                phone: c.phone,
+                address: c.address,
               },
-              rating: v.rating,
+              rating: c.rating !== undefined ? String(c.rating) : undefined,
+              specialties: c.specialties,
               source: "firecrawl" as const,
             })),
             source: "firecrawl",
             fallbacksUsed,
           };
+        }
+      } else {
+        // Original path: markdown scrape + regex parsing
+        const scrapedData = await scrapeAngiContractors(category, zipCode);
+
+        if (scrapedData.content) {
+          const vendors = extractVendorsFromMarkdown(scrapedData.content);
+
+          if (vendors && vendors.length > 0) {
+            return {
+              contractors: vendors.map((v) => ({
+                vendorName: v.name || "Unknown",
+                contactInfo: {
+                  phone: v.phone,
+                  address: v.address,
+                },
+                rating: v.rating,
+                source: "firecrawl" as const,
+              })),
+              source: "firecrawl",
+              fallbacksUsed,
+            };
+          }
         }
       }
 
@@ -134,6 +167,7 @@ export async function searchContractors(
 
   // All providers failed
   console.warn("[ContractorSearch] All providers failed:", fallbacksUsed);
+  trackContractorSearchZeroResults({ category, zipCode, providersAttempted: fallbacksUsed });
 
   return {
     contractors: [],

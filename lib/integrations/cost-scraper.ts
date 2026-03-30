@@ -10,8 +10,10 @@
  */
 
 import * as Sentry from "@sentry/nextjs";
-import { scrapePage } from "./firecrawl";
+import { scrapePage, getFirecrawlClient } from "./firecrawl";
+import { COST_ESTIMATE_SCHEMA } from "./firecrawl-schemas";
 import { trackCostDataCacheHit, trackCostDataCacheMiss } from "@/lib/analytics-server";
+import { getFeatureFlag } from "@/lib/feature-flags";
 import { db } from "@/app/db/client";
 import { costData, type CostData, type NewCostData } from "@/app/db/schema";
 import { eq, and, gt } from "drizzle-orm";
@@ -231,6 +233,78 @@ export async function scrapeCostGuide(
   Sentry.setContext("firecrawl", { feature: "scrapeCostGuide", url });
 
   try {
+    // JSON extraction path (behind feature flag) — replaces brittle regex parsing
+    if (await getFeatureFlag("firecrawl-json-extraction", "system")) {
+      try {
+        const firecrawl = getFirecrawlClient();
+        const result = await firecrawl.scrape(url, {
+          formats: ["markdown", { type: "json", schema: COST_ESTIMATE_SCHEMA }],
+          maxAge: 604800000,
+        });
+
+        if (!result.markdown) {
+          console.warn(`[CostScraper] No content from ${url} (JSON path)`);
+          return null;
+        }
+
+        type CostJson = {
+          proMin?: unknown;
+          proMax?: unknown;
+          proAvg?: unknown;
+          diyMin?: unknown;
+          diyMax?: unknown;
+          diyAvg?: unknown;
+          costFactors?: unknown;
+          timeEstimate?: unknown;
+          sampleSize?: unknown;
+        };
+        const json = result.json as CostJson | null | undefined;
+        const proMin = typeof json?.proMin === "number" ? json.proMin : null;
+        const proMax = typeof json?.proMax === "number" ? json.proMax : null;
+
+        if (proMin !== null && proMax !== null && proMin >= 0 && proMax >= 0) {
+          const proAvg = typeof json?.proAvg === "number" ? json.proAvg : (proMin + proMax) / 2;
+          return {
+            source,
+            sourceUrl: url,
+            rawContent: result.markdown,
+            proMinCents: Math.round(proMin * 100),
+            proMaxCents: Math.round(proMax * 100),
+            proAvgCents: Math.round(proAvg * 100),
+            diyMinCents:
+              typeof json?.diyMin === "number" && (json.diyMin as number) >= 0
+                ? Math.round((json.diyMin as number) * 100)
+                : undefined,
+            diyMaxCents:
+              typeof json?.diyMax === "number" && (json.diyMax as number) >= 0
+                ? Math.round((json.diyMax as number) * 100)
+                : undefined,
+            diyAvgCents:
+              typeof json?.diyAvg === "number" && (json.diyAvg as number) >= 0
+                ? Math.round((json.diyAvg as number) * 100)
+                : undefined,
+            costFactors: Array.isArray(json?.costFactors)
+              ? (json!.costFactors as string[])
+              : undefined,
+            timeEstimate: json?.timeEstimate as { diy?: string; pro?: string } | undefined,
+            sampleSize: typeof json?.sampleSize === "number" ? (json.sampleSize as number) : undefined,
+          };
+        }
+
+        // JSON extraction returned null/empty/invalid — fall back to regex on existing markdown
+        console.log(`[CostScraper] JSON extraction invalid, falling back to regex for ${url}`);
+        const parsed = parseCostContent(result.markdown, source);
+        return { source, sourceUrl: url, rawContent: result.markdown, ...parsed };
+      } catch (jsonError) {
+        console.error(`[CostScraper] JSON extraction failed, falling back to scrapePage:`, jsonError);
+        Sentry.captureException(jsonError, {
+          extra: { tool: "scrapeCostGuide", url, source, path: "json-extraction" },
+        });
+        // Fall through to original scrapePage path below
+      }
+    }
+
+    // ORIGINAL PATH: regex parsing (flag OFF or JSON extraction threw)
     const result = await scrapePage(url, 604800000); // 7-day cache for stable cost guides
 
     if (!result.markdown) {
@@ -238,15 +312,8 @@ export async function scrapeCostGuide(
       return null;
     }
 
-    // Parse the markdown content for cost data
     const parsed = parseCostContent(result.markdown, source);
-
-    return {
-      source,
-      sourceUrl: url,
-      rawContent: result.markdown,
-      ...parsed,
-    };
+    return { source, sourceUrl: url, rawContent: result.markdown, ...parsed };
   } catch (error) {
     console.error(`[CostScraper] Error scraping ${url}:`, error);
     Sentry.captureException(error, { extra: { tool: "scrapeCostGuide", url, source } });
