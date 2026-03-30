@@ -1,6 +1,11 @@
 import type { DiagnosisRequest } from "@/lib/schemas/diagnosis";
+import { getFeatureFlag, getFeatureFlagPayload } from "@/lib/feature-flags";
+import { buildRAGContext } from "@/lib/rag-context";
 
-export function buildDiagnosisPrompt(context: DiagnosisRequest): string {
+export async function buildDiagnosisPrompt(
+  context: DiagnosisRequest,
+  options?: { userId?: string; conversationId?: string }
+): Promise<string> {
   const sections: string[] = [];
 
   // Language instruction - if user spoke in a non-English language
@@ -14,6 +19,21 @@ export function buildDiagnosisPrompt(context: DiagnosisRequest): string {
   // Context from structured input
   sections.push(buildContextSection(context));
 
+  // RAG context — similar past cases from the vector store
+  if (options?.userId) {
+    const ragEnabled = await getFeatureFlag("rag-enabled", options.userId);
+    if (ragEnabled && context.issue.description) {
+      const ragContext = await buildRAGContext(
+        context.issue.description,
+        context.property.postalCode || undefined,
+        options.conversationId
+      );
+      if (ragContext) {
+        sections.push(ragContext);
+      }
+    }
+  }
+
   // Tool usage - critical for grounding
   sections.push(TOOL_RULES);
 
@@ -25,7 +45,14 @@ export function buildDiagnosisPrompt(context: DiagnosisRequest): string {
     sections.push(LEGACY_HOME_WARNINGS);
   }
 
-  // Anti-hallucination rules - always included
+  // Anti-hallucination rules — variant B uses a tighter, numbered version
+  if (options?.userId) {
+    const promptVariant = await getFeatureFlagPayload("prompt-variant", options.userId);
+    if (promptVariant === "v2") {
+      sections.push(GROUNDING_RULES_V2);
+      return sections.join("\n\n");
+    }
+  }
   sections.push(GROUNDING_RULES);
 
   return sections.join("\n\n");
@@ -437,6 +464,15 @@ const GROUNDING_RULES = `## GROUNDING RULES (CRITICAL)
 5. **Urgency honesty**
    - Don't escalate urgency to seem helpful
    - Don't downplay genuine emergencies`;
+
+// Variant B: tighter grounding rules used in prompt A/B test (prompt-variant = "v2")
+const GROUNDING_RULES_V2 = `## GROUNDING RULES (CRITICAL)
+
+1. NEVER invent prices, ratings, phone numbers, or URLs — say "I couldn't find..." if data is missing.
+2. Cite every price: "(from getCostEstimate)" or "(estimate — no data available)".
+3. Acknowledge uncertainty: "Based on similar issues..." / "Prices in your area may vary..."
+4. If a search returns nothing, do NOT describe results you didn't receive.
+5. Never escalate or downplay urgency to seem more helpful.`;
 
 // ============================================================================
 // LANGUAGE INSTRUCTION (for multilingual support)

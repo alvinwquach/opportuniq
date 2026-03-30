@@ -14,6 +14,13 @@ import { createClient } from "@/lib/supabase/server";
 // MOCKS
 // ============================================================================
 
+// Prevent transitive openai import from failing without OPENAI_API_KEY
+jest.mock("@/lib/embeddings", () => ({
+  embedCompletedDiagnosis: jest.fn().mockResolvedValue(undefined),
+  generateEmbedding: jest.fn().mockResolvedValue([]),
+  findSimilarDiagnoses: jest.fn().mockResolvedValue([]),
+}));
+
 const mockUser = { id: "user-id-1", email: "test@example.com" };
 
 jest.mock("@/lib/supabase/server", () => ({

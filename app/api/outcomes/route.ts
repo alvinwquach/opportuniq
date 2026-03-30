@@ -6,6 +6,7 @@ import { decisionOutcomes } from "@/app/db/schema";
 import { decisions, decisionOptions } from "@/app/db/schema/decisions";
 import { issues, groupMembers } from "@/app/db/schema";
 import { eq, and, desc } from "drizzle-orm";
+import { embedCompletedDiagnosis } from "@/lib/embeddings";
 
 // ============================================================================
 // VALIDATION SCHEMA
@@ -18,6 +19,8 @@ const recordOutcomeSchema = z.object({
   success: z.boolean(),
   completedAt: z.string().datetime().optional(),
   notes: z.string().optional(),
+  // Optional: link to an AI conversation for RAG embedding
+  conversationId: z.string().uuid().optional(),
 });
 
 const json = (data: unknown, init?: ResponseInit) =>
@@ -55,7 +58,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { decisionId, actualCost, actualTime, success, completedAt, notes } =
+  const { decisionId, actualCost, actualTime, success, completedAt, notes, conversationId } =
     parseResult.data;
 
   // Load the decision + its selected option (for predicted cost) + verify ownership
@@ -128,6 +131,39 @@ export async function POST(request: NextRequest) {
       },
     })
     .returning();
+
+  // Trigger background embedding if a conversationId was provided.
+  // Don't block the response — embedding can take a few seconds.
+  if (conversationId) {
+    const resolutionTypeMap: Record<string, "diy" | "hired_pro" | "deferred" | "replaced"> = {
+      diy: "diy",
+      hire: "hired_pro",
+      defer: "deferred",
+      replace: "replaced",
+    };
+
+    // Load the selected option type to derive resolutionType
+    const [optionRow] = await db
+      .select({ type: decisionOptions.type })
+      .from(decisions)
+      .innerJoin(decisionOptions, eq(decisions.selectedOptionId, decisionOptions.id))
+      .where(eq(decisions.id, decisionId));
+
+    const resolutionType = optionRow
+      ? (resolutionTypeMap[optionRow.type] ?? "diy")
+      : "diy";
+
+    const actualCostCents =
+      actualCost !== undefined ? Math.round(actualCost * 100) : undefined;
+
+    void embedCompletedDiagnosis(conversationId, {
+      actualCostCents,
+      resolutionType,
+      wasSuccessful: success,
+    }).catch((err) => {
+      console.error("[Outcomes] Embedding failed (non-fatal):", err);
+    });
+  }
 
   return json({ outcome, issueId: decisionRow.issueId }, { status: 201 });
 }

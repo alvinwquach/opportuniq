@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IoDollarSign, IoChevronDown, IoChevronUp, IoCheckmark } from "react-icons/io5";
+import { IoCash, IoChevronDown, IoChevronUp, IoCheckmark } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -85,7 +85,7 @@ export function QuoteFeedbackCard({
       >
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-teal-500/10 flex items-center justify-center">
-            <IoDollarSign className="w-4 h-4 text-teal-400" />
+            <IoCash className="w-4 h-4 text-teal-400" />
           </div>
           <div className="flex-1 min-w-0">
             <CardTitle className="text-sm">Did you get a quote? What did you pay?</CardTitle>

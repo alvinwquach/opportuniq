@@ -5,6 +5,13 @@
  * These tests validate that all required sections are present.
  */
 
+// Prevent transitive db/openai imports from failing without env vars
+jest.mock("@/lib/feature-flags", () => ({
+  getFeatureFlag: jest.fn().mockResolvedValue(false),
+  getFeatureFlagPayload: jest.fn().mockResolvedValue(null),
+}));
+jest.mock("@/lib/rag-context", () => ({ buildRAGContext: jest.fn().mockResolvedValue(null) }));
+
 import { buildDiagnosisPrompt } from "../../lib/prompts/diagnosis";
 import type { DiagnosisRequest } from "../../lib/schemas/diagnosis";
 
@@ -28,8 +35,8 @@ const SAMPLE_DIAGNOSIS: DiagnosisRequest = {
 describe("System Prompt Unit Tests", () => {
   let SYSTEM_PROMPT: string;
 
-  beforeAll(() => {
-    SYSTEM_PROMPT = buildDiagnosisPrompt(SAMPLE_DIAGNOSIS);
+  beforeAll(async () => {
+    SYSTEM_PROMPT = await buildDiagnosisPrompt(SAMPLE_DIAGNOSIS);
   });
 
   describe("Required Sections", () => {

@@ -6,6 +6,9 @@ import { decisions, decisionOptions } from "@/app/db/schema/decisions";
 import { issues } from "@/app/db/schema/issues";
 import { desc, sql, eq, count, and, isNotNull } from "drizzle-orm";
 import { AIUsageClient } from "./AIUsageClient";
+import { getToolFailureRates } from "@/lib/eval/tool-failure-tracker";
+import { getAccuracyMetrics } from "@/lib/eval/accuracy-tracker";
+import { detectHallucination } from "@/lib/eval/hallucination-detector";
 
 export const dynamic = "force-dynamic";
 
@@ -252,6 +255,31 @@ export default async function AIUsagePage() {
     }))
     .sort((a, b) => b.count - a.count);
 
+  // ── Eval metrics ─────────────────────────────────────────────────────────
+
+  // Hallucination rate: scan last 24 h of conversations
+  const recentConvIds = await db
+    .select({ id: aiConversations.id })
+    .from(aiConversations)
+    .where(sql`${aiConversations.createdAt} >= NOW() - INTERVAL '24 hours'`);
+
+  let hallucinationCount = 0;
+  for (const conv of recentConvIds) {
+    const msgs = await db
+      .select({ role: aiMessages.role, content: aiMessages.content, toolCalls: aiMessages.toolCalls })
+      .from(aiMessages)
+      .where(sql`${aiMessages.conversationId} = ${conv.id}`);
+
+    type RawToolCall = { name: string; args?: unknown; result?: unknown };
+    const messages = msgs.map((m) => ({ role: m.role as "user" | "assistant" | "system", content: m.content }));
+    const toolCalls: RawToolCall[] = msgs.flatMap((m) => (Array.isArray(m.toolCalls) ? (m.toolCalls as RawToolCall[]) : []));
+    if (detectHallucination(messages, toolCalls).hallucinated) hallucinationCount++;
+  }
+  const hallucinationRate = recentConvIds.length === 0 ? 0 : (hallucinationCount / recentConvIds.length) * 100;
+
+  const toolFailureRates = await getToolFailureRates(7);
+  const evalAccuracy = await getAccuracyMetrics();
+
   return (
     <AIUsageClient
       stats={{
@@ -308,6 +336,13 @@ export default async function AIUsagePage() {
         cost: parseFloat(String(d.cost)) || 0,
       }))}
       accuracyMetrics={{ totalOutcomes, avgCostDelta, accuracyRate, byServiceType }}
+      evalMetrics={{
+        hallucinationRate,
+        hallucinationCount,
+        conversationsChecked: recentConvIds.length,
+        toolFailureRates,
+        accuracy: evalAccuracy,
+      }}
     />
   );
 }
