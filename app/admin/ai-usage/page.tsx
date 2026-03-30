@@ -1,7 +1,10 @@
 import { db } from "@/app/db/client";
 import { aiConversations, aiMessages, voiceApiUsage } from "@/app/db/schema";
 import { users } from "@/app/db/schema/users";
-import { desc, sql, eq, count } from "drizzle-orm";
+import { decisionOutcomes } from "@/app/db/schema/outcomes";
+import { decisions, decisionOptions } from "@/app/db/schema/decisions";
+import { issues } from "@/app/db/schema/issues";
+import { desc, sql, eq, count, and, isNotNull } from "drizzle-orm";
 import { AIUsageClient } from "./AIUsageClient";
 
 export const dynamic = "force-dynamic";
@@ -202,6 +205,53 @@ export default async function AIUsagePage() {
     .groupBy(sql`DATE(${voiceApiUsage.createdAt})`)
     .orderBy(sql`DATE(${voiceApiUsage.createdAt})`);
 
+  // Get outcome accuracy metrics
+  const outcomeRows = await db
+    .select({
+      costDelta: decisionOutcomes.costDelta,
+      costMin: decisionOptions.costMin,
+      category: issues.category,
+    })
+    .from(decisionOutcomes)
+    .innerJoin(decisions, eq(decisionOutcomes.decisionId, decisions.id))
+    .innerJoin(decisionOptions, eq(decisions.selectedOptionId, decisionOptions.id))
+    .innerJoin(issues, eq(decisions.issueId, issues.id))
+    .where(isNotNull(decisionOutcomes.costDelta));
+
+  const totalOutcomes = outcomeRows.length;
+
+  // Average cost delta
+  const avgCostDelta =
+    totalOutcomes === 0
+      ? 0
+      : outcomeRows.reduce((sum, r) => sum + parseFloat(String(r.costDelta ?? "0")), 0) /
+        totalOutcomes;
+
+  // Accuracy rate: |costDelta| < 30% of predicted midpoint
+  const accurateCount = outcomeRows.filter((r) => {
+    const delta = Math.abs(parseFloat(String(r.costDelta ?? "0")));
+    const predicted = parseFloat(String(r.costMin ?? "0"));
+    if (predicted === 0) return false;
+    return delta / predicted < 0.3;
+  }).length;
+  const accuracyRate = totalOutcomes === 0 ? 0 : (accurateCount / totalOutcomes) * 100;
+
+  // By service type
+  const categoryMap = new Map<string, { count: number; totalDelta: number }>();
+  for (const row of outcomeRows) {
+    const cat = row.category ?? "unknown";
+    const delta = parseFloat(String(row.costDelta ?? "0"));
+    const existing = categoryMap.get(cat) ?? { count: 0, totalDelta: 0 };
+    categoryMap.set(cat, { count: existing.count + 1, totalDelta: existing.totalDelta + delta });
+  }
+  const byServiceType = Array.from(categoryMap.entries())
+    .map(([category, { count, totalDelta }]) => ({
+      category,
+      count,
+      avgDelta: count === 0 ? 0 : totalDelta / count,
+    }))
+    .sort((a, b) => b.count - a.count);
+
   return (
     <AIUsageClient
       stats={{
@@ -257,6 +307,7 @@ export default async function AIUsagePage() {
         ttsCalls: Number(d.ttsCalls) || 0,
         cost: parseFloat(String(d.cost)) || 0,
       }))}
+      accuracyMetrics={{ totalOutcomes, avgCostDelta, accuracyRate, byServiceType }}
     />
   );
 }

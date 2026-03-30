@@ -873,6 +873,32 @@ export function trackQuoteRejected(props: {
   posthog.capture("Quote Rejected", props);
 }
 
+// ============================================
+// ISSUE RESOLUTION & OUTCOME EVENTS
+// ============================================
+
+export function trackIssueResolved(props: {
+  issueId: string;
+  resolutionType: "diy" | "hired_pro" | "deferred";
+}) {
+  posthog.capture("Issue Resolved", props);
+}
+
+export function trackIssueReopened(props: {
+  issueId: string;
+  reason?: string | null;
+}) {
+  posthog.capture("Issue Reopened", props);
+}
+
+export function trackAccuracyFeedbackGiven(props: {
+  conversationId?: string | null;
+  estimateAccurate: boolean;
+  actualCost?: number | null;
+}) {
+  posthog.capture("Accuracy Feedback Given", props);
+}
+
 export function trackWaitlistModalOpened() {
   posthog.capture("Waitlist Modal Opened");
 }

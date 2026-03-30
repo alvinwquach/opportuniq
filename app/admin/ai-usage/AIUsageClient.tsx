@@ -122,6 +122,13 @@ interface DailyVoiceUsage {
   cost: number;
 }
 
+interface AccuracyMetrics {
+  totalOutcomes: number;
+  avgCostDelta: number;
+  accuracyRate: number;
+  byServiceType: Array<{ category: string; count: number; avgDelta: number }>;
+}
+
 interface AIUsageClientProps {
   stats: Stats;
   toolUsage: Record<string, number>;
@@ -131,6 +138,7 @@ interface AIUsageClientProps {
   recentVoiceCalls: VoiceCall[];
   dailyVoiceUsage: DailyVoiceUsage[];
   dailyUsage: DailyUsage[];
+  accuracyMetrics: AccuracyMetrics;
 }
 
 // Chart colors
@@ -413,6 +421,7 @@ export function AIUsageClient({
   recentVoiceCalls,
   dailyVoiceUsage,
   dailyUsage,
+  accuracyMetrics,
 }: AIUsageClientProps) {
   const [activeTab, setActiveTab] = useState<"conversations" | "tools" | "voice">("conversations");
 
@@ -925,6 +934,58 @@ export function AIUsageClient({
             </ResponsiveContainer>
           )}
         </div>
+      </div>
+
+      {/* Accuracy Metrics */}
+      <div className="bg-[#171717] border border-white/[0.06] rounded-xl p-5">
+        <h3 className="text-[15px] font-semibold text-white mb-4">Cost Estimate Accuracy</h3>
+        {accuracyMetrics.totalOutcomes === 0 ? (
+          <p className="text-[13px] text-[#666]">No outcomes recorded yet</p>
+        ) : (
+          <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-[#1a1a1a] rounded-lg p-3">
+                <p className="text-xs text-[#666] mb-1">Outcomes recorded</p>
+                <p className="text-2xl font-semibold text-white">{accuracyMetrics.totalOutcomes}</p>
+              </div>
+              <div className="bg-[#1a1a1a] rounded-lg p-3">
+                <p className="text-xs text-[#666] mb-1">Avg cost delta</p>
+                <p className={`text-2xl font-semibold ${accuracyMetrics.avgCostDelta > 0 ? "text-red-400" : accuracyMetrics.avgCostDelta < 0 ? "text-teal-400" : "text-white"}`}>
+                  {accuracyMetrics.avgCostDelta > 0 ? "+" : ""}${accuracyMetrics.avgCostDelta.toFixed(0)}
+                </p>
+                <p className="text-[11px] text-[#555] mt-0.5">
+                  {accuracyMetrics.avgCostDelta > 0 ? "over-estimating" : accuracyMetrics.avgCostDelta < 0 ? "under-estimating" : "on target"}
+                </p>
+              </div>
+              <div className="bg-[#1a1a1a] rounded-lg p-3">
+                <p className="text-xs text-[#666] mb-1">Accuracy rate</p>
+                <p className={`text-2xl font-semibold ${accuracyMetrics.accuracyRate >= 70 ? "text-teal-400" : "text-amber-400"}`}>
+                  {accuracyMetrics.accuracyRate.toFixed(0)}%
+                </p>
+                <p className="text-[11px] text-[#555] mt-0.5">within ±30% of estimate</p>
+              </div>
+            </div>
+
+            {accuracyMetrics.byServiceType.length > 0 && (
+              <div>
+                <p className="text-xs text-[#666] mb-2">By service type</p>
+                <div className="space-y-1.5">
+                  {accuracyMetrics.byServiceType.map((row) => (
+                    <div key={row.category} className="flex items-center justify-between text-xs">
+                      <span className="text-[#9a9a9a] capitalize">{row.category}</span>
+                      <div className="flex items-center gap-3">
+                        <span className="text-[#555]">{row.count} outcome{row.count !== 1 ? "s" : ""}</span>
+                        <span className={row.avgDelta > 0 ? "text-red-400" : row.avgDelta < 0 ? "text-teal-400" : "text-[#666]"}>
+                          {row.avgDelta > 0 ? "+" : ""}${row.avgDelta.toFixed(0)} avg
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Tabs */}
