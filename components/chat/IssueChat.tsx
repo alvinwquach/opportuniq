@@ -10,6 +10,8 @@ import { MediaProgressIndicator } from "./MediaProgressIndicator";
 import { FollowUpInputBar } from "./FollowUpInputBar";
 import { InitialFormView } from "./InitialFormView";
 import { ErrorToast } from "./ErrorToast";
+import { QuoteFeedbackCard } from "./QuoteFeedbackCard";
+import { useConversationQuotes } from "@/hooks/useQuoteSubmission";
 import { useEncryptedAttachments } from "@/hooks/useEncryptedAttachments";
 import { useMediaUpload } from "@/hooks/useMediaUpload";
 import { useChatState, Message } from "@/hooks/useChatState";
@@ -116,6 +118,7 @@ export function IssueChat({
   });
 
   const { data: existingConversation } = useConversation(initialConversationId || null);
+  const { data: quotesData } = useConversationQuotes(activeConversationId);
 
   useEffect(() => {
     if (existingConversation?.messages && existingConversation.messages.length > 0) {
@@ -463,6 +466,19 @@ export function IssueChat({
           onDecrypt={decryptAndCacheImage}
           onTranslationChange={setTranslation}
         />
+        {/* Show submitted quote history and quote feedback card after AI has responded */}
+        {!isStreaming && messages.some((m) => m.role === "assistant") && (
+          <>
+            {quotesData && quotesData.quotes.length > 0 && (
+              <QuoteHistory quotes={quotesData.quotes} />
+            )}
+            <QuoteFeedbackCard
+              conversationId={activeConversationId}
+              serviceType="general"
+              zipCode={userPostalCode}
+            />
+          </>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
@@ -499,6 +515,45 @@ export function IssueChat({
       )}
 
       <ErrorToast message={errorToast.message} isVisible={errorToast.visible} onClose={hideError} />
+    </div>
+  );
+}
+
+// ============================================
+// QUOTE HISTORY
+// ============================================
+
+import type { SubmittedQuote } from "@/hooks/useQuoteSubmission";
+
+function QuoteHistory({ quotes }: { quotes: SubmittedQuote[] }) {
+  return (
+    <div className="mt-2 px-1">
+      <p className="text-xs text-[#666] mb-2">Your submitted quotes for this conversation</p>
+      <div className="space-y-2">
+        {quotes.map((q) => (
+          <div
+            key={q.id}
+            className="rounded-lg bg-[#141414] border border-[#2a2a2a] px-3 py-2 text-sm flex flex-wrap gap-x-4 gap-y-1"
+          >
+            <span className="text-white font-medium">${(q.quoteCents / 100).toFixed(2)}</span>
+            <span className="text-[#888] capitalize">{q.quoteType}</span>
+            {q.contractorName && <span className="text-[#888]">{q.contractorName}</span>}
+            {q.wasAccepted && (
+              <span
+                className={
+                  q.wasAccepted === "yes"
+                    ? "text-teal-400"
+                    : q.wasAccepted === "no"
+                    ? "text-red-400"
+                    : "text-yellow-400"
+                }
+              >
+                {q.wasAccepted === "yes" ? "Accepted" : q.wasAccepted === "no" ? "Rejected" : "Pending"}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

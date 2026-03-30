@@ -844,6 +844,35 @@ export function trackCommandExecuted(props: {
 // WAITLIST EVENTS
 // ============================================
 
+// ============================================
+// QUOTE FEEDBACK EVENTS
+// ============================================
+
+export function trackQuoteSubmitted(props: {
+  issueId?: string | null;
+  quoteCents: number;
+  quoteType: "diy" | "professional";
+  contractorName?: string | null;
+  wasAccepted?: "yes" | "no" | "pending" | null;
+}) {
+  posthog.capture("Quote Submitted", props);
+}
+
+export function trackQuoteAccepted(props: {
+  issueId?: string | null;
+  contractorName?: string | null;
+}) {
+  posthog.capture("Quote Accepted", props);
+}
+
+export function trackQuoteRejected(props: {
+  issueId?: string | null;
+  contractorName?: string | null;
+  reason?: string | null;
+}) {
+  posthog.capture("Quote Rejected", props);
+}
+
 export function trackWaitlistModalOpened() {
   posthog.capture("Waitlist Modal Opened");
 }
