@@ -646,9 +646,85 @@ export function getAvailableServiceTypes(): string[] {
   return Object.keys(SERVICE_URL_MAP);
 }
 
+// ============================================
+// MAP-BASED URL DISCOVERY
+// ============================================
+
+/**
+ * Extract source + slug from a HomeAdvisor or Angi URL.
+ * Returns null if the URL doesn't match either pattern.
+ */
+function extractCostGuideSlug(
+  url: string
+): { source: "homeadvisor" | "angi"; slug: string } | null {
+  // HomeAdvisor: https://www.homeadvisor.com/cost/{slug}/
+  const haMatch = url.match(/homeadvisor\.com\/cost\/(.+?)\/?$/);
+  if (haMatch) {
+    return { source: "homeadvisor", slug: haMatch[1].replace(/\/$/, "") };
+  }
+
+  // Angi: https://www.angi.com/articles/{slug}.htm
+  const angiMatch = url.match(/angi\.com\/articles\/(.+?)\.htm$/);
+  if (angiMatch) {
+    return { source: "angi", slug: angiMatch[1] };
+  }
+
+  return null;
+}
+
+/**
+ * Derive a known serviceType from a cost guide URL slug.
+ * Checks SERVICE_URL_MAP first (exact match), then keyword matching.
+ */
+function deriveServiceType(
+  source: "homeadvisor" | "angi",
+  slug: string
+): string {
+  // Exact match against SERVICE_URL_MAP
+  for (const [serviceType, urls] of Object.entries(SERVICE_URL_MAP)) {
+    if (source === "homeadvisor" && urls.homeadvisor === slug) return serviceType;
+    if (source === "angi" && urls.angi === slug) return serviceType;
+  }
+
+  // Keyword matching on the slug
+  const n = slug.toLowerCase();
+  if (n.includes("popcorn")) return "popcorn_ceiling";
+  if (n.includes("ceiling")) return "ceiling_repair";
+  if (n.includes("drywall")) return "drywall_repair";
+  if (n.includes("faucet")) return "faucet_repair";
+  if (n.includes("toilet")) return "toilet_repair";
+  if (n.includes("water-heater") || n.includes("water_heater")) return "water_heater";
+  if (n.includes("plumbing") || n.includes("pipe")) return "plumbing_leak";
+  if (n.includes("furnace")) return "furnace_repair";
+  if (n.includes("hvac") || n.includes("air-condition")) return "hvac_repair";
+  if (n.includes("outlet")) return "outlet_repair";
+  if (n.includes("electrical")) return "electrical_repair";
+  if (n.includes("roof-leak")) return "roof_leak";
+  if (n.includes("roof")) return "roof_repair";
+  if (n.includes("foundation-crack")) return "foundation_crack";
+  if (n.includes("foundation")) return "foundation_repair";
+  if (n.includes("mold")) return "mold_removal";
+  if (n.includes("paint")) return "interior_painting";
+  if (n.includes("dishwasher")) return "dishwasher_repair";
+  if (n.includes("refrigerator")) return "refrigerator_repair";
+  if (n.includes("appliance")) return "appliance_repair";
+  if (n.includes("brake")) return "brake_repair";
+  if (n.includes("battery")) return "car_battery";
+  if (n.includes("floor")) return "flooring_repair";
+
+  // Last resort: sanitize slug to snake_case
+  const last = slug.split("/").pop() ?? slug;
+  return last
+    .replace(/-/g, "_")
+    .replace(/^how_much_does_|_cost$|_repair_cost$/g, "");
+}
+
 /**
  * Bulk scrape all cost guides (for initial data population)
- * Use sparingly - consumes Firecrawl credits
+ * Use sparingly - consumes Firecrawl credits.
+ *
+ * Discovers cost guide URLs dynamically via firecrawl.map() (1 credit total per domain).
+ * Falls back to hardcoded SERVICE_URL_MAP if map() fails or returns nothing.
  */
 export async function bulkScrapeCostGuides(
   region: string = "national"
@@ -656,19 +732,99 @@ export async function bulkScrapeCostGuides(
   let success = 0;
   let failed = 0;
 
-  for (const serviceType of Object.keys(SERVICE_URL_MAP)) {
+  type DiscoveredEntry = {
+    source: "homeadvisor" | "angi";
+    slug: string;
+    serviceType: string;
+  };
+
+  let discoveredUrls: DiscoveredEntry[] = [];
+
+  // Step 1: Discover URLs via firecrawl.map() (1 credit per domain, returns up to 500 URLs)
+  try {
+    const firecrawl = getFirecrawlClient();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fc = firecrawl as any;
+
+    const [haResult, angiResult] = await Promise.all([
+      fc.map("https://www.homeadvisor.com/cost/", { limit: 500 }) as Promise<{
+        links?: Array<{ url: string }>;
+      }>,
+      fc.map("https://www.angi.com/articles/", {
+        limit: 500,
+        search: "how much does cost",
+      }) as Promise<{ links?: Array<{ url: string }> }>,
+    ]);
+
+    for (const link of haResult?.links ?? []) {
+      const extracted = extractCostGuideSlug(link.url);
+      if (extracted?.source === "homeadvisor") {
+        discoveredUrls.push({
+          ...extracted,
+          serviceType: deriveServiceType(extracted.source, extracted.slug),
+        });
+      }
+    }
+
+    for (const link of angiResult?.links ?? []) {
+      const extracted = extractCostGuideSlug(link.url);
+      if (extracted?.source === "angi") {
+        discoveredUrls.push({
+          ...extracted,
+          serviceType: deriveServiceType(extracted.source, extracted.slug),
+        });
+      }
+    }
+
+    console.log(
+      `[CostScraper] Discovered ${discoveredUrls.length} cost guide URLs via map()`
+    );
+  } catch (error) {
+    console.warn(
+      "[CostScraper] map() failed, falling back to SERVICE_URL_MAP:",
+      error
+    );
+    Sentry.captureException(error, {
+      extra: { tool: "bulkScrapeCostGuides", step: "map" },
+    });
+  }
+
+  // Step 2: Fall back to SERVICE_URL_MAP if map() returned nothing
+  if (discoveredUrls.length === 0) {
+    console.log("[CostScraper] No URLs from map(), using SERVICE_URL_MAP fallback");
+    for (const [serviceType, urls] of Object.entries(SERVICE_URL_MAP)) {
+      if (urls.homeadvisor) {
+        discoveredUrls.push({
+          source: "homeadvisor",
+          slug: urls.homeadvisor,
+          serviceType,
+        });
+      } else if (urls.angi) {
+        discoveredUrls.push({ source: "angi", slug: urls.angi, serviceType });
+      }
+    }
+  }
+
+  // Step 3: Scrape each discovered URL
+  for (const { source, slug, serviceType } of discoveredUrls) {
     try {
-      const data = await scrapeFreshCostData(serviceType, region);
-      if (data) {
+      const data = await scrapeCostGuide(source, slug);
+      if (data && (data.proMinCents || data.diyMinCents)) {
+        await saveCostData(serviceType, region, data);
         success++;
       } else {
         failed++;
       }
-      // Rate limit: wait 2 seconds between requests
+      // Rate limit: 2 seconds between requests
       await new Promise((resolve) => setTimeout(resolve, 2000));
     } catch (error) {
-      console.error(`[CostScraper] Failed to scrape ${serviceType}:`, error);
-      Sentry.captureException(error, { extra: { tool: "bulkScrapeCostGuides", url: serviceType, region } });
+      console.error(
+        `[CostScraper] Failed to scrape ${source}/${slug}:`,
+        error
+      );
+      Sentry.captureException(error, {
+        extra: { tool: "bulkScrapeCostGuides", source, slug, region },
+      });
       failed++;
     }
   }

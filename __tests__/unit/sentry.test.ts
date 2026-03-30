@@ -24,11 +24,13 @@ jest.mock("@sentry/nextjs", () => ({
 
 const mockFirecrawlScrape = jest.fn();
 const mockFirecrawlCrawl = jest.fn();
+const mockFirecrawlBatchScrape = jest.fn();
 
 jest.mock("@mendable/firecrawl-js", () => {
   const MockFirecrawl = jest.fn().mockImplementation(() => ({
     scrape: mockFirecrawlScrape,
     crawl: mockFirecrawlCrawl,
+    batchScrape: mockFirecrawlBatchScrape,
   }));
   return { __esModule: true, default: MockFirecrawl };
 });
@@ -234,7 +236,7 @@ describe("lib/integrations/firecrawl", () => {
   describe("batchScrape", () => {
     it("calls Sentry.captureException when batch scrape throws", async () => {
       const err = new Error("batch failed");
-      mockFirecrawlScrape.mockRejectedValueOnce(err);
+      mockFirecrawlBatchScrape.mockRejectedValueOnce(err);
 
       const { batchScrape } = await import("@/lib/integrations/firecrawl");
       await expect(batchScrape(["https://a.com", "https://b.com"])).rejects.toThrow("batch failed");
