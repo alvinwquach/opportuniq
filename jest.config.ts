@@ -20,6 +20,7 @@ const config: Config = {
     "/node_modules/",
     "/e2e/",
     "/.claude/worktrees/",
+    "/__tests__/fixtures/",
   ],
   collectCoverageFrom: [
     "app/**/*.{js,jsx,ts,tsx}",

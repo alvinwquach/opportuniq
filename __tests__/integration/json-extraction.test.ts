@@ -20,7 +20,7 @@ const mockScrape = jest.fn();
 const mockScrapePage = jest.fn();
 
 jest.mock("@/lib/integrations/firecrawl", () => ({
-  scrapePage: (...args: unknown[]) => mockScrapePage(...args),
+  scrapePage: (...args: [unknown, ...unknown[]]) => mockScrapePage(...args),
   getFirecrawlClient: () => ({ scrape: mockScrape }),
   scrapeAngiContractors: jest.fn(),
   extractVendorsFromMarkdown: jest.fn(() => []),
@@ -31,7 +31,7 @@ jest.mock("@/lib/integrations/firecrawl", () => ({
 
 const mockGetFeatureFlag = jest.fn();
 jest.mock("@/lib/feature-flags", () => ({
-  getFeatureFlag: (...args: unknown[]) => mockGetFeatureFlag(...args),
+  getFeatureFlag: (...args: [unknown, ...unknown[]]) => mockGetFeatureFlag(...args),
 }));
 
 // ─── Analytics mocks ──────────────────────────────────────────────────────────
@@ -40,9 +40,9 @@ const mockTrackCacheHit = jest.fn();
 const mockTrackCacheMiss = jest.fn();
 const mockTrackZeroResults = jest.fn();
 jest.mock("@/lib/analytics-server", () => ({
-  trackCostDataCacheHit: (...args: unknown[]) => mockTrackCacheHit(...args),
-  trackCostDataCacheMiss: (...args: unknown[]) => mockTrackCacheMiss(...args),
-  trackContractorSearchZeroResults: (...args: unknown[]) => mockTrackZeroResults(...args),
+  trackCostDataCacheHit: (...args: [unknown, ...unknown[]]) => mockTrackCacheHit(...args),
+  trackCostDataCacheMiss: (...args: [unknown, ...unknown[]]) => mockTrackCacheMiss(...args),
+  trackContractorSearchZeroResults: (...args: [unknown, ...unknown[]]) => mockTrackZeroResults(...args),
 }));
 
 // ─── DB mock ──────────────────────────────────────────────────────────────────

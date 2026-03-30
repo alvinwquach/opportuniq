@@ -35,7 +35,7 @@ jest.mock("@/lib/analytics-server", () => ({
   trackContractorSearchZeroResults: jest.fn(),
   trackCalendarReminderCreated: jest.fn(),
   trackContractorVerified: jest.fn(),
-  trackEmailDelivered: (...args: unknown[]) => mockTrackEmailDelivered(...args),
+  trackEmailDelivered: (...args: [unknown, ...unknown[]]) => mockTrackEmailDelivered(...args),
   trackEmailOpenedByRecipient: (...args: unknown[]) =>
     mockTrackEmailOpenedByRecipient(...args),
 }));
@@ -50,13 +50,13 @@ jest.mock("@/app/db/client", () => ({
     select: jest.fn(() => ({
       from: jest.fn(() => ({
         where: jest.fn(() => ({
-          limit: (...args: unknown[]) => mockDbSelect(...args),
+          limit: (...args: [unknown, ...unknown[]]) => mockDbSelect(...args),
         })),
       })),
     })),
     update: jest.fn(() => ({
       set: jest.fn(() => ({
-        where: (...args: unknown[]) => mockDbUpdate(...args),
+        where: (...args: [unknown, ...unknown[]]) => mockDbUpdate(...args),
       })),
     })),
   },

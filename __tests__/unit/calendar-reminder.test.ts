@@ -23,8 +23,8 @@ const mockCreateCalendarEvent = jest.fn();
 const mockRefreshAccessToken = jest.fn();
 
 jest.mock("@/lib/google-calendar", () => ({
-  createCalendarEvent: (...args: unknown[]) => mockCreateCalendarEvent(...args),
-  refreshAccessToken: (...args: unknown[]) => mockRefreshAccessToken(...args),
+  createCalendarEvent: (...args: [unknown, ...unknown[]]) => mockCreateCalendarEvent(...args),
+  refreshAccessToken: (...args: [unknown, ...unknown[]]) => mockRefreshAccessToken(...args),
 }));
 
 // ─── Analytics mock ───────────────────────────────────────────────────────────
@@ -51,7 +51,7 @@ jest.mock("@/app/db/client", () => ({
     select: jest.fn(() => ({
       from: jest.fn(() => ({
         where: jest.fn(() => ({
-          limit: (...args: unknown[]) => mockDbSelect(...args),
+          limit: (...args: [unknown, ...unknown[]]) => mockDbSelect(...args),
         })),
       })),
     })),

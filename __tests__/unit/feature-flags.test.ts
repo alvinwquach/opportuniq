@@ -9,8 +9,8 @@ const mockGetFeatureFlagPayload = jest.fn();
 
 jest.mock("posthog-node", () => ({
   PostHog: jest.fn().mockImplementation(() => ({
-    isFeatureEnabled: (...args: unknown[]) => mockIsFeatureEnabled(...args),
-    getFeatureFlagPayload: (...args: unknown[]) => mockGetFeatureFlagPayload(...args),
+    isFeatureEnabled: (...args: [unknown, ...unknown[]]) => mockIsFeatureEnabled(...args),
+    getFeatureFlagPayload: (...args: [unknown, ...unknown[]]) => mockGetFeatureFlagPayload(...args),
   })),
 }));
 

@@ -9,15 +9,17 @@ const mockCaptureException = jest.fn();
 const mockCaptureMessage = jest.fn();
 const mockSetContext = jest.fn();
 const mockSetTag = jest.fn();
-const mockWithServerActionInstrumentation = jest.fn((name, opts, fn) => fn());
+const mockWithServerActionInstrumentation = jest.fn(
+  (_name: unknown, _opts: unknown, fn: () => unknown) => fn()
+);
 
 jest.mock("@sentry/nextjs", () => ({
-  captureException: (...args: unknown[]) => mockCaptureException(...args),
-  captureMessage: (...args: unknown[]) => mockCaptureMessage(...args),
-  setContext: (...args: unknown[]) => mockSetContext(...args),
-  setTag: (...args: unknown[]) => mockSetTag(...args),
-  withServerActionInstrumentation: (...args: unknown[]) =>
-    mockWithServerActionInstrumentation(...args),
+  captureException: (...args: [unknown, ...unknown[]]) => mockCaptureException(...args),
+  captureMessage: (...args: [unknown, ...unknown[]]) => mockCaptureMessage(...args),
+  setContext: (...args: [unknown, ...unknown[]]) => mockSetContext(...args),
+  setTag: (...args: [unknown, ...unknown[]]) => mockSetTag(...args),
+  withServerActionInstrumentation: (name: unknown, opts: unknown, fn: () => unknown) =>
+    mockWithServerActionInstrumentation(name, opts, fn),
 }));
 
 // ─── Firecrawl ───────────────────────────────────────────────────────────────
@@ -109,7 +111,7 @@ jest.mock("@/lib/gmail", () => ({
 
 const mockFindContractorsOnYelp = jest.fn();
 jest.mock("@/lib/integrations/yelp", () => ({
-  findContractorsForIssue: (...args: unknown[]) => mockFindContractorsOnYelp(...args),
+  findContractorsForIssue: (...args: [unknown, ...unknown[]]) => mockFindContractorsOnYelp(...args),
 }));
 
 jest.mock("@/lib/integrations/foursquare", () => ({
@@ -126,7 +128,7 @@ jest.mock("@/lib/integrations/cost-scraper", () => {
   const actual = jest.requireActual("@/lib/integrations/cost-scraper");
   return {
     ...actual,
-    getCostEstimate: (...args: unknown[]) => mockGetCostEstimate(...args),
+    getCostEstimate: (...args: [unknown, ...unknown[]]) => mockGetCostEstimate(...args),
   };
 });
 
@@ -307,7 +309,7 @@ describe("app/api/chat/tools/cost-lookup", () => {
 
     const { createCostLookupTool } = await import("@/app/api/chat/tools/cost-lookup");
     const tool = createCostLookupTool({ firecrawl: null });
-    const result = await tool.execute({ serviceType: "ceiling_repair", zipCode: "90210" }, {} as never);
+    const result = await tool.execute!({ serviceType: "ceiling_repair", zipCode: "90210" }, {} as never);
 
     expect((result as { success: boolean }).success).toBe(false);
     expect(mockCaptureException).toHaveBeenCalledWith(
@@ -321,7 +323,7 @@ describe("app/api/chat/tools/recall-check", () => {
   it("calls Sentry.captureMessage when firecrawl is unavailable", async () => {
     const { createRecallCheckTool } = await import("@/app/api/chat/tools/recall-check");
     const tool = createRecallCheckTool({ firecrawl: null });
-    const result = await tool.execute({ itemType: "product", searchTerm: "faulty toaster" }, {} as never);
+    const result = await tool.execute!({ itemType: "product", searchTerm: "faulty toaster" }, {} as never);
 
     expect((result as { error: string }).error).toMatch(/not available/i);
     expect(mockCaptureMessage).toHaveBeenCalledWith(
@@ -343,7 +345,7 @@ describe("app/api/chat/tools/recall-check", () => {
 
     const mockFirecrawl = { scrape: jest.fn() } as never;
     const tool = createRecallCheckTool({ firecrawl: mockFirecrawl });
-    const result = await tool.execute({ itemType: "vehicle", searchTerm: "Ford F-150 2020" }, {} as never);
+    const result = await tool.execute!({ itemType: "vehicle", searchTerm: "Ford F-150 2020" }, {} as never);
 
     expect((result as { error: string }).error).toBeTruthy();
   });
@@ -353,7 +355,7 @@ describe("app/api/chat/tools/utility-rebates", () => {
   it("calls Sentry.captureMessage when firecrawl is unavailable", async () => {
     const { createUtilityRebatesTool } = await import("@/app/api/chat/tools/utility-rebates");
     const tool = createUtilityRebatesTool({ firecrawl: null });
-    const result = await tool.execute({ upgradeType: "heat pump water heater", zipCode: "90210" }, {} as never);
+    const result = await tool.execute!({ upgradeType: "heat pump water heater", zipCode: "90210" }, {} as never);
 
     expect((result as { error: string }).error).toMatch(/not available/i);
     expect(mockCaptureMessage).toHaveBeenCalledWith(
@@ -370,7 +372,7 @@ describe("app/api/chat/tools/product-search", () => {
   it("calls Sentry.captureMessage when firecrawl is unavailable", async () => {
     const { createProductSearchTool } = await import("@/app/api/chat/tools/product-search");
     const tool = createProductSearchTool({ firecrawl: null });
-    const result = await tool.execute({ query: "copper pipe", category: "materials" }, {} as never);
+    const result = await tool.execute!({ query: "copper pipe", category: "materials" }, {} as never);
 
     expect((result as { error: string }).error).toMatch(/not available/i);
     expect(mockCaptureMessage).toHaveBeenCalledWith(

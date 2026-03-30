@@ -18,7 +18,7 @@ const mockScrapeForCost = jest.fn();
 const mockScrapePage = jest.fn();
 
 jest.mock("@/lib/integrations/firecrawl", () => ({
-  scrapePage: (...args: unknown[]) => mockScrapePage(...args),
+  scrapePage: (...args: [unknown, ...unknown[]]) => mockScrapePage(...args),
   getFirecrawlClient: () => ({
     map: mockMap,
     scrape: mockScrapeForCost,

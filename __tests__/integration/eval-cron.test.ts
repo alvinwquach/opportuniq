@@ -119,7 +119,7 @@ describe("Eval cron — admin dashboard renders empty eval data", () => {
       hallucinationRate: 0,
       hallucinationCount: 0,
       conversationsChecked: 0,
-      toolFailureRates: [],
+      toolFailureRates: [] as Array<{ toolName: string; rate: number }>,
       accuracy: {
         overall: { total: 0, avgDelta: 0, medianDelta: 0, withinThirtyPercent: 0 },
         byServiceType: {},

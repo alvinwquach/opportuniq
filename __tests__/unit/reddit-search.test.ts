@@ -16,14 +16,14 @@ jest.mock("@sentry/nextjs", () => ({
 
 const mockGetFeatureFlag = jest.fn();
 jest.mock("@/lib/feature-flags", () => ({
-  getFeatureFlag: (...args: unknown[]) => mockGetFeatureFlag(...args),
+  getFeatureFlag: (...args: [unknown, ...unknown[]]) => mockGetFeatureFlag(...args),
 }));
 
 // ─── firecrawlSearch mock ─────────────────────────────────────────────────────
 
 const mockFirecrawlSearch = jest.fn();
 jest.mock("@/lib/integrations/firecrawl-search", () => ({
-  firecrawlSearch: (...args: unknown[]) => mockFirecrawlSearch(...args),
+  firecrawlSearch: (...args: [unknown, ...unknown[]]) => mockFirecrawlSearch(...args),
 }));
 
 // ─── FirecrawlApp mock ────────────────────────────────────────────────────────

@@ -18,7 +18,7 @@ interface MagicLinkEmailProps {
   userAgent?: string;
 }
 
-export default function MagicLinkEmail({
+export function MagicLinkEmail({
   magicLink,
   ipAddress,
   userAgent,
@@ -206,3 +206,5 @@ const footerLink = {
   color: "#94a3b8",
   textDecoration: "none",
 };
+
+export default MagicLinkEmail;

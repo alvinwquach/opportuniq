@@ -17,7 +17,7 @@ jest.mock("@sentry/nextjs", () => ({
 const mockScrape = jest.fn();
 const mockScrapePage = jest.fn();
 jest.mock("@/lib/integrations/firecrawl", () => ({
-  scrapePage: (...args: unknown[]) => mockScrapePage(...args),
+  scrapePage: (...args: [unknown, ...unknown[]]) => mockScrapePage(...args),
   getFirecrawlClient: () => ({ scrape: mockScrape }),
 }));
 
@@ -25,7 +25,7 @@ jest.mock("@/lib/integrations/firecrawl", () => ({
 
 const mockGetFeatureFlag = jest.fn();
 jest.mock("@/lib/feature-flags", () => ({
-  getFeatureFlag: (...args: unknown[]) => mockGetFeatureFlag(...args),
+  getFeatureFlag: (...args: [unknown, ...unknown[]]) => mockGetFeatureFlag(...args),
 }));
 
 // ─── PostHog analytics mock ───────────────────────────────────────────────────

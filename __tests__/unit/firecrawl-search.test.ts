@@ -6,7 +6,7 @@
 
 const mockCaptureException = jest.fn();
 jest.mock("@sentry/nextjs", () => ({
-  captureException: (...args: unknown[]) => mockCaptureException(...args),
+  captureException: (...args: [unknown, ...unknown[]]) => mockCaptureException(...args),
   addBreadcrumb: jest.fn(),
   captureMessage: jest.fn(),
   setContext: jest.fn(),
@@ -17,7 +17,7 @@ jest.mock("@sentry/nextjs", () => ({
 
 const mockLimitedSearch = jest.fn();
 jest.mock("@/lib/firecrawl-limiter", () => ({
-  limitedSearch: (...args: unknown[]) => mockLimitedSearch(...args),
+  limitedSearch: (...args: [unknown, ...unknown[]]) => mockLimitedSearch(...args),
   limitedScrape: jest.fn(),
   limitedCrawl: jest.fn(),
   limitedBatch: jest.fn(),
