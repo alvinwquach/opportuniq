@@ -6,7 +6,7 @@
 
 const mockAddBreadcrumb = jest.fn();
 jest.mock("@sentry/nextjs", () => ({
-  addBreadcrumb: (...args: unknown[]) => mockAddBreadcrumb(...args),
+  addBreadcrumb: (...args: [unknown, ...unknown[]]) => mockAddBreadcrumb(...args),
   captureException: jest.fn(),
   captureMessage: jest.fn(),
   setContext: jest.fn(),

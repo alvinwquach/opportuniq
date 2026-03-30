@@ -22,7 +22,7 @@ jest.mock("ai", () => ({
 
 const mockGetFeatureFlag = jest.fn();
 jest.mock("@/lib/feature-flags", () => ({
-  getFeatureFlag: (...args: unknown[]) => mockGetFeatureFlag(...args),
+  getFeatureFlag: (...args: [unknown, ...unknown[]]) => mockGetFeatureFlag(...args),
 }));
 
 // ─── Firecrawl mock ───────────────────────────────────────────────────────────

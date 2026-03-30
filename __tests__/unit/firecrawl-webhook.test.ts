@@ -1,3 +1,4 @@
+export {};
 /**
  * Unit tests for app/api/webhooks/firecrawl/route.ts
  */
@@ -27,7 +28,7 @@ jest.mock("@sentry/nextjs", () => ({
 const mockScrapeCostGuide = jest.fn();
 
 jest.mock("@/lib/integrations/cost-scraper", () => ({
-  scrapeCostGuide: (...args: unknown[]) => mockScrapeCostGuide(...args),
+  scrapeCostGuide: (...args: [unknown, ...unknown[]]) => mockScrapeCostGuide(...args),
 }));
 
 // ─── DB mock ──────────────────────────────────────────────────────────────────

@@ -16,7 +16,7 @@ jest.mock("@sentry/nextjs", () => ({
 
 const mockScrapePage = jest.fn();
 jest.mock("@/lib/integrations/firecrawl", () => ({
-  scrapePage: (...args: unknown[]) => mockScrapePage(...args),
+  scrapePage: (...args: [unknown, ...unknown[]]) => mockScrapePage(...args),
 }));
 
 // ─── PostHog analytics mock ───────────────────────────────────────────────────
@@ -24,8 +24,8 @@ jest.mock("@/lib/integrations/firecrawl", () => ({
 const mockTrackCacheHit = jest.fn();
 const mockTrackCacheMiss = jest.fn();
 jest.mock("@/lib/analytics-server", () => ({
-  trackCostDataCacheHit: (...args: unknown[]) => mockTrackCacheHit(...args),
-  trackCostDataCacheMiss: (...args: unknown[]) => mockTrackCacheMiss(...args),
+  trackCostDataCacheHit: (...args: [unknown, ...unknown[]]) => mockTrackCacheHit(...args),
+  trackCostDataCacheMiss: (...args: [unknown, ...unknown[]]) => mockTrackCacheMiss(...args),
 }));
 
 // ─── DB mock ──────────────────────────────────────────────────────────────────
