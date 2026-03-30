@@ -56,3 +56,23 @@ export function trackCostDataCacheMiss(props: {
     // PostHog unreachable — don't fail the request
   }
 }
+
+// ============================================
+// CONTRACTOR SEARCH EVENTS
+// ============================================
+
+export function trackContractorSearchZeroResults(props: {
+  category: string;
+  zipCode: string;
+  providersAttempted: string[];
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: "system",
+      event: "Contractor Search Zero Results",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}

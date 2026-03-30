@@ -153,9 +153,12 @@ export function createRedditSearchTool(ctx: ToolContext) {
         };
       }
 
-      // Feature flag: use Firecrawl search() instead of scraping Reddit directly
+      // Feature flags
       const useNewSearch = ctx.userId
         ? await getFeatureFlag("firecrawl-search-v2", ctx.userId)
+        : false;
+      const useJsonExtraction = ctx.userId
+        ? await getFeatureFlag("firecrawl-json-extraction", ctx.userId)
         : false;
 
       if (useNewSearch) {
@@ -174,7 +177,15 @@ export function createRedditSearchTool(ctx: ToolContext) {
           console.log(`[redditSearch] firecrawlSearch success, ${searchResults.web.length} results`);
 
           // Map search results to post shape, extracting subreddit from URL
-          const posts = searchResults.web.map((item, index) => {
+          const posts: Array<{
+            title: string;
+            url: string;
+            subreddit: string;
+            excerpt?: string;
+            markdown?: string;
+            relevanceScore: number;
+            insights?: unknown;
+          }> = searchResults.web.map((item, index) => {
             const url = "url" in item ? (item.url as string) : "";
             const title = "title" in item ? ((item.title as string | undefined) ?? url) : url;
             const subreddit = extractSubreddit(url);
@@ -190,6 +201,29 @@ export function createRedditSearchTool(ctx: ToolContext) {
               relevanceScore: Math.max(1, 10 - index),
             };
           });
+
+          // Behind firecrawl-json-extraction: extract structured insights from top posts
+          if (useJsonExtraction) {
+            const topWithMarkdown = posts.filter((p) => p.markdown).slice(0, 3);
+            await Promise.all(
+              topWithMarkdown.map(async (post) => {
+                try {
+                  const extracted = await ctx.firecrawl!.scrape(post.url, {
+                    formats: [
+                      {
+                        type: "json",
+                        prompt:
+                          "Extract: actual cost paid, difficulty assessment, key advice, warnings, and whether they recommend DIY or hiring a professional.",
+                      },
+                    ],
+                  });
+                  post.insights = (extracted as { json?: unknown }).json ?? null;
+                } catch {
+                  // Extraction failures are non-fatal — continue without insights
+                }
+              })
+            );
+          }
 
           // Save guides to database if we have user context
           if (ctx.userId && ctx.conversationId && posts.length > 0) {
@@ -228,6 +262,7 @@ export function createRedditSearchTool(ctx: ToolContext) {
               title: p.title,
               url: p.url,
               subreddit: p.subreddit !== "unknown" ? `r/${p.subreddit}` : undefined,
+              insights: p.insights ?? undefined,
             })),
             interpretation: getInterpretationTips(focusOn),
           };
@@ -237,6 +272,39 @@ export function createRedditSearchTool(ctx: ToolContext) {
       }
 
       // FALLBACK: scrape Reddit search directly
+      // Behind firecrawl-json-extraction: use summary format to reduce tokens sent to GPT
+      if (useJsonExtraction) {
+        try {
+          const summaryResult = await Promise.race([
+            ctx.firecrawl.scrape(redditUrl, { formats: ["summary"] }),
+            new Promise<null>((resolve) => {
+              setTimeout(() => {
+                console.log(`[redditSearch] Summary scrape timeout for ${redditUrl}`);
+                resolve(null);
+              }, 15000);
+            }),
+          ]);
+
+          const summary = (summaryResult as { summary?: string } | null)?.summary;
+          if (summary) {
+            console.log(`[redditSearch] Summary format success, got ${summary.length} chars`);
+            return {
+              searchQuery: query,
+              focusArea: focusOn,
+              category,
+              redditUrl,
+              subredditsSearched: subreddits,
+              postsFound: 0,
+              posts: [],
+              results: summary,
+              interpretation: getInterpretationTips(focusOn),
+            };
+          }
+        } catch {
+          // Fall through to markdown path
+        }
+      }
+
       const result = await scrapeWithTimeout(ctx.firecrawl, redditUrl, 15000);
 
       if (result?.markdown) {

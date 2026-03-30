@@ -107,7 +107,11 @@ beforeEach(() => {
 describe("reddit search tool", () => {
   describe("flag ON", () => {
     beforeEach(() => {
-      mockGetFeatureFlag.mockResolvedValue(true);
+      // Enable firecrawl-search-v2 only; keep json-extraction OFF to isolate behavior
+      mockGetFeatureFlag.mockImplementation((flag: string) => {
+        if (flag === "firecrawl-search-v2") return Promise.resolve(true);
+        return Promise.resolve(false);
+      });
     });
 
     it("calls firecrawlSearch with enhanced query based on focusOn", async () => {
@@ -283,7 +287,11 @@ describe("reddit search tool", () => {
 
   describe("edge cases", () => {
     beforeEach(() => {
-      mockGetFeatureFlag.mockResolvedValue(true);
+      // Enable firecrawl-search-v2 only; keep json-extraction OFF to isolate behavior
+      mockGetFeatureFlag.mockImplementation((flag: string) => {
+        if (flag === "firecrawl-search-v2") return Promise.resolve(true);
+        return Promise.resolve(false);
+      });
     });
 
     it("search returns results but all markdown is empty", async () => {
