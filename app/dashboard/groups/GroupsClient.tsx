@@ -51,6 +51,7 @@ export function GroupsClient() {
   // Set initial selected group when data loads
   useEffect(() => {
     if (data?.groups && data.groups.length > 0 && !selectedGroupId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedGroupId(data.groups[0].id);
     }
   }, [data?.groups, selectedGroupId]);

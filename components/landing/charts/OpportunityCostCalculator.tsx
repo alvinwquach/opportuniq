@@ -24,7 +24,6 @@ const PRESET_SCENARIOS: ProjectScenario[] = [
 
 export function OpportunityCostCalculator() {
   const gaugeRef = useRef<SVGSVGElement>(null);
-  const [mounted, setMounted] = useState(false);
 
   // User inputs
   const [hourlyRate, setHourlyRate] = useState(50);
@@ -39,13 +38,10 @@ export function OpportunityCostCalculator() {
   const savings = proCost - totalDiyCost;
   const worthDiy = savings > 0;
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Animated gauge
   useEffect(() => {
-    if (!gaugeRef.current || !mounted) return;
+    if (!gaugeRef.current) return;
 
     const svg = select(gaugeRef.current);
     svg.selectAll("*").remove();
@@ -117,9 +113,8 @@ export function OpportunityCostCalculator() {
       .attr("fill", worthDiy ? "#059669" : "#dc2626")
       .text(`$${Math.abs(savings).toFixed(0)}`);
 
-  }, [mounted, savings, proCost, worthDiy]);
+  }, [savings, proCost, worthDiy]);
 
-  if (!mounted) return null;
 
   return (
     <section

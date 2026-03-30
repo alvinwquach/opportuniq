@@ -14,7 +14,12 @@ const STATUS_COLORS = {
   expired: "#ef4444",
 };
 
-function CustomTooltip({ active, payload }: any) {
+interface TooltipProps {
+  active?: boolean;
+  payload?: Array<{ name: string; value: number; payload: Record<string, unknown> }>;
+}
+
+function CustomTooltip({ active, payload }: TooltipProps) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-[#171717] border border-white/[0.06] rounded-lg px-3 py-2 shadow-xl z-[1000]">

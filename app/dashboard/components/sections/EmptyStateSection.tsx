@@ -39,7 +39,7 @@ export function EmptyStateSection() {
         className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#1f1f1f] hover:bg-[#2a2a2a] border border-[#2a2a2a] hover:border-[#333] transition-all group"
       >
         <span className="text-sm text-[#666] group-hover:text-[#888] transition-colors">
-          Or type what's wrong...
+          Or type what&apos;s wrong...
         </span>
       </Link>
     </section>

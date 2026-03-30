@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { DiagnosisChat } from "@/components/chat/DiagnosisChat";
+import { useChat } from "@ai-sdk/react";
 
 // Mock the useChat hook
 const mockSendMessage = jest.fn();
@@ -238,8 +239,7 @@ describe.skip("DiagnosisChat", () => {
 
   describe("Loading State", () => {
     it("shows loading indicator when status is streaming", () => {
-      const { useChat } = require("@ai-sdk/react");
-      useChat.mockReturnValue({
+      (useChat as jest.Mock).mockReturnValue({
         messages: [{ id: "1", role: "user", parts: [{ type: "text", text: "test" }] }],
         sendMessage: mockSendMessage,
         status: "streaming",
@@ -255,8 +255,7 @@ describe.skip("DiagnosisChat", () => {
     });
 
     it("shows stop button when loading", () => {
-      const { useChat } = require("@ai-sdk/react");
-      useChat.mockReturnValue({
+      (useChat as jest.Mock).mockReturnValue({
         messages: [],
         sendMessage: mockSendMessage,
         status: "streaming",
@@ -275,8 +274,7 @@ describe.skip("DiagnosisChat", () => {
     });
 
     it("calls stop when stop button is clicked", () => {
-      const { useChat } = require("@ai-sdk/react");
-      useChat.mockReturnValue({
+      (useChat as jest.Mock).mockReturnValue({
         messages: [],
         sendMessage: mockSendMessage,
         status: "streaming",
@@ -300,8 +298,7 @@ describe.skip("DiagnosisChat", () => {
 
   describe("Error Handling", () => {
     it("displays error message when error occurs", () => {
-      const { useChat } = require("@ai-sdk/react");
-      useChat.mockReturnValue({
+      (useChat as jest.Mock).mockReturnValue({
         messages: [],
         sendMessage: mockSendMessage,
         status: "error",
@@ -319,8 +316,7 @@ describe.skip("DiagnosisChat", () => {
 
   describe("Message Display", () => {
     it("displays user messages", () => {
-      const { useChat } = require("@ai-sdk/react");
-      useChat.mockReturnValue({
+      (useChat as jest.Mock).mockReturnValue({
         messages: [
           {
             id: "1",
@@ -340,8 +336,7 @@ describe.skip("DiagnosisChat", () => {
     });
 
     it("displays assistant messages", () => {
-      const { useChat } = require("@ai-sdk/react");
-      useChat.mockReturnValue({
+      (useChat as jest.Mock).mockReturnValue({
         messages: [
           {
             id: "1",

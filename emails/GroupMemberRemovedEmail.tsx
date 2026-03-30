@@ -29,7 +29,7 @@ export const GroupMemberRemovedEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>You've been removed from "{groupName}"</Preview>
+      <Preview>You&apos;ve been removed from &quot;{groupName}&quot;</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -44,7 +44,7 @@ export const GroupMemberRemovedEmail = ({
           <Section style={contentCard}>
             <Heading style={heroTitle}>Group Membership Ended</Heading>
             <Text style={heroSubtitle}>
-              Hi {memberName}, we wanted to let you know that you've been removed from a group.
+              Hi {memberName}, we wanted to let you know that you&apos;ve been removed from a group.
             </Text>
             <Section style={groupBox}>
               <Text style={groupLabel}>GROUP</Text>
@@ -53,7 +53,7 @@ export const GroupMemberRemovedEmail = ({
             </Section>
             <Section style={infoSection}>
               <Text style={infoTitle}>What this means:</Text>
-              <Text style={infoItem}>• You no longer have access to this group's issues and expenses</Text>
+              <Text style={infoItem}>• You no longer have access to this group&apos;s issues and expenses</Text>
               <Text style={infoItem}>• Your personal data and other groups are unaffected</Text>
               <Text style={infoItem}>• You can be invited back to this group in the future</Text>
             </Section>
@@ -64,7 +64,7 @@ export const GroupMemberRemovedEmail = ({
             </Section>
             <Hr style={divider} />
             <Text style={securityNote}>
-              If you believe this was done in error, please contact the group's coordinator.
+              If you believe this was done in error, please contact the group&apos;s coordinator.
             </Text>
           </Section>
           <Section style={footer}>

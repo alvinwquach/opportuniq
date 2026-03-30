@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   PieChart,
   Pie,
@@ -26,7 +27,12 @@ const TIER_COLORS: Record<string, string> = {
 
 const FUNNEL_COLORS = ["#3ECF8E", "#f59e0b", "#249361"];
 
-function CustomTooltip({ active, payload }: any) {
+interface TooltipProps {
+  active?: boolean;
+  payload?: Array<{ name: string; value: number; payload: Record<string, unknown> }>;
+}
+
+function CustomTooltip({ active, payload }: TooltipProps) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-[#171717] border border-white/[0.06] rounded-lg px-3 py-2 shadow-xl">
@@ -177,30 +183,34 @@ interface ReferralTrendChartProps {
 
 export function ReferralTrendChart({ referrals }: ReferralTrendChartProps) {
   // Group referrals by date for the last 14 days
-  const now = new Date();
-  const trendData: { date: string; total: number; converted: number }[] = [];
+  const trendData = useMemo(() => {
+    const now = new Date();
+    const data: { date: string; total: number; converted: number }[] = [];
 
-  for (let i = 13; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    const dateStr = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    for (let i = 13; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 
-    const dayStart = new Date(date);
-    dayStart.setHours(0, 0, 0, 0);
-    const dayEnd = new Date(date);
-    dayEnd.setHours(23, 59, 59, 999);
+      const dayStart = new Date(date);
+      dayStart.setHours(0, 0, 0, 0);
+      const dayEnd = new Date(date);
+      dayEnd.setHours(23, 59, 59, 999);
 
-    const dayReferrals = referrals.filter((r) => {
-      const refDate = new Date(r.createdAt);
-      return refDate >= dayStart && refDate <= dayEnd;
-    });
+      const dayReferrals = referrals.filter((r) => {
+        const refDate = new Date(r.createdAt);
+        return refDate >= dayStart && refDate <= dayEnd;
+      });
 
-    trendData.push({
-      date: dateStr,
-      total: dayReferrals.length,
-      converted: dayReferrals.filter((r) => r.status === "converted").length,
-    });
-  }
+      data.push({
+        date: dateStr,
+        total: dayReferrals.length,
+        converted: dayReferrals.filter((r) => r.status === "converted").length,
+      });
+    }
+
+    return data;
+  }, [referrals]);
 
   return (
     <div className="bg-[#171717] border border-white/[0.06] rounded-lg p-4">

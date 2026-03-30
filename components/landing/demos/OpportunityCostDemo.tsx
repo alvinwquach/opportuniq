@@ -18,14 +18,10 @@ import { gsap } from "gsap";
 export function OpportunityCostDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scaleRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [hourlyRate, setHourlyRate] = useState(40);
   const [diyHours, setDiyHours] = useState(4);
   const [contractorCost] = useState(150);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const trueDiyCost = hourlyRate * diyHours;
   const savings = contractorCost - trueDiyCost;
@@ -34,7 +30,7 @@ export function OpportunityCostDemo() {
 
   // Animate the scale when values change
   useEffect(() => {
-    if (!scaleRef.current || !mounted) return;
+    if (!scaleRef.current) return;
 
     const rotation = diyWins ? -8 : 8;
     gsap.to(scaleRef.current, {
@@ -42,7 +38,7 @@ export function OpportunityCostDemo() {
       duration: 0.5,
       ease: "elastic.out(1, 0.5)",
     });
-  }, [trueDiyCost, contractorCost, diyWins, mounted]);
+  }, [trueDiyCost, contractorCost, diyWins]);
 
   const handleHourlyChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setHourlyRate(Number(e.target.value));
@@ -52,7 +48,6 @@ export function OpportunityCostDemo() {
     setDiyHours(Number(e.target.value));
   }, []);
 
-  if (!mounted) return null;
 
   return (
     <section className="relative py-16 lg:py-24 bg-black">

@@ -190,6 +190,7 @@ function RecentActivityFeed({ isVisible }: { isVisible: boolean }) {
   useEffect(() => {
     if (!isVisible) return;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setActivities([
       { id: 1, name: names[0], action: actions[0], amount: 185, time: "just now" },
       { id: 2, name: names[1], action: actions[1], amount: 95, time: "2 min ago" },

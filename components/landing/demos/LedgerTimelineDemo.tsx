@@ -91,7 +91,6 @@ export function LedgerTimelineDemo() {
   const successChartRef = useRef<SVGSVGElement>(null);
   const heatmapRef = useRef<SVGSVGElement>(null);
   const entriesRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [visibleCount, setVisibleCount] = useState(0);
   const [selectedEntry, setSelectedEntry] = useState<LedgerEntry | null>(null);
 
@@ -105,9 +104,6 @@ export function LedgerTimelineDemo() {
     { saved: 0, count: 0, diyCount: 0, successCount: 0 }
   );
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Animate entries appearing
   useEffect(() => {
@@ -122,11 +118,11 @@ export function LedgerTimelineDemo() {
       });
     }, 150);
     return () => clearInterval(interval);
-  }, [mounted]);
+  }, []);
 
   // Cumulative Savings Area Chart
   useEffect(() => {
-    if (!savingsChartRef.current || !mounted) return;
+    if (!savingsChartRef.current) return;
 
     const svg = d3.select(savingsChartRef.current);
     svg.selectAll("*").remove();
@@ -188,11 +184,11 @@ export function LedgerTimelineDemo() {
       .call(g => g.selectAll(".tick line").remove())
       .call(g => g.selectAll(".tick text").attr("fill", "#737373").attr("font-size", 8));
 
-  }, [mounted]);
+  }, []);
 
   // Decision Pie Chart
   useEffect(() => {
-    if (!pieChartRef.current || !mounted) return;
+    if (!pieChartRef.current) return;
 
     const svg = d3.select(pieChartRef.current);
     svg.selectAll("*").remove();
@@ -216,18 +212,18 @@ export function LedgerTimelineDemo() {
       .data(pie(decisionCounts))
       .enter()
       .append("path")
-      .attr("d", arc as any)
+      .attr("d", arc as string)
       .attr("fill", d => d.data.color);
 
     // Center text
     g.append("text").attr("text-anchor", "middle").attr("dominant-baseline", "middle").attr("fill", "#fff").attr("font-size", 16).attr("font-weight", 600).text(totals.count);
     g.append("text").attr("text-anchor", "middle").attr("y", 14).attr("fill", "#737373").attr("font-size", 8).text("total");
 
-  }, [mounted, totals]);
+  }, [totals]);
 
   // Category Breakdown Bar Chart
   useEffect(() => {
-    if (!categoryChartRef.current || !mounted) return;
+    if (!categoryChartRef.current) return;
 
     const svg = d3.select(categoryChartRef.current);
     svg.selectAll("*").remove();
@@ -280,11 +276,11 @@ export function LedgerTimelineDemo() {
       .attr("font-size", 9)
       .text(d => d.count);
 
-  }, [mounted]);
+  }, []);
 
   // Time Distribution
   useEffect(() => {
-    if (!timeChartRef.current || !mounted) return;
+    if (!timeChartRef.current) return;
 
     const svg = d3.select(timeChartRef.current);
     svg.selectAll("*").remove();
@@ -324,11 +320,11 @@ export function LedgerTimelineDemo() {
       .attr("font-size", 7)
       .text(d => d.range);
 
-  }, [mounted]);
+  }, []);
 
   // Success Rate by Category
   useEffect(() => {
-    if (!successChartRef.current || !mounted) return;
+    if (!successChartRef.current) return;
 
     const svg = d3.select(successChartRef.current);
     svg.selectAll("*").remove();
@@ -393,11 +389,11 @@ export function LedgerTimelineDemo() {
       .attr("font-size", 9)
       .text(d => `${d.rate}%`);
 
-  }, [mounted]);
+  }, []);
 
   // Activity Heatmap (Calendar style)
   useEffect(() => {
-    if (!heatmapRef.current || !mounted) return;
+    if (!heatmapRef.current) return;
 
     const svg = d3.select(heatmapRef.current);
     svg.selectAll("*").remove();
@@ -424,20 +420,19 @@ export function LedgerTimelineDemo() {
       .attr("fill", d => colorScale(d.count))
       .attr("rx", 2);
 
-  }, [mounted]);
+  }, []);
 
   // Animate entries with GSAP
   useEffect(() => {
-    if (!entriesRef.current || !mounted) return;
+    if (!entriesRef.current) return;
     const entries = entriesRef.current.querySelectorAll(".ledger-entry");
     entries.forEach((entry, i) => {
       if (i < visibleCount) {
         gsap.to(entry, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" });
       }
     });
-  }, [visibleCount, mounted]);
+  }, [visibleCount]);
 
-  if (!mounted) return null;
 
   return (
     <section className="relative py-20 lg:py-28 bg-gradient-to-b from-neutral-950 via-emerald-950/15 to-black">

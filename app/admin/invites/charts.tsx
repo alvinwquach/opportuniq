@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   PieChart,
   Pie,
@@ -27,7 +28,12 @@ const STATUS_COLORS = {
   expired: "#6b7280",
 };
 
-function CustomTooltip({ active, payload }: any) {
+interface TooltipProps {
+  active?: boolean;
+  payload?: Array<{ name: string; value: number; payload: Record<string, unknown> }>;
+}
+
+function CustomTooltip({ active, payload }: TooltipProps) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-[#171717] border border-white/[0.06] rounded-lg px-3 py-2 shadow-xl">
@@ -191,22 +197,26 @@ interface InviteTrendChartProps {
 
 export function InviteTrendChart({ dailyInvites }: InviteTrendChartProps) {
   // Fill in missing days for the last 14 days
-  const now = new Date();
-  const trendData: { date: string; sent: number; accepted: number }[] = [];
+  const trendData = useMemo(() => {
+    const now = new Date();
+    const data: { date: string; sent: number; accepted: number }[] = [];
 
-  for (let i = 13; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    const dateStr = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-    const isoDate = date.toISOString().split("T")[0];
+    for (let i = 13; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      const isoDate = date.toISOString().split("T")[0];
 
-    const existing = dailyInvites.find((d) => d.date === isoDate);
-    trendData.push({
-      date: dateStr,
-      sent: existing?.sent || 0,
-      accepted: existing?.accepted || 0,
-    });
-  }
+      const existing = dailyInvites.find((d) => d.date === isoDate);
+      data.push({
+        date: dateStr,
+        sent: existing?.sent || 0,
+        accepted: existing?.accepted || 0,
+      });
+    }
+
+    return data;
+  }, [dailyInvites]);
 
   return (
     <div className="bg-[#171717] border border-white/[0.06] rounded-lg p-4">

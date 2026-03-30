@@ -84,7 +84,7 @@ export const IssueCreatedEmail = ({
               </div>
               <div style={stepItem}>
                 <Text style={stepNumber}>2</Text>
-                <Text style={stepText}>We'll analyze and suggest solutions</Text>
+                <Text style={stepText}>We&apos;ll analyze and suggest solutions</Text>
               </div>
               <div style={stepItem}>
                 <Text style={stepNumber}>3</Text>
@@ -99,7 +99,7 @@ export const IssueCreatedEmail = ({
           </Section>
           <Section style={footer}>
             <Text style={footerText}>
-              You're receiving this because you're a member of "{groupName}".
+              You&apos;re receiving this because you&apos;re a member of &quot;{groupName}&quot;.
             </Text>
             <Text style={footerLinks}>
               <Link href="https://opportuniq.app/settings/notifications" style={footerLink}>

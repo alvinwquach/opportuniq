@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   IoCamera,
@@ -104,14 +103,6 @@ const SIDEBAR_LINKS = [
 ];
 
 export function DashboardDemo() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
   // Calculate real savings with opportunity cost
   const diyDecisions = RECENT_DECISIONS.filter(d => d.decision === "DIY");
   const totalDecisions = RECENT_DECISIONS.length;

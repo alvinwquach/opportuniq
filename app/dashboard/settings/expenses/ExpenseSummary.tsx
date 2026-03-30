@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useEncryptedFinancials, type DecryptedExpense } from "@/hooks/useEncryptedFinancials";
 
 interface ExpenseSummaryProps {
@@ -9,15 +10,6 @@ interface ExpenseSummaryProps {
 export function ExpenseSummary({ expenses }: ExpenseSummaryProps) {
   const { calculateMonthlyExpenses } = useEncryptedFinancials();
 
-  // Don't show if no expenses
-  if (expenses.length === 0) {
-    return null;
-  }
-
-  // Calculate financials from decrypted data
-  const monthlyRecurring = calculateMonthlyExpenses(expenses);
-  const annualRecurring = monthlyRecurring * 12;
-
   // We need to calculate two things from the decrypted expenses:
   //   1. Total spending for the current month (all expenses in this month)
   //   2. Breakdown of spending by category (to show which categories cost most)
@@ -26,62 +18,34 @@ export function ExpenseSummary({ expenses }: ExpenseSummaryProps) {
   // ciphertext and cannot perform calculations on encrypted values.
   // ─────────────────────────────────────────────────────────────────────────────
 
-  // Step 1: Define the current month boundaries
-  // - startOfMonth: First day of current month at midnight (e.g., Jan 1, 2026 00:00:00)
-  // - endOfMonth: Last day of current month (e.g., Jan 31, 2026 23:59:59)
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const { currentMonthTotal, spendingByCategory } = useMemo(() => {
+    // Step 1: Define the current month boundaries
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-  // Step 2: Initialize accumulators
-  // - currentMonthTotal: Running sum of all expense amounts this month
-  // - spendingByCategory: Object mapping category names to their totals
-  //   Example: { "Food": 450, "Transportation": 120, "Entertainment": 80 }
-  let currentMonthTotal = 0;
+    // Step 2: Initialize accumulators
+    let total = 0;
+    const byCategory: Record<string, number> = {};
 
-  // ─────────────────────────────────────────────────────────────────────────────
-  // Why Record<string, number> instead of other options?
-  //
-  // 1. Plain object `{}` - No type safety. TypeScript treats it as `{}` type,
-  //    meaning we'd lose autocomplete and type checking on the values.
-  //
-  // 2. Map<string, number> - Overkill for this use case. Maps are better when:
-  //    - You need non-string keys (objects, functions, etc.)
-  //    - You need to preserve insertion order (though modern JS objects do too)
-  //    - You need frequent additions/deletions (Maps are optimized for this)
-  //    Maps are also harder to use with Object.entries(), can't be spread with
-  //    {...map}, and require .get()/.set() instead of bracket notation.
-  //
-  // 3. Interface with specific keys - Won't work because expense categories are
-  //    dynamic (user-defined), not known at compile time. We can't predict what
-  //    categories like "Food", "Rent", "Entertainment" will exist.
-  //
-  // Record<string, number> is the sweet spot:
-  // - Type-safe: TypeScript knows all values are numbers
-  // - Flexible: Any string key is valid (perfect for dynamic categories)
-  // - Familiar: Uses standard object syntax (bracket notation, Object.entries)
-  // - Serializable: Works seamlessly with JSON for debugging/logging
-  // ─────────────────────────────────────────────────────────────────────────────
-  const spendingByCategory: Record<string, number> = {};
-
-  // Step 3: Loop through each decrypted expense
-  for (const expense of expenses) {
-    // Convert the expense date string to a Date object for comparison
-    const expenseDate = new Date(expense.date);
-
-    // Step 4: Check if this expense falls within the current month
-    // Only include expenses where: startOfMonth <= expenseDate <= endOfMonth
-    if (expenseDate >= startOfMonth && expenseDate <= endOfMonth) {
-      // Step 5a: Add to the running total
-      currentMonthTotal += expense.amount;
-
-      // Step 5b: Add to the category breakdown
-      // If category doesn't exist yet, initialize it to 0, then add the amount
-      // This creates entries like: { "Food": 0 + 25 } → { "Food": 25 + 30 } → { "Food": 55 }
-      spendingByCategory[expense.category] =
-        (spendingByCategory[expense.category] || 0) + expense.amount;
+    // Step 3: Loop through each decrypted expense
+    for (const expense of expenses) {
+      const expenseDate = new Date(expense.date);
+      if (expenseDate >= startOfMonth && expenseDate <= endOfMonth) {
+        total += expense.amount;
+        byCategory[expense.category] =
+          (byCategory[expense.category] || 0) + expense.amount;
+      }
     }
-  }
+
+    return { currentMonthTotal: total, spendingByCategory: byCategory };
+  }, [expenses]);
+
+  // Don't show if no expenses
+  if (expenses.length === 0) return null;
+
+  const monthlyRecurring = calculateMonthlyExpenses(expenses);
+  const annualRecurring = monthlyRecurring * 12;
 
   return (
     <div className="p-5 rounded-xl bg-[#161616] border border-[#1f1f1f] mb-6">

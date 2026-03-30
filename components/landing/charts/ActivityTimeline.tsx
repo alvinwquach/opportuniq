@@ -173,7 +173,7 @@ export function ActivityTimeline() {
     // X Axis
     const xAxis = g.append("g")
       .attr("transform", `translate(0, ${innerHeight})`)
-      .call(d3.axisBottom(xScale).ticks(6).tickFormat(d3.timeFormat("%b %d") as any));
+      .call(d3.axisBottom(xScale).ticks(6).tickFormat(d3.timeFormat("%b %d") as unknown as (domainValue: d3.NumberValue, index: number) => string));
 
     xAxis.selectAll("text").attr("fill", "#666").attr("font-size", 9);
     xAxis.selectAll("line").attr("stroke", "#333");

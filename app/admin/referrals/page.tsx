@@ -10,16 +10,18 @@ import {
 } from "react-icons/io5";
 import { TierDistributionChart, ReferralFunnelChart, ReferralTrendChart, ReferralGrowthChart } from "./charts";
 
+type ReferralsData = Awaited<ReturnType<typeof getReferralsData>>;
+
 export default async function Referrals() {
-  let referralStats: any = null;
-  let topReferrers: any[] = [];
-  let recentReferrals: any[] = [];
-  let tierStats: any = null;
+  let referralStats: ReferralsData["referralStats"] | null = null;
+  let topReferrers: ReferralsData["topReferrers"] = [];
+  let recentReferrals: ReferralsData["recentReferrals"] = [];
+  let tierStats: ReferralsData["tierStats"] | null = null;
   let conversionRate = 0;
   let viralCoefficient: string | number = 0;
   let error: string | null = null;
 
-  let referralGrowthData: any[] = [];
+  let referralGrowthData: ReferralsData["referralGrowthData"] = [];
 
   try {
     const result = await getReferralsData();
@@ -30,8 +32,8 @@ export default async function Referrals() {
     conversionRate = result.conversionRate || 0;
     viralCoefficient = result.viralCoefficient || 0;
     referralGrowthData = result.referralGrowthData || [];
-  } catch (err: any) {
-    error = err?.message || "Failed to load referrals";
+  } catch (err: unknown) {
+    error = (err as Error)?.message || "Failed to load referrals";
     console.error("[Admin Referrals] Error loading referrals:", err);
   }
 

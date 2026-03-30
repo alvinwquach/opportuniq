@@ -81,18 +81,14 @@ export function RiskFlowDemo() {
   const gaugeRef = useRef<SVGSVGElement>(null);
   const heatmapRef = useRef<SVGSVGElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [totalCost, setTotalCost] = useState(SCENARIO.startCost);
   const [isPaused, setIsPaused] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Slow auto-play through steps
   useEffect(() => {
-    if (!mounted || isPaused) return;
+    if (isPaused) return;
 
     const interval = setInterval(() => {
       setCurrentStep(prev => {
@@ -112,11 +108,11 @@ export function RiskFlowDemo() {
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [mounted, isPaused]);
+  }, [isPaused]);
 
   // Line Chart - Cost Escalation
   useEffect(() => {
-    if (!lineChartRef.current || !mounted) return;
+    if (!lineChartRef.current) return;
 
     const svg = d3.select(lineChartRef.current);
     svg.selectAll("*").remove();
@@ -200,11 +196,11 @@ export function RiskFlowDemo() {
       .call(g => g.selectAll(".tick line").attr("stroke", "#262626").attr("x2", innerWidth))
       .call(g => g.selectAll(".tick text").attr("fill", "#737373").attr("font-size", 8));
 
-  }, [currentStep, mounted]);
+  }, [currentStep]);
 
   // Treemap - Cost Breakdown
   useEffect(() => {
-    if (!treemapRef.current || !mounted) return;
+    if (!treemapRef.current) return;
 
     const svg = d3.select(treemapRef.current);
     svg.selectAll("*").remove();
@@ -258,11 +254,11 @@ export function RiskFlowDemo() {
       .attr("font-weight", 600)
       .text(d => `$${d.data.value || 0}`);
 
-  }, [mounted]);
+  }, []);
 
   // Radial Chart - Risk Factors
   useEffect(() => {
-    if (!radialRef.current || !mounted) return;
+    if (!radialRef.current) return;
 
     const svg = d3.select(radialRef.current);
     svg.selectAll("*").remove();
@@ -315,7 +311,7 @@ export function RiskFlowDemo() {
       .attr("fill", "rgba(239,68,68,0.3)")
       .attr("stroke", "#ef4444")
       .attr("stroke-width", 2)
-      .attr("d", areaGenerator as any);
+      .attr("d", areaGenerator as string);
 
     // Labels
     RISK_FACTORS.forEach(d => {
@@ -331,11 +327,11 @@ export function RiskFlowDemo() {
         .text(d.factor);
     });
 
-  }, [mounted]);
+  }, []);
 
   // Gauge - Current Risk Level
   useEffect(() => {
-    if (!gaugeRef.current || !mounted) return;
+    if (!gaugeRef.current) return;
 
     const svg = d3.select(gaugeRef.current);
     svg.selectAll("*").remove();
@@ -355,7 +351,7 @@ export function RiskFlowDemo() {
       .startAngle(-Math.PI / 2)
       .endAngle(Math.PI / 2);
 
-    g.append("path").attr("d", bgArc as any).attr("fill", "#262626");
+    g.append("path").attr("d", bgArc as string).attr("fill", "#262626");
 
     // Colored segments
     const segments = [
@@ -371,7 +367,7 @@ export function RiskFlowDemo() {
         .startAngle((seg.start * Math.PI) / 180)
         .endAngle((seg.end * Math.PI) / 180);
 
-      g.append("path").attr("d", arc as any).attr("fill", seg.color).attr("opacity", 0.6);
+      g.append("path").attr("d", arc as string).attr("fill", seg.color).attr("opacity", 0.6);
     });
 
     // Needle
@@ -387,11 +383,11 @@ export function RiskFlowDemo() {
     needle.append("circle").attr("r", 6).attr("fill", "#fff");
     needle.append("circle").attr("r", 3).attr("fill", "#0a0a0a");
 
-  }, [currentStep, mounted]);
+  }, [currentStep]);
 
   // Heatmap - Question Impact
   useEffect(() => {
-    if (!heatmapRef.current || !mounted) return;
+    if (!heatmapRef.current) return;
 
     const svg = d3.select(heatmapRef.current);
     svg.selectAll("*").remove();
@@ -450,18 +446,18 @@ export function RiskFlowDemo() {
       .attr("font-size", 7)
       .text(d => d.action);
 
-  }, [mounted]);
+  }, []);
 
   // Animate cost bar
   useEffect(() => {
-    if (!barRef.current || !mounted) return;
+    if (!barRef.current) return;
     const percentage = (totalCost / SCENARIO.maxCost) * 100;
     gsap.to(barRef.current, {
       width: `${percentage}%`,
       duration: 0.4,
       ease: "power2.out",
     });
-  }, [totalCost, mounted]);
+  }, [totalCost]);
 
   const getCurrentRisk = () => {
     if (currentStep === 0) return "safe";
@@ -473,7 +469,6 @@ export function RiskFlowDemo() {
     setTotalCost(SCENARIO.startCost);
   };
 
-  if (!mounted) return null;
 
   const riskColor = RISK_COLORS[getCurrentRisk()];
   const isComplete = currentStep >= SCENARIO.steps.length;

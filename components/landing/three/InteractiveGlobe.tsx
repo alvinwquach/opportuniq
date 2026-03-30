@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, Suspense } from "react";
+import { useRef, useState, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Sphere, Html, Float, Stars } from "@react-three/drei";
 import * as THREE from "three";
@@ -80,11 +80,6 @@ function GlobePoint({ point, radius }: { point: GlobePoint; radius: number }) {
 
 function Globe() {
   const globeRef = useRef<THREE.Mesh>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useFrame(() => {
     if (globeRef.current) {
@@ -120,7 +115,7 @@ function Globe() {
       </mesh>
 
       {/* Points */}
-      {mounted && SAMPLE_POINTS.map((point, i) => (
+      {SAMPLE_POINTS.map((point, i) => (
         <GlobePoint key={i} point={point} radius={radius * 1.02} />
       ))}
 
@@ -134,20 +129,6 @@ function Globe() {
 }
 
 export function InteractiveGlobe() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return (
-      <div className="w-full h-[400px] bg-neutral-950 rounded-xl border border-neutral-800 flex items-center justify-center">
-        <div className="text-neutral-500 text-sm">Loading 3D Globe...</div>
-      </div>
-    );
-  }
-
   return (
     <div className="relative w-full h-[400px] bg-neutral-950 rounded-xl border border-neutral-800 overflow-hidden">
       <Canvas camera={{ position: [0, 0, 3], fov: 45 }}>

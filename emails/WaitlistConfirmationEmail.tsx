@@ -30,7 +30,7 @@ export const WaitlistConfirmationEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>You're on the OpportunIQ waitlist! Here's how to move up</Preview>
+      <Preview>You&apos;re on the OpportunIQ waitlist! Here&apos;s how to move up</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -46,21 +46,21 @@ export const WaitlistConfirmationEmail = ({
             <Section style={iconSection}>
               <Text style={checkIcon}>&#10003;</Text>
             </Section>
-            <Heading style={heroTitle}>You're on the List!</Heading>
+            <Heading style={heroTitle}>You&apos;re on the List!</Heading>
             <Text style={heroSubtitle}>
-              Hey {firstName}, thanks for joining the OpportunIQ waitlist. We're building something special and can't wait to have you on board.
+              Hey {firstName}, thanks for joining the OpportunIQ waitlist. We&apos;re building something special and can&apos;t wait to have you on board.
             </Text>
             <Section style={positionBox}>
               <Text style={positionLabel}>Your Waitlist Position</Text>
               <Text style={positionNumber}>#{position}</Text>
               <Text style={positionSubtext}>
-                We're letting people in on a rolling basis
+                We&apos;re letting people in on a rolling basis
               </Text>
             </Section>
             <Section style={referralSection}>
               <Text style={referralTitle}>Want to skip the line?</Text>
               <Text style={referralDescription}>
-                Share your unique referral link. For each friend who joins, you'll move up the waitlist and unlock exclusive rewards.
+                Share your unique referral link. For each friend who joins, you&apos;ll move up the waitlist and unlock exclusive rewards.
               </Text>
               <Section style={referralCodeBox}>
                 <Text style={referralCodeLabel}>Your Referral Code</Text>
@@ -76,7 +76,7 @@ export const WaitlistConfirmationEmail = ({
               <Text style={expectTitle}>What to Expect</Text>
               <div style={expectItem}>
                 <Text style={expectIcon}>&#128231;</Text>
-                <Text style={expectText}>We'll email you when it's your turn</Text>
+                <Text style={expectText}>We&apos;ll email you when it&apos;s your turn</Text>
               </div>
               <div style={expectItem}>
                 <Text style={expectIcon}>&#9889;</Text>

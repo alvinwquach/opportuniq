@@ -25,7 +25,7 @@ export const InvitationRevokedEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Your invitation to join "{groupName}" has been revoked</Preview>
+      <Preview>Your invitation to join &quot;{groupName}&quot; has been revoked</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -52,7 +52,7 @@ export const InvitationRevokedEmail = ({
             </Text>
             <Hr style={divider} />
             <Text style={securityNote}>
-              You're receiving this because you had a pending invitation to join "{groupName}".
+              You&apos;re receiving this because you had a pending invitation to join &quot;{groupName}&quot;.
             </Text>
           </Section>
           <Section style={footer}>

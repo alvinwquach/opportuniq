@@ -111,7 +111,7 @@ export default function ProFinderPage() {
           </h1>
 
           <p className="text-lg text-neutral-200 max-w-2xl mx-auto mb-10">
-            When DIY isn't the answer, find vetted local contractors in seconds.
+            When DIY isn&apos;t the answer, find vetted local contractors in seconds.
             Compare quotes and book with confidence.
           </p>
 

@@ -28,7 +28,7 @@ export const AbandonedOnboardingEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>You're one step away from instant home repair guidance</Preview>
+      <Preview>You&apos;re one step away from instant home repair guidance</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -41,9 +41,9 @@ export const AbandonedOnboardingEmail = ({
             />
           </Section>
           <Section style={contentCard}>
-            <Heading style={heroTitle}>You're almost there, {firstName}</Heading>
+            <Heading style={heroTitle}>You&apos;re almost there, {firstName}</Heading>
             <Text style={heroSubtitle}>
-              You started setting up OpportunIQ, but didn't finish. Just add your ZIP code (takes 20 seconds) to unlock:
+              You started setting up OpportunIQ, but didn&apos;t finish. Just add your ZIP code (takes 20 seconds) to unlock:
             </Text>
             <Section style={valueSection}>
               <div style={valueItem}>
@@ -66,7 +66,7 @@ export const AbandonedOnboardingEmail = ({
             </Text>
             <Section style={socialProof}>
               <Text style={socialProofText}>
-                "30 seconds to finish setup. Got 3 contractor quotes for my roof repair within 2 hours. Worth it."
+                &quot;30 seconds to finish setup. Got 3 contractor quotes for my roof repair within 2 hours. Worth it.&quot;
               </Text>
               <Text style={socialProofAuthor}>— Roy, Sacramento</Text>
             </Section>

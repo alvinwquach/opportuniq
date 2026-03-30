@@ -215,7 +215,7 @@ export function GroupOverviewTab({
               <IoCheckmarkCircle className="w-4 h-4 text-emerald-400" />
             </div>
             <div>
-              <p className="text-sm text-white">Alex resolved "Leaky faucet"</p>
+              <p className="text-sm text-white">Alex resolved &quot;Leaky faucet&quot;</p>
               <p className="text-xs text-[#555]">2h ago · Saved $152</p>
             </div>
           </div>
@@ -242,7 +242,7 @@ export function GroupOverviewTab({
               <IoConstruct className="w-4 h-4 text-amber-400" />
             </div>
             <div>
-              <p className="text-sm text-white">New issue: "AC not cooling"</p>
+              <p className="text-sm text-white">New issue: &quot;AC not cooling&quot;</p>
               <p className="text-xs text-[#555]">3d ago · High priority</p>
             </div>
           </div>

@@ -37,12 +37,14 @@ export function EncryptedVideo({
   useEffect(() => {
     // If we have a direct URL, use it
     if (url && !isEncrypted) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDecryptedUrl(url);
       return;
     }
 
     // If we have a cached URL, use it
     if (cachedUrl) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDecryptedUrl(cachedUrl);
       return;
     }

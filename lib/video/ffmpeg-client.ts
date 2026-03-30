@@ -112,7 +112,7 @@ export async function getVideoMetadata(file: File): Promise<VideoMetadata> {
 
   // Run ffprobe-like command to get metadata
   // FFmpeg outputs metadata to stderr, which we capture via logs
-  let metadata: VideoMetadata = {
+  const metadata: VideoMetadata = {
     duration: 0,
     width: 0,
     height: 0,

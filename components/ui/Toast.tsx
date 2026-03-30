@@ -16,12 +16,14 @@ export function Toast({ message, isVisible, onClose, duration = 3000 }: ToastPro
 
   useEffect(() => {
     if (isVisible) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMounted(true);
       const timer = setTimeout(() => {
         onClose();
       }, duration);
       return () => clearTimeout(timer);
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMounted(false);
     }
   }, [isVisible, duration, onClose]);

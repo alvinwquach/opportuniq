@@ -17,22 +17,22 @@ type Theme = "dark" | "light";
 
 export function ThemeToggle({ className }: { className?: string }) {
   const [theme, setTheme] = useState<Theme>("dark");
-  const [mounted, setMounted] = useState(false);
 
   // Load theme on mount
   useEffect(() => {
-    setMounted(true);
-
     const stored = localStorage.getItem("theme") as Theme | null;
     const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     if (stored) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTheme(stored);
       document.documentElement.setAttribute("data-theme", stored);
     } else if (systemPrefersDark) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTheme("dark");
       document.documentElement.setAttribute("data-theme", "dark");
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTheme("light");
       document.documentElement.setAttribute("data-theme", "light");
     }
@@ -45,21 +45,6 @@ export function ThemeToggle({ className }: { className?: string }) {
     localStorage.setItem("theme", newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
   };
-
-  // Prevent hydration mismatch
-  if (!mounted) {
-    return (
-      <button
-        className={cn(
-          "w-9 h-9 rounded-lg bg-[#1f1f1f] flex items-center justify-center",
-          className
-        )}
-        aria-label="Toggle theme"
-      >
-        <div className="w-4 h-4 bg-[#333] rounded animate-pulse" />
-      </button>
-    );
-  }
 
   return (
     <button
@@ -93,9 +78,11 @@ export function useTheme(): Theme {
   useEffect(() => {
     const stored = localStorage.getItem("theme") as Theme | null;
     if (stored) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTheme(stored);
     } else {
       const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTheme(systemPrefersDark ? "dark" : "light");
     }
 

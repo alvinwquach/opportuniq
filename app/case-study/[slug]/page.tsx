@@ -27,8 +27,16 @@ const CHART_COLORS = {
   cardBorder: "#e5e7eb", // neutral-200
 };
 
+// Local D3 data interfaces
+interface PieDataItem { likelihood: number; color: string; chosen: boolean; cost: number; issue: string; }
+interface CostDataItem { scenario: string; cost: number; color: string; chosen: boolean; }
+interface TimelineDataItem { cumulative: number; duration: number; phase: string; color: string; }
+interface StatItem { color: string; icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; display: string; label: string; }
+interface StepItem { icon: React.ReactNode; phase: string; duration: string; description: string; }
+interface OptionItem { tier: number; [key: string]: unknown; }
+
 // Case study data
-const caseStudies: Record<string, any> = {
+const caseStudies: Record<string, unknown> = {
   "porsche-cayenne": {
     title: "How Kevin saved $4,220 on his Porsche transmission",
     subtitle: "From \"my car jerks weird\" to a $280 fix—using OpportunIQ's decision framework",
@@ -172,11 +180,11 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
 
     const data = study.diagnosis.possibleCauses;
 
-    const pie = d3.pie<any>()
-      .value((d: any) => d.likelihood)
+    const pie = d3.pie<PieDataItem>()
+      .value((d: PieDataItem) => d.likelihood)
       .sort(null);
 
-    const arc = d3.arc<any>()
+    const arc = d3.arc<d3.PieArcDatum<PieDataItem>>()
       .innerRadius(radius * 0.5)
       .outerRadius(radius * 0.85);
 
@@ -188,14 +196,14 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
 
     arcs.append("path")
       .attr("d", arc)
-      .attr("fill", (d: any) => d.data.color)
-      .attr("opacity", (d: any) => d.data.chosen ? 1 : 0.6)
+      .attr("fill", (d: d3.PieArcDatum<PieDataItem>) => d.data.color)
+      .attr("opacity", (d: d3.PieArcDatum<PieDataItem>) => d.data.chosen ? 1 : 0.6)
       .attr("stroke", "#ffffff")
       .attr("stroke-width", 3);
 
     const fixedLabelY = [-100, 20, -120, 110];
 
-    arcs.each(function(d: any, i: number) {
+    arcs.each(function(d: d3.PieArcDatum<PieDataItem>, i: number) {
       const g = d3.select(this);
       const midAngle = d.startAngle + (d.endAngle - d.startAngle) / 2;
       const x = (radius * 1.25) * (midAngle < Math.PI ? 1 : -1);
@@ -229,7 +237,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
         .attr("font-weight", "600")
         .text(`$${d.data.cost.toLocaleString()}`);
 
-      const arcCentroid = d3.arc<any>()
+      const arcCentroid = d3.arc<d3.PieArcDatum<PieDataItem>>()
         .innerRadius(radius * 0.5)
         .outerRadius(radius * 0.85)
         .centroid(d);
@@ -302,11 +310,11 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
       .append("rect")
       .attr("class", "bar")
       .attr("x", 0)
-      .attr("y", (d: any) => yScale(d.scenario)!)
-      .attr("width", (d: any) => xScale(d.cost))
+      .attr("y", (d: CostDataItem) => yScale(d.scenario)!)
+      .attr("width", (d: CostDataItem) => xScale(d.cost))
       .attr("height", yScale.bandwidth())
-      .attr("fill", (d: any) => d.color)
-      .attr("opacity", (d: any) => d.chosen ? 1 : 0.7)
+      .attr("fill", (d: CostDataItem) => d.color)
+      .attr("opacity", (d: CostDataItem) => d.chosen ? 1 : 0.7)
       .attr("rx", 4);
 
     g.selectAll(".label")
@@ -314,26 +322,26 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
       .enter()
       .append("text")
       .attr("x", -10)
-      .attr("y", (d: any) => yScale(d.scenario)! + yScale.bandwidth() / 2)
+      .attr("y", (d: CostDataItem) => yScale(d.scenario)! + yScale.bandwidth() / 2)
       .attr("dy", "0.35em")
       .attr("text-anchor", "end")
       .attr("fill", CHART_COLORS.text)
       .attr("font-size", "14px")
-      .attr("font-weight", (d: any) => d.chosen ? "700" : "500")
-      .text((d: any) => d.scenario);
+      .attr("font-weight", (d: CostDataItem) => d.chosen ? "700" : "500")
+      .text((d: CostDataItem) => d.scenario);
 
     g.selectAll(".value")
       .data(costData)
       .enter()
       .append("text")
-      .attr("x", (d: any) => xScale(d.cost) + 10)
-      .attr("y", (d: any) => yScale(d.scenario)! + yScale.bandwidth() / 2)
+      .attr("x", (d: CostDataItem) => xScale(d.cost) + 10)
+      .attr("y", (d: CostDataItem) => yScale(d.scenario)! + yScale.bandwidth() / 2)
       .attr("dy", "0.35em")
       .attr("fill", CHART_COLORS.text)
       .attr("font-size", "16px")
       .attr("font-weight", "700")
       .attr("font-family", "monospace")
-      .text((d: any) => `$${d.cost.toLocaleString()}`);
+      .text((d: CostDataItem) => `$${d.cost.toLocaleString()}`);
 
     g.append("text")
       .attr("x", xScale(280) + 10)
@@ -460,7 +468,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
         .endAngle(Math.PI / 2);
 
       g.append("path")
-        .attr("d", backgroundArc as any)
+        .attr("d", backgroundArc as string)
         .attr("fill", CHART_COLORS.grid);
 
       const angle = -Math.PI / 2 + (gauge.rate / 100) * Math.PI;
@@ -471,7 +479,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
         .endAngle(angle);
 
       g.append("path")
-        .attr("d", foregroundArc as any)
+        .attr("d", foregroundArc as string)
         .attr("fill", gauge.color);
 
       g.append("text")
@@ -544,11 +552,11 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
       .data(timelineData)
       .enter()
       .append("rect")
-      .attr("x", (d: any) => xScale(d.cumulative - d.duration))
-      .attr("y", (d: any) => yScale(d.phase)!)
-      .attr("width", (d: any) => xScale(d.duration))
+      .attr("x", (d: TimelineDataItem) => xScale(d.cumulative - d.duration))
+      .attr("y", (d: TimelineDataItem) => yScale(d.phase)!)
+      .attr("width", (d: TimelineDataItem) => xScale(d.duration))
       .attr("height", yScale.bandwidth())
-      .attr("fill", (d: any) => d.color)
+      .attr("fill", (d: CostDataItem) => d.color)
       .attr("rx", 4);
 
     // Labels
@@ -557,27 +565,27 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
       .enter()
       .append("text")
       .attr("x", -10)
-      .attr("y", (d: any) => yScale(d.phase)! + yScale.bandwidth() / 2)
+      .attr("y", (d: TimelineDataItem) => yScale(d.phase)! + yScale.bandwidth() / 2)
       .attr("dy", "0.35em")
       .attr("text-anchor", "end")
       .attr("fill", CHART_COLORS.text)
       .attr("font-size", "12px")
       .attr("font-weight", "600")
-      .text((d: any) => d.phase);
+      .text((d: TimelineDataItem) => d.phase);
 
     // Duration labels
     g.selectAll(".duration")
       .data(timelineData)
       .enter()
       .append("text")
-      .attr("x", (d: any) => xScale(d.cumulative - d.duration / 2))
-      .attr("y", (d: any) => yScale(d.phase)! + yScale.bandwidth() / 2)
+      .attr("x", (d: TimelineDataItem) => xScale(d.cumulative - d.duration / 2))
+      .attr("y", (d: TimelineDataItem) => yScale(d.phase)! + yScale.bandwidth() / 2)
       .attr("dy", "0.35em")
       .attr("text-anchor", "middle")
       .attr("fill", "#ffffff")
       .attr("font-size", "11px")
       .attr("font-weight", "600")
-      .text((d: any) => d.duration < 1 ? `${d.duration * 60}s` : `${d.duration}m`);
+      .text((d: TimelineDataItem) => d.duration < 1 ? `${d.duration * 60}s` : `${d.duration}m`);
   }, [study]);
 
   // NEW CHART 2: Savings Breakdown Stacked Bar
@@ -738,8 +746,8 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
       .data([1000, 2000, 3000, 4000])
       .enter()
       .append("line")
-      .attr("x1", (d: any) => xScale(d))
-      .attr("x2", (d: any) => xScale(d))
+      .attr("x1", (d: number) => xScale(d))
+      .attr("x2", (d: number) => xScale(d))
       .attr("y1", 0)
       .attr("y2", height)
       .attr("stroke", CHART_COLORS.grid)
@@ -751,8 +759,8 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
       .append("line")
       .attr("x1", 0)
       .attr("x2", width)
-      .attr("y1", (d: any) => yScale(d))
-      .attr("y2", (d: any) => yScale(d))
+      .attr("y1", (d: number) => yScale(d))
+      .attr("y2", (d: number) => yScale(d))
       .attr("stroke", CHART_COLORS.grid)
       .attr("stroke-dasharray", "4,4");
 
@@ -893,7 +901,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
           </div>
 
           <div className="grid md:grid-cols-4 gap-6 mb-12">
-            {study.stats.map((stat: any, i: number) => (
+            {study.stats.map((stat: StatItem, i: number) => (
               <div key={i} className="relative p-6 bg-white border border-neutral-200 rounded-xl shadow-sm hover:shadow-md transition-all group overflow-hidden">
                 <div className="relative flex items-center justify-center mb-3">
                   <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: `${stat.color}15` }} aria-hidden="true">
@@ -950,7 +958,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
             <div>
               <h3 className="text-sm font-semibold text-neutral-700 mb-4 uppercase tracking-wide">Pain Points</h3>
               <ul className="space-y-3" role="list">
-                {study.challenge.painPoints.map((point: any, i: number) => (
+                {(study.challenge.painPoints as string[]).map((point: string, i: number) => (
                   <li key={i} className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-lg hover:border-amber-300 transition-colors">
                     <point.icon className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" aria-hidden="true" />
                     <span className="text-sm text-neutral-700 leading-relaxed">{point.text}</span>
@@ -964,7 +972,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
         {/* 5. SOCIAL PROOF - Testimonial */}
         <section aria-labelledby="testimonial-heading" className="mb-24">
           <figure className="relative p-10 bg-teal-50 border border-teal-200 rounded-xl overflow-hidden">
-            <div className="absolute top-6 left-6 text-7xl text-teal-200 font-serif leading-none" aria-hidden="true">"</div>
+            <div className="absolute top-6 left-6 text-7xl text-teal-200 font-serif leading-none" aria-hidden="true">&quot;</div>
 
             <blockquote className="relative text-xl text-neutral-700 leading-relaxed mb-8 pl-10">{study.customer.quote}</blockquote>
 
@@ -1062,7 +1070,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
           </div>
 
           <div className="grid md:grid-cols-4 gap-4">
-            {study.solution.process.map((step: any, i: number) => (
+            {study.solution.process.map((step: StepItem, i: number) => (
               <article key={i} className="relative p-6 bg-white border border-neutral-200 rounded-xl shadow-sm group hover:shadow-md transition-all overflow-hidden">
                 {i < 3 && <div className="hidden md:block absolute top-1/2 -right-2 w-4 h-px bg-teal-300" aria-hidden="true" />}
 
@@ -1099,7 +1107,7 @@ export default function CaseStudyPage({ params }: { params: Promise<{ slug: stri
           </div>
 
           <div className="space-y-6">
-            {study.solution.options.map((option: any, i: number) => (
+            {study.solution.options.map((option: OptionItem, i: number) => (
               <article key={i} className={`relative p-8 rounded-xl border group transition-all overflow-hidden ${option.tier === 1 ? 'bg-teal-50 border-teal-200 shadow-lg' : 'bg-white border-neutral-200 shadow-sm hover:shadow-md'}`}>
                 <div className="relative grid md:grid-cols-[auto_1fr_auto] gap-8 items-start">
                   <div className="flex flex-col gap-3">

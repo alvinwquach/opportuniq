@@ -121,7 +121,6 @@ const RISK_COLORS: Record<string, string> = {
 export function RiskHeatmap() {
   const sectionRef = useRef<HTMLElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [hoveredCell, setHoveredCell] = useState<HeatmapCell | null>(null);
   const [dimensions, setDimensions] = useState({ width: 700, height: 400 });
 
@@ -141,7 +140,7 @@ export function RiskHeatmap() {
 
   // D3 Heatmap
   useEffect(() => {
-    if (!svgRef.current || !mounted) return;
+    if (!svgRef.current) return;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
@@ -268,11 +267,11 @@ export function RiskHeatmap() {
       });
     }
 
-  }, [mounted, dimensions]);
+  }, [dimensions]);
 
   // Section animations
   useEffect(() => {
-    if (!sectionRef.current || !mounted) return;
+    if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
       gsap.from(".heatmap-header", {
@@ -288,9 +287,8 @@ export function RiskHeatmap() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [mounted]);
+  }, []);
 
-  if (!mounted) return null;
 
   return (
     <section

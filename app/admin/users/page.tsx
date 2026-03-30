@@ -9,10 +9,12 @@ import {
 } from "react-icons/io5";
 import { TierDistributionChart, RoleDistributionChart, UserGrowthChart } from "./charts";
 
+type UsersData = Awaited<ReturnType<typeof getUsersData>>;
+
 export default async function UsersPage() {
-  let allUsers: any[] = [];
-  let userStats: any = null;
-  let userGrowthData: any[] = [];
+  let allUsers: UsersData["allUsers"] = [];
+  let userStats: UsersData["userStats"] | null = null;
+  let userGrowthData: UsersData["userGrowthData"] = [];
   let error: string | null = null;
 
   try {
@@ -20,8 +22,8 @@ export default async function UsersPage() {
     allUsers = result.allUsers || [];
     userStats = result.userStats || null;
     userGrowthData = result.userGrowthData || [];
-  } catch (err: any) {
-    error = err?.message || "Failed to load users";
+  } catch (err: unknown) {
+    error = (err as Error)?.message || "Failed to load users";
     console.error("[Admin Users] Error loading users:", err);
   }
 

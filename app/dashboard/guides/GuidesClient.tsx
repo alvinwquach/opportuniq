@@ -67,12 +67,14 @@ export function GuidesClient() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Transform guides to local format
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const allGuides = useMemo(() => {
     if (!data?.guides) return [];
     return data.guides.map(transformToGuide);
   }, [data?.guides]);
 
   // Computed values
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const filteredGuides = useMemo(() => {
     return filterGuides(allGuides, {
       searchQuery,
@@ -82,6 +84,7 @@ export function GuidesClient() {
     });
   }, [allGuides, searchQuery, selectedCategory, selectedSource, activeTab]);
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const allCategories = useMemo(() => {
     if (data?.categories) return data.categories;
     return getUniqueCategories(allGuides);

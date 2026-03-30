@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   PieChart,
   Pie,
@@ -23,7 +24,12 @@ const SOURCE_COLORS: Record<string, string> = {
   direct: "#6b7280",
 };
 
-function CustomTooltip({ active, payload }: any) {
+interface TooltipProps {
+  active?: boolean;
+  payload?: Array<{ name: string; value: number; payload: Record<string, unknown> }>;
+}
+
+function CustomTooltip({ active, payload }: TooltipProps) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-[#171717] border border-white/[0.06] rounded-lg px-3 py-2 shadow-xl">
@@ -120,26 +126,30 @@ interface SignupsTrendChartProps {
 
 export function SignupsTrendChart({ entries }: SignupsTrendChartProps) {
   // Group entries by date for the last 14 days
-  const now = new Date();
-  const trendData: { date: string; signups: number }[] = [];
+  const trendData = useMemo(() => {
+    const now = new Date();
+    const data: { date: string; signups: number }[] = [];
 
-  for (let i = 13; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    const dateStr = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    for (let i = 13; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 
-    const dayStart = new Date(date);
-    dayStart.setHours(0, 0, 0, 0);
-    const dayEnd = new Date(date);
-    dayEnd.setHours(23, 59, 59, 999);
+      const dayStart = new Date(date);
+      dayStart.setHours(0, 0, 0, 0);
+      const dayEnd = new Date(date);
+      dayEnd.setHours(23, 59, 59, 999);
 
-    const count = entries.filter((e) => {
-      const entryDate = new Date(e.createdAt);
-      return entryDate >= dayStart && entryDate <= dayEnd;
-    }).length;
+      const count = entries.filter((e) => {
+        const entryDate = new Date(e.createdAt);
+        return entryDate >= dayStart && entryDate <= dayEnd;
+      }).length;
 
-    trendData.push({ date: dateStr, signups: count });
-  }
+      data.push({ date: dateStr, signups: count });
+    }
+
+    return data;
+  }, [entries]);
 
   return (
     <div className="bg-[#171717] border border-white/[0.06] rounded-lg p-4">

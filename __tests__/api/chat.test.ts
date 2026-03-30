@@ -9,6 +9,10 @@
  * - Database persistence
  */
 
+import { createClient } from "@/lib/supabase/server";
+import { db } from "@/app/db/client";
+import { streamText } from "ai";
+
 // Mock dependencies before importing
 jest.mock("@ai-sdk/openai", () => ({
   openai: jest.fn(() => "mocked-model"),
@@ -118,8 +122,7 @@ describe("Chat API Route", () => {
 
   describe("Authentication", () => {
     it("returns 401 when user is not authenticated", async () => {
-      const { createClient } = require("@/lib/supabase/server");
-      createClient.mockResolvedValueOnce({
+      (createClient as jest.Mock).mockResolvedValueOnce({
         auth: {
           getUser: jest.fn(() =>
             Promise.resolve({ data: { user: null } })
@@ -157,7 +160,6 @@ describe("Chat API Route", () => {
 
   describe("Message Processing", () => {
     it("creates a new conversation when conversationId is not provided", async () => {
-      const { db } = require("@/app/db/client");
       const { POST } = await import("@/app/api/chat/route");
 
       const request = new Request("http://localhost/api/chat", {
@@ -171,7 +173,6 @@ describe("Chat API Route", () => {
     });
 
     it("stores user message in database", async () => {
-      const { db } = require("@/app/db/client");
       const { POST } = await import("@/app/api/chat/route");
 
       const request = new Request("http://localhost/api/chat", {
@@ -186,7 +187,6 @@ describe("Chat API Route", () => {
     });
 
     it("handles messages with image attachments", async () => {
-      const { streamText } = require("ai");
       const { POST } = await import("@/app/api/chat/route");
 
       const request = new Request("http://localhost/api/chat", {
@@ -245,8 +245,7 @@ describe("Chat API Route", () => {
 
   describe("Error Handling", () => {
     it("returns 500 on internal errors", async () => {
-      const { createClient } = require("@/lib/supabase/server");
-      createClient.mockRejectedValueOnce(new Error("Database error"));
+      (createClient as jest.Mock).mockRejectedValueOnce(new Error("Database error"));
 
       const { POST } = await import("@/app/api/chat/route");
 

@@ -9,12 +9,13 @@ if (typeof window !== "undefined") {
 }
 
 // Conditionally load premium plugins if available
-let ScrollSmoother: any = null;
-let Observer: any = null;
-let Flip: any = null;
+let ScrollSmoother: unknown = null;
+let Observer: unknown = null;
+let Flip: unknown = null;
 
 if (typeof window !== "undefined") {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     ScrollSmoother = require("gsap/ScrollSmoother").ScrollSmoother;
     if (ScrollSmoother) gsap.registerPlugin(ScrollSmoother);
   } catch (e) {
@@ -22,6 +23,7 @@ if (typeof window !== "undefined") {
   }
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     Observer = require("gsap/Observer").Observer;
     if (Observer) gsap.registerPlugin(Observer);
   } catch (e) {
@@ -29,6 +31,7 @@ if (typeof window !== "undefined") {
   }
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     Flip = require("gsap/Flip").Flip;
     if (Flip) gsap.registerPlugin(Flip);
   } catch (e) {

@@ -19,6 +19,7 @@ const config: Config = {
   testPathIgnorePatterns: [
     "/node_modules/",
     "/e2e/",
+    "/.claude/worktrees/",
   ],
   collectCoverageFrom: [
     "app/**/*.{js,jsx,ts,tsx}",

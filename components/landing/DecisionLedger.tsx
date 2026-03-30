@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -10,14 +10,9 @@ if (typeof window !== "undefined") {
 
 export function DecisionLedger() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!sectionRef.current || !mounted) return;
+    if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
       gsap.from(".ledger-content", {
@@ -46,9 +41,7 @@ export function DecisionLedger() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [mounted]);
-
-  if (!mounted) return null;
+  }, []);
 
   return (
     <section
@@ -95,7 +88,7 @@ export function DecisionLedger() {
               </div>
             </div>
             <p className="text-center text-xs text-neutral-600 mt-4">
-              Next time it happens, you'll know exactly what you did.
+              Next time it happens, you&apos;ll know exactly what you did.
             </p>
           </div>
         </div>

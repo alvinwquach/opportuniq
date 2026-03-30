@@ -80,15 +80,10 @@ const BUDGET_CONTRIBUTIONS = [
 export function SoloShared() {
   const sectionRef = useRef<HTMLElement>(null);
   const chartRef = useRef<SVGSVGElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [selectedMode, setSelectedMode] = useState(0);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!chartRef.current || !mounted || selectedMode !== 1) return;
+    if (!chartRef.current || selectedMode !== 1) return;
 
     const svg = d3.select(chartRef.current);
     svg.selectAll("*").remove();
@@ -141,10 +136,10 @@ export function SoloShared() {
       .attr("fill", "#9ca3af")
       .text("Monthly Budget");
 
-  }, [mounted, selectedMode]);
+  }, [selectedMode]);
 
   useEffect(() => {
-    if (!sectionRef.current || !mounted) return;
+    if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
       gsap.from(".solo-header", {
@@ -183,9 +178,7 @@ export function SoloShared() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [mounted]);
-
-  if (!mounted) return null;
+  }, []);
 
   const currentMode = MODES[selectedMode];
   const CurrentIcon = currentMode.icon;

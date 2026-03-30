@@ -125,7 +125,7 @@ export function NewGroupModal({ isOpen, onClose, onSubmit, isLoading }: NewGroup
           </div>
           <div className="p-3 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a]">
             <p className="text-xs text-[#888]">
-              <span className="font-medium text-white">You'll be the Coordinator</span> of this group
+              <span className="font-medium text-white">You&apos;ll be the Coordinator</span> of this group
               with full control over settings, members, and issues.
             </p>
           </div>
@@ -283,6 +283,7 @@ export function SettingsModal({
 
   useEffect(() => {
     if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setForm(initialData);
     }
   }, [isOpen, initialData]);
@@ -404,6 +405,7 @@ export function RoleModal({ isOpen, onClose, onSubmit, currentRole, isLoading }:
 
   useEffect(() => {
     if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedRole(currentRole);
     }
   }, [isOpen, currentRole]);

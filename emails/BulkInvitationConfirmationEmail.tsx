@@ -98,7 +98,7 @@ export const BulkInvitationConfirmationEmail = ({
               <Text style={infoTitle}>What happens next?</Text>
               <Text style={infoItem}>1. Each invitee will receive an email with their invitation</Text>
               <Text style={infoItem}>2. They have 7 days to accept their invitation</Text>
-              <Text style={infoItem}>3. Once accepted, they'll appear in your group members list</Text>
+              <Text style={infoItem}>3. Once accepted, they&apos;ll appear in your group members list</Text>
             </Section>
             <Section style={ctaSection}>
               <Link href={groupUrl} style={button}>

@@ -68,7 +68,7 @@ export const generateCalendarDays = (year: number, month: number): CalendarDay[]
       if (month === 1 && date === 14) return event.id === '2';
       return false;
     });
-    days.push({ date, events: dayEvents as any, isOtherMonth: false });
+    days.push({ date, events: dayEvents as typeof dayEvents, isOtherMonth: false });
   }
 
   // Add days from next month to fill the grid

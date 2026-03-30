@@ -47,13 +47,13 @@ export function AvailableFundsCard({
           ${Math.max(0, Math.round(availableFunds)).toLocaleString()}
         </p>
         {isCritical && (
-          <p className="text-xs text-red-400 mt-1">You're over budget - consider deferring non-urgent repairs</p>
+          <p className="text-xs text-red-400 mt-1">You&apos;re over budget - consider deferring non-urgent repairs</p>
         )}
         {isWarning && (
           <p className="text-xs text-amber-400 mt-1">Running low - prioritize critical repairs only</p>
         )}
         {isHealthy && (
-          <p className="text-xs text-emerald-400 mt-1">You're in good shape for home expenses</p>
+          <p className="text-xs text-emerald-400 mt-1">You&apos;re in good shape for home expenses</p>
         )}
       </div>
 

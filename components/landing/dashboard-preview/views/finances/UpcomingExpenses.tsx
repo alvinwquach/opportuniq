@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { IoFlag, IoAlertCircle } from "react-icons/io5";
 import { Expense } from "./types";
 import { getUrgencyColor, getUrgencyLabel } from "./utils";
@@ -9,6 +10,8 @@ interface UpcomingExpensesProps {
 }
 
 export function UpcomingExpenses({ expenses }: UpcomingExpensesProps) {
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  const [now] = useState(() => Date.now());
   const upcomingBills = expenses
     .filter(e => e.isRecurring && e.nextDueDate)
     .sort((a, b) => (a.nextDueDate?.getTime() || 0) - (b.nextDueDate?.getTime() || 0));
@@ -32,7 +35,7 @@ export function UpcomingExpenses({ expenses }: UpcomingExpensesProps) {
 
           <div className="space-y-3">
             {upcomingBills.map((expense) => {
-              const daysUntil = Math.ceil(((expense.nextDueDate?.getTime() || 0) - Date.now()) / (1000 * 60 * 60 * 24));
+              const daysUntil = Math.ceil(((expense.nextDueDate?.getTime() || 0) - now) / (1000 * 60 * 60 * 24));
               const isUrgent = daysUntil <= 7;
               const isSoon = daysUntil <= 30;
 

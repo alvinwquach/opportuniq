@@ -2,8 +2,10 @@
 
 import { OpportunIQLogo } from "./OpportunIQLogo";
 
+type LogoVariant = "scale-smart" | "scale-safety" | "brain-paths" | "scales" | "compass" | "lightbulb-graph" | "decision-node";
+
 export function LogoPreview() {
-  const variants = [
+  const variants: Array<{ name: LogoVariant; label: string; description: string }> = [
     {
       name: "scale-smart",
       label: "Smart Scale (RECOMMENDED)",
@@ -51,7 +53,7 @@ export function LogoPreview() {
                 <div className="flex-shrink-0">
                   <div className="h-16 w-16 rounded-xl bg-emerald-600 flex items-center justify-center shadow-lg">
                     <OpportunIQLogo
-                      variant={variant.name as any}
+                      variant={variant.name}
                       className="h-9 w-9 text-white"
                     />
                   </div>
@@ -61,7 +63,7 @@ export function LogoPreview() {
                 <div className="flex-shrink-0">
                   <div className="h-16 w-16 rounded-xl bg-slate-900 flex items-center justify-center shadow-lg border border-slate-700">
                     <OpportunIQLogo
-                      variant={variant.name as any}
+                      variant={variant.name}
                       className="h-9 w-9 text-emerald-400"
                     />
                   </div>
@@ -71,7 +73,7 @@ export function LogoPreview() {
                 <div className="flex-shrink-0">
                   <div className="h-12 w-12 rounded-lg bg-emerald-600 flex items-center justify-center">
                     <OpportunIQLogo
-                      variant={variant.name as any}
+                      variant={variant.name}
                       className="h-6 w-6 text-white"
                     />
                   </div>

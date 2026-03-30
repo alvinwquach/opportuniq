@@ -51,9 +51,9 @@ export const resolvers = {
     // Parse ISO string from client to Date
     parseValue: (value: string) => new Date(value),
     // Parse literal in query (rarely used)
-    parseLiteral: (ast: any) => {
+    parseLiteral: (ast: { kind: string; value?: string }) => {
       if (ast.kind === "StringValue") {
-        return new Date(ast.value);
+        return new Date(ast.value!);
       }
       return null;
     },
@@ -62,7 +62,7 @@ export const resolvers = {
   JSON: {
     serialize: (value: unknown) => value,
     parseValue: (value: unknown) => value,
-    parseLiteral: (ast: any) => {
+    parseLiteral: (ast: { kind: string; value?: string }) => {
       // Simple implementation - parse JSON literals
       if (ast.kind === "StringValue") {
         try {

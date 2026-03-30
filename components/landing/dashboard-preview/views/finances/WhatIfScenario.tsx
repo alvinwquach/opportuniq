@@ -78,12 +78,12 @@ export function WhatIfScenario({ availableFunds }: WhatIfScenarioProps) {
 
                 {!canAfford && (
                   <p className="text-xs text-red-400/80 mt-2">
-                    You'd need ${Math.abs(Math.round(afterRepair))} more to cover this.
+                    You&apos;d need ${Math.abs(Math.round(afterRepair))} more to cover this.
                   </p>
                 )}
                 {canAfford && !isComfortable && (
                   <p className="text-xs text-amber-400/80 mt-2">
-                    This would leave you with a thin margin. Consider if it's urgent.
+                    This would leave you with a thin margin. Consider if it&apos;s urgent.
                   </p>
                 )}
               </div>

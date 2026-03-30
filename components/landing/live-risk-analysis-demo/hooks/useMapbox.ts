@@ -5,10 +5,9 @@ import type { DemoScenario } from "../types";
 interface UseMapboxOptions {
   scenario: DemoScenario;
   isVisible: boolean;
-  mounted: boolean;
 }
 
-export function useMapbox({ scenario, isVisible, mounted }: UseMapboxOptions) {
+export function useMapbox({ scenario, isVisible }: UseMapboxOptions) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
@@ -45,7 +44,7 @@ export function useMapbox({ scenario, isVisible, mounted }: UseMapboxOptions) {
 
   // Initialize Mapbox when location card becomes visible
   useEffect(() => {
-    if (!mapContainerRef.current || !mounted || !isVisible) return;
+    if (!mapContainerRef.current || !isVisible) return;
 
     const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
     if (!token) {
@@ -77,7 +76,7 @@ export function useMapbox({ scenario, isVisible, mounted }: UseMapboxOptions) {
       mapRef.current?.remove();
       mapRef.current = null;
     };
-  }, [mounted, isVisible, scenario.location.lat, scenario.location.lng, updateMapMarkers]);
+  }, [isVisible, scenario.location.lat, scenario.location.lng, updateMapMarkers]);
 
   // Update map when scenario changes
   useEffect(() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import { IoAddOutline } from "react-icons/io5";
 import {
@@ -34,8 +34,6 @@ export function IssuesView({ onNavigateToIssue }: IssuesViewProps) {
     group: null,
   });
 
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
 
   // Filter issues
   let filteredIssues = issuesHistoryData.filter((issue) => {
@@ -81,7 +79,7 @@ export function IssuesView({ onNavigateToIssue }: IssuesViewProps) {
 
   return (
     <>
-      {mounted && typeof window !== "undefined" && showNewIssueModal && createPortal(
+      {typeof window !== "undefined" && showNewIssueModal && createPortal(
         <NewIssueModal onClose={() => setShowNewIssueModal(false)} />,
         document.body
       )}

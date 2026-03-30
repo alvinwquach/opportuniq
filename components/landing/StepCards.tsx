@@ -56,15 +56,11 @@ const STEPS: Step[] = [
 export function StepCards() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [hoveredStep, setHoveredStep] = useState<number | null>(null);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
-    if (!containerRef.current || !cardsRef.current || !mounted) return;
+    if (!containerRef.current || !cardsRef.current) return;
 
     const cards = cardsRef.current.querySelectorAll(".step-card");
 
@@ -112,9 +108,8 @@ export function StepCards() {
     return () => {
       ScrollTrigger.getAll().forEach(t => t.kill());
     };
-  }, [mounted]);
+  }, []);
 
-  if (!mounted) return null;
 
   return (
     <section ref={containerRef} className="relative py-20 lg:py-28 bg-black overflow-hidden">

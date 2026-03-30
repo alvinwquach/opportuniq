@@ -83,17 +83,13 @@ const CAPABILITIES: Capability[] = [
 export function CapabilityPreview() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<string>(CAPABILITIES[0].id);
 
   const activeCapability = CAPABILITIES.find(c => c.id === activeTab) || CAPABILITIES[0];
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
-    if (!contentRef.current || !mounted) return;
+    if (!contentRef.current) return;
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
@@ -113,7 +109,7 @@ export function CapabilityPreview() {
         },
       }
     );
-  }, [mounted]);
+  }, []);
 
   // Animate content change on tab switch
   useEffect(() => {
@@ -131,7 +127,6 @@ export function CapabilityPreview() {
     }
   }, [activeTab, mounted]);
 
-  if (!mounted) return null;
 
   return (
     <section

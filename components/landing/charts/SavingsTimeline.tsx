@@ -62,7 +62,6 @@ const generateSavingsData = (): SavingsDataPoint[] => {
 export function SavingsTimeline() {
   const sectionRef = useRef<HTMLElement>(null);
   const chartRef = useRef<SVGSVGElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [data] = useState<SavingsDataPoint[]>(() => generateSavingsData());
   const [hoveredPoint, setHoveredPoint] = useState<SavingsDataPoint | null>(null);
   const [animated, setAnimated] = useState(false);
@@ -70,12 +69,9 @@ export function SavingsTimeline() {
   const totalSavings = data[data.length - 1].cumulativeSavings;
   const totalDecisions = data.reduce((acc, d) => acc + d.decisions, 0);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const drawChart = useCallback(() => {
-    if (!chartRef.current || !mounted) return;
+    if (!chartRef.current) return;
 
     const svg = d3.select(chartRef.current);
     svg.selectAll("*").remove();
@@ -260,13 +256,12 @@ export function SavingsTimeline() {
     } else if (animated) {
       clipPath.select("rect").attr("width", width);
     }
-  }, [mounted, data, totalSavings, animated]);
+  }, [data, totalSavings, animated]);
 
   useEffect(() => {
     drawChart();
   }, [drawChart]);
 
-  if (!mounted) return null;
 
   return (
     <section

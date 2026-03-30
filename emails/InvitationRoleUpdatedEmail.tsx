@@ -39,7 +39,7 @@ export const InvitationRoleUpdatedEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Your invitation role for "{groupName}" has been updated</Preview>
+      <Preview>Your invitation role for &quot;{groupName}&quot; has been updated</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -70,7 +70,7 @@ export const InvitationRoleUpdatedEmail = ({
             </Section>
             <Hr style={divider} />
             <Text style={securityNote}>
-              You're receiving this because you have a pending invitation to join "{groupName}".
+              You&apos;re receiving this because you have a pending invitation to join &quot;{groupName}&quot;.
             </Text>
           </Section>
           <Section style={footer}>

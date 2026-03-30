@@ -178,6 +178,7 @@ export function IncomeSetupDialog({ userId, variant = "prompt" }: IncomeSetupDia
   );
 }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Extracted form component to avoid duplication
 function IncomeForm({
   form,
@@ -185,6 +186,7 @@ function IncomeForm({
   isSubmitting,
   onCancel,
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   isPending: boolean;
   isSubmitting: boolean;
@@ -366,3 +368,4 @@ function IncomeForm({
     </form>
   );
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */

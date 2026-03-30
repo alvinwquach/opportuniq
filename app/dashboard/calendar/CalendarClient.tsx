@@ -40,9 +40,8 @@ const filterButtons: { id: FilterType; label: string }[] = [
 ];
 
 export function CalendarClient() {
-  const todayDate = new Date();
-  const [currentYear, setCurrentYear] = useState(todayDate.getFullYear());
-  const [currentMonth, setCurrentMonth] = useState(todayDate.getMonth());
+  const [currentYear, setCurrentYear] = useState(() => new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(() => new Date().getMonth());
   const [currentWeekStart, setCurrentWeekStart] = useState<Date | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("month");
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");

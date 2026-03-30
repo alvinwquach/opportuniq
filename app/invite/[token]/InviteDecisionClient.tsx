@@ -96,7 +96,7 @@ export function InviteDecisionClient({
             <IoPeople className="h-8 w-8 text-primary" />
           </div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-            You're invited to join
+            You&apos;re invited to join
           </h1>
           <p className="text-xl font-semibold text-primary">{groupName}</p>
         </div>
@@ -130,7 +130,7 @@ export function InviteDecisionClient({
             {message && (
               <div className="pt-4 border-t">
                 <p className="text-sm text-muted-foreground mb-2">Message from inviter:</p>
-                <p className="text-foreground italic">"{message}"</p>
+                <p className="text-foreground italic">&quot;{message}&quot;</p>
               </div>
             )}
           </div>
@@ -167,7 +167,7 @@ export function InviteDecisionClient({
             <AlertDialogHeader>
               <AlertDialogTitle>Decline Invitation?</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to decline this invitation to join "{groupName}"?
+                Are you sure you want to decline this invitation to join &quot;{groupName}&quot;?
                 The inviter will be notified that you declined.
               </AlertDialogDescription>
             </AlertDialogHeader>

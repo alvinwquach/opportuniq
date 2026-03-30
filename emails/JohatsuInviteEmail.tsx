@@ -26,7 +26,7 @@ export const JohatsuInviteEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>You've been selected for Johatsu - OpportunIQ's most exclusive tier</Preview>
+      <Preview>You&apos;ve been selected for Johatsu - OpportunIQ&apos;s most exclusive tier</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -42,7 +42,7 @@ export const JohatsuInviteEmail = ({
             <Section style={badgeSection}>
               <Text style={badge}>JOHATSU</Text>
             </Section>
-            <Heading style={heroTitle}>You've Been Selected</Heading>
+            <Heading style={heroTitle}>You&apos;ve Been Selected</Heading>
             <Text style={heroSubtitle}>
               You are one of only <strong>10 people</strong> invited to Johatsu. This is an invitation that cannot be earned—only granted.
             </Text>
@@ -90,7 +90,7 @@ export const JohatsuInviteEmail = ({
             <Section style={confidentialBox}>
               <Text style={confidentialLabel}>Top Secret</Text>
               <Text style={confidentialText}>
-                "Every passing minute is another chance to turn it all around."
+                &quot;Every passing minute is another chance to turn it all around.&quot;
               </Text>
               <Text style={confidentialSubtext}>
                 Everything you learn through Johatsu—including my whereabouts, plans, and movements—is strictly classified.

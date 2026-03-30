@@ -29,7 +29,7 @@ export const GroupDeletedEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>The group "{groupName}" has been deleted</Preview>
+      <Preview>The group &quot;{groupName}&quot; has been deleted</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -54,7 +54,7 @@ export const GroupDeletedEmail = ({
             <Section style={infoSection}>
               <Text style={infoTitle}>What this means:</Text>
               <Text style={infoItem}>• All group data, including issues and expenses, has been removed</Text>
-              <Text style={infoItem}>• You no longer have access to this group's history</Text>
+              <Text style={infoItem}>• You no longer have access to this group&apos;s history</Text>
               <Text style={infoItem}>• Your personal data and other groups are unaffected</Text>
             </Section>
             <Section style={ctaSection}>

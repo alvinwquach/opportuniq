@@ -66,7 +66,7 @@ export function ResearchSection() {
             Not guessing. Knowing.
           </h2>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Every recommendation is backed by real pricing, real reviews, and real solutions from people who've fixed the same thing.
+            Every recommendation is backed by real pricing, real reviews, and real solutions from people who&apos;ve fixed the same thing.
           </p>
         </div>
 
@@ -103,7 +103,7 @@ export function ResearchSection() {
               <p className="text-sm text-blue-400">Prime delivery tomorrow</p>
             </div>
             <div>
-              <p className="text-sm text-slate-400 mb-2">Lowe's</p>
+              <p className="text-sm text-slate-400 mb-2">Lowe&apos;s</p>
               <p className="text-3xl font-bold text-white mb-1">$26.99</p>
               <p className="text-sm text-emerald-400 flex items-center gap-1">
                 <IoCheckmarkCircle className="w-4 h-4" />

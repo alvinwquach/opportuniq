@@ -7,7 +7,7 @@ export function EmptyStateHeader() {
         How can I help?
       </h2>
       <p className="text-[#888888] text-sm">
-        DIY projects, repairs, installations, or just need advice — describe what you're working on.
+        DIY projects, repairs, installations, or just need advice — describe what you&apos;re working on.
       </p>
     </div>
   );

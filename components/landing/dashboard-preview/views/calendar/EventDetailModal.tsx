@@ -23,8 +23,6 @@ interface EventDetailModalProps {
 export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
   if (!event || typeof document === 'undefined') return null;
 
-  const EventIcon = getEventIcon(event.type);
-
   return createPortal(
     <div className="fixed inset-0 z-[10000] flex items-center justify-center">
       <div
@@ -36,7 +34,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-3">
               <div className={`p-2 rounded-lg ${getEventColor(event.type)}`}>
-                <EventIcon className="w-5 h-5" />
+                {getEventIcon(event.type)({ className: "w-5 h-5" })}
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">

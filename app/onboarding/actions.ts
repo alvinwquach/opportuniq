@@ -147,8 +147,8 @@ export async function completeOnboarding(data: {
       const result = await Promise.race([selectPromise, timeoutPromise]);
       [existingUser] = result;
       console.log("[Onboarding] DB check completed, user exists:", !!existingUser);
-    } catch (dbError: any) {
-      console.error("[Onboarding] DB check failed:", dbError?.message);
+    } catch (dbError: unknown) {
+      console.error("[Onboarding] DB check failed:", (dbError as Error)?.message);
       existingUser = null;
     }
 
@@ -158,7 +158,7 @@ export async function completeOnboarding(data: {
       theme: theme || "auto",
       ...(primaryUseCase && { primaryUseCase }),
       ...(hourlyRate && { hourlyRate }),
-    } as any;
+    } as Record<string, unknown>;
 
     if (existingUser) {
       // User already exists - update
@@ -309,12 +309,13 @@ export async function completeOnboarding(data: {
           id: user.id,
           email: user.email!,
         };
-      } catch (createError: any) {
+      } catch (createError: unknown) {
         console.error("[Onboarding] Failed to create user:", createError);
+        const createErr = createError as { code?: string; message?: string };
         if (
-          createError?.code === "23505" ||
-          createError?.message?.includes("duplicate") ||
-          createError?.message?.includes("unique")
+          createErr?.code === "23505" ||
+          createErr?.message?.includes("duplicate") ||
+          createErr?.message?.includes("unique")
         ) {
           const [raceUser] = await db.select().from(users).where(eq(users.id, user.id));
           if (raceUser) {
@@ -379,7 +380,7 @@ export async function completeOnboarding(data: {
           id: user.id,
           email: user.email!,
         };
-      } catch (fallbackError: any) {
+      } catch (fallbackError: unknown) {
         console.error("[Onboarding] Fallback user creation failed:", fallbackError);
         return { success: false as const, error: "Unable to complete onboarding. Please try signing in again." };
       }

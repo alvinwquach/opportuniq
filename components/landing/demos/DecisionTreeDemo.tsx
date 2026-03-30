@@ -67,14 +67,10 @@ const TREE_DATA: Record<string, TreeNode[]> = {
 export function DecisionTreeDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
   const [visibleNodes, setVisibleNodes] = useState<string[]>([]);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const animateTree = useCallback((issueId: string) => {
     const nodes = TREE_DATA[issueId];
@@ -102,7 +98,6 @@ export function DecisionTreeDemo() {
     return TREE_DATA[issueId]?.find(n => n.id === nodeId);
   };
 
-  if (!mounted) return null;
 
   const currentNodes = selectedIssue ? TREE_DATA[selectedIssue] : [];
 

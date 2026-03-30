@@ -4,7 +4,6 @@ import { STREAMING_PHASES, CARD_ANIMATION_DELAY } from "../data";
 
 interface UseStreamingAnalysisOptions {
   scenario: DemoScenario;
-  mounted: boolean;
   sectionRef: React.RefObject<HTMLElement | null>;
 }
 
@@ -19,7 +18,6 @@ interface UseStreamingAnalysisReturn {
 
 export function useStreamingAnalysis({
   scenario,
-  mounted,
   sectionRef,
 }: UseStreamingAnalysisOptions): UseStreamingAnalysisReturn {
   const hasAutoStarted = useRef(false);
@@ -63,7 +61,7 @@ export function useStreamingAnalysis({
 
   // Auto-start analysis when section scrolls into view
   useEffect(() => {
-    if (!mounted || !sectionRef.current) return;
+    if (!sectionRef.current) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -81,7 +79,7 @@ export function useStreamingAnalysis({
 
     observer.observe(sectionRef.current);
     return () => observer.disconnect();
-  }, [mounted, isStreaming, analysisComplete, startStreaming, sectionRef]);
+  }, [isStreaming, analysisComplete, startStreaming, sectionRef]);
 
   return {
     isStreaming,

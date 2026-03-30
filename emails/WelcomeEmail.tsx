@@ -45,7 +45,7 @@ export const WelcomeEmail = ({
           <Section style={contentCard}>
             <Heading style={heroTitle}>Welcome, {firstName}!</Heading>
             <Text style={heroSubtitle}>
-              Your OpportunIQ account is ready. You're now equipped to make smarter decisions on repairs, purchases, and projects.
+              Your OpportunIQ account is ready. You&apos;re now equipped to make smarter decisions on repairs, purchases, and projects.
             </Text>
             <Section style={valueSection}>
               <div style={valueItem}>

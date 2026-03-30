@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 import {
   IoChevronBackOutline,
   IoChevronForwardOutline,
@@ -80,7 +80,7 @@ export function CalendarHeader({
   const [showSyncStatus, setShowSyncStatus] = useState(false);
   const monthPickerRef = useRef<HTMLDivElement>(null);
   const syncStatusRef = useRef<HTMLDivElement>(null);
-  const todayDate = new Date();
+  const todayDate = useMemo(() => new Date(), []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

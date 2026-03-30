@@ -72,13 +72,6 @@ interface ReportIssueModalProps {
 
 export function ReportIssueModal({ trigger, variant = "default" }: ReportIssueModalProps) {
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  // Only render on client to avoid hydration mismatch with Radix IDs
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   // Track when modal opens
   useEffect(() => {
     if (open) {
@@ -90,11 +83,6 @@ export function ReportIssueModal({ trigger, variant = "default" }: ReportIssueMo
       trackReportIssueModalOpened({ source });
     }
   }, [open, variant]);
-
-  if (!mounted) {
-    // Return just the trigger without dialog functionality during SSR
-    return <>{trigger || null}</>;
-  }
 
   const defaultTrigger = (
     <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00D4FF]/10 text-[#00D4FF] text-sm font-medium hover:bg-[#00D4FF]/20 transition-colors">

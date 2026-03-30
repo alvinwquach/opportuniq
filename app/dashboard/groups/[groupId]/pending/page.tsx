@@ -93,7 +93,7 @@ export default async function PendingApprovalPage({ params }: PendingPageProps) 
           Waiting for Approval
         </h1>
         <p className="text-lg text-muted-foreground mb-4">
-          You've been invited to join{" "}
+          You&apos;ve been invited to join{" "}
           <span className="font-semibold text-foreground">{membership.group?.name}</span> by{" "}
           <span className="font-semibold text-foreground">{inviterName}</span>
         </p>
@@ -104,9 +104,9 @@ export default async function PendingApprovalPage({ params }: PendingPageProps) 
           <h3 className="font-semibold mb-2">What happens next?</h3>
           <ul className="text-sm text-muted-foreground space-y-2 text-left">
             <li>✓ <span className="font-medium">{inviterName}</span> will be notified of your request</li>
-            <li>✓ They'll verify it's really you</li>
-            <li>✓ Once approved, you'll get full access</li>
-            <li>✓ You'll receive an email notification</li>
+            <li>✓ They&apos;ll verify it&apos;s really you</li>
+            <li>✓ Once approved, you&apos;ll get full access</li>
+            <li>✓ You&apos;ll receive an email notification</li>
           </ul>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -121,7 +121,7 @@ export default async function PendingApprovalPage({ params }: PendingPageProps) 
           </Button>
         </div>
         <p className="text-sm text-muted-foreground mt-8">
-          If you're not approved within 24 hours, contact <span className="font-medium">{inviterName}</span> directly.
+          If you&apos;re not approved within 24 hours, contact <span className="font-medium">{inviterName}</span> directly.
         </p>
       </div>
     </div>

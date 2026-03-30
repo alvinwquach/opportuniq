@@ -14,16 +14,16 @@ export const adminQueryKeys = {
   all: ["admin"] as const,
   stats: (dateRange?: { from: string; to: string }) =>
     [...adminQueryKeys.all, "stats", dateRange] as const,
-  users: (filters?: any, pagination?: any) =>
+  users: (filters?: Record<string, unknown>, pagination?: Record<string, unknown>) =>
     [...adminQueryKeys.all, "users", filters, pagination] as const,
   user: (id: string) => [...adminQueryKeys.all, "user", id] as const,
-  waitlist: (filters?: any, pagination?: any) =>
+  waitlist: (filters?: Record<string, unknown>, pagination?: Record<string, unknown>) =>
     [...adminQueryKeys.all, "waitlist", filters, pagination] as const,
-  invites: (filters?: any, pagination?: any) =>
+  invites: (filters?: Record<string, unknown>, pagination?: Record<string, unknown>) =>
     [...adminQueryKeys.all, "invites", filters, pagination] as const,
-  referrals: (filters?: any, pagination?: any) =>
+  referrals: (filters?: Record<string, unknown>, pagination?: Record<string, unknown>) =>
     [...adminQueryKeys.all, "referrals", filters, pagination] as const,
-  auditLog: (pagination?: any, targetType?: string) =>
+  auditLog: (pagination?: Record<string, unknown>, targetType?: string) =>
     [...adminQueryKeys.all, "auditLog", pagination, targetType] as const,
 };
 
@@ -434,7 +434,7 @@ export function useAdminStats(dateRange?: { from: string; to: string }) {
 }
 
 export function useAdminUsers(
-  filters?: any,
+  filters?: Record<string, unknown>,
   pagination?: { limit?: number; offset?: number }
 ) {
   return useQuery({
@@ -459,7 +459,7 @@ export function useAdminUser(id: string) {
 }
 
 export function useAdminWaitlist(
-  filters?: any,
+  filters?: Record<string, unknown>,
   pagination?: { limit?: number; offset?: number }
 ) {
   return useQuery({
@@ -474,7 +474,7 @@ export function useAdminWaitlist(
 }
 
 export function useAdminInvites(
-  filters?: any,
+  filters?: Record<string, unknown>,
   pagination?: { limit?: number; offset?: number }
 ) {
   return useQuery({
@@ -489,7 +489,7 @@ export function useAdminInvites(
 }
 
 export function useAdminReferrals(
-  filters?: any,
+  filters?: Record<string, unknown>,
   pagination?: { limit?: number; offset?: number }
 ) {
   return useQuery({
@@ -507,7 +507,7 @@ export function useAdminReferrals(
 
 export function useExportUsers() {
   return useMutation({
-    mutationFn: (filters?: any) =>
+    mutationFn: (filters?: Record<string, unknown>) =>
       gqlRequest<{ exportUsers: ExportResult }>(EXPORT_USERS_QUERY, { filters }),
     onSuccess: (data) => {
       if (data.exportUsers.url) {
@@ -525,7 +525,7 @@ export function useExportUsers() {
 
 export function useExportWaitlist() {
   return useMutation({
-    mutationFn: (filters?: any) =>
+    mutationFn: (filters?: Record<string, unknown>) =>
       gqlRequest<{ exportWaitlist: ExportResult }>(EXPORT_WAITLIST_QUERY, {
         filters,
       }),
@@ -544,7 +544,7 @@ export function useExportWaitlist() {
 
 export function useExportReferrals() {
   return useMutation({
-    mutationFn: (filters?: any) =>
+    mutationFn: (filters?: Record<string, unknown>) =>
       gqlRequest<{ exportReferrals: ExportResult }>(EXPORT_REFERRALS_QUERY, {
         filters,
       }),
@@ -567,7 +567,7 @@ export function useUpdateUser() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: any }) =>
+    mutationFn: ({ id, input }: { id: string; input: Record<string, unknown> }) =>
       gqlRequest<{ adminUpdateUser: AdminUser }>(ADMIN_UPDATE_USER_MUTATION, {
         id,
         input,

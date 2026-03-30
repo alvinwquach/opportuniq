@@ -19,8 +19,45 @@ export function InvisibleCost() {
   const [currentHours, setCurrentHours] = useState(0);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
+
+  function scrambleText(element: HTMLElement, finalText: string, duration: number) {
+    const length = finalText.length;
+    const startTime = performance.now();
+
+    function update() {
+      const now = performance.now();
+      const progress = Math.min((now - startTime) / (duration * 1000), 1);
+      const charsRevealed = Math.floor(progress * length * 1.5);
+
+      let output = "";
+      for (let i = 0; i < length; i++) {
+        if (i < charsRevealed) {
+          output += finalText[i];
+        } else if (finalText[i] === " ") {
+          output += " ";
+        } else {
+          output += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+        }
+      }
+
+      element.textContent = output;
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        element.textContent = finalText;
+      }
+    }
+
+    element.textContent = SCRAMBLE_CHARS.slice(0, length).split("").map(() =>
+      SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+    ).join("");
+
+    requestAnimationFrame(update);
+  }
 
   useEffect(() => {
     if (!mounted || !sectionRef.current) return;
@@ -108,42 +145,6 @@ export function InvisibleCost() {
 
     return () => ctx.revert();
   }, [mounted]);
-
-  function scrambleText(element: HTMLElement, finalText: string, duration: number) {
-    const length = finalText.length;
-    const startTime = performance.now();
-
-    function update() {
-      const now = performance.now();
-      const progress = Math.min((now - startTime) / (duration * 1000), 1);
-      const charsRevealed = Math.floor(progress * length * 1.5);
-
-      let output = "";
-      for (let i = 0; i < length; i++) {
-        if (i < charsRevealed) {
-          output += finalText[i];
-        } else if (finalText[i] === " ") {
-          output += " ";
-        } else {
-          output += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
-        }
-      }
-
-      element.textContent = output;
-
-      if (progress < 1) {
-        requestAnimationFrame(update);
-      } else {
-        element.textContent = finalText;
-      }
-    }
-
-    element.textContent = SCRAMBLE_CHARS.slice(0, length).split("").map(() =>
-      SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
-    ).join("");
-
-    requestAnimationFrame(update);
-  }
 
   if (!mounted) {
     return (

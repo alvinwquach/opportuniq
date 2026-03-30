@@ -34,7 +34,7 @@ export const GroupInvitationEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>{inviterName} invited you to join "{groupName}" on OpportunIQ</Preview>
+      <Preview>{inviterName} invited you to join &quot;{groupName}&quot; on OpportunIQ</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -47,7 +47,7 @@ export const GroupInvitationEmail = ({
             />
           </Section>
           <Section style={contentCard}>
-            <Heading style={heroTitle}>You're Invited!</Heading>
+            <Heading style={heroTitle}>You&apos;re Invited!</Heading>
             <Text style={heroSubtitle}>
               <strong>{inviterName}</strong> has invited you to join their group on OpportunIQ.
             </Text>
@@ -59,7 +59,7 @@ export const GroupInvitationEmail = ({
             {message && (
               <Section style={messageBox}>
                 <Text style={messageLabel}>Message from {inviterName}:</Text>
-                <Text style={messageText}>"{message}"</Text>
+                <Text style={messageText}>&quot;{message}&quot;</Text>
               </Section>
             )}
             <Section style={benefitsSection}>
@@ -79,7 +79,7 @@ export const GroupInvitationEmail = ({
             </Text>
             <Hr style={divider} />
             <Text style={securityNote}>
-              If you didn't expect this invitation or don't know {inviterName}, you can safely ignore this email.
+              If you didn&apos;t expect this invitation or don&apos;t know {inviterName}, you can safely ignore this email.
             </Text>
           </Section>
           <Section style={footer}>

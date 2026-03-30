@@ -160,7 +160,7 @@ export default function PitchDeck() {
             Our Solution
           </Badge>
           <h2 className="text-3xl font-bold text-white mb-2 leading-tight">
-            AI that answers: "Is this safe? What could go wrong?"
+            AI that answers: &quot;Is this safe? What could go wrong?&quot;
           </h2>
           <p className="text-base text-[#888] mb-6">Snap a photo → Get diagnosis → See risks & costs → Decide together</p>
 
@@ -242,7 +242,7 @@ export default function PitchDeck() {
                     <LuShield className="w-4 h-4 text-red-400" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-white text-xs">"Is This Safe?" Analysis</h4>
+                    <h4 className="font-semibold text-white text-xs">&quot;Is This Safe?&quot; Analysis</h4>
                     <p className="text-[10px] text-[#888]">Safety risks surfaced upfront</p>
                   </div>
                 </div>
@@ -817,6 +817,16 @@ export default function PitchDeck() {
     },
   ];
 
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      containerRef.current?.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight" || e.key === " ") {
@@ -841,16 +851,6 @@ export default function PitchDeck() {
     }, 8000);
     return () => clearInterval(interval);
   }, [isAutoPlaying, slides.length]);
-
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      containerRef.current?.requestFullscreen();
-      setIsFullscreen(true);
-    } else {
-      document.exitFullscreen();
-      setIsFullscreen(false);
-    }
-  };
 
   return (
     <div ref={containerRef} className="min-h-screen bg-[#0a0a0a] p-6">

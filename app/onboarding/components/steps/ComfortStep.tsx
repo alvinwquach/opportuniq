@@ -91,7 +91,7 @@ export function ComfortStepLeft({ formData }: Pick<StepProps, "formData">) {
 
         {/* Recommendations */}
         <div className="p-6 rounded-2xl bg-black/40 backdrop-blur-sm border border-white/[0.06]">
-          <p className="text-sm text-white/50 mb-4">We'll show you:</p>
+          <p className="text-sm text-white/50 mb-4">We&apos;ll show you:</p>
           <ul className="space-y-3">
             {getRecommendations().map((rec, i) => (
               <li key={i} className="flex items-center gap-3">
@@ -119,7 +119,7 @@ export function ComfortStepRight({
       <div className="mb-2 text-sm text-teal-400 font-medium">Step 3 of 5 · Optional</div>
 
       <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-        What's your DIY comfort level?
+        What&apos;s your DIY comfort level?
       </h2>
 
       <p className="text-lg text-white/50 mb-8">

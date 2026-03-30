@@ -19,6 +19,7 @@ export function GuidesList({
 
   // Reset visible count when filters change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVisibleCount(INITIAL_ITEMS);
   }, [searchQuery, activeTab, guides.length]);
 

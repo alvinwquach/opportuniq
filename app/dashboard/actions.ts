@@ -47,9 +47,10 @@ export async function getDashboardData(userId: string) {
   const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
   // Helper to handle database connection errors
-  const handleDbError = (error: any, operation: string) => {
-    const errorMsg = error?.message || String(error);
-    const errorCode = error?.code || error?.cause?.code;
+  const handleDbError = (error: unknown, operation: string) => {
+    const err = error as { message?: string; code?: string; cause?: { code?: string } };
+    const errorMsg = err?.message || String(error);
+    const errorCode = err?.code || err?.cause?.code;
     
     // Check for "Tenant or user not found" error (XX000)
     if (
@@ -699,7 +700,7 @@ export async function getDashboardData(userId: string) {
   });
 
   // Calendar events
-  let calendarEvents: {
+  const calendarEvents: {
     id: string;
     date: Date;
     type: "diy" | "contractor" | "reminder";
@@ -938,9 +939,10 @@ export async function getDashboardData(userId: string) {
     groupActivityFeed,
     pipelineSummary,
   };
-  } catch (error: any) {
-    const errorMsg = error?.message || String(error);
-    const errorCode = error?.code || error?.cause?.code;
+  } catch (error: unknown) {
+    const err = error as { message?: string; code?: string; cause?: { code?: string } };
+    const errorMsg = err?.message || String(error);
+    const errorCode = err?.code || err?.cause?.code;
     
     // Check for database connection errors
     if (

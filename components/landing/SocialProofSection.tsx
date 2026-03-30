@@ -43,7 +43,7 @@ export function SocialProofSection() {
               className="bg-neutral-900 rounded-2xl p-8 border border-neutral-800"
             >
               <p className="text-neutral-300 mb-6 leading-relaxed">
-                "{testimonial.text}"
+                &quot;{testimonial.text}&quot;
               </p>
               <div className="border-t border-neutral-800 pt-4">
                 <p className="font-semibold text-white">{testimonial.name}</p>
