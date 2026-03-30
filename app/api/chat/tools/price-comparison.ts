@@ -23,24 +23,12 @@ export function createPriceComparisonTool(ctx: ToolContext) {
         };
       }
 
-      // Comprehensive list of stores for building, fixing, diagnosing
+      // Top 3 stores — covers the most common home repair and auto sources
+      // without burning Firecrawl credits on 11 concurrent requests
       const stores = [
-        // Big Box Home Improvement
         { name: "Home Depot", url: `https://www.homedepot.com/s/${encodeURIComponent(query)}` },
-        { name: "Lowe's", url: `https://www.lowes.com/search?searchTerm=${encodeURIComponent(query)}` },
-        { name: "Menards", url: `https://www.menards.com/main/search.html?search=${encodeURIComponent(query)}` },
-        // Hardware Stores
-        { name: "Ace Hardware", url: `https://www.acehardware.com/search?query=${encodeURIComponent(query)}` },
-        { name: "True Value", url: `https://www.truevalue.com/search?q=${encodeURIComponent(query)}` },
-        // Online/General
         { name: "Amazon", url: `https://www.amazon.com/s?k=${encodeURIComponent(query)}` },
-        // Auto Parts (for auto diagnostics)
-        { name: "AutoZone", url: `https://www.autozone.com/searchresult?searchText=${encodeURIComponent(query)}` },
-        { name: "O'Reilly Auto", url: `https://www.oreillyauto.com/search?q=${encodeURIComponent(query)}` },
-        { name: "Advance Auto", url: `https://shop.advanceautoparts.com/web/SearchResults?searchTerm=${encodeURIComponent(query)}` },
-        // Specialty/Pro Suppliers
-        { name: "Grainger", url: `https://www.grainger.com/search?searchQuery=${encodeURIComponent(query)}` },
-        { name: "Harbor Freight", url: `https://www.harborfreight.com/catalogsearch/result?q=${encodeURIComponent(query)}` },
+        { name: "Lowe's", url: `https://www.lowes.com/search?searchTerm=${encodeURIComponent(query)}` },
       ];
 
       const results = await Promise.allSettled(
