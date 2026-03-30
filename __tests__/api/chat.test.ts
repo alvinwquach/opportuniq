@@ -22,8 +22,10 @@ jest.mock("ai", () => ({
       return response;
     }),
   })),
+  generateText: jest.fn(() => Promise.resolve({ text: "New Diagnosis" })),
   convertToModelMessages: jest.fn((messages) => Promise.resolve(messages)),
   tool: jest.fn((config) => config),
+  stepCountIs: jest.fn(() => () => false),
 }));
 
 jest.mock("@/lib/supabase/server", () => ({
@@ -52,17 +54,62 @@ jest.mock("@/app/db/client", () => ({
         where: jest.fn(() => Promise.resolve()),
       })),
     })),
+    select: jest.fn(() => ({
+      from: jest.fn(() => ({
+        where: jest.fn(() => Promise.resolve([{ userId: "test-user-id" }])),
+        orderBy: jest.fn(() => Promise.resolve([])),
+      })),
+    })),
   },
 }));
 
 jest.mock("@/app/db/schema", () => ({
-  aiConversations: { id: "id" },
-  aiMessages: {},
+  aiConversations: { id: "id", userId: "userId" },
+  aiMessages: { conversationId: "conversationId", createdAt: "createdAt", role: "role", content: "content" },
 }));
 
 jest.mock("drizzle-orm", () => ({
   eq: jest.fn(),
 }));
+
+jest.mock("@mendable/firecrawl-js", () => ({
+  default: jest.fn(),
+}));
+
+const mockOpenAIInstance = {
+  chat: {
+    completions: {
+      create: jest.fn(() => Promise.resolve({
+        choices: [{ message: { content: "audio analysis" } }],
+      })),
+    },
+  },
+};
+jest.mock("openai", () => {
+  const MockOpenAI = jest.fn(() => mockOpenAIInstance);
+  return { default: MockOpenAI, __esModule: true };
+});
+
+// Minimal valid structured diagnosis request body
+const makeStructuredRequest = (overrides = {}) => ({
+  type: "structured" as const,
+  diagnosis: {
+    issue: {
+      description: "There is a water stain on my ceiling",
+      category: "plumbing",
+    },
+    property: {
+      postalCode: "90210",
+      type: "house",
+    },
+    preferences: {
+      diySkillLevel: "intermediate",
+      hasBasicTools: true,
+      urgency: "flexible",
+    },
+    ...overrides,
+  },
+});
 
 describe("Chat API Route", () => {
   beforeEach(() => {
@@ -85,7 +132,7 @@ describe("Chat API Route", () => {
 
       const request = new Request("http://localhost/api/chat", {
         method: "POST",
-        body: JSON.stringify({ messages: [] }),
+        body: JSON.stringify(makeStructuredRequest()),
       });
 
       const response = await POST(request);
@@ -99,15 +146,7 @@ describe("Chat API Route", () => {
 
       const request = new Request("http://localhost/api/chat", {
         method: "POST",
-        body: JSON.stringify({
-          messages: [
-            {
-              id: "1",
-              role: "user",
-              parts: [{ type: "text", text: "Hello" }],
-            },
-          ],
-        }),
+        body: JSON.stringify(makeStructuredRequest()),
       });
 
       const response = await POST(request);
@@ -123,15 +162,7 @@ describe("Chat API Route", () => {
 
       const request = new Request("http://localhost/api/chat", {
         method: "POST",
-        body: JSON.stringify({
-          messages: [
-            {
-              id: "1",
-              role: "user",
-              parts: [{ type: "text", text: "Test message" }],
-            },
-          ],
-        }),
+        body: JSON.stringify(makeStructuredRequest()),
       });
 
       await POST(request);
@@ -145,15 +176,7 @@ describe("Chat API Route", () => {
 
       const request = new Request("http://localhost/api/chat", {
         method: "POST",
-        body: JSON.stringify({
-          messages: [
-            {
-              id: "1",
-              role: "user",
-              parts: [{ type: "text", text: "What is this water stain?" }],
-            },
-          ],
-        }),
+        body: JSON.stringify(makeStructuredRequest()),
       });
 
       await POST(request);
@@ -169,20 +192,33 @@ describe("Chat API Route", () => {
       const request = new Request("http://localhost/api/chat", {
         method: "POST",
         body: JSON.stringify({
-          messages: [
-            {
-              id: "1",
-              role: "user",
-              parts: [
-                { type: "text", text: "What is wrong here?" },
-                {
-                  type: "file",
-                  mediaType: "image/jpeg",
-                  url: "data:image/jpeg;base64,/9j/4AAQSkZJRg...",
-                },
-              ],
+          type: "structured",
+          diagnosis: {
+            issue: {
+              description: "What is wrong here?",
+              category: "plumbing",
             },
-          ],
+            property: {
+              postalCode: "90210",
+              type: "house",
+            },
+            preferences: {
+              diySkillLevel: "beginner",
+              hasBasicTools: false,
+              urgency: "flexible" as const,
+            },
+            attachments: [
+              {
+                attachmentId: "att-1",
+                storagePath: "users/test/att-1",
+                iv: "test-iv",
+                mimeType: "image/jpeg",
+                originalSize: 1024,
+                base64Data: "/9j/4AAQSkZJRg==",
+                type: "image",
+              },
+            ],
+          },
         }),
       });
 
@@ -198,15 +234,7 @@ describe("Chat API Route", () => {
 
       const request = new Request("http://localhost/api/chat", {
         method: "POST",
-        body: JSON.stringify({
-          messages: [
-            {
-              id: "1",
-              role: "user",
-              parts: [{ type: "text", text: "Test" }],
-            },
-          ],
-        }),
+        body: JSON.stringify(makeStructuredRequest()),
       });
 
       const response = await POST(request);
@@ -224,7 +252,7 @@ describe("Chat API Route", () => {
 
       const request = new Request("http://localhost/api/chat", {
         method: "POST",
-        body: JSON.stringify({ messages: [] }),
+        body: JSON.stringify(makeStructuredRequest()),
       });
 
       const response = await POST(request);

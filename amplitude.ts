@@ -6,7 +6,7 @@ import { sessionReplayPlugin } from '@amplitude/plugin-session-replay-browser';
 function initAmplitude() {
   if (typeof window !== 'undefined') {
     amplitude.add(sessionReplayPlugin());
-    amplitude.init('c3bb018cd2c22034ccffbb856db37f9b', {"autocapture":true});
+    amplitude.init(process.env.NEXT_PUBLIC_AMPLITUDE_KEY || '', {"autocapture":true});
   }
 }
 
