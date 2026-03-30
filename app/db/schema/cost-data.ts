@@ -155,6 +155,12 @@ export const userSubmittedQuotes = pgTable("user_submitted_quotes", {
   // User who submitted (optional - can be anonymous)
   userId: uuid("user_id"),
 
+  // Optional link to AI conversation that triggered this quote
+  conversationId: uuid("conversation_id"),
+
+  // Optional link to a specific issue
+  issueId: uuid("issue_id"),
+
   // Service type - what work was quoted
   serviceType: text("service_type").notNull(),
 

@@ -10,6 +10,7 @@ import {
 import { InlineChartRenderer } from "./InlineChartRenderer";
 import { DIYGuideLinks } from "./DIYGuideLinks";
 import { EmailDraftCard } from "./EmailDraftCard";
+import { QuoteFeedbackCard } from "./QuoteFeedbackCard";
 
 interface MessageContentProps {
   content: string;
@@ -301,6 +302,13 @@ export function MessageContent({ content, conversationId, showCharts = true }: M
           conversationId={conversationId}
         />
       ))}
+      {/* Show quote feedback card after RFQ email drafts */}
+      {emailDrafts.length > 0 && (
+        <QuoteFeedbackCard
+          conversationId={conversationId}
+          serviceType="general"
+        />
+      )}
     </div>
   );
 }
