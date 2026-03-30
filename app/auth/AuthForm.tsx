@@ -4,7 +4,7 @@ import { useState, useId } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { IoPeople, IoCheckmarkCircle } from "react-icons/io5";
 import Link from "next/link";
-import amplitude from "@/amplitude";
+import { trackSignInStarted, trackSignInFailed } from "@/lib/analytics";
 
 interface AuthFormProps {
   inviteToken?: string | null;
@@ -34,7 +34,7 @@ export function AuthForm({ inviteToken, groupName }: AuthFormProps) {
     setError("");
 
     // Track sign in attempt
-    amplitude.track("Sign In Started", {
+    trackSignInStarted({
       provider: provider === "linkedin_oidc" ? "linkedin" : provider,
       hasInviteToken: !!inviteToken,
       hasGroupInvite: !!groupName,
@@ -61,7 +61,7 @@ export function AuthForm({ inviteToken, groupName }: AuthFormProps) {
     });
 
     if (error) {
-      amplitude.track("Sign In Failed", {
+      trackSignInFailed({
         provider: provider === "linkedin_oidc" ? "linkedin" : provider,
         error: error.message,
       });

@@ -33,8 +33,6 @@
   "dependencies": {
     "@ai-sdk/openai": "^3.0.2",
     "@ai-sdk/react": "^3.0.6",
-    "@amplitude/analytics-browser": "^2.33.1",
-    "@amplitude/plugin-session-replay-browser": "^1.25.5",
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@fullcalendar/core": "^6.1.20",

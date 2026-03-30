@@ -5,7 +5,11 @@ import Link from "next/link";
 import { IoAdd, IoCamera, IoFlash, IoCash, IoThumbsUp, IoLocation, IoNavigate, IoMic, IoVideocam } from "react-icons/io5";
 import { LocationMap } from "./LocationMap";
 import { cn } from "@/lib/utils";
-import amplitude from "@/amplitude";
+import {
+  trackNewUserDashboardViewed,
+  trackCreateGroupClicked,
+  trackSetLocationClicked,
+} from "@/lib/analytics";
 
 interface NewUserDashboardProps {
   userProfile?: {
@@ -25,7 +29,7 @@ export function NewUserDashboard({ userProfile }: NewUserDashboardProps) {
 
   // Track new user dashboard view
   useEffect(() => {
-    amplitude.track("New User Dashboard Viewed", {
+    trackNewUserDashboardViewed({
       hasLocation: !!hasLocation,
     });
   }, [hasLocation]);
@@ -50,7 +54,7 @@ export function NewUserDashboard({ userProfile }: NewUserDashboardProps) {
             </p>
             <Link
               href="/dashboard/groups"
-              onClick={() => amplitude.track("Create Group Clicked", { source: "new_user_dashboard" })}
+              onClick={() => trackCreateGroupClicked({ source: "new_user_dashboard" })}
               className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-[#0c0c0c] bg-[#00D4FF] rounded-lg hover:bg-[#00D4FF]/90 transition-colors"
             >
               <IoAdd className="h-4 w-4" />
@@ -120,7 +124,7 @@ export function NewUserDashboard({ userProfile }: NewUserDashboardProps) {
               </p>
               <Link
                 href="/dashboard/settings"
-                onClick={() => amplitude.track("Set Location Clicked", { source: "new_user_dashboard" })}
+                onClick={() => trackSetLocationClicked({ source: "new_user_dashboard" })}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-[#1f1f1f] text-[#888] hover:text-white hover:bg-[#2a2a2a] transition-colors"
               >
                 <IoLocation className="w-3 h-3" />

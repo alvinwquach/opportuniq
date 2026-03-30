@@ -4,7 +4,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ThemeProvider as HybridThemeProvider } from "@/lib/theme-context";
+import { PostHogProvider } from "posthog-js/react";
 import { useState } from "react";
+import posthog from "@/lib/posthog/client";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -30,16 +32,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <NextThemesProvider attribute="class" defaultTheme="dark" enableSystem>
-      <HybridThemeProvider>
-        <QueryClientProvider client={queryClient}>
-          {children}
-          {/* Show React Query DevTools in development */}
-          {process.env.NODE_ENV === "development" && (
-            <ReactQueryDevtools initialIsOpen={false} />
-          )}
-        </QueryClientProvider>
-      </HybridThemeProvider>
-    </NextThemesProvider>
+    <PostHogProvider client={posthog}>
+      <NextThemesProvider attribute="class" defaultTheme="dark" enableSystem>
+        <HybridThemeProvider>
+          <QueryClientProvider client={queryClient}>
+            {children}
+            {/* Show React Query DevTools in development */}
+            {process.env.NODE_ENV === "development" && (
+              <ReactQueryDevtools initialIsOpen={false} />
+            )}
+          </QueryClientProvider>
+        </HybridThemeProvider>
+      </NextThemesProvider>
+    </PostHogProvider>
   );
 }

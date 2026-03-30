@@ -24,7 +24,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import amplitude from "@/amplitude";
+import {
+  trackInviteModalOpened,
+  trackReferralLinkCopied,
+  trackInviteSent,
+  trackInviteFailed,
+  trackInviteResent,
+} from "@/lib/analytics";
 
 type InviteTier = "johatsu" | "alpha" | "beta" | "public";
 
@@ -116,7 +122,7 @@ export function InviteFriendsModal({
       getUserInviteData(userId)
         .then((result) => {
           setData(result);
-          amplitude.track("Invite Modal Opened", {
+          trackInviteModalOpened({
             hasExistingInvites: (result?.stats.totalSent || 0) > 0,
           });
         })
@@ -133,7 +139,7 @@ export function InviteFriendsModal({
     try {
       await navigator.clipboard.writeText(referralUrl);
       setCopied(true);
-      amplitude.track("Referral Link Copied", {
+      trackReferralLinkCopied({
         referralCode: data?.user.referralCode,
         accessTier: data?.user.accessTier,
         source: "modal",
@@ -159,7 +165,7 @@ export function InviteFriendsModal({
       if (result.success) {
         setSuccess(`Invite sent to ${email}`);
         setEmail("");
-        amplitude.track("Invite Sent", {
+        trackInviteSent({
           inviteTier: data?.inviteTier,
           senderTier: data?.user.accessTier,
           source: "modal",
@@ -169,7 +175,7 @@ export function InviteFriendsModal({
         setData(newData);
       } else {
         setError(result.error || "Failed to send invite");
-        amplitude.track("Invite Failed", {
+        trackInviteFailed({
           error: result.error,
           senderTier: data?.user.accessTier,
           source: "modal",
@@ -184,7 +190,7 @@ export function InviteFriendsModal({
       const result = await resendInvite(userId, inviteId);
       if (result.success) {
         setSuccess(`Invite resent to ${inviteEmail}`);
-        amplitude.track("Invite Resent", {
+        trackInviteResent({
           inviteTier: data?.inviteTier,
           source: "modal",
         });
