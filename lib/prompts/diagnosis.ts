@@ -227,24 +227,27 @@ const TOOL_RULES = `## TOOL USAGE
 3. If relevant:
    - \`checkRecalls\` - For appliances/vehicles
    - \`findUtilityRebates\` - For energy upgrades
+   - \`searchProductReviews\` - When user is comparing two specific products (e.g., DeWalt vs Milwaukee)
+   - \`checkLocalInventory\` - When user needs the item today or asks about in-store pickup
 
 **For HOW-TO/LEARNING requests:**
-1. \`searchDIYGuides\` - Find tutorials, guides, community wisdom
-2. Then IN PARALLEL:
+1. \`findTutorial\` - Find a YouTube video showing exactly how to do this repair
+2. \`searchReddit\` - Find real user experiences and tips
+3. Then IN PARALLEL:
    - \`searchProducts\` with category: "materials" - What they need to buy
    - \`searchProducts\` with category: "tools" - Required equipment
    - \`searchProducts\` with category: "ppe" - Safety gear if applicable
-3. If relevant:
+4. If relevant:
    - \`getCostEstimate\` - To compare DIY vs hiring someone
 
 **For ASSEMBLY/SETUP requests:**
-1. \`searchDIYGuides\` - Find manuals, video tutorials, assembly tips
+1. \`findTutorial\` - Find assembly video or manufacturer guide
 2. \`searchProducts\` with category: "tools" - Required tools
 3. If missing parts:
    - \`searchProducts\` with specific part names
 
 **For MAINTENANCE requests:**
-1. \`searchDIYGuides\` - Find maintenance guides and best practices
+1. \`findTutorial\` - Find maintenance video or best-practice guide
 2. \`searchProducts\` with category: "materials" - Cleaning supplies, treatments
 3. \`searchProducts\` with category: "tools" - Specialized equipment
 
@@ -592,11 +595,17 @@ export function buildFollowUpPrompt(postalCode: string, language?: string): stri
 **Available tools (use sparingly):**
 - Costs → getCostEstimate
 - Contractors → searchContractors
-- Products/materials/tools → searchProducts
-- How-to guides/tutorials → searchReddit
+- Products/materials/tools to buy → searchProducts
+- Product reviews & ratings (comparing brands/models) → searchProductReviews
+- In-store availability today → checkLocalInventory
+- How-to videos & tutorials → findTutorial
+- Real user experiences & costs → searchReddit
 - Recalls → checkRecalls
 - Rebates → findUtilityRebates
 - Draft contractor email → draftContractorEmail (use when user wants help contacting a contractor)
+- Calendar reminder → scheduleReminder
+
+**Tool selection guide:** Use `searchProducts` to find items to purchase. Use `searchProductReviews` to compare product quality when the user is choosing between specific models. Use `findTutorial` for step-by-step how-to videos. Use `searchReddit` for real costs and community advice. Use `checkLocalInventory` only when the user needs in-store pickup today.
 
 Remember: You help with repairs, how-to learning, assembly, maintenance, and DIY projects of all kinds.
 
