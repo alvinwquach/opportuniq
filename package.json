@@ -83,7 +83,7 @@
     "dataloader": "^2.2.3",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^1.0.0-beta.3-702eadc",
-    "googleapis": "^169.0.0",
+    "googleapis": "^171.4.0",
     "gsap": "^3.14.2",
     "langfuse": "^3.38.6",
     "lucide-react": "^0.562.0",
