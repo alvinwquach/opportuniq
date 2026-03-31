@@ -26,7 +26,7 @@ const POPUP_DISMISS_ACTIONS = [
 export function createInventoryCheckTool(ctx: ToolContext) {
   return tool({
     description:
-      "Check if a product is in stock at local stores near the user's zip code. Use this when the user needs something urgently or wants to pick up in-store.",
+      "Check if a product is in stock at local stores near the user's zip code. Use this when the user needs something urgently or wants to pick up in-store today.",
     inputSchema: z.object({
       query: z.string().describe("Product to check inventory for"),
       zipCode: z.string().describe("User's zip code for local store lookup"),
