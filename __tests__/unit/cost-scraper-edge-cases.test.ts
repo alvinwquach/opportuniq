@@ -5,6 +5,8 @@
 
 export {};
 
+import type { default as FirecrawlAppClass } from "@mendable/firecrawl-js";
+
 // ---- Polyfill Web Streams (required by ai SDK) ----------------------------
 
 if (!globalThis.TransformStream) {
@@ -74,7 +76,7 @@ describe("cost scraper edge cases", () => {
     mockDbSelect.mockReturnValue(chainWith([])); // empty DB result
 
     const { createCostLookupTool } = await import("@/app/api/chat/tools/cost-lookup");
-    const FirecrawlApp = require("@mendable/firecrawl-js").default;
+    const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
     const tool = createCostLookupTool({
       firecrawl: new FirecrawlApp({ apiKey: "test" }),
       userId: "user-1",
@@ -102,7 +104,7 @@ describe("cost scraper edge cases", () => {
     mockDbSelect.mockReturnValue(chainWith(cachedData));
 
     const { createCostLookupTool } = await import("@/app/api/chat/tools/cost-lookup");
-    const FirecrawlApp = require("@mendable/firecrawl-js").default;
+    const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
     const tool = createCostLookupTool({
       firecrawl: new FirecrawlApp({ apiKey: "test" }),
       userId: "user-1",
@@ -121,7 +123,7 @@ describe("cost scraper edge cases", () => {
 
     // The scraper should handle this gracefully
     const { scrapeWithTimeout } = await import("@/app/api/chat/tools/types");
-    const FirecrawlApp = require("@mendable/firecrawl-js").default;
+    const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
     const result = await scrapeWithTimeout(
       new FirecrawlApp({ apiKey: "test" }),
       "https://homeadvisor.com/cost/plumbing"
@@ -136,7 +138,7 @@ describe("cost scraper edge cases", () => {
     );
 
     const { scrapeWithTimeout } = await import("@/app/api/chat/tools/types");
-    const FirecrawlApp = require("@mendable/firecrawl-js").default;
+    const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
     const result = await scrapeWithTimeout(
       new FirecrawlApp({ apiKey: "test" }),
       "https://homeadvisor.com/cost",

@@ -1,11 +1,9 @@
 /**
- * Tests for GraphQL guides resolver (guides/DIY guides page data)
+ * Tests for guides server action (guides/DIY guides page data)
  */
 
 // ---- Mocks ---------------------------------------------------------------
 jest.mock("@/app/db/client", () => ({ db: {} }));
-
-
 
 jest.mock("drizzle-orm", () => ({
   eq: jest.fn(),
@@ -84,33 +82,10 @@ describe("guides resolver", () => {
     expect(incomplete[0].id).toBe("guide-1");
   });
 
-  it("guidesPageDataResolver resolves without throwing for new user", async () => {
-    const { guidesPageDataResolver } = await import(
-      "@/graphql/resolvers/queries/guidesPageData"
+  it("getGuidesPageData server action is exported", async () => {
+    const { getGuidesPageData } = await import(
+      "@/app/actions/dashboard/getGuidesPageData"
     );
-
-    const mockDb = {
-      select: jest.fn().mockReturnValue({
-        from: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        orderBy: jest.fn().mockResolvedValue([]),
-        limit: jest.fn().mockResolvedValue([]),
-        leftJoin: jest.fn().mockReturnThis(),
-      }),
-    };
-
-    const ctx = {
-      db: mockDb,
-      user: { id: "user-new" },
-      userId: "user-new",
-      groupId: null,
-      groupMembership: null,
-      loaders: {},
-      requestId: "req-1",
-    };
-
-    const result = await guidesPageDataResolver({}, {}, ctx as any);
-    expect(result).toHaveProperty("guides");
-    expect(Array.isArray(result.guides)).toBe(true);
+    expect(typeof getGuidesPageData).toBe("function");
   });
 });

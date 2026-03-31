@@ -29,9 +29,10 @@ jest.mock("@sentry/nextjs", () => ({
 // ---- Helpers -------------------------------------------------------------
 
 import type { ToolContext } from "@/app/api/chat/tools/types";
+import type { default as FirecrawlAppClass } from "@mendable/firecrawl-js";
 
 function makeCtx(firecrawlNull = false): ToolContext {
-  const FirecrawlApp = require("@mendable/firecrawl-js").default;
+  const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
   return {
     firecrawl: firecrawlNull ? null : new FirecrawlApp({ apiKey: "test-key" }),
     userId: "user-123",
@@ -189,7 +190,7 @@ describe("Firecrawl edge cases", () => {
     const tenThousandUrls = Array.from({ length: 10000 }, (_, i) => `https://example.com/page/${i}`);
     mockMap.mockResolvedValue({ urls: tenThousandUrls });
 
-    const FirecrawlApp = require("@mendable/firecrawl-js").default;
+    const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
     const fc = new FirecrawlApp({ apiKey: "test" });
     const result = await fc.map("https://example.com", { limit: 10000 });
     expect(result.urls).toHaveLength(10000);
@@ -208,7 +209,7 @@ describe("Firecrawl edge cases", () => {
       error: "2 URLs failed to scrape",
     });
 
-    const FirecrawlApp = require("@mendable/firecrawl-js").default;
+    const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
     const fc = new FirecrawlApp({ apiKey: "test" });
     const result = await fc.batchScrape(
       ["https://example.com/1", "https://example.com/2", "https://example.com/3",
@@ -229,7 +230,7 @@ describe("Firecrawl edge cases", () => {
       ],
     });
 
-    const FirecrawlApp = require("@mendable/firecrawl-js").default;
+    const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
     const fc = new FirecrawlApp({ apiKey: "test" });
     const result = await fc.search("plumber near me", { limit: 5 });
     const nonEmpty = result.data.filter((r: { markdown: string }) => r.markdown.length > 0);
@@ -247,7 +248,7 @@ describe("Firecrawl edge cases", () => {
       metadata: { statusCode: 200 },
     });
 
-    const FirecrawlApp = require("@mendable/firecrawl-js").default;
+    const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
     const fc = new FirecrawlApp({ apiKey: "test" });
     const result = await fc.scrape("https://angi.com/contractors", {
       formats: ["extract"],
@@ -269,7 +270,7 @@ describe("Firecrawl edge cases", () => {
       return Promise.resolve({ markdown: "v2 result with different shape" });
     });
 
-    const FirecrawlApp = require("@mendable/firecrawl-js").default;
+    const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
     const fc = new FirecrawlApp({ apiKey: "test" });
     const r1 = await fc.scrape("https://example.com");
     const r2 = await fc.scrape("https://example.com");

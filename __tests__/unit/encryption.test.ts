@@ -1,4 +1,8 @@
 /**
+ * @jest-environment node
+ */
+
+/**
  * Encryption Utilities Unit Tests
  *
  * Tests the client-side E2EE encryption functions to ensure:
