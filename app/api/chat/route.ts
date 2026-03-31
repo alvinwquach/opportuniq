@@ -8,7 +8,7 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { openai } from "@ai-sdk/openai";
-import { streamText, generateText, stepCountIs } from "ai";
+import { streamText, generateText, generateObject, stepCountIs } from "ai";
 import { createClient } from "@/lib/supabase/server";
 import { db } from "@/app/db/client";
 import { aiConversations, aiMessages } from "@/app/db/schema";
@@ -18,21 +18,33 @@ import OpenAI from "openai";
 import { createChatTools } from "./tools";
 import { diagnosisRequestSchema, type DiagnosisRequest } from "@/lib/schemas/diagnosis";
 import { buildDiagnosisPrompt, buildFollowUpPrompt } from "@/lib/prompts/diagnosis";
+import { getLangfuse } from "@/lib/langfuse";
+import { checkDiagnosisGuardrails } from "@/lib/guardrails";
+import {
+  DiagnosisOutputSchema,
+  TitleSchema,
+  type DiagnosisOutput,
+} from "@/lib/schemas/diagnosis-output";
+import {
+  trackGuardrailViolation,
+  trackLangfuseTraceCreated,
+  trackStructuredExtractionCompleted,
+} from "@/lib/analytics-server";
 
 // Initialize OpenAI client for audio analysis (Vercel AI SDK doesn't support audio input)
 const openaiClient = new OpenAI();
 
-// Generate a short title for the conversation
+// Generate a short title for the conversation using structured output
 async function generateConversationTitle(aiResponse: string): Promise<string> {
   try {
-    const { text } = await generateText({
+    const { object } = await generateObject({
       model: openai("gpt-4o-mini"),
+      schema: TitleSchema,
       system:
-        "Generate a very short title (3-6 words max) summarizing this home/auto diagnosis. Be specific about the issue and severity if mentioned. Examples: 'Ceiling Crack - Minor', 'Water Damage - Urgent', 'Bathroom Mold Issue', 'Car Engine Noise'. Return ONLY the title, no quotes or extra punctuation.",
+        "Generate a very short title (3-6 words max) summarizing this home/auto diagnosis. Be specific about the issue and severity if mentioned. Examples: 'Ceiling Crack - Minor', 'Water Damage - Urgent', 'Bathroom Mold Issue', 'Car Engine Noise'.",
       prompt: `Diagnosis:\n${aiResponse.substring(0, 1000)}`,
-      maxOutputTokens: 20,
     });
-    return text.trim() || "New Diagnosis";
+    return object.title.trim() || "New Diagnosis";
   } catch (error) {
     console.error("[Chat API] Title generation failed:", error);
     return "New Diagnosis";
@@ -252,6 +264,31 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
   console.timeEnd("[Chat API] Build prompt");
   console.log("[Chat API] Prompt length:", systemPrompt.length);
 
+  // Initialize Langfuse tracing
+  const langfuse = getLangfuse();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let trace: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let generation: any;
+  if (langfuse) {
+    trace = langfuse.trace({
+      name: "diagnosis",
+      userId,
+      metadata: {
+        conversationId,
+        category: diagnosis.issue.category,
+        hasImage: !!diagnosis.attachments?.some((a) => a.type !== "video"),
+        hasVideo: !!diagnosis.attachments?.some((a) => a.type === "video"),
+      },
+    });
+    generation = trace.generation({
+      name: "gpt-4o-diagnosis",
+      model: "gpt-4o",
+      input: systemPrompt.substring(0, 2000),
+    });
+    trackLangfuseTraceCreated({ conversationId: conversationId!, traceId: trace.id });
+  }
+
   // Create tools
   const tools = createChatTools(firecrawl, userId, conversationId, userName || undefined);
   console.log("[Chat API] Tools created:", Object.keys(tools));
@@ -437,6 +474,12 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
             args: "input" in tc ? tc.input : null,
             startTime: stepTime,
           });
+          if (trace) {
+            trace.span({
+              name: `tool:${tc.toolName}`,
+              input: "input" in tc ? tc.input : null,
+            });
+          }
         }
       }
 
@@ -458,6 +501,56 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
       console.log("[Chat API] Tool calls made:", allToolCalls.map(tc => tc.name));
       console.log("[Chat API] Response length:", text.length);
 
+      // Run guardrails (non-blocking — response already streamed)
+      const guardrailResult = checkDiagnosisGuardrails(
+        text,
+        allToolCalls,
+        diagnosis.property.yearBuilt
+      );
+      if (!guardrailResult.passed) {
+        Sentry.captureMessage("Guardrail violation", {
+          level: "warning",
+          extra: { conversationId, violations: guardrailResult.violations },
+        });
+        if (trace) {
+          trace.update({ metadata: { guardrailViolations: guardrailResult.violations } });
+        }
+        trackGuardrailViolation({
+          conversationId: conversationId!,
+          violations: guardrailResult.violations,
+        });
+      }
+
+      // End Langfuse generation
+      if (generation) {
+        generation.end({
+          output: text,
+          usage: { input: usage?.inputTokens, output: usage?.outputTokens },
+        });
+      }
+      if (trace) {
+        trace.update({ output: text.substring(0, 500) });
+      }
+
+      // Post-response structured extraction (for eval pipeline and RAG)
+      let extractedDiagnosis: DiagnosisOutput | undefined;
+      try {
+        const { object } = await generateObject({
+          model: openai("gpt-4o-mini"),
+          schema: DiagnosisOutputSchema,
+          system: "Extract structured diagnosis data from the following AI response.",
+          prompt: `Diagnosis response:\n${text.substring(0, 3000)}`,
+        });
+        extractedDiagnosis = object;
+        trackStructuredExtractionCompleted({
+          conversationId: conversationId!,
+          severity: object.severity,
+          diyFeasibility: object.diyFeasibility,
+        });
+      } catch (err) {
+        console.error("[Chat API] Structured extraction failed:", err);
+      }
+
       await saveAssistantMessage(
         conversationId!,
         text,
@@ -465,8 +558,13 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
         finishReason,
         allToolCalls,
         startTime,
-        isNewConversation
+        isNewConversation,
+        extractedDiagnosis
       );
+
+      if (langfuse) {
+        await langfuse.flushAsync();
+      }
     },
   });
 
@@ -682,6 +780,26 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
   // Track tool calls
   const allToolCalls: Array<{ name: string; args: unknown }> = [];
 
+  // Initialize Langfuse tracing for follow-up
+  const langfuse = getLangfuse();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let trace: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let generation: any;
+  if (langfuse) {
+    trace = langfuse.trace({
+      name: "followup",
+      userId,
+      metadata: { conversationId },
+    });
+    generation = trace.generation({
+      name: "gpt-4o-followup",
+      model: "gpt-4o",
+      input: systemPrompt.substring(0, 2000),
+    });
+    trackLangfuseTraceCreated({ conversationId, traceId: trace.id });
+  }
+
   // Always use gpt-4o for the main response (supports images)
   const modelId = "gpt-4o";
   console.log("[Chat API] Follow-up selected model:", modelId);
@@ -702,10 +820,39 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
             name: tc.toolName,
             args: "input" in tc ? tc.input : null,
           });
+          if (trace) {
+            trace.span({
+              name: `tool:${tc.toolName}`,
+              input: "input" in tc ? tc.input : null,
+            });
+          }
         }
       }
     },
     onFinish: async ({ text, usage, finishReason }) => {
+      // Run guardrails (non-blocking — response already streamed)
+      const guardrailResult = checkDiagnosisGuardrails(text, allToolCalls);
+      if (!guardrailResult.passed) {
+        Sentry.captureMessage("Guardrail violation", {
+          level: "warning",
+          extra: { conversationId, violations: guardrailResult.violations },
+        });
+        if (trace) {
+          trace.update({ metadata: { guardrailViolations: guardrailResult.violations } });
+        }
+        trackGuardrailViolation({ conversationId, violations: guardrailResult.violations });
+      }
+
+      if (generation) {
+        generation.end({
+          output: text,
+          usage: { input: usage?.inputTokens, output: usage?.outputTokens },
+        });
+      }
+      if (trace) {
+        trace.update({ output: text.substring(0, 500) });
+      }
+
       await saveAssistantMessage(
         conversationId,
         text,
@@ -715,6 +862,10 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
         startTime,
         false
       );
+
+      if (langfuse) {
+        await langfuse.flushAsync();
+      }
     },
   });
 
@@ -734,7 +885,8 @@ async function saveAssistantMessage(
   finishReason: string | undefined,
   toolCalls: Array<{ name: string; args: unknown }>,
   startTime: number,
-  isNewConversation: boolean
+  isNewConversation: boolean,
+  extractedDiagnosis?: DiagnosisOutput
 ) {
   const latencyMs = Date.now() - startTime;
   const inputTokens = usage?.inputTokens || 0;
@@ -755,6 +907,7 @@ async function saveAssistantMessage(
     latencyMs,
     finishReason,
     toolCalls: toolCalls.length > 0 ? toolCalls : null,
+    metadata: extractedDiagnosis ? { extractedDiagnosis } : null,
   });
 
   // Update conversation
