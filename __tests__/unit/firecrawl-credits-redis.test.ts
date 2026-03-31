@@ -3,6 +3,10 @@ const mockTtl = jest.fn();
 const mockExpire = jest.fn();
 const mockGet = jest.fn();
 
+// Ensure env vars are present so the redis instance is created
+process.env.UPSTASH_REDIS_REST_URL = "https://fake.upstash.io";
+process.env.UPSTASH_REDIS_REST_TOKEN = "fake-token";
+
 jest.mock("@upstash/redis", () => ({
   Redis: {
     fromEnv: jest.fn(() => ({

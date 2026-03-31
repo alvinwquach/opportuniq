@@ -52,6 +52,10 @@ export async function trackFirecrawlCredits(
   userId: string,
   creditsUsed: number
 ): Promise<{ used: number; remaining: number; exceeded: boolean }> {
+  if (!redis) {
+    return { used: creditsUsed, remaining: DAILY_CREDIT_LIMIT - creditsUsed, exceeded: false };
+  }
+
   const key = `opportuniq:credits:${userId}`;
   const newTotal = await redis.incrby(key, creditsUsed);
 
@@ -69,6 +73,7 @@ export async function trackFirecrawlCredits(
 }
 
 export async function getFirecrawlCreditsUsed(userId: string): Promise<number> {
+  if (!redis) return 0;
   return (await redis.get<number>(`opportuniq:credits:${userId}`)) ?? 0;
 }
 

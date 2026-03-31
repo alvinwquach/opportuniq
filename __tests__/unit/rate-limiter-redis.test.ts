@@ -1,6 +1,10 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
+// Ensure env vars are present so the redis/ratelimit instances are created
+process.env.UPSTASH_REDIS_REST_URL = "https://fake.upstash.io";
+process.env.UPSTASH_REDIS_REST_TOKEN = "fake-token";
+
 jest.mock("@upstash/redis", () => ({
   Redis: {
     fromEnv: jest.fn(() => ({})),
