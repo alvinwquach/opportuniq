@@ -77,7 +77,7 @@ jest.mock("@/lib/supabase/server", () => ({
 
 // Mock exec (child_process) used by the route for FFmpeg CLI
 jest.mock("child_process", () => ({
-  exec: jest.fn((cmd: string, cb: Function) => cb(null, "", "")),
+  exec: jest.fn((cmd: string, cb: (err: Error | null, stdout: string, stderr: string) => void) => cb(null, "", "")),
   execSync: jest.fn().mockReturnValue("ffmpeg version 6.0"),
 }));
 

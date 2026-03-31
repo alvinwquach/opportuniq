@@ -9,7 +9,7 @@ function makeDbChain(result: unknown = []) {
   const fns = ["from","where","innerJoin","leftJoin","orderBy","limit","offset","returning","values","set"];
   for (const f of fns) c[f] = jest.fn(() => c);
   // Simulate async resolution
-  (c as any)[Symbol.iterator] = undefined;
+  (c as Record<string | symbol, unknown>)[Symbol.iterator] = undefined;
   Object.defineProperty(c, Symbol.toStringTag, { value: "Promise" });
   c.then = jest.fn((resolve: (v: unknown) => unknown) => Promise.resolve(result).then(resolve));
   return c;

@@ -63,8 +63,9 @@ jest.mock("@/lib/google-calendar/client", () => ({
 // ---- Context factory -----------------------------------------------------
 
 import type { ToolContext } from "@/app/api/chat/tools/types";
+import type { default as FirecrawlAppClass } from "@mendable/firecrawl-js";
 
-const FirecrawlApp = require("@mendable/firecrawl-js").default;
+const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
 
 function makeCtx(overrides: Partial<ToolContext> = {}): ToolContext {
   return {
@@ -259,7 +260,7 @@ describe("chat tools edge cases", () => {
     const result = await tool.execute!({ serviceType: "plumbing", zipCode: "94105" }, {} as never);
 
     expect(result).toHaveProperty("tips");
-    expect(Array.isArray((result as any).tips)).toBe(true);
+    expect(Array.isArray((result as { tips: unknown[] }).tips)).toBe(true);
   });
 
   // --- Reddit search ------------------------------------------------------

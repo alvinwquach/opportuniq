@@ -1,4 +1,8 @@
 /**
+ * @jest-environment node
+ */
+
+/**
  * Encrypted Attachment Upload Integration Tests
  *
  * Tests the complete encryption + upload flow:

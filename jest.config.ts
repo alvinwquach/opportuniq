@@ -11,6 +11,8 @@ const config: Config = {
   testEnvironment: "jest-environment-jsdom",
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/$1",
+    "^uncrypto$":
+      "<rootDir>/node_modules/uncrypto/dist/crypto.node.cjs",
   },
   testMatch: [
     "**/__tests__/**/*.[jt]s?(x)",

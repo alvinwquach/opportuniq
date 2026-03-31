@@ -22,7 +22,7 @@ jest.mock("@upstash/ratelimit", () => {
   const MockRatelimit = jest.fn().mockImplementation(() => ({
     limit: jest.fn(),
   }));
-  MockRatelimit.slidingWindow = jest.fn().mockReturnValue({});
+  (MockRatelimit as unknown as Record<string, unknown>).slidingWindow = jest.fn().mockReturnValue({});
   return { Ratelimit: MockRatelimit };
 });
 

@@ -34,7 +34,7 @@ describe("email template rendering", () => {
     const { WelcomeEmail } = await import("@/emails/WelcomeEmail");
     // name is optional — should not throw
     expect(() =>
-      WelcomeEmail({ postalCode: "94105", searchRadius: 25, dashboardUrl: "https://opportuniq.app/dashboard" } as any)
+      WelcomeEmail({ postalCode: "94105", searchRadius: 25, dashboardUrl: "https://opportuniq.app/dashboard" } as Parameters<typeof WelcomeEmail>[0])
     ).not.toThrow();
   });
 
@@ -95,7 +95,7 @@ describe("email template rendering", () => {
   });
 
   it("MagicLinkEmail renders with valid link", async () => {
-    const MagicLinkEmailMod = await import("@/emails/MagicLinkEmail") as any;
+    const MagicLinkEmailMod = await import("@/emails/MagicLinkEmail") as { default?: (props: { magicLink: string }) => unknown; MagicLinkEmail?: (props: { magicLink: string }) => unknown };
     const MagicLinkEmail = MagicLinkEmailMod.default ?? MagicLinkEmailMod.MagicLinkEmail;
     expect(typeof MagicLinkEmail).toBe("function");
     const html = await render(MagicLinkEmail({ magicLink: "https://opportuniq.app/auth/callback?token=xyz" }));
@@ -136,7 +136,7 @@ describe("email template rendering", () => {
       const mod = await import(`@/emails/${name}`);
       const Component = mod[name] ?? mod.default;
       if (!Component) continue;
-      const html = await render(Component(props as any));
+      const html = await render((Component as (p: typeof props) => unknown)(props));
       expect(typeof html).toBe("string");
       expect(html.length).toBeGreaterThan(0);
     }
@@ -155,7 +155,7 @@ describe("email template rendering", () => {
       const Component = (mod as Record<string, unknown>)[moduleName] ?? mod.default;
       if (!Component || typeof Component !== "function") continue;
 
-      await expect(render((Component as Function)(props))).resolves.toBeTruthy();
+      await expect(render((Component as (p: typeof props) => unknown)(props))).resolves.toBeTruthy();
     }
   });
 });

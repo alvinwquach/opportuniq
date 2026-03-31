@@ -47,11 +47,12 @@ jest.mock("drizzle-orm", () => ({
 // ---- Helpers -------------------------------------------------------------
 
 import type { ToolContext } from "@/app/api/chat/tools/types";
+import type { default as FirecrawlAppClass } from "@mendable/firecrawl-js";
 
 const EXEC_OPTS = { toolCallId: "test", messages: [] as never[] };
 
 function makeCtx(zipCode = "94105"): ToolContext {
-  const FirecrawlApp = require("@mendable/firecrawl-js").default;
+  const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
   return {
     firecrawl: new FirecrawlApp({ apiKey: "test" }),
     userId: "user-1",
@@ -78,7 +79,7 @@ describe("contractor search edge cases", () => {
       "@/app/api/chat/tools/contractor-tools"
     );
     const tool = createContractorSearchTool(makeCtx());
-    const result = (await tool.execute!({ serviceType: "plumbing", zipCode: "94105" }, EXEC_OPTS)) as any;
+    const result = (await tool.execute!({ serviceType: "plumbing", zipCode: "94105" }, EXEC_OPTS)) as { tips: unknown[] };
 
     expect(result).toHaveProperty("tips");
     expect(Array.isArray(result.tips)).toBe(true);
@@ -92,7 +93,7 @@ describe("contractor search edge cases", () => {
       "@/app/api/chat/tools/contractor-tools"
     );
     const tool = createContractorSearchTool(makeCtx());
-    const result = (await tool.execute!({ serviceType: "electrical", zipCode: "94105" }, EXEC_OPTS)) as any;
+    const result = (await tool.execute!({ serviceType: "electrical", zipCode: "94105" }, EXEC_OPTS)) as { tips: unknown[] };
 
     // Should always include tips regardless of result quality
     expect(result).toHaveProperty("tips");
@@ -106,7 +107,7 @@ describe("contractor search edge cases", () => {
       "@/app/api/chat/tools/contractor-tools"
     );
     const tool = createContractorSearchTool(makeCtx());
-    const result = (await tool.execute!({ serviceType: "hvac", zipCode: "94105" }, EXEC_OPTS)) as any;
+    const result = (await tool.execute!({ serviceType: "hvac", zipCode: "94105" }, EXEC_OPTS)) as { tips: unknown[] };
 
     expect(result).toHaveProperty("tips");
     expect(Array.isArray(result.tips)).toBe(true);
@@ -117,7 +118,7 @@ describe("contractor search edge cases", () => {
       "@/app/api/chat/tools/contractor-tools"
     );
     const tool = createContractorSearchTool({ ...makeCtx(), firecrawl: null });
-    const result = (await tool.execute!({ serviceType: "roofing", zipCode: "94105" }, EXEC_OPTS)) as any;
+    const result = (await tool.execute!({ serviceType: "roofing", zipCode: "94105" }, EXEC_OPTS)) as { tips: unknown[] };
 
     expect(result).toHaveProperty("tips");
     expect(Array.isArray(result.tips)).toBe(true);
@@ -132,7 +133,7 @@ describe("contractor search edge cases", () => {
       "@/app/api/chat/tools/contractor-tools"
     );
     const tool = createContractorSearchTool(makeCtx());
-    const result = (await tool.execute!({ serviceType: "hvac", zipCode: "94105" }, EXEC_OPTS)) as any;
+    const result = (await tool.execute!({ serviceType: "hvac", zipCode: "94105" }, EXEC_OPTS)) as { serviceType: string; zipCode: string; tips: unknown[] };
 
     expect(result).toHaveProperty("serviceType");
     expect(result).toHaveProperty("zipCode");
@@ -146,7 +147,7 @@ describe("contractor search edge cases", () => {
       "@/app/api/chat/tools/contractor-tools"
     );
     const tool = createContractorSearchTool(makeCtx("90210"));
-    const result = (await tool.execute!({ serviceType: "plumbing", zipCode: "90210" }, EXEC_OPTS)) as any;
+    const result = (await tool.execute!({ serviceType: "plumbing", zipCode: "90210" }, EXEC_OPTS)) as { zipCode: string };
 
     expect(result.zipCode).toBe("90210");
   });
@@ -161,7 +162,7 @@ describe("contractor search edge cases", () => {
       "@/app/api/chat/tools/contractor-tools"
     );
     const tool = createContractorSearchTool(makeCtx());
-    const result = (await tool.execute!({ serviceType: "plumbing", zipCode: "94105" }, EXEC_OPTS)) as any;
+    const result = (await tool.execute!({ serviceType: "plumbing", zipCode: "94105" }, EXEC_OPTS)) as { tips: unknown[] };
 
     // Still returns a valid result object
     expect(result).toBeDefined();
