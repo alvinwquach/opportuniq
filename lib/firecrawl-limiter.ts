@@ -3,7 +3,7 @@
  *
  * Wraps every Firecrawl scrape call with:
  *   1. A semaphore limiting concurrent calls to MAX_CONCURRENT (3)
- *   2. Credit tracking — estimated credits consumed per call
+ *   2. Credit tracking — estimated credits consumed per call (Redis-backed)
  *   3. A Sentry breadcrumb for each call (start + finish/error)
  *
  * Credit estimates (conservative):
@@ -17,8 +17,10 @@
 
 import * as Sentry from "@sentry/nextjs";
 import FirecrawlApp from "@mendable/firecrawl-js";
+import { redis } from "./rate-limiter";
 
 const MAX_CONCURRENT = 3;
+const DAILY_CREDIT_LIMIT = 500;
 
 // ─── Semaphore ────────────────────────────────────────────────────────────────
 
@@ -44,27 +46,30 @@ function release(): void {
   }
 }
 
-// ─── Credit tracker ───────────────────────────────────────────────────────────
+// ─── Credit tracker (Redis-backed) ───────────────────────────────────────────
 
-let totalCreditsUsed = 0;
-const creditLog: Array<{ tool: string; url: string; credits: number; ts: number }> = [];
+export async function trackFirecrawlCredits(
+  userId: string,
+  creditsUsed: number
+): Promise<{ used: number; remaining: number; exceeded: boolean }> {
+  const key = `opportuniq:credits:${userId}`;
+  const newTotal = await redis.incrby(key, creditsUsed);
 
-function trackCredits(tool: string, url: string, credits: number): void {
-  totalCreditsUsed += credits;
-  creditLog.push({ tool, url, credits, ts: Date.now() });
+  // Set 24h TTL on first write (TTL=-1 means no expiry set yet)
+  const ttl = await redis.ttl(key);
+  if (ttl === -1) {
+    await redis.expire(key, 86400); // 24 hours
+  }
+
+  return {
+    used: newTotal,
+    remaining: Math.max(0, DAILY_CREDIT_LIMIT - newTotal),
+    exceeded: newTotal > DAILY_CREDIT_LIMIT,
+  };
 }
 
-export function getCreditUsage(): {
-  total: number;
-  log: typeof creditLog;
-} {
-  return { total: totalCreditsUsed, log: [...creditLog] };
-}
-
-/** Exposed for tests */
-export function _resetCreditTracking(): void {
-  totalCreditsUsed = 0;
-  creditLog.length = 0;
+export async function getFirecrawlCreditsUsed(userId: string): Promise<number> {
+  return (await redis.get<number>(`opportuniq:credits:${userId}`)) ?? 0;
 }
 
 /** Exposed for tests */
@@ -90,13 +95,12 @@ export async function limitedScrape(
 
   try {
     const result = await firecrawl.scrape(url, options ?? { formats: ["markdown"] });
-    trackCredits("scrape", url, 1);
 
     Sentry.addBreadcrumb({
       category: "firecrawl",
       message: `scrape done: ${url}`,
       level: "info",
-      data: { url, credits: 1, totalCreditsUsed },
+      data: { url, credits: 1 },
     });
 
     return result;
@@ -131,13 +135,12 @@ export async function limitedCrawl(
 
   try {
     const result = await firecrawl.crawl(url, options);
-    trackCredits("crawl", url, limit);
 
     Sentry.addBreadcrumb({
       category: "firecrawl",
       message: `crawl done: ${url}`,
       level: "info",
-      data: { url, credits: limit, totalCreditsUsed },
+      data: { url, credits: limit },
     });
 
     return result;
@@ -170,13 +173,12 @@ export async function limitedSearch(
 
   try {
     const result = await firecrawl.search(query, options);
-    trackCredits("search", query, 1);
 
     Sentry.addBreadcrumb({
       category: "firecrawl",
       message: `search done: ${query}`,
       level: "info",
-      data: { query, credits: 1, totalCreditsUsed },
+      data: { query, credits: 1 },
     });
 
     return result;
@@ -213,13 +215,12 @@ export async function limitedBatch(
     const results = await Promise.all(
       urls.map((url) => firecrawl.scrape(url, options ?? { formats: ["markdown"] }))
     );
-    trackCredits("batch", urls.join(","), credits);
 
     Sentry.addBreadcrumb({
       category: "firecrawl",
       message: `batch done: ${urls.length} URLs`,
       level: "info",
-      data: { urlCount: urls.length, credits, totalCreditsUsed },
+      data: { urlCount: urls.length, credits },
     });
 
     return results;

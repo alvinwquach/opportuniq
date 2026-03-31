@@ -63,7 +63,7 @@ export async function proxy(request: NextRequest) {
     }
 
     if (userId) {
-      const result = checkRateLimit(userId);
+      const result = await checkRateLimit(userId);
       if (!result.allowed) {
         return new NextResponse("Too Many Requests", {
           status: 429,
