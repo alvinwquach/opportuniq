@@ -254,3 +254,61 @@ export function trackBudgetExceeded(props: {
     // PostHog unreachable — don't fail the request
   }
 }
+
+// ============================================
+// GUARDRAIL EVENTS
+// ============================================
+
+export function trackGuardrailViolation(props: {
+  conversationId: string;
+  violations: string[];
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: props.conversationId,
+      event: "Guardrail Violation",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}
+
+// ============================================
+// LANGFUSE TRACING EVENTS
+// ============================================
+
+export function trackLangfuseTraceCreated(props: {
+  conversationId: string;
+  traceId: string;
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: props.conversationId,
+      event: "Langfuse Trace Created",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}
+
+// ============================================
+// STRUCTURED EXTRACTION EVENTS
+// ============================================
+
+export function trackStructuredExtractionCompleted(props: {
+  conversationId: string;
+  severity: string;
+  diyFeasibility: string;
+}) {
+  try {
+    getServerClient().capture({
+      distinctId: props.conversationId,
+      event: "Structured Extraction Completed",
+      properties: props,
+    });
+  } catch {
+    // PostHog unreachable — don't fail the request
+  }
+}
