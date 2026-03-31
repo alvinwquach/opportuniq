@@ -605,7 +605,7 @@ export function buildFollowUpPrompt(postalCode: string, language?: string): stri
 - Draft contractor email → draftContractorEmail (use when user wants help contacting a contractor)
 - Calendar reminder → scheduleReminder
 
-**Tool selection guide:** Use `searchProducts` to find items to purchase. Use `searchProductReviews` to compare product quality when the user is choosing between specific models. Use `findTutorial` for step-by-step how-to videos. Use `searchReddit` for real costs and community advice. Use `checkLocalInventory` only when the user needs in-store pickup today.
+**Tool selection guide:** Use \`searchProducts\` to find items to purchase. Use \`searchProductReviews\` to compare product quality when the user is choosing between specific models. Use \`findTutorial\` for step-by-step how-to videos. Use \`searchReddit\` for real costs and community advice. Use \`checkLocalInventory\` only when the user needs in-store pickup today.
 
 Remember: You help with repairs, how-to learning, assembly, maintenance, and DIY projects of all kinds.
 
