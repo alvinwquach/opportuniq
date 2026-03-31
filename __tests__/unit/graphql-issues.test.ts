@@ -2,8 +2,6 @@
  * Tests for GraphQL issues query and mutation resolvers
  */
 
-import { GraphQLError } from "graphql";
-
 // ---- DB chain mock -------------------------------------------------------
 
 function makeDbChain(result: unknown = []) {

@@ -123,11 +123,9 @@ describe("admin AI usage queries", () => {
     expect(avg).toBe(2250);
   });
 
-  it("handles empty database (zero conversations)", async () => {
-    const { adminQueries } = await import(
-      "@/graphql/resolvers/queries/admin"
-    );
-    expect(typeof adminQueries.adminStats).toBe("function");
+  it("getAdminStats server action is exported", async () => {
+    const { getAdminStats } = await import("@/app/actions/admin/getAdminData");
+    expect(typeof getAdminStats).toBe("function");
   });
 
   it("returns recent conversations with user info", () => {
@@ -137,8 +135,8 @@ describe("admin AI usage queries", () => {
     expect(sorted[0].id).toBe("conv-2"); // most recent first
   });
 
-  it("admin resolver exists and is exportable", async () => {
-    const adminModule = await import("@/graphql/resolvers/queries/admin");
+  it("admin actions module exists and is importable", async () => {
+    const adminModule = await import("@/app/actions/admin/getAdminData");
     expect(adminModule).toBeDefined();
   });
 });

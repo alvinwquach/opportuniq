@@ -23,6 +23,20 @@ jest.mock("drizzle-orm", () => ({
   eq: jest.fn((a: unknown, b: unknown) => `${a}=${b}`),
   and: jest.fn((...args: unknown[]) => args.join(" AND ")),
   sql: jest.fn((t: TemplateStringsArray) => t[0]),
+  isNull: jest.fn(),
+  gte: jest.fn(),
+}));
+
+jest.mock("@/app/db/schema", () => ({
+  groups: { id: "id", name: "name" },
+  groupMembers: { id: "id", groupId: "groupId", userId: "userId", role: "role", status: "status" },
+  groupInvitations: {
+    id: "id", groupId: "groupId", invitedBy: "invitedBy", inviteeEmail: "inviteeEmail",
+    role: "role", token: "token", expiresAt: "expiresAt", acceptedAt: "acceptedAt",
+  },
+  groupRoleEnum: { enumValues: ["coordinator", "collaborator", "participant", "contributor", "observer"] },
+  riskToleranceEnum: { enumValues: ["low", "medium", "high"] },
+  diyPreferenceEnum: { enumValues: ["prefer_diy", "prefer_hire", "balanced"] },
 }));
 
 // ---- Fixtures ------------------------------------------------------------
@@ -73,9 +87,9 @@ describe("invitation system", () => {
     jest.clearAllMocks();
   });
 
-  it("creates invitation with email and role", async () => {
-    const { Mutation } = await import("@/graphql/resolvers/Mutation");
-    expect(typeof Mutation.inviteMember).toBe("function");
+  it("inviteMember server action is exported", async () => {
+    const { inviteMember } = await import("@/app/actions/groups/groupActions");
+    expect(typeof inviteMember).toBe("function");
   });
 
   it("validates invitation token — valid token passes", () => {
@@ -103,16 +117,14 @@ describe("invitation system", () => {
     expect(isRevoked).toBe(true);
   });
 
-  it("acceptInvitation mutation exists", async () => {
-    // BUG: revokeInvitation does not exist in Mutation — only acceptInvitation/declineInvitation
-    const { Mutation } = await import("@/graphql/resolvers/Mutation");
-    expect(typeof Mutation.acceptInvitation).toBe("function");
+  it("acceptInvitation server action is exported", async () => {
+    const { acceptInvitation } = await import("@/app/actions/groups/groupActions");
+    expect(typeof acceptInvitation).toBe("function");
   });
 
-  it("declineInvitation mutation exists", async () => {
-    // BUG: resendInvitation does not exist in Mutation — only acceptInvitation/declineInvitation
-    const { Mutation } = await import("@/graphql/resolvers/Mutation");
-    expect(typeof Mutation.declineInvitation).toBe("function");
+  it("declineInvitation server action is exported", async () => {
+    const { declineInvitation } = await import("@/app/actions/groups/groupActions");
+    expect(typeof declineInvitation).toBe("function");
   });
 
   it("invitation token has cryptographically sufficient entropy", () => {

@@ -4,6 +4,13 @@
 
 // ---- Mocks ---------------------------------------------------------------
 
+const mockGetUser = jest.fn();
+jest.mock("@/lib/supabase/server", () => ({
+  createClient: jest.fn(() => ({
+    auth: { getUser: mockGetUser },
+  })),
+}));
+
 jest.mock("@/app/db/client", () => ({ db: {} }));
 
 jest.mock("drizzle-orm", () => ({
@@ -40,6 +47,10 @@ const GROUP_MEMBERS = [
 // ---- Tests ---------------------------------------------------------------
 
 describe("decision voting", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("creates decision options (diy, hire, defer, replace)", () => {
     const types = DECISION_OPTIONS.map((o) => o.type);
     expect(types).toContain("diy");
@@ -48,9 +59,9 @@ describe("decision voting", () => {
     expect(types).toContain("replace");
   });
 
-  it("records vote for a decision option", async () => {
-    const { Mutation } = await import("@/graphql/resolvers/Mutation");
-    expect(typeof Mutation.voteOnDecision).toBe("function");
+  it("voteOnDecision server action is exported", async () => {
+    const { voteOnDecision } = await import("@/app/actions/decisions/decisionActions");
+    expect(typeof voteOnDecision).toBe("function");
   });
 
   it("prevents duplicate votes from same member", () => {
@@ -105,24 +116,11 @@ describe("decision voting", () => {
     expect(isMember).toBe(true);
   });
 
-  it("voteOnDecision mutation requires auth", async () => {
-    const { Mutation } = await import("@/graphql/resolvers/Mutation");
-    const unauthCtx = {
-      db: {},
-      user: null,
-      userId: null,
-      groupId: null,
-      groupMembership: null,
-      loaders: {},
-      requestId: "req-1",
-    };
-
+  it("voteOnDecision action requires auth", async () => {
+    mockGetUser.mockResolvedValue({ data: { user: null } });
+    const { voteOnDecision } = await import("@/app/actions/decisions/decisionActions");
     await expect(
-      Mutation.voteOnDecision(
-        {},
-        { input: { decisionId: "d-1", vote: "approve" } },
-        unauthCtx as any
-      )
+      voteOnDecision({ decisionId: "d-1", vote: "approve" })
     ).rejects.toThrow();
   });
 });

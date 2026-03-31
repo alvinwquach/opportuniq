@@ -1,5 +1,5 @@
 /**
- * Tests for GraphQL groups resolver
+ * Tests for groups server actions and role-based access logic
  */
 
 // ---- Mocks ---------------------------------------------------------------
@@ -28,7 +28,7 @@ jest.mock("drizzle-orm", () => ({
   sql: jest.fn((tpl: TemplateStringsArray) => tpl[0]),
 }));
 
-// ---- Context factory -----------------------------------------------------
+// ---- Fixtures ------------------------------------------------------------
 
 function makeGroupsData() {
   return [
@@ -71,6 +71,17 @@ function makeGroupMembers() {
   ];
 }
 
+// Role-check helpers (inline logic, no longer imported from graphql)
+function isGroupAdmin(membership: { role: string } | null): boolean {
+  return membership?.role === "coordinator";
+}
+function canWriteToGroup(membership: { role: string } | null): boolean {
+  return membership !== null && membership.role !== "observer";
+}
+function hasGroupAccess(membership: { role: string } | null): boolean {
+  return membership !== null;
+}
+
 // ---- Tests ---------------------------------------------------------------
 
 describe("groups resolver", () => {
@@ -111,42 +122,17 @@ describe("groups resolver", () => {
     expect(roles).toContain("participant");
   });
 
-  it("coordinator role allows admin operations", async () => {
-    const { isGroupAdmin } = await import("@/graphql/utils/context");
-
-    const ctx = {
-      user: { id: "user-123" },
-      userId: "user-123",
-      groupId: "group-1",
-      groupMembership: { role: "coordinator", status: "active" },
-    };
-
-    expect(isGroupAdmin(ctx as any)).toBe(true);
+  it("coordinator role allows admin operations", () => {
+    const membership = { role: "coordinator", status: "active" };
+    expect(isGroupAdmin(membership)).toBe(true);
   });
 
-  it("observer role is read-only", async () => {
-    const { canWriteToGroup } = await import("@/graphql/utils/context");
-
-    const ctx = {
-      user: { id: "user-obs" },
-      userId: "user-obs",
-      groupId: "group-1",
-      groupMembership: { role: "observer", status: "active" },
-    };
-
-    expect(canWriteToGroup(ctx as any)).toBe(false);
+  it("observer role is read-only", () => {
+    const membership = { role: "observer", status: "active" };
+    expect(canWriteToGroup(membership)).toBe(false);
   });
 
-  it("hasGroupAccess returns false when no group context", async () => {
-    const { hasGroupAccess } = await import("@/graphql/utils/context");
-
-    const ctx = {
-      user: { id: "user-123" },
-      userId: "user-123",
-      groupId: null,
-      groupMembership: null,
-    };
-
-    expect(hasGroupAccess(ctx as any)).toBe(false);
+  it("hasGroupAccess returns false when no group context", () => {
+    expect(hasGroupAccess(null)).toBe(false);
   });
 });

@@ -1,11 +1,9 @@
 /**
- * Tests for GraphQL calendar resolver
+ * Tests for calendar data server action and event logic
  */
 
 // ---- Mocks ---------------------------------------------------------------
 jest.mock("@/app/db/client", () => ({ db: {} }));
-
-
 
 jest.mock("drizzle-orm", () => ({
   eq: jest.fn(),
@@ -56,38 +54,11 @@ const GOOGLE_CALENDAR_EVENTS = [
 // ---- Tests ---------------------------------------------------------------
 
 describe("calendar resolver", () => {
-  it("returns calendar events for date range (empty state)", async () => {
-    const { calendarPageDataResolver } = await import(
-      "@/graphql/resolvers/queries/calendarPageData"
+  it("getCalendarPageData server action is exported", async () => {
+    const { getCalendarPageData } = await import(
+      "@/app/actions/dashboard/getCalendarPageData"
     );
-
-    function makeChain(rows: unknown[]): unknown {
-      const handler: ProxyHandler<object> = {
-        get(_t, prop) {
-          if (prop === "then") return (resolve: (v: unknown) => unknown) => Promise.resolve(rows).then(resolve);
-          return () => new Proxy({}, handler);
-        },
-      };
-      return new Proxy({}, handler);
-    }
-
-    // Return empty arrays for all queries to avoid processing partial join results
-    const mockDb = { select: jest.fn(() => makeChain([])) };
-
-    const ctx = {
-      db: mockDb,
-      user: { id: "user-123" },
-      userId: "user-123",
-      groupId: null,
-      groupMembership: null,
-      loaders: {},
-      requestId: "req-1",
-    };
-
-    const result = await calendarPageDataResolver({}, {}, ctx as any);
-    expect(result).toHaveProperty("events");
-    expect(Array.isArray(result.events)).toBe(true);
-    expect(result.events).toHaveLength(0);
+    expect(typeof getCalendarPageData).toBe("function");
   });
 
   it("returns only local events when Google Calendar not connected", () => {

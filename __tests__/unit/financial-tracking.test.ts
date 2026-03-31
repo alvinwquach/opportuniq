@@ -34,19 +34,19 @@ function toMonthly(amount: number, frequency: string): number {
 // ---- Tests ---------------------------------------------------------------
 
 describe("income streams", () => {
-  it("creates income stream with amount and frequency", async () => {
-    const { Mutation } = await import("@/graphql/resolvers/Mutation");
-    expect(typeof Mutation.addIncomeStream).toBe("function");
+  it("addIncomeStream server action is exported", async () => {
+    const { addIncomeStream } = await import("@/app/actions/finance/financeActions");
+    expect(typeof addIncomeStream).toBe("function");
   });
 
-  it("updates income stream amount", async () => {
-    const { Mutation } = await import("@/graphql/resolvers/Mutation");
-    expect(typeof Mutation.updateIncomeStream).toBe("function");
+  it("updateIncomeStream server action is exported", async () => {
+    const { updateIncomeStream } = await import("@/app/actions/finance/financeActions");
+    expect(typeof updateIncomeStream).toBe("function");
   });
 
-  it("deletes income stream", async () => {
-    const { Mutation } = await import("@/graphql/resolvers/Mutation");
-    expect(typeof Mutation.deleteIncomeStream).toBe("function");
+  it("deleteIncomeStream server action is exported", async () => {
+    const { deleteIncomeStream } = await import("@/app/actions/finance/financeActions");
+    expect(typeof deleteIncomeStream).toBe("function");
   });
 
   it("calculates total monthly income from active streams", () => {
@@ -75,9 +75,9 @@ describe("income streams", () => {
 });
 
 describe("expenses", () => {
-  it("creates expense with category and amount", async () => {
-    const { Mutation } = await import("@/graphql/resolvers/Mutation");
-    expect(typeof Mutation.addExpense).toBe("function");
+  it("addExpense server action is exported", async () => {
+    const { addExpense } = await import("@/app/actions/finance/financeActions");
+    expect(typeof addExpense).toBe("function");
   });
 
   it("groups expenses by category", () => {
@@ -122,10 +122,9 @@ describe("expenses", () => {
 });
 
 describe("budgets", () => {
-  it("setBudget mutation exists", async () => {
-    // BUG: createBudget does not exist in Mutation — the resolver uses setBudget
-    const { Mutation } = await import("@/graphql/resolvers/Mutation");
-    expect(typeof Mutation.setBudget).toBe("function");
+  it("setBudget server action is exported", async () => {
+    const { setBudget } = await import("@/app/actions/finance/financeActions");
+    expect(typeof setBudget).toBe("function");
   });
 
   it("checks if budget exceeded (actual > limit)", () => {
