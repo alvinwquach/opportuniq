@@ -97,9 +97,9 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
 
   if (!issue) {
     return (
-      <div className="w-[340px] shrink-0 border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
+      <div className="w-[340px] shrink-0 border-l border-gray-200 flex flex-col bg-gray-50">
         {/* Disabled Tabs */}
-        <div className="flex border-b border-white/[0.06]">
+        <div className="flex border-b border-gray-200">
           {["DIY", "Hire Pro"].map((tab) => (
             <div
               key={tab}
@@ -112,8 +112,8 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="text-center">
             <IoHammerOutline className="w-10 h-10 text-[#333] mx-auto mb-2" />
-            <p className="text-sm text-[#666]">Select an issue to view options</p>
-            <p className="text-xs text-[#555] mt-1">Or report a new issue to get started</p>
+            <p className="text-sm text-gray-500">Select an issue to view options</p>
+            <p className="text-xs text-gray-400 mt-1">Or report a new issue to get started</p>
           </div>
         </div>
       </div>
@@ -146,9 +146,9 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
   };
 
   return (
-    <div className="w-[340px] shrink-0 border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
+    <div className="w-[340px] shrink-0 border-l border-gray-200 flex flex-col bg-gray-50">
       {/* Tabs */}
-      <div className="flex border-b border-white/[0.06]">
+      <div className="flex border-b border-gray-200">
         {[
           { id: "diy" as TabType, label: "DIY", available: hasDiyContent },
           { id: "hire" as TabType, label: "Hire Pro", available: hasProContent },
@@ -162,13 +162,13 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
               !tab.available
                 ? "text-[#444] cursor-not-allowed"
                 : activeTab === tab.id
-                ? "text-emerald-400"
-                : "text-[#888] hover:text-white"
+                ? "text-blue-600"
+                : "text-gray-500 hover:text-gray-900"
             }`}
           >
             {tab.label}
             {activeTab === tab.id && tab.available && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500" />
             )}
           </button>
         ))}
@@ -200,7 +200,7 @@ export function ResourcePanel({ issue }: ResourcePanelProps) {
       </div>
 
       {/* Safety Notice */}
-      <div className="p-4 border-t border-white/[0.06]">
+      <div className="p-4 border-t border-gray-200">
         <div
           className={`p-3 rounded-lg ${
             issue.difficulty.includes("Professional")

@@ -116,19 +116,19 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {trigger || (
-          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#00D4FF]/10 hover:bg-[#00D4FF]/20 text-[#00D4FF] text-sm transition-colors">
+          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 text-sm transition-colors">
             <IoPersonAdd className="w-4 h-4" />
             Invite
           </button>
         )}
       </DialogTrigger>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] sm:max-w-md">
+      <DialogContent className="bg-white border-gray-200 sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
               <IoPersonAdd className="w-4 h-4 text-purple-400" />
             </div>
-            <DialogTitle className="text-white">Invite to {groupName}</DialogTitle>
+            <DialogTitle className="text-gray-900">Invite to {groupName}</DialogTitle>
           </div>
         </DialogHeader>
 
@@ -137,16 +137,16 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
             <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
               <IoCheckmark className="w-6 h-6 text-green-500" />
             </div>
-            <h3 className="text-lg font-medium text-white mb-2">Invitation Sent!</h3>
-            <p className="text-sm text-[#9a9a9a] mb-6">
-              We&apos;ve sent an invitation to <span className="text-white">{invitedEmail}</span>.
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Invitation Sent!</h3>
+            <p className="text-sm text-gray-400 mb-6">
+              We&apos;ve sent an invitation to <span className="text-gray-900">{invitedEmail}</span>.
               They&apos;ll receive an email with a link to join the group.
             </p>
             <div className="flex flex-col gap-2">
               <button
                 type="button"
                 onClick={handleInviteAnother}
-                className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-[#0c0c0c] font-medium text-sm transition-colors mx-auto"
+                className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-600/90 text-white font-medium text-sm transition-colors mx-auto"
               >
                 <IoPersonAdd className="w-4 h-4" />
                 Invite Another
@@ -154,7 +154,7 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-white text-sm transition-colors"
+                className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-gray-900 text-sm transition-colors"
               >
                 Done
               </button>
@@ -182,11 +182,11 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
               >
                 {(field) => (
                   <div>
-                    <label className="text-xs text-[#9a9a9a] mb-1.5 block">
+                    <label className="text-xs text-gray-400 mb-1.5 block">
                       Email Address
                     </label>
                     <div className="relative">
-                      <IoMail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9a9a9a]" />
+                      <IoMail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                       <input
                         type="email"
                         placeholder="name@example.com"
@@ -194,7 +194,7 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
                         onChange={(e) => field.handleChange(e.target.value)}
                         onBlur={field.handleBlur}
                         disabled={inviteMember.isPending}
-                        className="w-full h-10 pl-10 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#666] focus:outline-none focus:border-[#00D4FF]/50 transition-colors disabled:opacity-50"
+                        className="w-full h-10 pl-10 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 transition-colors disabled:opacity-50"
                         autoFocus
                       />
                     </div>
@@ -211,7 +211,7 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
               <form.Field name="role">
                 {(field) => (
                   <div>
-                    <label className="text-xs text-[#9a9a9a] mb-1.5 block">
+                    <label className="text-xs text-gray-400 mb-1.5 block">
                       Role
                     </label>
                     <div className="space-y-2">
@@ -220,8 +220,8 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
                           key={option.value}
                           className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
                             field.state.value === option.value
-                              ? "bg-[#00D4FF]/5 border-[#00D4FF]/30"
-                              : "bg-[#0c0c0c] border-[#2a2a2a] hover:border-[#3a3a3a]"
+                              ? "bg-blue-50 border-blue-500/30"
+                              : "bg-gray-50 border-gray-200 hover:border-[#3a3a3a]"
                           } ${inviteMember.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
                         >
                           <input
@@ -234,8 +234,8 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
                             className="mt-0.5 accent-[#00D4FF]"
                           />
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm text-white font-medium">{option.label}</p>
-                            <p className="text-xs text-[#666]">{option.description}</p>
+                            <p className="text-sm text-gray-900 font-medium">{option.label}</p>
+                            <p className="text-xs text-gray-500">{option.description}</p>
                           </div>
                         </label>
                       ))}
@@ -247,8 +247,8 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
               <form.Field name="message">
                 {(field) => (
                   <div>
-                    <label className="text-xs text-[#9a9a9a] mb-1.5 block">
-                      Personal Message <span className="text-[#666]">(optional)</span>
+                    <label className="text-xs text-gray-400 mb-1.5 block">
+                      Personal Message <span className="text-gray-500">(optional)</span>
                     </label>
                     <textarea
                       placeholder="Add a personal note to the invitation..."
@@ -257,9 +257,9 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
                       disabled={inviteMember.isPending}
                       rows={3}
                       maxLength={500}
-                      className="w-full px-3 py-2 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#666] focus:outline-none focus:border-[#00D4FF]/50 transition-colors disabled:opacity-50 resize-none"
+                      className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 transition-colors disabled:opacity-50 resize-none"
                     />
-                    <p className="text-[10px] text-[#666] mt-1 text-right">
+                    <p className="text-[10px] text-gray-500 mt-1 text-right">
                       {field.state.value.length}/500
                     </p>
                   </div>
@@ -269,22 +269,22 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
               <form.Field name="expiresAt">
                 {(field) => (
                   <div>
-                    <label className="text-xs text-[#9a9a9a] mb-1.5 block">
-                      Invitation Expires <span className="text-[#666]">(optional)</span>
+                    <label className="text-xs text-gray-400 mb-1.5 block">
+                      Invitation Expires <span className="text-gray-500">(optional)</span>
                     </label>
                     <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                       <PopoverTrigger asChild>
                         <button
                           type="button"
                           disabled={inviteMember.isPending}
-                          className="w-full h-10 px-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm text-left flex items-center justify-between hover:border-[#3a3a3a] focus:outline-none focus:border-[#00D4FF]/50 transition-colors disabled:opacity-50"
+                          className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm text-left flex items-center justify-between hover:border-[#3a3a3a] focus:outline-none focus:border-blue-500/50 transition-colors disabled:opacity-50"
                         >
-                          <span className={field.state.value ? "text-white" : "text-[#666]"}>
+                          <span className={field.state.value ? "text-gray-900" : "text-gray-500"}>
                             {field.state.value
                               ? format(field.state.value, "MMMM d, yyyy")
                               : format(defaultDate, "MMMM d, yyyy") + " (default)"}
                           </span>
-                          <IoCalendarOutline className="w-4 h-4 text-[#666]" />
+                          <IoCalendarOutline className="w-4 h-4 text-gray-500" />
                         </button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -300,7 +300,7 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
                         />
                       </PopoverContent>
                     </Popover>
-                    <p className="text-[10px] text-[#666] mt-1">
+                    <p className="text-[10px] text-gray-500 mt-1">
                       The invitation link will expire on this date
                     </p>
                   </div>
@@ -325,7 +325,7 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
                   <button
                     type="submit"
                     disabled={!canSubmit || inviteMember.isPending}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00D4FF] hover:bg-[#00D4FF]/90 disabled:bg-[#1f1f1f] disabled:text-[#9a9a9a] text-[#0c0c0c] font-medium text-sm transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-600/90 disabled:bg-gray-100 disabled:text-gray-400 text-white font-medium text-sm transition-colors"
                   >
                     {inviteMember.isPending ? (
                       <IoReload className="w-4 h-4 animate-spin" />
@@ -339,7 +339,7 @@ export function InviteMemberDialog({ groupId, groupName, trigger }: InviteMember
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-white hover:bg-[#1f1f1f] text-sm transition-colors"
+                className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-gray-900 hover:bg-gray-100 text-sm transition-colors"
               >
                 Cancel
               </button>

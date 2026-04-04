@@ -62,7 +62,7 @@ function getActionColor(action: InvitationAction) {
   switch (action) {
     case "created":
     case "bulk_created":
-      return "bg-[#00D4FF]/10 text-[#00D4FF]";
+      return "bg-blue-50 text-blue-600";
     case "resent":
       return "bg-green-500/10 text-green-500";
     case "role_updated":
@@ -76,9 +76,9 @@ function getActionColor(action: InvitationAction) {
     case "declined":
       return "bg-red-500/10 text-red-400";
     case "expired":
-      return "bg-[#666]/10 text-[#666]";
+      return "bg-[#666]/10 text-gray-500";
     default:
-      return "bg-[#1f1f1f] text-[#9a9a9a]";
+      return "bg-gray-100 text-gray-400";
   }
 }
 
@@ -171,7 +171,6 @@ export function InvitationHistorySection({
         }
       } catch (err) {
         setError("Failed to load history");
-        console.error("Failed to fetch invitation history:", err);
       } finally {
         setLoading(false);
       }
@@ -186,8 +185,8 @@ export function InvitationHistorySection({
 
   if (loading) {
     return (
-      <section className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
+      <section className="rounded-xl bg-gray-50 border border-gray-200 overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
           <div className="flex items-center gap-2">
             <IoTime className="w-4 h-4 text-purple-400" />
             <h2 className="text-sm font-medium text-white">
@@ -196,8 +195,8 @@ export function InvitationHistorySection({
           </div>
         </div>
         <div className="p-8 text-center">
-          <div className="w-6 h-6 border-2 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin mx-auto" />
-          <p className="text-xs text-[#666] mt-3">Loading history...</p>
+          <div className="w-6 h-6 border-2 border-blue-500/30 border-t-[#00D4FF] rounded-full animate-spin mx-auto" />
+          <p className="text-xs text-gray-500 mt-3">Loading history...</p>
         </div>
       </section>
     );
@@ -205,8 +204,8 @@ export function InvitationHistorySection({
 
   if (error) {
     return (
-      <section className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
+      <section className="rounded-xl bg-gray-50 border border-gray-200 overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
           <div className="flex items-center gap-2">
             <IoTime className="w-4 h-4 text-purple-400" />
             <h2 className="text-sm font-medium text-white">
@@ -223,8 +222,8 @@ export function InvitationHistorySection({
 
   if (entries.length === 0) {
     return (
-      <section className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
+      <section className="rounded-xl bg-gray-50 border border-gray-200 overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
           <div className="flex items-center gap-2">
             <IoTime className="w-4 h-4 text-purple-400" />
             <h2 className="text-sm font-medium text-white">
@@ -233,11 +232,11 @@ export function InvitationHistorySection({
           </div>
         </div>
         <div className="p-8 text-center">
-          <div className="w-12 h-12 rounded-xl bg-[#1f1f1f] flex items-center justify-center mx-auto mb-3">
-            <IoTime className="w-6 h-6 text-[#666]" />
+          <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center mx-auto mb-3">
+            <IoTime className="w-6 h-6 text-gray-500" />
           </div>
-          <p className="text-sm text-[#9a9a9a] mb-1">No invitation history yet</p>
-          <p className="text-xs text-[#666]">
+          <p className="text-sm text-gray-400 mb-1">No invitation history yet</p>
+          <p className="text-xs text-gray-500">
             Activity will appear here when you invite members
           </p>
         </div>
@@ -248,14 +247,14 @@ export function InvitationHistorySection({
   const displayedEntries = expanded ? entries : entries.slice(0, 5);
 
   return (
-    <section className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
+    <section className="rounded-xl bg-gray-50 border border-gray-200 overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <IoTime className="w-4 h-4 text-purple-400" />
           <h2 className="text-sm font-medium text-white">
             Invitation History
           </h2>
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1f1f1f] text-[#666]">
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">
             {entries.length}
           </span>
         </div>
@@ -266,7 +265,7 @@ export function InvitationHistorySection({
           return (
             <div
               key={entry.id}
-              className="flex items-start gap-3 px-4 py-3 hover:bg-[#1a1a1a] transition-colors"
+              className="flex items-start gap-3 px-4 py-3 hover:bg-gray-100 transition-colors"
             >
               <div
                 className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${getActionColor(entry.action)}`}
@@ -278,11 +277,11 @@ export function InvitationHistorySection({
                   <span className="text-sm font-medium text-white">
                     {getActionLabel(entry.action)}
                   </span>
-                  <span className="text-sm text-[#9a9a9a] truncate">
+                  <span className="text-sm text-gray-400 truncate">
                     {entry.inviteeEmail}
                   </span>
                   {actionDetails && (
-                    <span className="text-xs text-[#666] px-1.5 py-0.5 rounded bg-[#1f1f1f]">
+                    <span className="text-xs text-gray-500 px-1.5 py-0.5 rounded bg-gray-100">
                       {actionDetails}
                     </span>
                   )}
@@ -297,16 +296,16 @@ export function InvitationHistorySection({
                       className="rounded-full"
                     />
                   ) : (
-                    <div className="w-4 h-4 rounded-full bg-[#2a2a2a] flex items-center justify-center text-[8px] font-medium text-[#9a9a9a]">
+                    <div className="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center text-[8px] font-medium text-gray-400">
                       {getInitials(entry.performedBy.name, entry.performedBy.email)}
                     </div>
                   )}
-                  <span className="text-xs text-[#666]">
+                  <span className="text-xs text-gray-500">
                     {entry.performedBy.name ||
                       entry.performedBy.email.split("@")[0]}
                   </span>
-                  <span className="text-xs text-[#666]">·</span>
-                  <span className="text-xs text-[#666]">
+                  <span className="text-xs text-gray-500">·</span>
+                  <span className="text-xs text-gray-500">
                     {formatDistanceToNow(new Date(entry.createdAt), {
                       addSuffix: true,
                     })}
@@ -320,7 +319,7 @@ export function InvitationHistorySection({
       {entries.length > 5 && (
         <button
           onClick={() => setExpanded(!expanded)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs text-[#00D4FF] hover:bg-[#1a1a1a] transition-colors border-t border-[#1f1f1f]"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs text-blue-600 hover:bg-gray-100 transition-colors border-t border-gray-200"
         >
           {expanded ? (
             <>

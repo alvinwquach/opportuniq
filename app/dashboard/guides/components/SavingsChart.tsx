@@ -19,26 +19,26 @@ export function SavingsChart({ data }: SavingsChartProps) {
 
   if (data.length === 0) {
     return (
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4 shadow-sm">
+      <div className="bg-gray-100 rounded-xl border border-gray-200 p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-3">
-          <IoWalletOutline className="w-4 h-4 text-emerald-400" />
+          <IoWalletOutline className="w-4 h-4 text-green-600" />
           <h3 className="text-sm font-semibold text-white">Money Saved by DIY</h3>
         </div>
         <div className="flex items-center justify-center h-32">
-          <p className="text-xs text-[#666]">Complete guides to see savings</p>
+          <p className="text-xs text-gray-500">Complete guides to see savings</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4 shadow-sm">
+    <div className="bg-gray-100 rounded-xl border border-gray-200 p-4 shadow-sm">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <IoWalletOutline className="w-4 h-4 text-emerald-400" />
+          <IoWalletOutline className="w-4 h-4 text-green-600" />
           <h3 className="text-sm font-semibold text-white">Money Saved by DIY</h3>
         </div>
-        <span className="text-xs font-bold text-emerald-400">${totalSaved} saved</span>
+        <span className="text-xs font-bold text-green-600">${totalSaved} saved</span>
       </div>
       <div className="h-32">
         <ResponsiveContainer width="100%" height="100%">
@@ -97,12 +97,12 @@ export function SavingsChart({ data }: SavingsChartProps) {
       </div>
       <div className="flex items-center justify-center gap-4 mt-2">
         <div className="flex items-center gap-1.5 text-[9px]">
-          <div className="w-3 h-3 rounded bg-emerald-500/30 border border-emerald-500" />
-          <span className="text-[#888]">DIY Cost</span>
+          <div className="w-3 h-3 rounded bg-green-100 border border-green-500" />
+          <span className="text-gray-500">DIY Cost</span>
         </div>
         <div className="flex items-center gap-1.5 text-[9px]">
           <div className="w-3 h-3 rounded bg-red-500/20 border border-red-500 border-dashed" />
-          <span className="text-[#888]">Pro Cost</span>
+          <span className="text-gray-500">Pro Cost</span>
         </div>
       </div>
     </div>

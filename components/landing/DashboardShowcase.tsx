@@ -6,18 +6,19 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { BrowserChrome } from "./dashboard-preview/BrowserChrome";
 import { DiagnoseView } from "./dashboard-preview/views/DiagnoseView";
 import { DashboardView } from "./dashboard-preview/views/DashboardView";
+import type { ViewType } from "./dashboard-preview/types";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-type ViewType = "diagnose" | "dashboard";
+type LocalView = "diagnose" | "dashboard";
 
 export function DashboardShowcase() {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const browserRef = useRef<HTMLDivElement>(null);
-  const [activeView, setActiveView] = useState<ViewType>("diagnose");
+  const [activeView, setActiveView] = useState<LocalView>("diagnose");
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -104,7 +105,7 @@ export function DashboardShowcase() {
 
         {/* Browser Frame with Dashboard */}
         <div ref={browserRef} className="w-full">
-          <BrowserChrome activeView={activeView}>
+          <BrowserChrome activeView={activeView as ViewType}>
             <div className="h-[600px] overflow-hidden">
               {activeView === "diagnose" ? (
                 <DiagnoseView />

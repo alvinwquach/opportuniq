@@ -66,7 +66,6 @@ export async function POST(request: Request) {
       invitedBy: inviter?.name || "OpportunIQ Team",
     });
   } catch (error) {
-    console.error("[Alpha Validate] Error:", error);
     return NextResponse.json(
       { valid: false, error: "Something went wrong" },
       { status: 500 }

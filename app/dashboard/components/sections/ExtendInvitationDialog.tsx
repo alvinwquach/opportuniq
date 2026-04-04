@@ -85,13 +85,13 @@ export function ExtendInvitationDialog({
           </button>
         )}
       </DialogTrigger>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] sm:max-w-md">
+      <DialogContent className="bg-white border-gray-200 sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
               <IoCalendarOutline className="w-4 h-4 text-amber-500" />
             </div>
-            <DialogTitle className="text-white">Extend Invitation</DialogTitle>
+            <DialogTitle className="text-gray-900">Extend Invitation</DialogTitle>
           </div>
         </DialogHeader>
 
@@ -100,14 +100,14 @@ export function ExtendInvitationDialog({
             <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
               <IoCheckmark className="w-6 h-6 text-green-500" />
             </div>
-            <h3 className="text-lg font-medium text-white mb-2">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
               Invitation Extended!
             </h3>
-            <p className="text-sm text-[#9a9a9a] mb-6">
+            <p className="text-sm text-gray-400 mb-6">
               The invitation for{" "}
-              <span className="text-white">{inviteeEmail}</span> has been
+              <span className="text-gray-900">{inviteeEmail}</span> has been
               extended until{" "}
-              <span className="text-white">
+              <span className="text-gray-900">
                 {format(selectedDate || defaultDate, "MMMM d, yyyy")}
               </span>
               . They&apos;ve been sent a reminder email.
@@ -115,7 +115,7 @@ export function ExtendInvitationDialog({
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="px-4 py-2 rounded-lg bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-[#0c0c0c] font-medium text-sm transition-colors"
+              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-600/90 text-white font-medium text-sm transition-colors"
             >
               Done
             </button>
@@ -123,12 +123,12 @@ export function ExtendInvitationDialog({
         ) : (
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-[#9a9a9a] mb-4">
+              <p className="text-sm text-gray-400 mb-4">
                 Extend the invitation for{" "}
-                <span className="text-white">{inviteeEmail}</span>. They will
+                <span className="text-gray-900">{inviteeEmail}</span>. They will
                 receive a reminder email with the invitation link.
               </p>
-              <p className="text-xs text-[#666] mb-4">
+              <p className="text-xs text-gray-500 mb-4">
                 Current expiration:{" "}
                 <span className="text-amber-500">
                   {format(new Date(currentExpiresAt), "MMMM d, yyyy")}
@@ -137,21 +137,21 @@ export function ExtendInvitationDialog({
             </div>
 
             <div>
-              <label className="text-xs text-[#9a9a9a] mb-1.5 block">
+              <label className="text-xs text-gray-400 mb-1.5 block">
                 New Expiration Date
               </label>
               <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                 <PopoverTrigger asChild>
                   <button
                     type="button"
-                    className="w-full h-10 px-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm text-left flex items-center justify-between hover:border-[#3a3a3a] focus:outline-none focus:border-[#00D4FF]/50 transition-colors"
+                    className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm text-left flex items-center justify-between hover:border-[#3a3a3a] focus:outline-none focus:border-blue-500/50 transition-colors"
                   >
-                    <span className={selectedDate ? "text-white" : "text-[#666]"}>
+                    <span className={selectedDate ? "text-gray-900" : "text-gray-500"}>
                       {selectedDate
                         ? format(selectedDate, "MMMM d, yyyy")
                         : format(defaultDate, "MMMM d, yyyy") + " (default)"}
                     </span>
-                    <IoCalendarOutline className="w-4 h-4 text-[#666]" />
+                    <IoCalendarOutline className="w-4 h-4 text-gray-500" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent
@@ -187,7 +187,7 @@ export function ExtendInvitationDialog({
                 type="button"
                 onClick={handleSubmit}
                 disabled={extendInvitation.isPending}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00D4FF] hover:bg-[#00D4FF]/90 disabled:bg-[#1f1f1f] disabled:text-[#9a9a9a] text-[#0c0c0c] font-medium text-sm transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-600/90 disabled:bg-gray-100 disabled:text-gray-400 text-white font-medium text-sm transition-colors"
               >
                 {extendInvitation.isPending ? (
                   <IoReload className="w-4 h-4 animate-spin" />
@@ -199,7 +199,7 @@ export function ExtendInvitationDialog({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-white hover:bg-[#1f1f1f] text-sm transition-colors"
+                className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-gray-900 hover:bg-gray-100 text-sm transition-colors"
               >
                 Cancel
               </button>

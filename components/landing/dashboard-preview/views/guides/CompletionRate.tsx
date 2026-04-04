@@ -23,18 +23,18 @@ export function CompletionRate({ completed, inProgress, total }: CompletionRateP
   // If nothing started, show empty state
   if (started === 0) {
     return (
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4 shadow-sm">
-        <h3 className="text-sm font-semibold text-white mb-3">Completion Rate</h3>
+      <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+        <h3 className="text-sm font-semibold text-gray-900 mb-3">Completion Rate</h3>
         <div className="flex items-center justify-center h-24">
-          <p className="text-xs text-[#666]">Start a guide to track progress</p>
+          <p className="text-xs text-gray-500">Start a guide to track progress</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4 shadow-sm">
-      <h3 className="text-sm font-semibold text-white mb-2">Completion Rate</h3>
+    <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+      <h3 className="text-sm font-semibold text-gray-900 mb-2">Completion Rate</h3>
       <div className="flex items-center gap-3">
         {/* Donut Chart */}
         <div className="relative w-20 h-20 flex-shrink-0">
@@ -59,7 +59,7 @@ export function CompletionRate({ completed, inProgress, total }: CompletionRateP
           </ResponsiveContainer>
           {/* Center percentage */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-lg font-bold text-white">{completionRate}%</span>
+            <span className="text-lg font-bold text-gray-900">{completionRate}%</span>
           </div>
         </div>
 
@@ -67,20 +67,20 @@ export function CompletionRate({ completed, inProgress, total }: CompletionRateP
         <div className="flex-1 space-y-1.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span className="text-[10px] text-[#888]">Completed</span>
+              <div className="w-2 h-2 rounded-full bg-blue-500" />
+              <span className="text-[10px] text-gray-500">Completed</span>
             </div>
-            <span className="text-xs font-semibold text-emerald-400">{completed}</span>
+            <span className="text-xs font-semibold text-blue-600">{completed}</span>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-emerald-600" />
-              <span className="text-[10px] text-[#888]">In Progress</span>
+              <div className="w-2 h-2 rounded-full bg-blue-600" />
+              <span className="text-[10px] text-gray-500">In Progress</span>
             </div>
-            <span className="text-xs font-semibold text-emerald-400">{inProgress}</span>
+            <span className="text-xs font-semibold text-blue-600">{inProgress}</span>
           </div>
-          <div className="pt-1 border-t border-[#2a2a2a]">
-            <p className="text-[9px] text-[#666]">
+          <div className="pt-1 border-t border-gray-200">
+            <p className="text-[9px] text-gray-500">
               {completed} of {started} started guides finished
             </p>
           </div>

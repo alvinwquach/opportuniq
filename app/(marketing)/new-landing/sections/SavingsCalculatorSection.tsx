@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gsap, ScrollTrigger, animateCounter } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { IoCalculator, IoTrendingUp } from "react-icons/io5";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -65,10 +65,13 @@ export function SavingsCalculatorSection() {
   // Animate total when it changes
   useEffect(() => {
     if (totalRef.current) {
-      animateCounter(totalRef.current, totalSavings, {
+      gsap.to({ value: 0 }, {
+        value: totalSavings,
         duration: 0.8,
-        prefix: "$",
-        decimals: 0,
+        ease: "power2.out",
+        onUpdate() {
+          totalRef.current!.textContent = `$${Math.round(this.targets()[0].value).toLocaleString()}`;
+        },
       });
     }
   }, [totalSavings]);

@@ -69,21 +69,21 @@ export default function OpportunityCostPage() {
         <div className="max-w-4xl mx-auto text-center">
           {/* Breadcrumb */}
           <nav className="flex items-center justify-center gap-2 text-sm text-neutral-500 mb-6">
-            <Link href="/product" className="hover:text-teal-400 transition-colors">
+            <Link href="/product" className="hover:text-blue-400 transition-colors">
               Product
             </Link>
             <IoChevronForward className="w-3 h-3" />
             <span className="text-neutral-300">Opportunity Cost</span>
           </nav>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-500/40 text-teal-400 text-xs font-mono mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-400 text-xs font-mono mb-6">
             <IoCalculatorOutline className="w-4 h-4" />
             Opportunity Cost
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             Know the true{" "}
-            <span className="text-teal-400">
+            <span className="text-blue-400">
               cost of every option
             </span>
           </h1>
@@ -95,7 +95,7 @@ export default function OpportunityCostPage() {
           </p>
 
           <WaitlistModal>
-            <Button className="h-12 px-8 font-mono font-bold bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
+            <Button className="h-12 px-8 font-mono font-bold bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
               Get Early Access
             </Button>
           </WaitlistModal>
@@ -123,7 +123,7 @@ export default function OpportunityCostPage() {
                     onClick={() => setSelectedOption(option)}
                     className={`w-full text-left p-4 rounded-lg border transition-colors ${
                       selectedOption.type === option.type
-                        ? "border-teal-500/50 bg-teal-500/10"
+                        ? "border-blue-500/50 bg-blue-500/10"
                         : "border-neutral-800 bg-neutral-900/50 hover:border-neutral-700"
                     }`}
                   >
@@ -227,7 +227,7 @@ export default function OpportunityCostPage() {
           <div className="grid md:grid-cols-2 gap-6">
             {FEATURES.map((feature, i) => (
               <div key={i} className="p-6 rounded-xl bg-neutral-900 border border-neutral-700">
-                <div className="w-12 h-12 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 mb-4">
+                <div className="w-12 h-12 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 mb-4">
                   <feature.icon className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
@@ -248,7 +248,7 @@ export default function OpportunityCostPage() {
             Get multiple options with real cost and time estimates for every repair.
           </p>
           <WaitlistModal>
-            <Button className="h-14 px-8 font-mono font-bold text-lg bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
+            <Button className="h-14 px-8 font-mono font-bold text-lg bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
               Join the Waitlist
             </Button>
           </WaitlistModal>

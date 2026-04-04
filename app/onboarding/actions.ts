@@ -37,22 +37,13 @@ export async function completeOnboarding(data: {
   primaryUseCase?: string;
   hourlyRate?: number;
 }) {
-  console.log("[Onboarding Action] Starting completeOnboarding", {
-    hasPostalCode: !!data.postalCode,
-    country: data.country,
-    searchRadius: data.searchRadius,
-    riskTolerance: data.riskTolerance,
-    primaryUseCase: data.primaryUseCase,
-  });
 
   const user = await getCurrentUser();
 
   if (!user) {
-    console.error("[Onboarding Action] Auth error: No user");
     return { success: false as const, error: "Unauthorized - please sign in again" };
   }
 
-  console.log("[Onboarding Action] User authenticated:", user.id);
 
   const {
     country,
@@ -81,7 +72,6 @@ export async function completeOnboarding(data: {
   const unitSystem = imperialCountries.includes(country) ? "imperial" : "metric";
 
   try {
-    console.log("[Onboarding] Starting onboarding for user:", user.id);
 
     // Check for pending_user cookie
     let cookieStore;
@@ -96,19 +86,10 @@ export async function completeOnboarding(data: {
         try {
           pendingUserData = JSON.parse(pendingUserCookie.value) as PendingUserData;
           isNewUser = true;
-          console.log("[Onboarding] Found pending user data:", {
-            accessTier: pendingUserData.accessTier,
-            hasReferredBy: !!pendingUserData.referredBy,
-            hasInviteId: !!pendingUserData.inviteId,
-            hasReferralCodeId: !!pendingUserData.referralCodeId,
-            isAdmin: pendingUserData.isAdmin,
-          });
         } catch (parseError) {
-          console.error("[Onboarding] Failed to parse pending_user cookie:", parseError);
         }
       }
     } catch (cookieError) {
-      console.error("[Onboarding] Cookie access error:", cookieError);
     }
 
     // Geocode the postal code
@@ -118,7 +99,6 @@ export async function completeOnboarding(data: {
 
     if (hasMapboxToken) {
       try {
-        console.log("[Onboarding] Starting geocoding for:", postalCode, country);
         const geocodePromise = geocodePostalCode(postalCode, country);
         const timeoutPromise = new Promise<null>((resolve) =>
           setTimeout(() => {
@@ -128,16 +108,13 @@ export async function completeOnboarding(data: {
         );
 
         geocodingResult = await Promise.race([geocodePromise, timeoutPromise]);
-        console.log("[Onboarding] Geocoding completed:", geocodingResult ? "success" : "failed/null");
       } catch (geocodeError) {
-        console.error("[Onboarding] Geocoding error (non-blocking):", geocodeError);
       }
     }
 
     let userData: { role: "admin" | "user"; name?: string | null; id: string; email: string };
 
     // Check if user already exists
-    console.log("[Onboarding] Checking if user exists in DB...");
     let existingUser;
     try {
       const selectPromise = db.select().from(users).where(eq(users.id, user.id));
@@ -146,9 +123,7 @@ export async function completeOnboarding(data: {
       );
       const result = await Promise.race([selectPromise, timeoutPromise]);
       [existingUser] = result;
-      console.log("[Onboarding] DB check completed, user exists:", !!existingUser);
     } catch (dbError: unknown) {
-      console.error("[Onboarding] DB check failed:", (dbError as Error)?.message);
       existingUser = null;
     }
 
@@ -162,7 +137,6 @@ export async function completeOnboarding(data: {
 
     if (existingUser) {
       // User already exists - update
-      console.log("[Onboarding] User already exists in DB, updating onboarding data");
 
       const updateData = {
         country,
@@ -183,7 +157,6 @@ export async function completeOnboarding(data: {
       };
 
       await db.update(users).set(updateData).where(eq(users.id, user.id));
-      console.log("[Onboarding] Existing user updated with onboarding data");
 
       // Clear pending_user cookie
       try {
@@ -208,7 +181,6 @@ export async function completeOnboarding(data: {
       };
     } else if (isNewUser && pendingUserData) {
       // NEW USER: Create user record
-      console.log("[Onboarding] Creating new user record");
 
       const newUserReferralCode = generateReferralCode();
       const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture || null;
@@ -241,7 +213,6 @@ export async function completeOnboarding(data: {
           updatedAt: new Date(),
         });
 
-        console.log("[Onboarding] User record created successfully");
 
         // Create referral code entry
         await db.insert(referralCodes).values({
@@ -300,7 +271,6 @@ export async function completeOnboarding(data: {
             });
           }
         } catch (clearCookieError) {
-          console.error("[Onboarding] Failed to clear cookie:", clearCookieError);
         }
 
         userData = {
@@ -310,7 +280,6 @@ export async function completeOnboarding(data: {
           email: user.email!,
         };
       } catch (createError: unknown) {
-        console.error("[Onboarding] Failed to create user:", createError);
         const createErr = createError as { code?: string; message?: string };
         if (
           createErr?.code === "23505" ||
@@ -334,7 +303,6 @@ export async function completeOnboarding(data: {
       }
     } else {
       // Edge case: No user in DB and no pending cookie
-      console.error("[Onboarding] No user in DB and no pending cookie - invalid state");
 
       const isAdminEmail =
         user.email === "alvinwquach@gmail.com" || user.email === "binarydecisions1111@gmail.com";
@@ -381,7 +349,6 @@ export async function completeOnboarding(data: {
           email: user.email!,
         };
       } catch (fallbackError: unknown) {
-        console.error("[Onboarding] Fallback user creation failed:", fallbackError);
         return { success: false as const, error: "Unable to complete onboarding. Please try signing in again." };
       }
     }
@@ -393,11 +360,9 @@ export async function completeOnboarding(data: {
       postalCode,
       searchRadius,
     }).catch((emailError) => {
-      console.error("[Onboarding] Failed to send welcome email:", emailError);
     });
 
     const redirectTo = userData.role === "admin" ? "/admin" : "/dashboard";
-    console.log("[Onboarding] Onboarding complete, redirecting to:", redirectTo);
 
     return {
       success: true as const,
@@ -405,7 +370,6 @@ export async function completeOnboarding(data: {
       redirectTo,
     };
   } catch (error) {
-    console.error("[Onboarding] Onboarding error:", error);
     return {
       success: false as const,
       error: error instanceof Error ? error.message : "Failed to complete onboarding",

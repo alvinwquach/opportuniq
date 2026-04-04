@@ -20,7 +20,6 @@ export function createUtilityRebatesTool(ctx: ToolContext) {
       zipCode: z.string().describe("User's zip code for local utility lookup"),
     }),
     execute: async ({ upgradeType, zipCode }) => {
-      console.log(`[findUtilityRebates] Searching rebates for: ${upgradeType} in ${zipCode}`);
 
       const dsireUrl = `https://www.dsireusa.org/`;
       const energyStarUrl = `https://www.energystar.gov/rebate-finder?zipCode=${zipCode}`;
@@ -41,7 +40,6 @@ export function createUtilityRebatesTool(ctx: ToolContext) {
       ];
 
       if (!ctx.firecrawl) {
-        console.log(`[findUtilityRebates] Firecrawl not available`);
         Sentry.captureMessage("Tool returned error", {
           level: "warning",
           extra: { tool: "findUtilityRebates", error: "Firecrawl not available", upgradeType, zipCode },
@@ -68,7 +66,6 @@ export function createUtilityRebatesTool(ctx: ToolContext) {
         );
 
         if (searchResults?.web?.length) {
-          console.log(`[findUtilityRebates] firecrawlSearch success, ${searchResults.web.length} results`);
           return {
             upgradeType,
             zipCode,
@@ -83,7 +80,6 @@ export function createUtilityRebatesTool(ctx: ToolContext) {
           };
         }
 
-        console.log(`[findUtilityRebates] firecrawlSearch returned no results, falling back`);
       }
 
       // FALLBACK: existing Google scraping code
@@ -93,7 +89,6 @@ export function createUtilityRebatesTool(ctx: ToolContext) {
         const result = await scrapeWithTimeout(ctx.firecrawl, searchUrl, 20000);
 
         if (result?.markdown) {
-          console.log(`[findUtilityRebates] Success, got ${result.markdown.length} chars`);
           return {
             upgradeType,
             zipCode,
@@ -104,7 +99,6 @@ export function createUtilityRebatesTool(ctx: ToolContext) {
           };
         }
 
-        console.log(`[findUtilityRebates] Failed or timed out`);
         Sentry.captureMessage("Tool returned error", {
           level: "warning",
           extra: { tool: "findUtilityRebates", error: "Timed out or failed", upgradeType, zipCode },

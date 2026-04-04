@@ -118,7 +118,6 @@ export function createRedditSearchTool(ctx: ToolContext) {
         .describe("Whether this is a home repair or auto repair question"),
     }),
     execute: async ({ query, focusOn = "general", category = "home" }) => {
-      console.log(`[redditSearch] Searching Reddit for: ${query} (focus: ${focusOn}, category: ${category})`);
 
       // Choose subreddits based on category
       const subreddits = category === "auto" ? AUTO_REPAIR_SUBREDDITS : HOME_REPAIR_SUBREDDITS;
@@ -141,7 +140,6 @@ export function createRedditSearchTool(ctx: ToolContext) {
       const redditUrl = `https://www.reddit.com/r/${subredditFilter}/search?q=${encodeURIComponent(enhancedQuery)}&restrict_sr=on&sort=relevance&t=all`;
 
       if (!ctx.firecrawl) {
-        console.log(`[redditSearch] Firecrawl not available`);
         Sentry.captureMessage("Tool returned error", {
           level: "warning",
           extra: { tool: "searchReddit", error: "Firecrawl not available", query },
@@ -174,7 +172,6 @@ export function createRedditSearchTool(ctx: ToolContext) {
         );
 
         if (searchResults?.web?.length) {
-          console.log(`[redditSearch] firecrawlSearch success, ${searchResults.web.length} results`);
 
           // Map search results to post shape, extracting subreddit from URL
           const posts: Array<{
@@ -243,9 +240,7 @@ export function createRedditSearchTool(ctx: ToolContext) {
               }));
 
               await db.insert(diyGuides).values(guidesToInsert);
-              console.log(`[redditSearch] Saved ${guidesToInsert.length} guides to database`);
             } catch (err) {
-              console.error(`[redditSearch] Failed to save guides:`, err);
               Sentry.captureException(err, { extra: { tool: "searchReddit", query, category } });
               // Don't fail the tool call if DB insert fails
             }
@@ -268,7 +263,6 @@ export function createRedditSearchTool(ctx: ToolContext) {
           };
         }
 
-        console.log(`[redditSearch] firecrawlSearch returned no results, falling back`);
       }
 
       // FALLBACK: scrape Reddit search directly
@@ -279,7 +273,6 @@ export function createRedditSearchTool(ctx: ToolContext) {
             ctx.firecrawl.scrape(redditUrl, { formats: ["summary"] }),
             new Promise<null>((resolve) => {
               setTimeout(() => {
-                console.log(`[redditSearch] Summary scrape timeout for ${redditUrl}`);
                 resolve(null);
               }, 15000);
             }),
@@ -287,7 +280,6 @@ export function createRedditSearchTool(ctx: ToolContext) {
 
           const summary = (summaryResult as { summary?: string } | null)?.summary;
           if (summary) {
-            console.log(`[redditSearch] Summary format success, got ${summary.length} chars`);
             return {
               searchQuery: query,
               focusArea: focusOn,
@@ -308,11 +300,9 @@ export function createRedditSearchTool(ctx: ToolContext) {
       const result = await scrapeWithTimeout(ctx.firecrawl, redditUrl, 15000);
 
       if (result?.markdown) {
-        console.log(`[redditSearch] Success, got ${result.markdown.length} chars`);
 
         // Parse posts from markdown
         const posts = parseRedditPosts(result.markdown);
-        console.log(`[redditSearch] Found ${posts.length} posts`);
 
         // Save guides to database if we have user context
         if (ctx.userId && ctx.conversationId && posts.length > 0) {
@@ -334,9 +324,7 @@ export function createRedditSearchTool(ctx: ToolContext) {
             }));
 
             await db.insert(diyGuides).values(guidesToInsert);
-            console.log(`[redditSearch] Saved ${guidesToInsert.length} guides to database`);
           } catch (err) {
-            console.error(`[redditSearch] Failed to save guides:`, err);
             Sentry.captureException(err, { extra: { tool: "searchReddit", query, category } });
             // Don't fail the tool call if DB insert fails
           }
@@ -361,7 +349,6 @@ export function createRedditSearchTool(ctx: ToolContext) {
         };
       }
 
-      console.log(`[redditSearch] Failed or timed out`);
       return {
         error: "Reddit search timed out",
         suggestion: `Search Reddit for "${query}" in r/HomeImprovement or r/DIY`,

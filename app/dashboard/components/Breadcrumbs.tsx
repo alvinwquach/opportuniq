@@ -85,13 +85,13 @@ export function Breadcrumbs({ className }: { className?: string }) {
           <div key={item.href} className="flex items-center gap-1">
             {index > 0 && <IoChevronForward className="w-3 h-3 text-[#444]" />}
             {isLast ? (
-              <span className="text-white font-medium">{item.label}</span>
+              <span className="text-gray-900 font-medium">{item.label}</span>
             ) : (
               <Link
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-1 text-[#666] hover:text-white transition-colors",
-                  isHome && "text-[#555]"
+                  "flex items-center gap-1 text-gray-500 hover:text-gray-900 transition-colors",
+                  isHome && "text-gray-400"
                 )}
               >
                 {isHome && <IoHome className="w-3 h-3" />}

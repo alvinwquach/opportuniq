@@ -50,7 +50,7 @@ function getWeatherIcon(code: number, className: string = "w-3.5 h-3.5") {
   if (code >= 45 && code <= 48) return <WiFog className={`${className} text-slate-400`} />;
   // Drizzle/Rain
   if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82))
-    return <IoRainy className={`${className} text-blue-400`} />;
+    return <IoRainy className={`${className} text-blue-600`} />;
   // Snow
   if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86))
     return <IoSnow className={`${className} text-blue-200`} />;
@@ -106,7 +106,6 @@ export function ThisWeekSection({ events, postalCode }: ThisWeekSectionProps) {
           }
         }
       } catch (error) {
-        console.error("Failed to fetch weather:", error);
       } finally {
         setLoading(false);
       }
@@ -142,33 +141,33 @@ export function ThisWeekSection({ events, postalCode }: ThisWeekSectionProps) {
   const getEventIcon = (type: string) => {
     switch (type) {
       case "diy":
-        return <IoConstruct className="w-3 h-3 text-[#00D4FF]" />;
+        return <IoConstruct className="w-3 h-3 text-blue-600" />;
       case "contractor":
         return <IoCall className="w-3 h-3 text-purple-400" />;
       case "wfh":
-        return <IoHome className="w-3 h-3 text-emerald-400" />;
+        return <IoHome className="w-3 h-3 text-blue-600" />;
       default:
         return <IoNotifications className="w-3 h-3 text-amber-400" />;
     }
   };
 
   return (
-    <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+    <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-            <IoCalendar className="w-4 h-4 text-blue-400" />
+          <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+            <IoCalendar className="w-4 h-4 text-blue-600" />
           </div>
           <div>
             <h3 className="text-sm font-medium text-white">This Week</h3>
-            <p className="text-[10px] text-[#9a9a9a]">
+            <p className="text-[10px] text-gray-400">
               {events.length} event{events.length !== 1 ? "s" : ""} scheduled
             </p>
           </div>
         </div>
         <Link
           href="/calendar"
-          className="text-xs text-[#00D4FF] hover:text-[#00D4FF]/80 transition-colors"
+          className="text-xs text-blue-600 hover:text-blue-600/80 transition-colors"
         >
           Full Calendar
         </Link>
@@ -187,14 +186,14 @@ export function ThisWeekSection({ events, postalCode }: ThisWeekSectionProps) {
               key={index}
               className={`flex flex-col items-center p-1.5 rounded-lg ${
                 isToday
-                  ? "bg-[#00D4FF]/10 border border-[#00D4FF]/20"
-                  : "hover:bg-[#1f1f1f]"
+                  ? "bg-blue-50 border border-blue-200"
+                  : "hover:bg-gray-100"
               } transition-colors`}
             >
-              <span className={`text-[10px] ${isToday ? "text-[#00D4FF]" : "text-[#9a9a9a]"}`}>
+              <span className={`text-[10px] ${isToday ? "text-blue-600" : "text-gray-400"}`}>
                 {formatDayName(date, index)}
               </span>
-              <span className={`text-xs font-medium ${isToday ? "text-white" : "text-[#a3a3a3]"}`}>
+              <span className={`text-xs font-medium ${isToday ? "text-gray-900" : "text-[#a3a3a3]"}`}>
                 {date.getDate()}
               </span>
 
@@ -207,7 +206,7 @@ export function ThisWeekSection({ events, postalCode }: ThisWeekSectionProps) {
 
               {/* Temperature */}
               {dayForecast && (
-                <span className="text-[9px] text-[#9a9a9a]">
+                <span className="text-[9px] text-gray-400">
                   {Math.round(dayForecast.temperatureMax)}°
                 </span>
               )}
@@ -220,17 +219,17 @@ export function ThisWeekSection({ events, postalCode }: ThisWeekSectionProps) {
                       key={i}
                       className={`w-1 h-1 rounded-full ${
                         event.type === "diy"
-                          ? "bg-[#00D4FF]"
+                          ? "bg-blue-600"
                           : event.type === "contractor"
                           ? "bg-purple-400"
                           : event.type === "wfh"
-                          ? "bg-emerald-400"
+                          ? "bg-blue-400"
                           : "bg-amber-400"
                       }`}
                     />
                   ))}
                   {dayEvents.length > 2 && (
-                    <span className="text-[8px] text-[#9a9a9a]">+{dayEvents.length - 2}</span>
+                    <span className="text-[8px] text-gray-400">+{dayEvents.length - 2}</span>
                   )}
                 </div>
               )}
@@ -238,7 +237,7 @@ export function ThisWeekSection({ events, postalCode }: ThisWeekSectionProps) {
               {/* Rain Warning */}
               {hasRain && (
                 <div className="mt-0.5">
-                  <IoWater className="w-2.5 h-2.5 text-blue-400" />
+                  <IoWater className="w-2.5 h-2.5 text-blue-600" />
                 </div>
               )}
             </div>
@@ -248,7 +247,7 @@ export function ThisWeekSection({ events, postalCode }: ThisWeekSectionProps) {
 
       {/* Upcoming Events List */}
       {events.length > 0 && (
-        <div className="space-y-2 pt-3 border-t border-[#1f1f1f]">
+        <div className="space-y-2 pt-3 border-t border-gray-200">
           {events.slice(0, 4).map((event) => {
             const eventDate = new Date(event.date);
             const dayForecast = getForecastForDay(eventDate);
@@ -257,26 +256,26 @@ export function ThisWeekSection({ events, postalCode }: ThisWeekSectionProps) {
               <Link
                 key={event.id}
                 href={event.issueId ? `/issues/${event.issueId}` : "/calendar"}
-                className="flex items-center gap-2 p-2 -mx-1 rounded-lg hover:bg-[#1f1f1f] transition-colors group"
+                className="flex items-center gap-2 p-2 -mx-1 rounded-lg hover:bg-gray-100 transition-colors group"
               >
                 <div
                   className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
                     event.type === "diy"
-                      ? "bg-[#00D4FF]/10"
+                      ? "bg-blue-50"
                       : event.type === "contractor"
                       ? "bg-purple-500/10"
                       : event.type === "wfh"
-                      ? "bg-emerald-500/10"
+                      ? "bg-blue-50"
                       : "bg-amber-500/10"
                   }`}
                 >
                   {getEventIcon(event.type)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-white truncate group-hover:text-[#00D4FF] transition-colors">
+                  <p className="text-xs text-gray-900 truncate group-hover:text-blue-600 transition-colors">
                     {event.title}
                   </p>
-                  <div className="flex items-center gap-1.5 text-[10px] text-[#9a9a9a]">
+                  <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
                     <span>
                       {eventDate.toLocaleDateString(undefined, {
                         weekday: "short",
@@ -300,7 +299,7 @@ export function ThisWeekSection({ events, postalCode }: ThisWeekSectionProps) {
                 </div>
                 {/* Weather indicator for event day */}
                 {dayForecast && (
-                  <div className="flex items-center gap-1 text-[10px] text-[#9a9a9a]">
+                  <div className="flex items-center gap-1 text-[10px] text-gray-400">
                     {getWeatherIcon(dayForecast.weatherCode, "w-3 h-3")}
                     <span>{Math.round(dayForecast.temperatureMax)}°</span>
                   </div>
@@ -312,11 +311,11 @@ export function ThisWeekSection({ events, postalCode }: ThisWeekSectionProps) {
       )}
 
       {events.length === 0 && (
-        <div className="text-center py-3 border-t border-[#1f1f1f]">
-          <p className="text-xs text-[#9a9a9a]">No events this week</p>
+        <div className="text-center py-3 border-t border-gray-200">
+          <p className="text-xs text-gray-400">No events this week</p>
           <Link
             href="/issues"
-            className="text-[10px] text-[#00D4FF] hover:text-[#00D4FF]/80 mt-1 inline-block"
+            className="text-[10px] text-blue-600 hover:text-blue-600/80 mt-1 inline-block"
           >
             Schedule a DIY project →
           </Link>

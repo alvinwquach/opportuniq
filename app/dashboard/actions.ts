@@ -59,7 +59,6 @@ export async function getDashboardData(userId: string) {
       errorMsg.includes("authentication") ||
       errorMsg.includes("password")
     ) {
-      console.error(`[Dashboard] Database connection error in ${operation}:`, {
         error: errorMsg,
         code: errorCode,
       });
@@ -183,7 +182,6 @@ export async function getDashboardData(userId: string) {
   
   // Debug: Log groupIds to ensure it's an array
   if (groupIds.length > 0) {
-    console.log("[Dashboard] groupIds array:", { length: groupIds.length, first: groupIds[0], isArray: Array.isArray(groupIds) });
   }
 
   // FAST PATH: For new users with no groups, return minimal data immediately
@@ -951,7 +949,6 @@ export async function getDashboardData(userId: string) {
       errorMsg.includes("authentication") ||
       errorMsg.includes("password")
     ) {
-      console.error("[Dashboard] Database connection error:", {
         error: errorMsg,
         code: errorCode,
       });

@@ -50,7 +50,6 @@ export async function updateCommentEncrypted(
 
     return { success: true, commentId: comment.id };
   } catch (error) {
-    console.error("[Update Comment] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to update comment",
@@ -92,7 +91,6 @@ export async function updateCommentPlaintext(
 
     return { success: true, commentId: comment.id };
   } catch (error) {
-    console.error("[Update Comment] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to update comment",

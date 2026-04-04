@@ -32,7 +32,6 @@ export default async function Dashboard() {
   try {
     data = await getDashboardData(user.id);
   } catch (error) {
-    console.error("Dashboard data fetch error:", error);
     // Return minimal data structure to prevent crash
     data = {
       userProfile: null,

@@ -62,11 +62,9 @@ export async function GET() {
       })
       .where(eq(users.id, user.id));
 
-    console.log("[Encryption API] Generated new encryption key for user:", user.id);
 
     return NextResponse.json({ key: newKey });
   } catch (error) {
-    console.error("[Encryption API] Error:", error);
     return NextResponse.json(
       { error: "Failed to fetch encryption key" },
       { status: 500 }

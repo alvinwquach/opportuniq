@@ -4,8 +4,7 @@ import { useEffect, useRef } from "react";
 import {
   gsap,
   ScrollTrigger,
-  scrambleText,
-  animateCounter,
+  ScrambleTextPlugin,
 } from "@/lib/gsap";
 import {
   IoCheckmarkCircle,
@@ -59,9 +58,9 @@ export function SolutionSection() {
         start: "top 80%",
         onEnter: () => {
           if (scrambleRef.current) {
-            scrambleText(scrambleRef.current, "30 seconds", {
+            gsap.to(scrambleRef.current, {
+              scrambleText: { text: "30 seconds", chars: "0123456789" },
               duration: 1.2,
-              chars: "0123456789",
             });
           }
         },
@@ -91,11 +90,16 @@ export function SolutionSection() {
           trigger: el,
           start: "top 85%",
           onEnter: () => {
-            animateCounter(el as HTMLElement, value, {
+            gsap.to({ value: 0 }, {
+              value,
               duration: 2,
-              prefix,
-              suffix,
-              decimals,
+              ease: "power2.out",
+              onUpdate() {
+                const current = decimals > 0
+                  ? this.targets()[0].value.toFixed(decimals)
+                  : Math.round(this.targets()[0].value).toLocaleString();
+                (el as HTMLElement).textContent = `${prefix}${current}${suffix}`;
+              },
             });
           },
           once: true,

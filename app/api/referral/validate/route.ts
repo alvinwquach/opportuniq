@@ -73,7 +73,6 @@ export async function GET(request: Request) {
       referrer: referrer?.name || referrer?.email?.split("@")[0] || "A friend",
     });
   } catch (error) {
-    console.error("[Referral Validate] Error:", error);
     return NextResponse.json(
       { valid: false, error: "Something went wrong" },
       { status: 500 }
@@ -154,7 +153,6 @@ export async function POST(request: Request) {
       referrer: referrer?.name || referrer?.email?.split("@")[0] || "A friend",
     });
   } catch (error) {
-    console.error("[Referral Validate] Error:", error);
     return NextResponse.json(
       { valid: false, error: "Something went wrong" },
       { status: 500 }

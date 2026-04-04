@@ -18,14 +18,12 @@ export function createRecallCheckTool(ctx: ToolContext) {
       searchTerm: z.string().describe("Product name/brand or vehicle make/model/year"),
     }),
     execute: async ({ itemType, searchTerm }) => {
-      console.log(`[checkRecalls] Checking ${itemType} recalls for: ${searchTerm}`);
 
       const recallUrl = itemType === "vehicle"
         ? `https://www.nhtsa.gov/recalls?nhtsaId=&query=${encodeURIComponent(searchTerm)}`
         : `https://www.cpsc.gov/Recalls?search=${encodeURIComponent(searchTerm)}`;
 
       if (!ctx.firecrawl) {
-        console.log(`[checkRecalls] Firecrawl not available`);
         Sentry.captureMessage("Tool returned error", {
           level: "warning",
           extra: { tool: "checkRecalls", error: "Firecrawl not available", itemType, searchTerm },
@@ -46,7 +44,6 @@ export function createRecallCheckTool(ctx: ToolContext) {
         const result = await scrapeWithTimeout(ctx.firecrawl, recallUrl, 20000);
 
         if (result?.markdown) {
-          console.log(`[checkRecalls] Success, got ${result.markdown.length} chars`);
           return {
             itemType,
             searchTerm,
@@ -59,7 +56,6 @@ export function createRecallCheckTool(ctx: ToolContext) {
           };
         }
 
-        console.log(`[checkRecalls] Failed or timed out`);
         Sentry.captureMessage("Tool returned error", {
           level: "warning",
           extra: { tool: "checkRecalls", error: "Timed out or failed", itemType, searchTerm },

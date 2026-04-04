@@ -6,6 +6,7 @@ import { DIYTab } from "./DIYTab";
 import { HireProTab } from "./HireProTab";
 import { useDemoFlowContextSafe } from "./DemoFlowContext";
 import type { IssueData } from "./types";
+import { useDarkMode } from "../../DarkModeContext";
 
 type TabType = "diy" | "hire";
 
@@ -91,6 +92,8 @@ function getSafetyGearParts(issue: IssueData): IssueData["parts"] {
 export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps) {
   const [activeTab, setActiveTab] = useState<TabType>("diy");
   const demoFlow = useDemoFlowContextSafe();
+  const dark = useDarkMode();
+  const b = dark ? "border-white/[0.06]" : "border-gray-200";
 
   // Progressive reveal from demo flow
   const isLoading = demoFlow?.isLoading ?? false;
@@ -119,13 +122,13 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
 
   if (isCreatingNewIssue || !issue) {
     return (
-      <div className="w-full lg:w-[340px] h-full shrink-0 lg:border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
+      <div className={`w-full h-full shrink-0 lg:border-l ${b} flex flex-col ${dark ? "bg-[#141414]" : "bg-gray-50"}`}>
         {/* Disabled Tabs */}
-        <div className="flex border-b border-white/[0.06]">
+        <div className={`flex border-b ${b}`}>
           {["DIY", "Hire Pro"].map((tab) => (
             <div
               key={tab}
-              className="flex-1 px-4 py-3 text-sm font-medium text-[#444] text-center"
+              className={`flex-1 px-4 py-3 text-sm font-medium text-center ${dark ? "text-gray-700" : "text-gray-300"}`}
             >
               {tab}
             </div>
@@ -133,9 +136,9 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
         </div>
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="text-center">
-            <IoHammerOutline className="w-10 h-10 text-[#333] mx-auto mb-2" />
-            <p className="text-sm text-[#666]">Select an issue to view options</p>
-            <p className="text-xs text-[#555] mt-1">Or report a new issue to get started</p>
+            <IoHammerOutline className={`w-10 h-10 mx-auto mb-2 ${dark ? "text-gray-700" : "text-gray-300"}`} />
+            <p className={`text-sm ${dark ? "text-gray-500" : "text-gray-500"}`}>Select an issue to view options</p>
+            <p className={`text-xs mt-1 ${dark ? "text-gray-700" : "text-gray-400"}`}>Or report a new issue to get started</p>
           </div>
         </div>
       </div>
@@ -151,9 +154,9 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
   const showContent = !isLoading;
 
   return (
-    <div className="w-full lg:w-[340px] h-full shrink-0 lg:border-l border-white/[0.06] flex flex-col bg-[#0f0f0f]">
+    <div className={`w-full h-full shrink-0 lg:border-l ${b} flex flex-col ${dark ? "bg-[#141414]" : "bg-gray-50"}`}>
       {/* Tabs */}
-      <div className="flex border-b border-white/[0.06]">
+      <div className={`flex border-b ${b}`}>
         {[
           { id: "diy" as TabType, label: "DIY", available: hasDiyContent },
           { id: "hire" as TabType, label: "Hire Pro", available: hasProContent },
@@ -165,15 +168,15 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
             disabled={!tab.available}
             className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative ${
               !tab.available
-                ? "text-[#444] cursor-not-allowed"
+                ? dark ? "text-gray-700 cursor-not-allowed" : "text-gray-300 cursor-not-allowed"
                 : activeTab === tab.id
-                ? "text-emerald-400"
-                : "text-[#888] hover:text-white"
+                ? "text-blue-600"
+                : dark ? "text-gray-500 hover:text-gray-300" : "text-gray-500 hover:text-gray-900"
             }`}
           >
             {tab.label}
             {activeTab === tab.id && tab.available && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500" />
             )}
           </button>
         ))}
@@ -184,11 +187,11 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
         {/* Loading State */}
         {isLoading && activeTab === "diy" && (
           <div className="space-y-4 animate-pulse">
-            <div className="h-20 bg-[#1a1a1a] rounded-xl" />
-            <div className="h-8 bg-[#1a1a1a] rounded-lg w-2/3" />
+            <div className={`h-20 rounded-xl ${dark ? "bg-white/[0.06]" : "bg-gray-200"}`} />
+            <div className={`h-8 rounded-lg w-2/3 ${dark ? "bg-white/[0.06]" : "bg-gray-200"}`} />
             <div className="space-y-2">
-              <div className="h-16 bg-[#1a1a1a] rounded-xl" />
-              <div className="h-16 bg-[#1a1a1a] rounded-xl" />
+              <div className={`h-16 rounded-xl ${dark ? "bg-white/[0.06]" : "bg-gray-200"}`} />
+              <div className={`h-16 rounded-xl ${dark ? "bg-white/[0.06]" : "bg-gray-200"}`} />
             </div>
           </div>
         )}
@@ -215,28 +218,28 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
       {/* Safety Notice */}
       {showSafety && (
         <div
-          className="p-4 border-t border-white/[0.06] animate-in fade-in slide-in-from-bottom-2 duration-300"
+          className={`p-4 border-t animate-in fade-in slide-in-from-bottom-2 duration-300 ${b}`}
         >
           <div
             className={`p-3 rounded-lg ${
               issue.difficulty.includes("Professional")
-                ? "bg-red-500/10 border border-red-500/20"
-                : "bg-amber-500/10 border border-amber-500/20"
+                ? dark ? "bg-red-900/20 border border-red-500/30" : "bg-red-50 border border-red-200"
+                : dark ? "bg-amber-900/20 border border-amber-500/30" : "bg-amber-50 border border-amber-200"
             }`}
           >
             <div className="flex items-center gap-2 mb-1">
               <IoShieldCheckmark
                 className={`w-4 h-4 ${
                   issue.difficulty.includes("Professional")
-                    ? "text-red-400"
-                    : "text-amber-400"
+                    ? "text-red-600"
+                    : "text-amber-600"
                 }`}
               />
               <span
                 className={`text-xs font-medium ${
                   issue.difficulty.includes("Professional")
-                    ? "text-red-400"
-                    : "text-amber-400"
+                    ? "text-red-600"
+                    : "text-amber-600"
                 }`}
               >
                 Safety Note
@@ -245,8 +248,8 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
             <p
               className={`text-[10px] leading-relaxed ${
                 issue.difficulty.includes("Professional")
-                  ? "text-red-400/80"
-                  : "text-amber-400/80"
+                  ? "text-red-600/80"
+                  : "text-amber-600/80"
               }`}
             >
               {issue.safety?.doNotProceed?.[0] ??

@@ -31,7 +31,7 @@ export function SharedBudgetsSection({ groupFinances }: SharedBudgetsSectionProp
         <h2 className="text-sm font-medium text-white">Shared Budgets</h2>
         <Link
           href="/dashboard/groups"
-          className="text-xs text-[#9a9a9a] hover:text-white transition-colors"
+          className="text-xs text-gray-400 hover:text-gray-900 transition-colors"
         >
           Manage
         </Link>
@@ -40,7 +40,7 @@ export function SharedBudgetsSection({ groupFinances }: SharedBudgetsSectionProp
         {groupFinances.map((groupFinance) => (
           <div
             key={groupFinance.groupId}
-            className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]"
+            className="p-4 rounded-xl bg-gray-50 border border-gray-200"
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
@@ -55,13 +55,13 @@ export function SharedBudgetsSection({ groupFinances }: SharedBudgetsSectionProp
             </div>
             {groupFinance.monthlyBudget && (
               <div className="mb-3">
-                <div className="flex items-center justify-between text-[10px] text-[#9a9a9a] mb-1">
+                <div className="flex items-center justify-between text-[10px] text-gray-400 mb-1">
                   <span>Monthly Budget</span>
                   <span>
                     ${groupFinance.monthlySpent.toLocaleString()} / ${groupFinance.monthlyBudget.toLocaleString()}
                   </span>
                 </div>
-                <div className="h-1.5 bg-[#1f1f1f] rounded-full overflow-hidden">
+                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all ${
                       groupFinance.monthlySpent > groupFinance.monthlyBudget ? "bg-red-500" : "bg-green-500"
@@ -83,14 +83,14 @@ export function SharedBudgetsSection({ groupFinances }: SharedBudgetsSectionProp
                       )}
                       <span className="text-[#a3a3a3]">{expense.category}</span>
                     </div>
-                    <span className="text-white">-${expense.amount.toLocaleString()}</span>
+                    <span className="text-gray-900">-${expense.amount.toLocaleString()}</span>
                   </div>
                 ))}
               </div>
             )}
             {groupFinance.emergencyBuffer && groupFinance.emergencyBuffer > 0 && (
-              <div className="mt-3 pt-3 border-t border-[#1f1f1f] flex items-center justify-between text-xs">
-                <span className="text-[#9a9a9a]">Emergency Fund</span>
+              <div className="mt-3 pt-3 border-t border-gray-200 flex items-center justify-between text-xs">
+                <span className="text-gray-400">Emergency Fund</span>
                 <span className="text-amber-400">${groupFinance.emergencyBuffer.toLocaleString()}</span>
               </div>
             )}

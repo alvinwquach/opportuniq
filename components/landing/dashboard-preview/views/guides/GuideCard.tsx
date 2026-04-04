@@ -25,7 +25,7 @@ export function GuideCard({ guide, viewMode }: GuideCardProps) {
 
   return (
     <div
-      className={`bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4 hover:border-emerald-500/50 hover:shadow-lg transition-all cursor-pointer group ${
+      className={`bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-500/50 hover:shadow-lg transition-all cursor-pointer group ${
         viewMode === "list" ? "flex items-start gap-4" : ""
       } ${completed ? "opacity-80" : ""}`}
     >
@@ -33,7 +33,7 @@ export function GuideCard({ guide, viewMode }: GuideCardProps) {
       {(viewMode === "list" || guide.isVideo) && (
         <div className="flex-shrink-0 relative">
           <div
-            className={`${viewMode === "list" ? "w-24 h-16" : "w-full h-32 mb-3"} rounded-lg ${catConfig.bg} flex items-center justify-center overflow-hidden`}
+            className={`${viewMode === "list" ? "w-24 h-16" : "w-full h-32 mb-3"} rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden`}
           >
             {guide.isVideo ? (
               <div className="absolute inset-0 flex items-center justify-center bg-black/10">
@@ -46,7 +46,7 @@ export function GuideCard({ guide, viewMode }: GuideCardProps) {
             )}
           </div>
           {guide.isVideo && (
-            <span className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-black/70 text-white text-[9px] font-medium rounded">
+            <span className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-black/70 text-gray-900 text-[9px] font-medium rounded">
               {guide.timeEstimate}
             </span>
           )}
@@ -62,7 +62,7 @@ export function GuideCard({ guide, viewMode }: GuideCardProps) {
                 {catConfig.icon}
               </div>
             )}
-            <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-[#333] text-[#888]">
+            <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-100 text-gray-700">
               {sourceInfo.icon} {sourceInfo.name}
             </span>
             {/* Difficulty badge */}
@@ -70,26 +70,26 @@ export function GuideCard({ guide, viewMode }: GuideCardProps) {
               {diffConfig.label}
             </span>
             {inProgress && (
-              <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-emerald-500/20 text-emerald-400">
+              <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-blue-100 text-blue-600">
                 In Progress
               </span>
             )}
             {completed && (
-              <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-emerald-500/20 text-emerald-400 flex items-center gap-0.5">
+              <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-blue-100 text-blue-600 flex items-center gap-0.5">
                 <IoCheckmarkCircle className="w-3 h-3" />
                 Done
               </span>
             )}
           </div>
           <div className="flex items-center gap-1">
-            <button className="p-1 text-[#666] hover:text-emerald-400 hover:bg-emerald-500/10 rounded transition-colors">
+            <button className="p-1 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors">
               {guide.isBookmarked ? (
-                <IoBookmark className="w-4 h-4 text-emerald-400" />
+                <IoBookmark className="w-4 h-4 text-blue-600" />
               ) : (
                 <IoBookmarkOutline className="w-4 h-4" />
               )}
             </button>
-            <button className="p-1 text-[#666] hover:text-white hover:bg-[#333] rounded transition-colors">
+            <button className="p-1 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors">
               <IoOpenOutline className="w-4 h-4" />
             </button>
           </div>
@@ -97,7 +97,7 @@ export function GuideCard({ guide, viewMode }: GuideCardProps) {
 
         {/* Title */}
         <h4
-          className={`text-sm font-semibold text-white mb-1 group-hover:text-emerald-400 transition-colors ${
+          className={`text-sm font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors ${
             viewMode === "list" ? "truncate" : "line-clamp-2"
           }`}
         >
@@ -106,11 +106,11 @@ export function GuideCard({ guide, viewMode }: GuideCardProps) {
 
         {/* Description */}
         {guide.description && viewMode === "grid" && (
-          <p className="text-[11px] text-[#666] mb-2 line-clamp-2">{guide.description}</p>
+          <p className="text-[11px] text-gray-500 mb-2 line-clamp-2">{guide.description}</p>
         )}
 
         {/* Meta info */}
-        <div className="flex items-center gap-3 text-[10px] text-[#666] mb-2">
+        <div className="flex items-center gap-3 text-[10px] text-gray-500 mb-2">
           {guide.rating && (
             <span className="flex items-center gap-0.5">
               <IoStar className="w-3 h-3 text-amber-400 fill-amber-400" />
@@ -136,15 +136,15 @@ export function GuideCard({ guide, viewMode }: GuideCardProps) {
         {/* Progress bar */}
         {inProgress && guide.totalSteps && (
           <div className="mb-2">
-            <div className="flex items-center justify-between text-[10px] text-[#888] mb-1">
+            <div className="flex items-center justify-between text-[10px] text-gray-500 mb-1">
               <span>
                 {guide.completedSteps} of {guide.totalSteps} steps
               </span>
-              <span className="font-semibold text-emerald-400">{guide.progress}%</span>
+              <span className="font-semibold text-blue-600">{guide.progress}%</span>
             </div>
-            <div className="h-1.5 bg-[#333] rounded-full overflow-hidden">
+            <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full transition-all"
+                className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all"
                 style={{ width: `${guide.progress}%` }}
               />
             </div>
@@ -159,10 +159,10 @@ export function GuideCard({ guide, viewMode }: GuideCardProps) {
           <button
             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
               inProgress
-                ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                ? "bg-blue-600 text-gray-900 hover:bg-blue-700"
                 : completed
-                ? "border border-[#2a2a2a] text-[#888] hover:bg-[#333]"
-                : "bg-emerald-600 text-white hover:bg-emerald-700"
+                ? "border border-gray-200 text-gray-500 hover:bg-gray-100"
+                : "bg-blue-600 text-gray-900 hover:bg-blue-700"
             }`}
           >
             {!completed && <IoPlayCircleOutline className="w-3.5 h-3.5" />}

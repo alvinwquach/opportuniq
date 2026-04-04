@@ -205,7 +205,6 @@ export async function sendUserInvite(
 
     return { success: true };
   } catch (error) {
-    console.error("Error sending invite:", error);
     return { success: false, error: "Failed to send invite" };
   }
 }
@@ -257,7 +256,6 @@ export async function resendInvite(
 
     return { success: true };
   } catch (error) {
-    console.error("Error resending invite:", error);
     return { success: false, error: "Failed to resend invite" };
   }
 }

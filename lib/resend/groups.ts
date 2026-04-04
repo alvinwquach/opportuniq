@@ -51,13 +51,11 @@ export async function sendGroupInvitationEmail({
     });
 
     if (error) {
-      console.error("Failed to send group invitation email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending group invitation email:", error);
     return { success: false, error };
   }
 }
@@ -97,13 +95,11 @@ export async function sendMemberApprovalEmail({
     });
 
     if (error) {
-      console.error("Failed to send member approval email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending member approval email:", error);
     return { success: false, error };
   }
 }
@@ -146,13 +142,11 @@ export async function sendGroupUpdatedEmail({
     });
 
     if (error) {
-      console.error("Failed to send group updated email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending group updated email:", error);
     return { success: false, error };
   }
 }
@@ -192,13 +186,11 @@ export async function sendGroupDeletedEmail({
     });
 
     if (error) {
-      console.error("Failed to send group deleted email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending group deleted email:", error);
     return { success: false, error };
   }
 }
@@ -244,13 +236,11 @@ export async function sendGroupRoleChangedEmail({
     });
 
     if (error) {
-      console.error("Failed to send role changed email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending role changed email:", error);
     return { success: false, error };
   }
 }
@@ -290,13 +280,11 @@ export async function sendGroupMemberRemovedEmail({
     });
 
     if (error) {
-      console.error("Failed to send member removed email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending member removed email:", error);
     return { success: false, error };
   }
 }
@@ -343,13 +331,11 @@ export async function sendInvitationSentConfirmationEmail({
     });
 
     if (error) {
-      console.error("Failed to send invitation confirmation email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending invitation confirmation email:", error);
     return { success: false, error };
   }
 }
@@ -392,13 +378,11 @@ export async function sendInvitationRoleUpdatedEmail({
     });
 
     if (error) {
-      console.error("Failed to send invitation role updated email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending invitation role updated email:", error);
     return { success: false, error };
   }
 }
@@ -432,13 +416,11 @@ export async function sendInvitationRevokedEmail({
     });
 
     if (error) {
-      console.error("Failed to send invitation revoked email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending invitation revoked email:", error);
     return { success: false, error };
   }
 }
@@ -478,13 +460,11 @@ export async function sendInvitationRevokedConfirmationEmail({
     });
 
     if (error) {
-      console.error("Failed to send invitation revoked confirmation email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending invitation revoked confirmation email:", error);
     return { success: false, error };
   }
 }
@@ -535,13 +515,11 @@ export async function sendBulkInvitationConfirmationEmail({
     });
 
     if (error) {
-      console.error("Failed to send bulk invitation confirmation email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending bulk invitation confirmation email:", error);
     return { success: false, error };
   }
 }
@@ -581,13 +559,11 @@ export async function sendInvitationDeclinedEmail({
     });
 
     if (error) {
-      console.error("Failed to send invitation declined email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending invitation declined email:", error);
     return { success: false, error };
   }
 }

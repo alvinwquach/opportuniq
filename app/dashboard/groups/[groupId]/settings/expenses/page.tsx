@@ -52,21 +52,21 @@ export default async function ExpenseSettingsPage({ params }: ExpenseSettingsPag
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0c0c]">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <Link
             href={`/dashboard/groups/${groupId}`}
-            className="inline-flex items-center gap-2 text-sm text-[#666] hover:text-white transition-colors mb-4"
+            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors mb-4"
           >
             <IoArrowBack className="w-4 h-4" />
             Back to Group
           </Link>
-          <h1 className="text-xl font-semibold text-white mb-1">
+          <h1 className="text-xl font-semibold text-gray-900 mb-1">
             Expense Settings
           </h1>
-          <p className="text-sm text-[#666]">
+          <p className="text-sm text-gray-500">
             Configure how expenses are approved and manage categories for this group.
           </p>
         </div>

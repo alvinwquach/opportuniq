@@ -108,7 +108,6 @@ export function GoogleCalendarIntegration({
         alert(data.error || "Failed to disconnect Google Calendar");
       }
     } catch (error) {
-      console.error("Failed to disconnect Google Calendar:", error);
       alert("Failed to disconnect Google Calendar");
     } finally {
       setIsDisconnecting(false);
@@ -124,7 +123,7 @@ export function GoogleCalendarIntegration({
   };
 
   return (
-    <div className="rounded-xl bg-[#111] border border-[#1f1f1f] overflow-hidden">
+    <div className="rounded-xl bg-white border border-gray-200 overflow-hidden">
       {/* Header */}
       <div className="p-6 flex items-start justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -137,13 +136,13 @@ export function GoogleCalendarIntegration({
                 Google Calendar
               </h3>
               {localConnection?.isActive && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 text-blue-600 border border-blue-500/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
                   Connected
                 </span>
               )}
             </div>
-            <p className="text-sm text-[#666] mt-0.5">
+            <p className="text-sm text-gray-500 mt-0.5">
               Sync contractor appointments and maintenance reminders
             </p>
           </div>
@@ -179,21 +178,21 @@ export function GoogleCalendarIntegration({
       {/* Connection Details */}
       {localConnection && (
         <div className="px-6 pb-6">
-          <div className="p-4 rounded-lg bg-[#0c0c0c] border border-[#1a1a1a]">
+          <div className="p-4 rounded-lg bg-gray-50 border border-gray-200">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#1f1f1f] flex items-center justify-center text-xs font-medium text-[#888]">
+                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-medium text-gray-500">
                   {localConnection.email.charAt(0).toUpperCase()}
                 </div>
                 <div>
                   <p className="text-sm text-white">{localConnection.email}</p>
-                  <p className="text-xs text-[#555]">
+                  <p className="text-xs text-gray-400">
                     Connected {formatDate(localConnection.connectedAt)}
                   </p>
                 </div>
               </div>
               <svg
-                className="w-5 h-5 text-emerald-400"
+                className="w-5 h-5 text-blue-600"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -211,7 +210,7 @@ export function GoogleCalendarIntegration({
       )}
 
       {/* Permissions Info */}
-      <div className="px-6 py-4 bg-[#0a0a0a] border-t border-[#1a1a1a]">
+      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
         <div className="flex items-start gap-3">
           <svg
             className="w-4 h-4 text-[#444] mt-0.5 flex-shrink-0"
@@ -227,8 +226,8 @@ export function GoogleCalendarIntegration({
             />
           </svg>
           <div>
-            <p className="text-xs text-[#666]">
-              <span className="text-[#888] font-medium">Privacy:</span> We only
+            <p className="text-xs text-gray-500">
+              <span className="text-gray-500 font-medium">Privacy:</span> We only
               create and manage events related to your home maintenance. We
               cannot access your other calendar events.
             </p>

@@ -26,10 +26,8 @@ export function createProductReviewsTool(ctx: ToolContext) {
         ),
     }),
     execute: async ({ productName }) => {
-      console.log(`[searchProductReviews] Searching reviews for: ${productName}`);
 
       if (!ctx.firecrawl) {
-        console.log(`[searchProductReviews] Firecrawl not available`);
         return {
           error: "Review search not available",
           suggestion: `Search for "${productName} reviews" on Google, Home Depot, or Amazon`,
@@ -53,9 +51,6 @@ export function createProductReviewsTool(ctx: ToolContext) {
         );
 
         if (searchResults?.web?.length) {
-          console.log(
-            `[searchProductReviews] firecrawlSearch success, ${searchResults.web.length} results`
-          );
 
           const reviews = searchResults.web.map((item) => ({
             source: "title" in item ? (item.title as string | undefined) : undefined,
@@ -90,7 +85,6 @@ export function createProductReviewsTool(ctx: ToolContext) {
           };
         }
 
-        console.log(`[searchProductReviews] firecrawlSearch returned no results, falling back`);
       }
 
       // ── Fallback: scrape Home Depot search results ─────────────────────────
@@ -100,9 +94,6 @@ export function createProductReviewsTool(ctx: ToolContext) {
         const result = await scrapeWithTimeout(ctx.firecrawl, hdUrl, 20000);
 
         if (result?.markdown) {
-          console.log(
-            `[searchProductReviews] Fallback success, got ${result.markdown.length} chars`
-          );
           return {
             product: productName,
             reviewSources: [{ source: "Home Depot", url: hdUrl }],
@@ -111,7 +102,6 @@ export function createProductReviewsTool(ctx: ToolContext) {
           };
         }
 
-        console.log(`[searchProductReviews] Fallback failed or timed out`);
         Sentry.captureMessage("Tool returned error", {
           level: "warning",
           extra: { tool: "searchProductReviews", error: "Timed out or failed", productName },

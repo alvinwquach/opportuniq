@@ -53,7 +53,6 @@ export async function createActivityLogEncrypted(
 
     return { success: true, logId: log.id };
   } catch (error) {
-    console.error("[Create Activity Log] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to create activity log",
@@ -96,7 +95,6 @@ export async function createActivityLogPlaintext(
 
     return { success: true, logId: log.id };
   } catch (error) {
-    console.error("[Create Activity Log] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to create activity log",

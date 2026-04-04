@@ -81,7 +81,7 @@ export function CalendarHeader({
         <div className="relative" ref={monthPickerRef}>
           <button
             onClick={() => setShowMonthPicker(!showMonthPicker)}
-            className="flex items-center gap-2 text-lg font-semibold text-white hover:text-emerald-400 transition-colors"
+            className="flex items-center gap-2 text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors"
           >
             {viewMode === 'month' ? (
               <span>{monthNames[currentMonth]} {currentYear}</span>
@@ -92,18 +92,18 @@ export function CalendarHeader({
           </button>
 
           {showMonthPicker && (
-            <div className="absolute top-full left-0 mt-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl shadow-xl z-50 p-4 w-[280px]">
-              <div className="flex items-center justify-between mb-3 pb-3 border-b border-[#2a2a2a]">
+            <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-md z-50 p-4 w-[280px]">
+              <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-200">
                 <button
                   onClick={() => setCurrentYear(currentYear - 1)}
-                  className="p-1 text-[#666] hover:text-white hover:bg-[#333] rounded transition-colors"
+                  className="p-1 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
                 >
                   <IoChevronBackOutline className="w-4 h-4" />
                 </button>
-                <span className="text-sm font-semibold text-white">{currentYear}</span>
+                <span className="text-sm font-semibold text-gray-900">{currentYear}</span>
                 <button
                   onClick={() => setCurrentYear(currentYear + 1)}
-                  className="p-1 text-[#666] hover:text-white hover:bg-[#333] rounded transition-colors"
+                  className="p-1 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
                 >
                   <IoChevronForwardOutline className="w-4 h-4" />
                 </button>
@@ -119,10 +119,10 @@ export function CalendarHeader({
                       onClick={() => handleGoToMonth(index)}
                       className={`px-3 py-2 text-xs font-medium rounded-lg transition-colors ${
                         isSelected
-                          ? 'bg-emerald-500 text-white'
+                          ? 'bg-blue-500 text-white'
                           : isCurrent
-                          ? 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'
-                          : 'text-[#888] hover:bg-[#333] hover:text-white'
+                          ? 'bg-blue-100 text-blue-600 hover:bg-blue-100'
+                          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
                       }`}
                     >
                       {month}
@@ -131,13 +131,13 @@ export function CalendarHeader({
                 })}
               </div>
 
-              <div className="mt-3 pt-3 border-t border-[#2a2a2a] flex justify-center">
+              <div className="mt-3 pt-3 border-t border-gray-200 flex justify-center">
                 <button
                   onClick={() => {
                     onGoToToday();
                     setShowMonthPicker(false);
                   }}
-                  className="px-4 py-1.5 text-xs font-medium text-emerald-400 hover:bg-emerald-500/20 rounded-lg transition-colors"
+                  className="px-4 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
                 >
                   Jump to Today
                 </button>
@@ -150,13 +150,13 @@ export function CalendarHeader({
         <div className="flex items-center gap-1">
           <button
             onClick={viewMode === 'month' ? onPrevMonth : onPrevWeek}
-            className="p-1.5 text-[#666] hover:text-white hover:bg-[#333] rounded transition-colors"
+            className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
           >
             <IoChevronBackOutline className="w-4 h-4" />
           </button>
           <button
             onClick={viewMode === 'month' ? onNextMonth : onNextWeek}
-            className="p-1.5 text-[#666] hover:text-white hover:bg-[#333] rounded transition-colors"
+            className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
           >
             <IoChevronForwardOutline className="w-4 h-4" />
           </button>
@@ -166,21 +166,21 @@ export function CalendarHeader({
         {!isCurrentMonth && (
           <button
             onClick={onGoToToday}
-            className="px-2.5 py-1 bg-[#1a1a1a] border border-[#2a2a2a] hover:bg-[#333] text-[#888] hover:text-white text-xs font-medium rounded-full transition-colors"
+            className="px-2.5 py-1 bg-white border border-gray-200 hover:bg-gray-100 text-gray-500 hover:text-gray-900 text-xs font-medium rounded-full transition-colors"
           >
             Today
           </button>
         )}
         {isCurrentMonth && viewMode === 'month' && (
-          <span className="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-medium rounded-full">Today</span>
+          <span className="px-2.5 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded-full">Today</span>
         )}
 
         {/* View Mode Toggle */}
-        <div className="flex items-center bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-0.5">
+        <div className="flex items-center bg-white border border-gray-200 rounded-lg p-0.5">
           <button
             onClick={() => onViewModeChange('month')}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-              viewMode === 'month' ? 'bg-[#333] text-white' : 'text-[#666] hover:text-white'
+              viewMode === 'month' ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             <IoGridOutline className="w-3.5 h-3.5" />
@@ -189,7 +189,7 @@ export function CalendarHeader({
           <button
             onClick={() => onViewModeChange('week')}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-              viewMode === 'week' ? 'bg-[#333] text-white' : 'text-[#666] hover:text-white'
+              viewMode === 'week' ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             <IoListOutline className="w-3.5 h-3.5" />
@@ -203,31 +203,31 @@ export function CalendarHeader({
         <div className="relative" ref={syncStatusRef}>
           <button
             onClick={() => setShowSyncStatus(!showSyncStatus)}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm text-[#888] border border-[#2a2a2a] hover:bg-[#1a1a1a] rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-500 border border-gray-200 hover:bg-white rounded-lg transition-colors"
           >
-            <IoSyncOutline className="w-4 h-4 text-emerald-400" />
+            <IoSyncOutline className="w-4 h-4 text-blue-600" />
             <span className="hidden sm:inline">Synced</span>
           </button>
 
           {showSyncStatus && (
-            <div className="absolute top-full right-0 mt-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl shadow-xl z-50 p-4 w-[260px]">
-              <h4 className="text-sm font-semibold text-white mb-3">Calendar Sync</h4>
+            <div className="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-md z-50 p-4 w-[260px]">
+              <h4 className="text-sm font-semibold text-gray-900 mb-3">Calendar Sync</h4>
               <div className="space-y-3">
                 {calendarSyncStatus.map((sync, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      {sync.status === 'synced' && <IoCheckmarkCircleOutline className="w-4 h-4 text-emerald-400" />}
-                      {sync.status === 'syncing' && <IoSyncOutline className="w-4 h-4 text-amber-400 animate-spin" />}
-                      {sync.status === 'error' && <IoWarningOutline className="w-4 h-4 text-red-400" />}
-                      {sync.status === 'disconnected' && <IoClose className="w-4 h-4 text-[#666]" />}
-                      <span className="text-xs text-white">{sync.provider}</span>
+                      {sync.status === 'synced' && <IoCheckmarkCircleOutline className="w-4 h-4 text-blue-600" />}
+                      {sync.status === 'syncing' && <IoSyncOutline className="w-4 h-4 text-amber-600 animate-spin" />}
+                      {sync.status === 'error' && <IoWarningOutline className="w-4 h-4 text-red-600" />}
+                      {sync.status === 'disconnected' && <IoClose className="w-4 h-4 text-gray-500" />}
+                      <span className="text-xs text-gray-900">{sync.provider}</span>
                     </div>
-                    <span className="text-[10px] text-[#666]">{sync.lastSync}</span>
+                    <span className="text-[10px] text-gray-500">{sync.lastSync}</span>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 pt-3 border-t border-[#2a2a2a]">
-                <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-emerald-400 hover:bg-emerald-500/20 rounded-lg transition-colors">
+              <div className="mt-4 pt-3 border-t border-gray-200">
+                <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-blue-600 hover:bg-blue-100 rounded-lg transition-colors">
                   <IoAddOutline className="w-4 h-4" />
                   Connect Calendar
                 </button>
@@ -238,14 +238,14 @@ export function CalendarHeader({
 
         <button
           onClick={() => {}}
-          className="flex items-center gap-1.5 px-3 py-2 text-sm text-[#888] border border-[#2a2a2a] hover:bg-[#1a1a1a] rounded-lg transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-500 border border-gray-200 hover:bg-white rounded-lg transition-colors"
         >
           <IoDownloadOutline className="w-4 h-4" />
           <span className="hidden sm:inline">Export</span>
         </button>
         <button
           onClick={onAddEvent}
-          className="flex items-center gap-1.5 px-3 py-2 text-sm text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-900 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
         >
           <IoAddOutline className="w-4 h-4" />
           <span className="hidden sm:inline">Add Event</span>

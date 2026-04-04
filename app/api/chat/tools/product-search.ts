@@ -4,8 +4,6 @@
  * Quick search for tools, materials, or PPE products at Home Depot.
  * Includes image URLs (for thumbnails) and popup dismissal actions.
  * Supports enhancedMode (behind firecrawl-enhanced-mode flag) for anti-bot sites.
- *
- * For price comparison across stores, use compareProductPrices instead.
  */
 
 import * as Sentry from "@sentry/nextjs";
@@ -28,7 +26,7 @@ const POPUP_DISMISS_ACTIONS = [
 export function createProductSearchTool(ctx: ToolContext) {
   return tool({
     description:
-      "Quick search for tools, materials, or PPE products at Home Depot. For price comparison across stores, use compareProductPrices instead.",
+      "Search Home Depot for tools, materials, or PPE products. Returns product names, prices, ratings, and availability.",
     inputSchema: z.object({
       query: z.string().describe("Search query for the product"),
       category: z
@@ -36,11 +34,9 @@ export function createProductSearchTool(ctx: ToolContext) {
         .describe("Category of product"),
     }),
     execute: async ({ query, category }) => {
-      console.log(`[searchProducts] Starting search for: ${query}`);
       const searchUrl = `https://www.homedepot.com/s/${encodeURIComponent(query)}`;
 
       if (!ctx.firecrawl) {
-        console.log(`[searchProducts] Firecrawl not available`);
         Sentry.captureMessage("Tool returned error", {
           level: "warning",
           extra: {
@@ -75,9 +71,6 @@ export function createProductSearchTool(ctx: ToolContext) {
         ]);
 
         if (result?.markdown) {
-          console.log(
-            `[searchProducts] Success, got ${result.markdown.length} chars`
-          );
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const images = (result as any).images as string[] | undefined;
           return {
@@ -90,7 +83,6 @@ export function createProductSearchTool(ctx: ToolContext) {
           };
         }
 
-        console.log(`[searchProducts] Failed or timed out`);
         Sentry.captureMessage("Tool returned error", {
           level: "warning",
           extra: {

@@ -246,7 +246,6 @@ async function transcribeWithGoogle(
     },
   };
 
-  console.log(`[Transcribe API] Using Google Cloud Speech: ${languageCode}, model: ${model}`);
 
   const [response] = await speechClient.recognize(request);
 
@@ -318,9 +317,6 @@ export async function POST(request: NextRequest) {
     // If not provided, Whisper auto-detects the language
     const languageHint = formData.get("languageHint") as string | null;
 
-    console.log(
-      `[Transcribe API] Processing: ${audioFile.name}, ${audioFile.size} bytes, hint: ${languageHint || "auto"}`
-    );
 
     let transcribedText: string;
     let detectedLanguage: string;
@@ -348,10 +344,6 @@ export async function POST(request: NextRequest) {
 
       const latencyMs = Date.now() - startTime;
       const model = googleLangConfig?.useDefaultModel ? "default" : "latest_long";
-      console.log(
-        `[Transcribe API] Google STT (${googleLangConfig?.name || googleLangCode}): "${transcribedText.substring(0, 50)}..." ` +
-          `${duration.toFixed(1)}s, ${latencyMs}ms, $${estimatedCost.toFixed(4)}`
-      );
 
       // Log usage (non-blocking)
       db.insert(voiceApiUsage).values({
@@ -364,13 +356,11 @@ export async function POST(request: NextRequest) {
         costUsd: estimatedCost.toFixed(6),
         model,
         success: 1,
-      }).catch((err) => console.error("[Transcribe API] Failed to log usage:", err));
+      }).catch(() => {});
     } else {
       // Use OpenAI Whisper for auto-detection
       if (languageHint && !googleLangCode) {
-        console.log(`[Transcribe API] Unknown hint "${languageHint}", using Whisper auto-detect`);
       } else if (!process.env.GOOGLE_APPLICATION_CREDENTIALS && googleLangCode) {
-        console.log("[Transcribe API] Google credentials not set, using Whisper");
       }
 
       const transcription = await openaiClient.audio.transcriptions.create({
@@ -387,11 +377,6 @@ export async function POST(request: NextRequest) {
       estimatedCost = durationMinutes * WHISPER_PRICE_PER_MINUTE;
 
       const latencyMs = Date.now() - startTime;
-      console.log(
-        `[Transcribe API] Whisper Success: ${transcribedText.substring(0, 50)}... ` +
-          `Language: ${detectedLanguage}, Duration: ${duration}s, ` +
-          `Latency: ${latencyMs}ms, Est. cost: $${estimatedCost.toFixed(4)}`
-      );
 
       // Log usage to database (non-blocking)
       db.insert(voiceApiUsage).values({
@@ -404,7 +389,7 @@ export async function POST(request: NextRequest) {
         costUsd: estimatedCost.toFixed(6),
         model: "whisper-1",
         success: 1,
-      }).catch((err) => console.error("[Transcribe API] Failed to log usage:", err));
+      }).catch(() => {});
     }
 
     return NextResponse.json({
@@ -413,7 +398,6 @@ export async function POST(request: NextRequest) {
       duration,
     });
   } catch (error) {
-    console.error("[Transcribe API] Error:", error);
 
     if (error instanceof OpenAI.APIError) {
       return NextResponse.json(

@@ -49,16 +49,16 @@ function DashboardSkeleton() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-4">
         <div>
           {/* Placeholder for the heading text */}
-          <div className="h-5 w-48 bg-[#1a1a1a] rounded mb-2" />
+          <div className="h-5 w-48 bg-gray-100 rounded mb-2" />
           {/* Placeholder for the subheading text */}
-          <div className="h-4 w-32 bg-[#1a1a1a] rounded" />
+          <div className="h-4 w-32 bg-gray-100 rounded" />
         </div>
         {/* Placeholder for the header action button */}
-        <div className="h-8 w-36 bg-[#1a1a1a] rounded-full" />
+        <div className="h-8 w-36 bg-gray-100 rounded-full" />
       </div>
 
       {/* Placeholder for the tab bar */}
-      <div className="h-10 w-96 bg-[#1a1a1a] rounded-lg mb-4" />
+      <div className="h-10 w-96 bg-gray-100 rounded-lg mb-4" />
 
       {/* Two-column content area: main content left, sidebar right */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] xl:grid-cols-[1fr_320px] gap-4 lg:gap-6">
@@ -68,20 +68,20 @@ function DashboardSkeleton() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
             {/* Create an array of 4 items to map over; each produces one grey placeholder card. */}
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-20 bg-[#1a1a1a] rounded-lg" />
+              <div key={i} className="h-20 bg-gray-100 rounded-lg" />
             ))}
           </div>
           {/* Placeholder for a medium content block */}
-          <div className="h-40 bg-[#1a1a1a] rounded-lg" />
+          <div className="h-40 bg-gray-100 rounded-lg" />
           {/* Placeholder for a smaller content block */}
-          <div className="h-32 bg-[#1a1a1a] rounded-lg" />
+          <div className="h-32 bg-gray-100 rounded-lg" />
         </div>
         {/* Right column: sidebar placeholders */}
         <div className="space-y-3 order-1 lg:order-2">
           {/* Three sidebar card placeholders of decreasing height */}
-          <div className="h-36 bg-[#1a1a1a] rounded-lg" />
-          <div className="h-28 bg-[#1a1a1a] rounded-lg" />
-          <div className="h-24 bg-[#1a1a1a] rounded-lg" />
+          <div className="h-36 bg-gray-100 rounded-lg" />
+          <div className="h-28 bg-gray-100 rounded-lg" />
+          <div className="h-24 bg-gray-100 rounded-lg" />
         </div>
       </div>
     </div>
@@ -99,7 +99,7 @@ function DashboardError({ error }: { error: Error }) {
           Error Loading Dashboard
         </h3>
         {/* Show the specific error message, or a generic fallback if none is provided. */}
-        <p className="text-sm text-[#888] mb-4">
+        <p className="text-sm text-gray-500 mb-4">
           {error.message || "An unexpected error occurred."}
         </p>
         {/* Clicking "Retry" reloads the entire browser page to re-trigger the data fetch. */}

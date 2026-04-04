@@ -27,7 +27,7 @@ const tabs: { id: FinancesTab; label: string; icon: typeof IoGridOutline }[] = [
 export function FinancesTabs({ activeTab, onTabChange }: FinancesTabsProps) {
   return (
     <div className="mb-6">
-      <div className="flex items-center gap-0.5 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-1">
+      <div className="flex items-center gap-0.5 bg-white rounded-lg border border-gray-200 p-1">
         {tabs.map(({ id, label, icon: Icon }) => (
           <Tooltip key={id}>
             <TooltipTrigger asChild>
@@ -35,8 +35,8 @@ export function FinancesTabs({ activeTab, onTabChange }: FinancesTabsProps) {
                 onClick={() => onTabChange(id)}
                 className={`flex-1 flex items-center justify-center gap-1 px-1.5 py-2 text-[11px] font-medium rounded-md transition-colors ${
                   activeTab === id
-                    ? "bg-emerald-500/20 text-emerald-400"
-                    : "text-[#888] hover:text-white"
+                    ? "bg-blue-100 text-blue-600"
+                    : "text-gray-500 hover:text-gray-900"
                 }`}
               >
                 <Icon className="w-4 h-4 shrink-0" />

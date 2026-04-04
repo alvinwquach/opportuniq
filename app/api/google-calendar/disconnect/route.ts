@@ -27,14 +27,9 @@ export async function POST() {
       .delete(googleCalendarTokens)
       .where(eq(googleCalendarTokens.userId, user.id));
 
-    console.log(
-      "[Google Calendar Disconnect] Google Calendar disconnected for user:",
-      user.id
-    );
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("[Google Calendar Disconnect] Error:", error);
     return NextResponse.json(
       { error: "Failed to disconnect Google Calendar" },
       { status: 500 }

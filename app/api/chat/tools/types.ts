@@ -26,14 +26,12 @@ export async function scrapeWithTimeout(
       firecrawl.scrape(url, { formats: ["markdown"] }),
       new Promise<null>((resolve) => {
         setTimeout(() => {
-          console.log(`[Firecrawl] Timeout after ${timeoutMs}ms for ${url}`);
           resolve(null);
         }, timeoutMs);
       }),
     ]);
     return result;
   } catch (error) {
-    console.log(`[Firecrawl] Scrape error for ${url}:`, error);
     return null;
   }
 }

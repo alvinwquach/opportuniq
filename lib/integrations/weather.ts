@@ -233,7 +233,6 @@ export async function getWeatherByZipCode(
   const location = await geocodePostalCode(zipCode);
 
   if (!location) {
-    console.error(`Could not geocode ZIP code: ${zipCode}`);
     return null;
   }
 

@@ -18,7 +18,7 @@ export function GroupActivitySection({ activities }: GroupActivitySectionProps) 
   if (activities.length === 0) return null;
 
   return (
-    <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+    <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
       <div className="flex items-center gap-2 mb-3">
         <IoChatbubble className="w-4 h-4 text-green-400" />
         <h3 className="text-sm font-medium text-white">Group Activity</h3>
@@ -34,7 +34,7 @@ export function GroupActivitySection({ activities }: GroupActivitySectionProps) 
                   ? "bg-purple-500/10"
                   : activity.type === "member_joined"
                   ? "bg-green-500/10"
-                  : "bg-[#1f1f1f]"
+                  : "bg-gray-100"
               }`}
             >
               {activity.type === "issue_created" && (
@@ -47,7 +47,7 @@ export function GroupActivitySection({ activities }: GroupActivitySectionProps) 
                 <IoPersonAdd className="w-3 h-3 text-green-400" />
               )}
               {activity.type === "decision_made" && (
-                <IoCheckmarkCircle className="w-3 h-3 text-[#00D4FF]" />
+                <IoCheckmarkCircle className="w-3 h-3 text-blue-600" />
               )}
             </div>
             <div className="flex-1 min-w-0">
@@ -56,9 +56,9 @@ export function GroupActivitySection({ activities }: GroupActivitySectionProps) 
                 {activity.description}
               </p>
               <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="text-[10px] text-[#9a9a9a]">{activity.groupName}</span>
+                <span className="text-[10px] text-gray-400">{activity.groupName}</span>
                 <span className="text-[10px] text-[#333]">·</span>
-                <span className="text-[10px] text-[#9a9a9a]">
+                <span className="text-[10px] text-gray-400">
                   {new Date(activity.timestamp).toLocaleDateString(undefined, {
                     month: "short",
                     day: "numeric",

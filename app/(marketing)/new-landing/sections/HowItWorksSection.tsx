@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger, typewriter } from "@/lib/gsap";
+import { gsap, ScrollTrigger, TextPlugin } from "@/lib/gsap";
 import { IoCamera, IoChatbubbles, IoCheckmarkDone } from "react-icons/io5";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -73,10 +73,11 @@ export function HowItWorksSection() {
           onEnter: () => {
             const ref = typewriterRefs.current[i];
             if (ref) {
-              typewriter(ref, steps[i].typewriterText, {
+              gsap.to(ref, {
+                text: { value: steps[i].typewriterText },
                 duration: 1.5,
                 delay: 0.3,
-                cursor: true,
+                ease: "none",
               });
             }
           },
@@ -107,7 +108,7 @@ export function HowItWorksSection() {
     >
       {/* Background elements */}
       <div className="absolute top-1/2 left-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-[100px] -translate-y-1/2" />
-      <div className="absolute top-1/2 right-0 w-96 h-96 bg-teal-500/5 rounded-full blur-[100px] -translate-y-1/2" />
+      <div className="absolute top-1/2 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-[100px] -translate-y-1/2" />
 
       <div className="relative z-10 max-w-5xl mx-auto">
         {/* Section heading */}

@@ -257,7 +257,6 @@ export function OnboardingMap({
           setLocationInfo(null);
         }
       } catch (err) {
-        console.error("Geocoding error:", err);
         setCoords(null);
       } finally {
         setIsLoading(false);

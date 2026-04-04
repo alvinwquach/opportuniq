@@ -1,7 +1,7 @@
 import type { ContributionHistoryItem, PendingInvitation, GroupRole } from "./types";
 
 export const contributionData = [
-  { name: "Alex", value: 45, color: "#3ECF8E" },
+  { name: "Alex", value: 45, color: "#2563EB" },
   { name: "Jamie", value: 35, color: "#249361" },
   { name: "Mom", value: 20, color: "#f59e0b" },
 ];

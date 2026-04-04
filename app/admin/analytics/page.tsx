@@ -30,7 +30,6 @@ export default async function AnalyticsPage() {
     data = await getAnalyticsData();
   } catch (err: unknown) {
     error = err instanceof Error ? err.message : "Failed to load analytics";
-    console.error("[Admin Analytics] Error loading analytics:", err);
   }
 
   if (error || !data) {

@@ -41,7 +41,7 @@ import type {
 // This is defined once here so the color stays consistent across every place
 // the pipeline chart is rendered.
 const PIPELINE_COLORS = {
-  Open: "#3ECF8E",
+  Open: "#2563EB",
   Investigating: "#f59e0b",
   "Options Ready": "#8b5cf6",
   "In Progress": "#3b82f6",
@@ -282,8 +282,8 @@ export function adaptGroupsToDemo(
 // Map each spending category name to a consistent display color.
 // Categories not in this list fall back to the "Other" grey color.
 const CATEGORY_COLORS: Record<string, string> = {
-  Plumbing: "#3ECF8E",
-  HVAC: "#3ECF8E",
+  Plumbing: "#2563EB",
+  HVAC: "#2563EB",
   Electrical: "#f59e0b",
   Outdoor: "#8b5cf6",
   Appliances: "#3b82f6",

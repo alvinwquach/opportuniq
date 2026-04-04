@@ -48,51 +48,51 @@ export function FeaturedSidebar({ featuredGuides }: FeaturedSidebarProps) {
   return (
     <div className="space-y-4">
       {/* Featured Summary */}
-      <div className="bg-gradient-to-br from-amber-500/10 to-[#1a1a1a] rounded-xl border border-amber-500/20 p-4">
+      <div className="bg-gradient-to-br from-amber-50 to-white rounded-xl border border-amber-200 p-4">
         <div className="flex items-center gap-2 mb-3">
-          <IoStarOutline className="w-4 h-4 text-amber-400" />
-          <h3 className="text-sm font-medium text-white">Featured For You</h3>
+          <IoStarOutline className="w-4 h-4 text-amber-600" />
+          <h3 className="text-sm font-medium text-gray-900">Featured For You</h3>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-[#0f0f0f] rounded-lg p-3 border border-amber-500/20 text-center">
-            <p className="text-xl font-bold text-amber-400">{featuredGuides.length}</p>
-            <p className="text-[9px] text-[#666]">Recommended</p>
+          <div className="bg-white rounded-lg p-3 border border-amber-200 text-center">
+            <p className="text-xl font-bold text-amber-600">{featuredGuides.length}</p>
+            <p className="text-[9px] text-gray-500">Recommended</p>
           </div>
-          <div className="bg-[#0f0f0f] rounded-lg p-3 border border-amber-500/20 text-center">
-            <p className="text-xl font-bold text-amber-400">
+          <div className="bg-white rounded-lg p-3 border border-amber-200 text-center">
+            <p className="text-xl font-bold text-amber-600">
               {totalMinutes > 60 ? `${Math.floor(totalMinutes / 60)}h` : `${totalMinutes}m`}
             </p>
-            <p className="text-[9px] text-[#666]">Total Time</p>
+            <p className="text-[9px] text-gray-500">Total Time</p>
           </div>
         </div>
-        <p className="text-[10px] text-[#888] mt-3 text-center">
+        <p className="text-[10px] text-gray-500 mt-3 text-center">
           Curated based on your home profile and past repairs
         </p>
       </div>
 
       {/* Top Rated */}
       {topRated.length > 0 && (
-        <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
           <div className="flex items-center gap-2 mb-3">
             <IoFlameOutline className="w-4 h-4 text-orange-400" />
-            <h3 className="text-sm font-medium text-white">Highest Rated</h3>
+            <h3 className="text-sm font-medium text-gray-900">Highest Rated</h3>
           </div>
           <div className="space-y-2">
             {topRated.map((guide, index) => (
               <div
                 key={guide.id}
-                className="p-2.5 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a] hover:border-amber-500/30 cursor-pointer transition-colors"
+                className="p-2.5 bg-gray-50 rounded-lg border border-gray-200 hover:border-amber-200 cursor-pointer transition-colors"
               >
                 <div className="flex items-start gap-2">
-                  <span className="text-amber-400 font-bold text-xs">#{index + 1}</span>
+                  <span className="text-amber-600 font-bold text-xs">#{index + 1}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-white truncate">{guide.title}</p>
+                    <p className="text-xs font-medium text-gray-900 truncate">{guide.title}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <div className="flex items-center gap-0.5">
-                        <IoStarOutline className="w-3 h-3 text-amber-400" />
-                        <span className="text-[10px] text-amber-400 font-medium">{guide.rating}</span>
+                        <IoStarOutline className="w-3 h-3 text-amber-600" />
+                        <span className="text-[10px] text-amber-600 font-medium">{guide.rating}</span>
                       </div>
-                      <span className="text-[10px] text-[#666]">• {guide.category}</span>
+                      <span className="text-[10px] text-gray-500">• {guide.category}</span>
                     </div>
                   </div>
                 </div>
@@ -103,27 +103,27 @@ export function FeaturedSidebar({ featuredGuides }: FeaturedSidebarProps) {
       )}
 
       {/* Content Mix */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
-        <h3 className="text-sm font-medium text-white mb-3">Content Mix</h3>
+      <div className="bg-white rounded-xl border border-gray-200 p-4">
+        <h3 className="text-sm font-medium text-gray-900 mb-3">Content Mix</h3>
         <div className="grid grid-cols-2 gap-2">
-          <div className="p-2.5 bg-blue-500/10 rounded-lg border border-blue-500/20 text-center">
-            <IoPlayCircleOutline className="w-5 h-5 text-blue-400 mx-auto mb-1" />
-            <p className="text-sm font-bold text-blue-400">{videoCount}</p>
-            <p className="text-[9px] text-[#666]">Videos</p>
+          <div className="p-2.5 bg-blue-50 rounded-lg border border-blue-200 text-center">
+            <IoPlayCircleOutline className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+            <p className="text-sm font-bold text-blue-600">{videoCount}</p>
+            <p className="text-[9px] text-gray-500">Videos</p>
           </div>
-          <div className="p-2.5 bg-purple-500/10 rounded-lg border border-purple-500/20 text-center">
-            <IoSchoolOutline className="w-5 h-5 text-purple-400 mx-auto mb-1" />
-            <p className="text-sm font-bold text-purple-400">{articleCount}</p>
-            <p className="text-[9px] text-[#666]">Articles</p>
+          <div className="p-2.5 bg-purple-50 rounded-lg border border-purple-200 text-center">
+            <IoSchoolOutline className="w-5 h-5 text-purple-600 mx-auto mb-1" />
+            <p className="text-sm font-bold text-purple-600">{articleCount}</p>
+            <p className="text-[9px] text-gray-500">Articles</p>
           </div>
         </div>
       </div>
 
       {/* By Difficulty */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
+      <div className="bg-white rounded-xl border border-gray-200 p-4">
         <div className="flex items-center gap-2 mb-3">
-          <IoTrendingUpOutline className="w-4 h-4 text-[#888]" />
-          <h3 className="text-sm font-medium text-white">By Difficulty</h3>
+          <IoTrendingUpOutline className="w-4 h-4 text-gray-500" />
+          <h3 className="text-sm font-medium text-gray-900">By Difficulty</h3>
         </div>
         <div className="h-16">
           <ResponsiveContainer width="100%" height="100%">
@@ -144,7 +144,7 @@ export function FeaturedSidebar({ featuredGuides }: FeaturedSidebarProps) {
                 className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: d.color }}
               />
-              <span className="text-[9px] text-[#888]">{d.level}</span>
+              <span className="text-[9px] text-gray-500">{d.level}</span>
             </div>
           ))}
         </div>
@@ -152,16 +152,16 @@ export function FeaturedSidebar({ featuredGuides }: FeaturedSidebarProps) {
 
       {/* Categories */}
       {topCategories.length > 0 && (
-        <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
-          <h3 className="text-sm font-medium text-white mb-3">By Category</h3>
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <h3 className="text-sm font-medium text-gray-900 mb-3">By Category</h3>
           <div className="space-y-2">
             {topCategories.map(([category, count]) => (
               <div
                 key={category}
-                className="flex items-center justify-between p-2 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a]"
+                className="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-200"
               >
-                <span className="text-xs text-[#888]">{category}</span>
-                <span className="text-xs font-medium text-amber-400">{count}</span>
+                <span className="text-xs text-gray-500">{category}</span>
+                <span className="text-xs font-medium text-amber-600">{count}</span>
               </div>
             ))}
           </div>
@@ -169,15 +169,15 @@ export function FeaturedSidebar({ featuredGuides }: FeaturedSidebarProps) {
       )}
 
       {/* Recommendation */}
-      <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4">
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
         <div className="flex items-start gap-2">
-          <IoSparkles className="w-4 h-4 text-emerald-400 mt-0.5" />
+          <IoSparkles className="w-4 h-4 text-blue-600 mt-0.5" />
           <div>
-            <p className="text-xs font-medium text-emerald-400">Our Pick</p>
-            <p className="text-[10px] text-[#888] mt-1 leading-relaxed">
+            <p className="text-xs font-medium text-blue-600">Our Pick</p>
+            <p className="text-[10px] text-gray-500 mt-1 leading-relaxed">
               Based on your home profile, we recommend starting with plumbing basics - they&apos;re the most common DIY wins.
             </p>
-            <button className="mt-2 w-full px-3 py-2 text-xs text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-lg transition-colors">
+            <button className="mt-2 w-full px-3 py-2 text-xs text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-colors">
               Start Top Pick
             </button>
           </div>

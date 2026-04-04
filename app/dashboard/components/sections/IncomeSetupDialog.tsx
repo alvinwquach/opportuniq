@@ -96,14 +96,14 @@ export function IncomeSetupDialog({ userId, variant = "prompt" }: IncomeSetupDia
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <button className="w-full text-left p-4 rounded-xl bg-[#161616] border border-[#1f1f1f] hover:border-[#333] transition-colors group">
+          <button className="w-full text-left p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-[#333] transition-colors group">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-[#1f1f1f] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
                 <IoWallet className="w-5 h-5 text-[#a3a3a3]" />
               </div>
               <div className="flex-1">
-                <p className="text-[10px] uppercase tracking-wider text-[#9a9a9a]">This Month</p>
-                <p className="text-sm font-medium text-[#ccc] group-hover:text-white transition-colors">
+                <p className="text-[10px] uppercase tracking-wider text-gray-400">This Month</p>
+                <p className="text-sm font-medium text-[#ccc] group-hover:text-gray-900 transition-colors">
                   Set up income
                 </p>
               </div>
@@ -111,19 +111,19 @@ export function IncomeSetupDialog({ userId, variant = "prompt" }: IncomeSetupDia
             <p className="text-xs text-[#a3a3a3] mb-3">
               Track your budget and see how much you have available for repairs.
             </p>
-            <div className="flex items-center justify-center gap-2 py-2 rounded-lg bg-[#00D4FF]/10 text-[#00D4FF] group-hover:bg-[#00D4FF]/20 transition-colors text-xs font-medium">
+            <div className="flex items-center justify-center gap-2 py-2 rounded-lg bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition-colors text-xs font-medium">
               <IoAdd className="w-3.5 h-3.5" />
               Get Started
             </div>
           </button>
         </DialogTrigger>
-        <DialogContent className="bg-[#111] border-[#1f1f1f] sm:max-w-md">
+        <DialogContent className="bg-white border-gray-200 sm:max-w-md">
           <DialogHeader>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-[#5eead4]/10 flex items-center justify-center">
                 <IoAdd className="w-4 h-4 text-[#5eead4]" />
               </div>
-              <DialogTitle className="text-white">Add Income</DialogTitle>
+              <DialogTitle className="text-gray-900">Add Income</DialogTitle>
             </div>
           </DialogHeader>
           <IncomeForm
@@ -141,15 +141,15 @@ export function IncomeSetupDialog({ userId, variant = "prompt" }: IncomeSetupDia
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="w-full text-left p-4 rounded-xl bg-[#161616] border border-[#1f1f1f] hover:border-[#333] transition-colors group">
+        <button className="w-full text-left p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-[#333] transition-colors group">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-[#1f1f1f] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
               <IoCash className="w-4 h-4 text-[#a3a3a3]" />
             </div>
-            <h3 className="text-sm font-medium text-[#ccc] group-hover:text-white transition-colors">
+            <h3 className="text-sm font-medium text-[#ccc] group-hover:text-gray-900 transition-colors">
               Set up your income
             </h3>
-            <div className="ml-auto w-6 h-6 rounded-full bg-[#1f1f1f] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="ml-auto w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
               <IoAdd className="w-3.5 h-3.5 text-[#a3a3a3]" />
             </div>
           </div>
@@ -158,13 +158,13 @@ export function IncomeSetupDialog({ userId, variant = "prompt" }: IncomeSetupDia
           </p>
         </button>
       </DialogTrigger>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] sm:max-w-md">
+      <DialogContent className="bg-white border-gray-200 sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-[#5eead4]/10 flex items-center justify-center">
               <IoAdd className="w-4 h-4 text-[#5eead4]" />
             </div>
-            <DialogTitle className="text-white">Add Income</DialogTitle>
+            <DialogTitle className="text-gray-900">Add Income</DialogTitle>
           </div>
         </DialogHeader>
         <IncomeForm
@@ -214,18 +214,18 @@ function IncomeForm({
           >
             {(field: any) => (
               <div>
-                <label className="text-[10px] uppercase tracking-wider text-[#9a9a9a] mb-1.5 block">
+                <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                   Source
                 </label>
                 <div className="relative">
-                  <IoBriefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9a9a9a]" />
+                  <IoBriefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
                     placeholder="e.g., Salary, Freelance"
                     value={field.state.value}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                     onBlur={field.handleBlur}
-                    className="w-full h-10 pl-10 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#9a9a9a] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                    className="w-full h-10 pl-10 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                   />
                 </div>
                 {field.state.meta.errors.length > 0 && (
@@ -249,11 +249,11 @@ function IncomeForm({
           >
             {(field: any) => (
               <div>
-                <label className="text-[10px] uppercase tracking-wider text-[#9a9a9a] mb-1.5 block">
+                <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                   Amount
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9a9a9a] text-sm">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
                     $
                   </span>
                   <input
@@ -262,7 +262,7 @@ function IncomeForm({
                     value={field.state.value || ""}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.handleChange(Number(e.target.value))}
                     onBlur={field.handleBlur}
-                    className="w-full h-10 pl-7 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#9a9a9a] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                    className="w-full h-10 pl-7 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                   />
                 </div>
                 {field.state.meta.errors.length > 0 && (
@@ -280,13 +280,13 @@ function IncomeForm({
           <form.Field name="frequency">
             {(field: any) => (
               <div>
-                <label className="text-[10px] uppercase tracking-wider text-[#9a9a9a] mb-1.5 block">
+                <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                   Frequency
                 </label>
                 <select
                   value={field.state.value}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => field.handleChange(e.target.value as IncomeFrequency)}
-                  className="w-full h-10 px-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
+                  className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
                 >
                   {FREQUENCY_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -304,18 +304,18 @@ function IncomeForm({
               const isOneTime = form.state.values.frequency === "one_time";
               return (
                 <div>
-                  <label className="text-[10px] uppercase tracking-wider text-[#9a9a9a] mb-1.5 block">
+                  <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                     {isOneTime ? "Date" : "Start Date"}{" "}
-                    <span className="text-[#9a9a9a]">(optional)</span>
+                    <span className="text-gray-400">(optional)</span>
                   </label>
                   <div className="relative">
-                    <IoCalendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9a9a9a]" />
+                    <IoCalendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="date"
                       value={field.state.value ?? ""}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value || undefined)}
                       onBlur={field.handleBlur}
-                      className="w-full h-10 pl-10 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                      className="w-full h-10 pl-10 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                     />
                   </div>
                 </div>
@@ -328,8 +328,8 @@ function IncomeForm({
         <form.Field name="description">
           {(field: any) => (
             <div>
-              <label className="text-[10px] uppercase tracking-wider text-[#9a9a9a] mb-1.5 block">
-                Description <span className="text-[#9a9a9a]">(optional)</span>
+              <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
+                Description <span className="text-gray-400">(optional)</span>
               </label>
               <input
                 type="text"
@@ -337,7 +337,7 @@ function IncomeForm({
                 value={field.state.value}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                className="w-full h-10 px-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#9a9a9a] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#5eead4]/50 transition-colors"
               />
             </div>
           )}
@@ -348,7 +348,7 @@ function IncomeForm({
         <button
           type="submit"
           disabled={isPending || isSubmitting}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-[#1f1f1f] disabled:text-[#9a9a9a] text-[#0c0c0c] font-medium text-sm transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-gray-100 disabled:text-gray-400 text-white font-medium text-sm transition-colors"
         >
           {isPending || isSubmitting ? (
             <IoReload className="w-4 h-4 animate-spin" />
@@ -360,7 +360,7 @@ function IncomeForm({
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-white hover:bg-[#1f1f1f] text-sm transition-colors"
+          className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-gray-900 hover:bg-gray-100 text-sm transition-colors"
         >
           Cancel
         </button>

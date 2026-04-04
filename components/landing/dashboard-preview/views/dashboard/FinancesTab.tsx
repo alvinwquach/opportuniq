@@ -58,45 +58,45 @@ export function FinancesTab({
     <>
       {/* Budget Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3 sm:p-4">
-          <p className="text-[10px] sm:text-xs text-[#888] mb-1">Monthly Budget</p>
+        <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
+          <p className="text-[10px] sm:text-xs text-gray-500 mb-1">Monthly Budget</p>
           <div className="flex items-baseline gap-2">
-            <span className="text-xl sm:text-2xl font-bold text-white">${totalSpent}</span>
-            <span className="text-xs text-[#666]">/ ${budget}</span>
+            <span className="text-xl sm:text-2xl font-bold text-gray-900">${totalSpent}</span>
+            <span className="text-xs text-gray-500">/ ${budget}</span>
           </div>
-          <div className="mt-2 h-1.5 bg-[#2a2a2a] rounded-full overflow-hidden">
+          <div className="mt-2 h-1.5 bg-gray-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-emerald-500 rounded-full transition-all"
+              className="h-full bg-blue-500 rounded-full transition-all"
               style={{ width: `${Math.min(percentUsed, 100)}%` }}
             />
           </div>
-          <p className="text-[10px] text-[#888] mt-1">${remaining} remaining</p>
+          <p className="text-[10px] text-gray-500 mt-1">${remaining} remaining</p>
         </div>
 
-        <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3 sm:p-4">
-          <p className="text-[10px] sm:text-xs text-[#888] mb-1">Total Saved</p>
+        <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
+          <p className="text-[10px] sm:text-xs text-gray-500 mb-1">Total Saved</p>
           <div className="flex items-center gap-2">
-            <IoTrendingUp className="w-5 h-5 text-emerald-400" />
-            <span className="text-xl sm:text-2xl font-bold text-emerald-400">${totalSavings.toLocaleString()}</span>
+            <IoTrendingUp className="w-5 h-5 text-blue-600" />
+            <span className="text-xl sm:text-2xl font-bold text-blue-600">${totalSavings.toLocaleString()}</span>
           </div>
-          <p className="text-[10px] text-[#888] mt-1">From DIY repairs</p>
+          <p className="text-[10px] text-gray-500 mt-1">From DIY repairs</p>
         </div>
 
-        <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3 sm:p-4">
-          <p className="text-[10px] sm:text-xs text-[#888] mb-1">DIY Success Rate</p>
+        <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
+          <p className="text-[10px] sm:text-xs text-gray-500 mb-1">DIY Success Rate</p>
           <div className="flex items-center gap-2">
-            <IoCheckmarkCircle className="w-5 h-5 text-emerald-400" />
-            <span className="text-xl sm:text-2xl font-bold text-white">92%</span>
+            <IoCheckmarkCircle className="w-5 h-5 text-blue-600" />
+            <span className="text-xl sm:text-2xl font-bold text-gray-900">92%</span>
           </div>
-          <p className="text-[10px] text-[#888] mt-1">12 successful repairs</p>
+          <p className="text-[10px] text-gray-500 mt-1">12 successful repairs</p>
         </div>
       </div>
 
       {/* Spending by Category Chart */}
-      <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3 sm:p-4">
+      <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xs sm:text-sm font-medium text-white">Spending by Category</h3>
-          <button className="p-1 text-[#666] hover:text-white transition-colors">
+          <h3 className="text-xs sm:text-sm font-medium text-gray-900">Spending by Category</h3>
+          <button className="p-1 text-gray-500 hover:text-gray-900 transition-colors">
             <IoDownloadOutline className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
@@ -121,7 +121,7 @@ export function FinancesTab({
                 width={35}
               />
               <Tooltip
-                contentStyle={{ fontSize: 11, borderRadius: 6, border: "1px solid #2a2a2a", backgroundColor: "#1a1a1a", color: "#fff" }}
+                contentStyle={{ fontSize: 11, borderRadius: 6, border: "1px solid #e5e7eb", backgroundColor: "#ffffff", color: "#111827" }}
                 formatter={(value: number) => [`$${value}`]}
               />
               <Bar dataKey="amount" radius={[4, 4, 0, 0]} barSize={20}>
@@ -135,16 +135,16 @@ export function FinancesTab({
       </div>
 
       {/* Savings Chart */}
-      <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3 sm:p-4">
+      <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xs sm:text-sm font-medium text-white">Savings Over Time</h3>
+          <h3 className="text-xs sm:text-sm font-medium text-gray-900">Savings Over Time</h3>
           <div className="flex items-center gap-2 sm:gap-3 text-[9px] sm:text-[10px]">
-            <span className="flex items-center gap-1 text-[#888]">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500" />
+            <span className="flex items-center gap-1 text-gray-500">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-500" />
               Total
             </span>
-            <span className="flex items-center gap-1 text-[#888]">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-600" />
+            <span className="flex items-center gap-1 text-gray-500">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-600" />
               DIY
             </span>
           </div>
@@ -157,8 +157,8 @@ export function FinancesTab({
             >
               <defs>
                 <linearGradient id="savingsGradientFinances" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3ECF8E" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="#3ECF8E" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#2563EB" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="#2563EB" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <XAxis
@@ -175,13 +175,13 @@ export function FinancesTab({
                 width={30}
               />
               <Tooltip
-                contentStyle={{ fontSize: 11, borderRadius: 6, border: "1px solid #2a2a2a", backgroundColor: "#1a1a1a", color: "#fff" }}
+                contentStyle={{ fontSize: 11, borderRadius: 6, border: "1px solid #e5e7eb", backgroundColor: "#ffffff", color: "#111827" }}
                 formatter={(value: number) => [`$${value}`, ""]}
               />
               <Area
                 type="monotone"
                 dataKey="savings"
-                stroke="#3ECF8E"
+                stroke="#2563EB"
                 strokeWidth={2}
                 fill="url(#savingsGradientFinances)"
               />
@@ -198,28 +198,28 @@ export function FinancesTab({
       </div>
 
       {/* Shopping List */}
-      <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3 sm:p-4">
+      <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <IoCart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
-            <h3 className="text-xs sm:text-sm font-medium text-white">Shopping List</h3>
+            <IoCart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
+            <h3 className="text-xs sm:text-sm font-medium text-gray-900">Shopping List</h3>
           </div>
-          <span className="text-[10px] sm:text-xs text-[#888]">{shoppingList.length} items</span>
+          <span className="text-[10px] sm:text-xs text-gray-500">{shoppingList.length} items</span>
         </div>
         <div className="space-y-2">
           {shoppingList.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between p-2 rounded-lg bg-[#0f0f0f]"
+              className="flex items-center justify-between p-2 rounded-lg bg-white"
             >
               <div className="min-w-0">
-                <p className="text-xs font-medium text-white truncate">{item.productName}</p>
-                <p className="text-[10px] text-[#888]">{item.storeName}</p>
+                <p className="text-xs font-medium text-gray-900 truncate">{item.productName}</p>
+                <p className="text-[10px] text-gray-500">{item.storeName}</p>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="text-xs font-medium text-white">${item.estimatedCost.toFixed(2)}</span>
+                <span className="text-xs font-medium text-gray-900">${item.estimatedCost.toFixed(2)}</span>
                 {item.inStock && (
-                  <span className="text-[9px] px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 rounded">
+                  <span className="text-[9px] px-1.5 py-0.5 bg-blue-100 text-blue-600 rounded">
                     In Stock
                   </span>
                 )}
@@ -227,9 +227,9 @@ export function FinancesTab({
             </div>
           ))}
         </div>
-        <div className="mt-3 pt-3 border-t border-[#2a2a2a] flex items-center justify-between">
-          <span className="text-xs text-[#888]">Estimated Total</span>
-          <span className="text-sm font-semibold text-white">
+        <div className="mt-3 pt-3 border-t border-gray-200 flex items-center justify-between">
+          <span className="text-xs text-gray-500">Estimated Total</span>
+          <span className="text-sm font-semibold text-gray-900">
             ${shoppingList.reduce((sum, item) => sum + item.estimatedCost, 0).toFixed(2)}
           </span>
         </div>

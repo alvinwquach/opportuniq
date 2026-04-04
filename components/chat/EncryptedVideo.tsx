@@ -54,20 +54,16 @@ export function EncryptedVideo({
       setIsDecrypting(true);
       setError(null);
 
-      console.log("[EncryptedVideo] Starting decryption for:", attachmentId);
 
       onDecrypt(attachmentId)
         .then((decrypted) => {
           if (decrypted) {
-            console.log("[EncryptedVideo] Decryption successful");
             setDecryptedUrl(decrypted);
           } else {
-            console.error("[EncryptedVideo] Decryption returned null");
             setError("Failed to decrypt video");
           }
         })
         .catch((err) => {
-          console.error("[EncryptedVideo] Decryption error:", err);
           setError("Decryption failed");
         })
         .finally(() => {

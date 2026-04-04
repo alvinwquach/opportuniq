@@ -54,35 +54,35 @@ export function CompletedGuidesSidebar({
   return (
     <div className="space-y-4">
       {/* Achievement Summary */}
-      <div className="bg-gradient-to-br from-emerald-500/10 to-[#1a1a1a] rounded-xl border border-emerald-500/20 p-4">
+      <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl border border-blue-200 p-4">
         <div className="flex items-center gap-2 mb-3">
-          <IoRibbonOutline className="w-4 h-4 text-emerald-400" />
-          <h3 className="text-sm font-medium text-white">Achievements</h3>
+          <IoRibbonOutline className="w-4 h-4 text-blue-600" />
+          <h3 className="text-sm font-medium text-gray-900">Achievements</h3>
         </div>
         <div className="text-center mb-3">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500/20 mb-2">
-            <IoCheckmarkCircle className="w-7 h-7 text-emerald-400" />
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-100 mb-2">
+            <IoCheckmarkCircle className="w-7 h-7 text-blue-600" />
           </div>
-          <p className="text-2xl font-bold text-emerald-400">{completedGuides.length}</p>
-          <p className="text-[10px] text-[#666]">Guides Completed</p>
+          <p className="text-2xl font-bold text-blue-600">{completedGuides.length}</p>
+          <p className="text-[10px] text-gray-500">Guides Completed</p>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <div className="bg-[#0f0f0f] rounded-lg p-2.5 border border-emerald-500/20 text-center">
-            <p className="text-sm font-bold text-emerald-400">${totalSaved}</p>
-            <p className="text-[9px] text-[#666]">Money Saved</p>
+          <div className="bg-white rounded-lg p-2.5 border border-blue-200 text-center">
+            <p className="text-sm font-bold text-blue-600">${totalSaved}</p>
+            <p className="text-[9px] text-gray-500">Money Saved</p>
           </div>
-          <div className="bg-[#0f0f0f] rounded-lg p-2.5 border border-emerald-500/20 text-center">
-            <p className="text-sm font-bold text-emerald-400">{timeSaved}</p>
-            <p className="text-[9px] text-[#666]">Time Saved</p>
+          <div className="bg-white rounded-lg p-2.5 border border-blue-200 text-center">
+            <p className="text-sm font-bold text-blue-600">{timeSaved}</p>
+            <p className="text-[9px] text-gray-500">Time Saved</p>
           </div>
         </div>
       </div>
 
       {/* Savings Over Time */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
+      <div className="bg-white rounded-xl border border-gray-200 p-4">
         <div className="flex items-center gap-2 mb-3">
-          <IoWalletOutline className="w-4 h-4 text-emerald-400" />
-          <h3 className="text-sm font-medium text-white">Savings Trend</h3>
+          <IoWalletOutline className="w-4 h-4 text-blue-600" />
+          <h3 className="text-sm font-medium text-gray-900">Savings Trend</h3>
         </div>
         <div className="h-20">
           <ResponsiveContainer width="100%" height="100%">
@@ -95,7 +95,7 @@ export function CompletedGuidesSidebar({
               </defs>
               <XAxis
                 dataKey="month"
-                tick={{ fill: "#888", fontSize: 9 }}
+                tick={{ fill: "#6b7280", fontSize: 9 }}
                 axisLine={false}
                 tickLine={false}
               />
@@ -113,10 +113,10 @@ export function CompletedGuidesSidebar({
 
       {/* Skills by Category */}
       {categoryData.length > 0 && (
-        <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
           <div className="flex items-center gap-2 mb-3">
-            <IoStarOutline className="w-4 h-4 text-amber-400" />
-            <h3 className="text-sm font-medium text-white">Skills Mastered</h3>
+            <IoStarOutline className="w-4 h-4 text-amber-600" />
+            <h3 className="text-sm font-medium text-gray-900">Skills Mastered</h3>
           </div>
           <div className="flex items-center gap-3">
             <div className="w-16 h-16 flex-shrink-0">
@@ -146,9 +146,9 @@ export function CompletedGuidesSidebar({
                       className="w-2 h-2 rounded-full"
                       style={{ backgroundColor: cat.color }}
                     />
-                    <span className="text-[10px] text-[#888]">{cat.name}</span>
+                    <span className="text-[10px] text-gray-500">{cat.name}</span>
                   </div>
-                  <span className="text-xs font-semibold text-emerald-400">{cat.value}</span>
+                  <span className="text-xs font-semibold text-blue-600">{cat.value}</span>
                 </div>
               ))}
             </div>
@@ -157,37 +157,37 @@ export function CompletedGuidesSidebar({
       )}
 
       {/* Streak */}
-      <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <IoTrendingUp className="w-4 h-4 text-amber-400" />
-            <span className="text-sm font-medium text-white">Learning Streak</span>
+            <IoTrendingUp className="w-4 h-4 text-amber-600" />
+            <span className="text-sm font-medium text-gray-900">Learning Streak</span>
           </div>
-          <span className="text-xl font-bold text-amber-400">{streak} 🔥</span>
+          <span className="text-xl font-bold text-amber-600">{streak} 🔥</span>
         </div>
-        <p className="text-[10px] text-[#888] mt-2">
+        <p className="text-[10px] text-gray-500 mt-2">
           {streak} guides completed this month. Keep it up!
         </p>
       </div>
 
       {/* Recent Completions */}
       {completedGuides.length > 0 && (
-        <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
           <div className="flex items-center gap-2 mb-3">
-            <IoTimeOutline className="w-4 h-4 text-[#888]" />
-            <h3 className="text-sm font-medium text-white">Recently Completed</h3>
+            <IoTimeOutline className="w-4 h-4 text-gray-500" />
+            <h3 className="text-sm font-medium text-gray-900">Recently Completed</h3>
           </div>
           <div className="space-y-2">
             {completedGuides.slice(0, 3).map((guide) => (
               <div
                 key={guide.id}
-                className="p-2.5 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a]"
+                className="p-2.5 bg-gray-50 rounded-lg border border-gray-200"
               >
                 <div className="flex items-start gap-2">
-                  <IoCheckmarkCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                  <IoCheckmarkCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-xs font-medium text-white truncate">{guide.title}</p>
-                    <p className="text-[9px] text-[#666] mt-0.5">{guide.category}</p>
+                    <p className="text-xs font-medium text-gray-900 truncate">{guide.title}</p>
+                    <p className="text-[9px] text-gray-500 mt-0.5">{guide.category}</p>
                   </div>
                 </div>
               </div>
@@ -197,15 +197,15 @@ export function CompletedGuidesSidebar({
       )}
 
       {/* Revisit Tip */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
+      <div className="bg-white rounded-xl border border-gray-200 p-4">
         <div className="flex items-start gap-2">
-          <IoRepeat className="w-4 h-4 text-[#888] mt-0.5" />
+          <IoRepeat className="w-4 h-4 text-gray-500 mt-0.5" />
           <div>
-            <p className="text-xs font-medium text-white">Refresh Your Skills</p>
-            <p className="text-[10px] text-[#888] mt-1">
+            <p className="text-xs font-medium text-gray-900">Refresh Your Skills</p>
+            <p className="text-[10px] text-gray-500 mt-1">
               Revisit completed guides periodically to stay sharp.
             </p>
-            <button className="mt-2 px-3 py-1.5 text-[10px] text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-lg transition-colors">
+            <button className="mt-2 px-3 py-1.5 text-[10px] text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-colors">
               Review a Random Guide
             </button>
           </div>

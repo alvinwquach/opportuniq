@@ -49,13 +49,11 @@ export async function sendIssueCreatedEmail({
     });
 
     if (error) {
-      console.error("Failed to send issue created email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending issue created email:", error);
     return { success: false, error };
   }
 }
@@ -101,13 +99,11 @@ export async function sendDecisionReadyEmail({
     });
 
     if (error) {
-      console.error("Failed to send decision ready email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending decision ready email:", error);
     return { success: false, error };
   }
 }
@@ -159,13 +155,11 @@ export async function sendDecisionApprovedEmail({
     });
 
     if (error) {
-      console.error("Failed to send decision approved email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending decision approved email:", error);
     return { success: false, error };
   }
 }
@@ -202,13 +196,11 @@ export async function sendFeedbackRequestEmail({
     });
 
     if (error) {
-      console.error("Failed to send feedback request email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending feedback request email:", error);
     return { success: false, error };
   }
 }

@@ -138,7 +138,6 @@ export async function searchStackExchangeQuestions(
       quotaRemaining: data.quota_remaining,
     };
   } catch (error) {
-    console.error("Stack Exchange search error:", error);
     return {
       success: false,
       guides: [],
@@ -217,7 +216,6 @@ export async function getStackExchangeQuestion(
       guide,
     };
   } catch (error) {
-    console.error("Stack Exchange get question error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to get question",
@@ -276,7 +274,6 @@ export async function getStackExchangePopularQuestions(
       totalResults: guides.length,
     };
   } catch (error) {
-    console.error("Stack Exchange popular error:", error);
     return {
       success: false,
       guides: [],
@@ -340,7 +337,6 @@ export async function searchStackExchangeByTags(
       totalResults: guides.length,
     };
   } catch (error) {
-    console.error("Stack Exchange tag search error:", error);
     return {
       success: false,
       guides: [],

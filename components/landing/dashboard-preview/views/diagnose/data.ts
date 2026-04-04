@@ -24,11 +24,6 @@ export const issuesData: Record<string, IssueData> = {
         distance: "0.8 mi",
         inStock: true,
         link: "https://www.homedepot.com/s/moen%201225%20cartridge",
-        comparePrices: [
-          { store: "Lowe's", price: 26.99, inStock: true },
-          { store: "Amazon", price: 22.49, inStock: true },
-          { store: "Ace Hardware", price: 28.99, inStock: false },
-        ],
       },
       {
         name: "O-Ring Kit",
@@ -38,10 +33,6 @@ export const issuesData: Record<string, IssueData> = {
         distance: "0.8 mi",
         inStock: true,
         link: "https://www.homedepot.com/s/faucet%20o-ring%20kit",
-        comparePrices: [
-          { store: "Lowe's", price: 7.99, inStock: true },
-          { store: "Amazon", price: 6.99, inStock: true },
-        ],
       },
     ],
     safety: {
@@ -110,7 +101,7 @@ export const issuesData: Record<string, IssueData> = {
   "2": {
     title: "AC not cooling properly",
     icon: IoSnow,
-    iconColor: "text-emerald-500",
+    iconColor: "text-blue-500",
     status: "resolved",
     date: "2 days ago",
     preview: "Diagnosed: Low refrigerant",
@@ -167,11 +158,6 @@ export const issuesData: Record<string, IssueData> = {
         distance: "0.8 mi",
         inStock: true,
         link: "https://www.homedepot.com/s/white%20lithium%20grease",
-        comparePrices: [
-          { store: "Lowe's", price: 8.49, inStock: true },
-          { store: "Amazon", price: 6.49, inStock: true },
-          { store: "Walmart", price: 7.29, inStock: true },
-        ],
       },
       {
         name: "Silicone Spray Lubricant",
@@ -181,10 +167,6 @@ export const issuesData: Record<string, IssueData> = {
         distance: "0.8 mi",
         inStock: true,
         link: "https://www.homedepot.com/s/silicone%20spray%20lubricant",
-        comparePrices: [
-          { store: "Amazon", price: 4.29, inStock: true },
-          { store: "Lowe's", price: 5.49, inStock: true },
-        ],
       },
     ],
     safety: {

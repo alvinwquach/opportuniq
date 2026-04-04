@@ -210,7 +210,6 @@ export async function safeLog<T>(
   try {
     return await logFn();
   } catch (error) {
-    console.error(`[Video Usage Log] Failed to log ${context}:`, error);
     return null;
   }
 }

@@ -35,7 +35,6 @@ export async function GET(req: Request) {
 
     return NextResponse.redirect(authUrl);
   } catch (error) {
-    console.error("[Google Calendar Connect] Error:", error);
     return NextResponse.json(
       { error: "Failed to initiate Google Calendar connection" },
       { status: 500 }

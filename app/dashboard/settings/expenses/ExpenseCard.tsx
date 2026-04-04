@@ -39,7 +39,7 @@ export function ExpenseCard({
   });
 
   return (
-    <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+    <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -48,7 +48,7 @@ export function ExpenseCard({
               className={`text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1 ${
                 expense.isRecurring
                   ? "bg-[#f87171]/10 text-[#f87171]"
-                  : "bg-[#1f1f1f] text-[#666]"
+                  : "bg-gray-100 text-gray-500"
               }`}
             >
               {expense.isRecurring && <IoRepeat className="w-3 h-3" />}
@@ -61,17 +61,17 @@ export function ExpenseCard({
               maximumFractionDigits: 2,
             })}
             {expense.isRecurring && frequencyLabel && (
-              <span className="text-xs text-[#666] font-normal ml-1">
+              <span className="text-xs text-gray-500 font-normal ml-1">
                 /{frequencyLabel.toLowerCase().replace("-", " ")}
               </span>
             )}
           </p>
           <div className="flex items-center gap-2 mt-1">
-            <p className="text-xs text-[#555]">{formattedDate}</p>
+            <p className="text-xs text-gray-400">{formattedDate}</p>
             {expense.description && (
               <>
                 <span className="text-[#333]">·</span>
-                <p className="text-xs text-[#555] truncate">
+                <p className="text-xs text-gray-400 truncate">
                   {expense.description}
                 </p>
               </>
@@ -91,14 +91,14 @@ export function ExpenseCard({
           <button
             onClick={onEdit}
             disabled={isPending}
-            className="p-2 rounded-lg text-[#555] hover:text-white hover:bg-[#1f1f1f] transition-colors"
+            className="p-2 rounded-lg text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors"
           >
             <IoPencil className="w-4 h-4" />
           </button>
           <button
             onClick={onDelete}
             disabled={isPending}
-            className="p-2 rounded-lg text-[#555] hover:text-red-400 hover:bg-red-500/10 transition-colors"
+            className="p-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
           >
             <IoTrash className="w-4 h-4" />
           </button>

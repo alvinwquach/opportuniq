@@ -46,7 +46,6 @@ async function generateConversationTitle(aiResponse: string): Promise<string> {
     });
     return object.title.trim() || "New Diagnosis";
   } catch (error) {
-    console.error("[Chat API] Title generation failed:", error);
     return "New Diagnosis";
   }
 }
@@ -113,8 +112,6 @@ type RequestBody = StructuredRequest | FollowUpRequest;
 
 export async function POST(req: Request) {
   const startTime = Date.now();
-  console.log("\n[Chat API] ========== REQUEST START ==========");
-  console.log("[Chat API] Timestamp:", new Date().toISOString());
 
   return Sentry.withServerActionInstrumentation(
     "POST /api/chat",
@@ -136,7 +133,6 @@ export async function POST(req: Request) {
         console.time("[Chat API] Parse body");
         const body: RequestBody = await req.json();
         console.timeEnd("[Chat API] Parse body");
-        console.log("[Chat API] Request type:", body.type);
 
         // Tag the conversation type for Sentry filtering
         Sentry.setTag("conversation_type", body.type);
@@ -152,7 +148,6 @@ export async function POST(req: Request) {
           return new Response("Invalid request type", { status: 400 });
         }
       } catch (error) {
-        console.error("[Chat API] Error:", error);
         Sentry.captureException(error);
         return new Response("Internal Server Error", { status: 500 });
       }
@@ -165,7 +160,6 @@ export async function POST(req: Request) {
 // ============================================================================
 
 async function handleStructuredRequest(body: StructuredRequest, userId: string, startTime: number, userName: string | null) {
-  console.log("[Chat API] --- handleStructuredRequest ---");
 
   // Validate request
   console.time("[Chat API] Validation");
@@ -173,8 +167,6 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
   console.timeEnd("[Chat API] Validation");
 
   if (!parseResult.success) {
-    console.error("[Chat API] Validation failed:", JSON.stringify(parseResult.error.flatten(), null, 2));
-    console.error("[Chat API] Zod issues:", JSON.stringify(parseResult.error.issues, null, 2));
     return new Response(
       JSON.stringify({ error: "Invalid request", details: parseResult.error.flatten() }),
       { status: 400, headers: { "Content-Type": "application/json" } }
@@ -187,16 +179,6 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
 
   // Log attachment info
   if (diagnosis.attachments?.length) {
-    console.log("[Chat API] Attachments:", diagnosis.attachments.map(a => ({
-      type: a.type,
-      hasTranscript: !!a.transcript,
-      transcriptLength: a.transcript?.length || 0,
-      hasFrames: !!a.diagnosticFramesBase64?.length,
-      frameCount: a.diagnosticFramesBase64?.length || 0,
-      hasAudio: a.hasAudio,
-      hasAudioBase64: !!a.audioBase64,
-      audioBase64Length: a.audioBase64?.length || 0,
-    })));
   }
 
   // Create conversation if needed
@@ -215,7 +197,6 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
     console.timeEnd("[Chat API] Create conversation");
 
     conversationId = newConversation.id;
-    console.log("[Chat API] Created conversation:", conversationId);
   }
 
   // Build attachments metadata (matches AttachmentMetadata interface)
@@ -262,7 +243,6 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
   console.time("[Chat API] Build prompt");
   const systemPrompt = await buildDiagnosisPrompt(diagnosis, { userId, conversationId });
   console.timeEnd("[Chat API] Build prompt");
-  console.log("[Chat API] Prompt length:", systemPrompt.length);
 
   // Initialize Langfuse tracing
   const langfuse = getLangfuse();
@@ -291,7 +271,6 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
 
   // Create tools
   const tools = createChatTools(firecrawl, userId, conversationId, userName || undefined);
-  console.log("[Chat API] Tools created:", Object.keys(tools));
 
 
   // Build user message content (text + optional images)
@@ -340,7 +319,6 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
               image: att.diagnosticFramesBase64[i],
               mimeType: "image/jpeg",
             });
-            console.log("[Chat API] Including video frame", i + 1, "of", att.diagnosticFramesBase64.length);
           }
         }
 
@@ -348,7 +326,6 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
         if (att.hasAudio && att.audioBase64) {
           hasAudioContent = true;
           audioBase64 = att.audioBase64;
-          console.log("[Chat API] Including audio for AI analysis, size:", att.audioBase64.length);
         }
 
         // Include video transcript as backup context
@@ -357,7 +334,6 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
             type: "text",
             text: `\n\n[Speech transcript from video${att.transcriptLanguage ? ` (${att.transcriptLanguage})` : ""}]: "${att.transcript}"\n\nNote: The transcript above captures speech only. Please also listen to the audio for any mechanical sounds, engine noises, rattling, clicking, or other non-speech sounds that may indicate an issue.`,
           });
-          console.log("[Chat API] Including video transcript, length:", att.transcript.length);
         } else if (att.hasAudio) {
           // No speech transcript but has audio - prompt AI to listen
           messageContent.push({
@@ -366,14 +342,6 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
           });
         }
 
-        console.log("[Chat API] Video attachment:", {
-          duration: att.durationSeconds,
-          frameCount: att.diagnosticFramesBase64?.length || 0,
-          hasAudio: att.hasAudio,
-          hasAudioBase64: !!att.audioBase64,
-          hasTranscript: !!att.transcript,
-          confidence: att.confidenceScore,
-        });
       } else if (att.base64Data) {
         // For images: add the base64 data directly
         messageContent.push({
@@ -381,7 +349,6 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
           image: att.base64Data,
           mimeType: att.mimeType,
         });
-        console.log("[Chat API] Including image:", att.mimeType, "size:", att.base64Data.length);
       }
     }
   }
@@ -392,8 +359,6 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
   if (hasAudioContent && audioBase64) {
     try {
       console.time("[Chat API] Audio analysis with gpt-4o-audio-preview");
-      console.log("[Chat API] Analyzing audio with OpenAI SDK (gpt-4o-audio-preview)...");
-      console.log("[Chat API] Audio base64 length:", audioBase64.length);
 
       // Use OpenAI SDK directly with input_audio format
       const audioResponse = await openaiClient.chat.completions.create({
@@ -422,9 +387,7 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
       const content = audioResponse.choices[0]?.message?.content;
       audioAnalysis = typeof content === "string" ? content : null;
       console.timeEnd("[Chat API] Audio analysis with gpt-4o-audio-preview");
-      console.log("[Chat API] Audio analysis result:", audioAnalysis?.substring(0, 200));
     } catch (err) {
-      console.error("[Chat API] Audio analysis failed:", err);
       // Continue without audio analysis - not fatal
     }
   }
@@ -435,7 +398,6 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
       type: "text",
       text: `\n\n[AUDIO ANALYSIS - Sounds detected in the video]:\n${audioAnalysis}\n\nPlease incorporate this audio analysis into your diagnosis. The sounds described above were detected in the video and may be relevant to the issue.`,
     });
-    console.log("[Chat API] Added audio analysis to message content");
   }
 
   // Track tool calls
@@ -443,15 +405,10 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
   let stepCount = 0;
   const streamStartTime = Date.now();
 
-  console.log("[Chat API] Starting AI stream...");
-  console.log("[Chat API] Message content types:", messageContent.map(c => c.type));
-  console.log("[Chat API] Total images/frames:", messageContent.filter(c => c.type === "image").length);
-  console.log("[Chat API] Has audio analysis:", !!audioAnalysis);
 
   // Always use gpt-4o for the main response (supports images)
   // Audio was already analyzed separately with gpt-4o-audio-preview
   const modelId = "gpt-4o";
-  console.log("[Chat API] Selected model:", modelId);
 
   // Stream response
   const result = streamText({
@@ -464,10 +421,8 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
     onStepFinish: (stepResult) => {
       stepCount++;
       const stepTime = Date.now() - streamStartTime;
-      console.log(`[Chat API] Step ${stepCount} finished at ${stepTime}ms`);
 
       if (stepResult.toolCalls?.length) {
-        console.log("[Chat API] Step tools called:", stepResult.toolCalls.map((tc) => tc.toolName));
         for (const tc of stepResult.toolCalls) {
           allToolCalls.push({
             name: tc.toolName,
@@ -484,22 +439,13 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
       }
 
       if (stepResult.toolResults?.length) {
-        console.log("[Chat API] Step tool results:", stepResult.toolResults.length);
       }
 
       if (stepResult.text) {
-        console.log("[Chat API] Step text length:", stepResult.text.length);
       }
     },
     onFinish: async ({ text, usage, finishReason }) => {
       const totalTime = Date.now() - streamStartTime;
-      console.log("[Chat API] ========== STREAM FINISHED ==========");
-      console.log("[Chat API] Total stream time:", totalTime, "ms");
-      console.log("[Chat API] Finish reason:", finishReason);
-      console.log("[Chat API] Usage:", usage);
-      console.log("[Chat API] Total steps:", stepCount);
-      console.log("[Chat API] Tool calls made:", allToolCalls.map(tc => tc.name));
-      console.log("[Chat API] Response length:", text.length);
 
       // Run guardrails (non-blocking — response already streamed)
       const guardrailResult = checkDiagnosisGuardrails(
@@ -548,7 +494,6 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
           diyFeasibility: object.diyFeasibility,
         });
       } catch (err) {
-        console.error("[Chat API] Structured extraction failed:", err);
       }
 
       await saveAssistantMessage(
@@ -662,7 +607,6 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
               image: att.diagnosticFramesBase64[i],
               mimeType: "image/jpeg",
             });
-            console.log("[Chat API] Follow-up video frame", i + 1, "of", att.diagnosticFramesBase64.length);
           }
         }
 
@@ -670,7 +614,6 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
         if (att.hasAudio && att.audioBase64) {
           hasAudioContent = true;
           audioBase64 = att.audioBase64;
-          console.log("[Chat API] Follow-up including audio, size:", att.audioBase64.length);
         }
 
         // Include video transcript as backup context
@@ -679,7 +622,6 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
             type: "text",
             text: `\n\n[Speech transcript from video${att.transcriptLanguage ? ` (${att.transcriptLanguage})` : ""}]: "${att.transcript}"\n\nNote: Please also listen to the audio for any mechanical sounds, engine noises, or other non-speech sounds.`,
           });
-          console.log("[Chat API] Follow-up video transcript, length:", att.transcript.length);
         } else if (att.hasAudio) {
           userMessageContent.push({
             type: "text",
@@ -687,14 +629,6 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
           });
         }
 
-        console.log("[Chat API] Follow-up video:", {
-          duration: att.durationSeconds,
-          frameCount: att.diagnosticFramesBase64?.length || 0,
-          hasAudio: att.hasAudio,
-          hasAudioBase64: !!att.audioBase64,
-          hasTranscript: !!att.transcript,
-          confidence: att.confidenceScore,
-        });
       } else if (att.base64Data) {
         // For images
         userMessageContent.push({
@@ -702,7 +636,6 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
           image: att.base64Data,
           mimeType: att.mimeType,
         });
-        console.log("[Chat API] Follow-up image:", att.mimeType, "size:", att.base64Data.length);
       }
     }
   }
@@ -713,8 +646,6 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
   if (hasAudioContent && audioBase64) {
     try {
       console.time("[Chat API] Follow-up audio analysis");
-      console.log("[Chat API] Follow-up: Analyzing audio with OpenAI SDK (gpt-4o-audio-preview)...");
-      console.log("[Chat API] Follow-up audio base64 length:", audioBase64.length);
 
       // Use OpenAI SDK directly with input_audio format
       const audioResponse = await openaiClient.chat.completions.create({
@@ -743,9 +674,7 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
       const content = audioResponse.choices[0]?.message?.content;
       audioAnalysis = typeof content === "string" ? content : null;
       console.timeEnd("[Chat API] Follow-up audio analysis");
-      console.log("[Chat API] Follow-up audio analysis:", audioAnalysis?.substring(0, 200));
     } catch (err) {
-      console.error("[Chat API] Follow-up audio analysis failed:", err);
     }
   }
 
@@ -755,7 +684,6 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
       type: "text",
       text: `\n\n[AUDIO ANALYSIS - Sounds detected]:\n${audioAnalysis}`,
     });
-    console.log("[Chat API] Follow-up: Added audio analysis to message content");
   }
 
   // Build messages for model
@@ -802,7 +730,6 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
 
   // Always use gpt-4o for the main response (supports images)
   const modelId = "gpt-4o";
-  console.log("[Chat API] Follow-up selected model:", modelId);
 
   // Stream response
   const result = streamText({
@@ -814,7 +741,6 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
     stopWhen: stepCountIs(12),
     onStepFinish: (stepResult) => {
       if (stepResult.toolCalls?.length) {
-        console.log("[Chat API] Tools:", stepResult.toolCalls.map((tc) => tc.toolName));
         for (const tc of stepResult.toolCalls) {
           allToolCalls.push({
             name: tc.toolName,
@@ -925,11 +851,4 @@ async function saveAssistantMessage(
 
   await db.update(aiConversations).set(updateData).where(eq(aiConversations.id, conversationId));
 
-  console.log("[Chat API] Response completed", {
-    conversationId,
-    inputTokens,
-    outputTokens,
-    cost: totalCost.toFixed(6),
-    latencyMs,
-  });
 }

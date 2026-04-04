@@ -3,15 +3,15 @@ import { IoArrowBack, IoSearchOutline } from "react-icons/io5";
 
 export default function ConversationNotFound() {
   return (
-    <div className="min-h-screen bg-[#0c0c0c] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="text-center max-w-md">
-        <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#1a1a1a] flex items-center justify-center">
-          <IoSearchOutline className="w-8 h-8 text-[#666]" />
+        <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gray-100 flex items-center justify-center">
+          <IoSearchOutline className="w-8 h-8 text-gray-500" />
         </div>
-        <h1 className="text-2xl font-bold text-white mb-2">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">
           Conversation Not Found
         </h1>
-        <p className="text-[#888] mb-8">
+        <p className="text-gray-500 mb-8">
           This conversation doesn&apos;t exist or you don&apos;t have access to it.
         </p>
         <Link

@@ -46,7 +46,6 @@ export async function createHypothesisEncrypted(
 
     return { success: true, hypothesisId: hypothesis.id };
   } catch (error) {
-    console.error("[Create Hypothesis] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to create hypothesis",
@@ -82,7 +81,6 @@ export async function createHypothesisPlaintext(
 
     return { success: true, hypothesisId: hypothesis.id };
   } catch (error) {
-    console.error("[Create Hypothesis] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to create hypothesis",

@@ -66,11 +66,11 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
   return (
     <>
       {/* Desktop Sidebar - Icon only like demo */}
-      <aside className="w-14 hidden lg:flex flex-col h-screen bg-[#0d0d0d] border-r border-white/[0.06] fixed left-0 top-0 z-40">
+      <aside className="w-14 hidden lg:flex flex-col h-screen bg-white border-r border-gray-200 fixed left-0 top-0 z-40">
         {/* Logo */}
-        <div className="h-12 flex items-center justify-center border-b border-white/[0.06]">
+        <div className="h-12 flex items-center justify-center border-b border-gray-200">
           <Link href="/dashboard" className="flex items-center justify-center">
-            <OpportunIQLogo className="w-7 h-7 text-emerald-400" />
+            <OpportunIQLogo className="w-7 h-7 text-blue-600" />
           </Link>
         </div>
 
@@ -114,8 +114,8 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
                         className={cn(
                           "w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 mx-auto",
                           active
-                            ? "bg-emerald-500/10 text-emerald-400"
-                            : "text-[#888] hover:bg-white/[0.04] hover:text-white"
+                            ? "bg-blue-50 text-blue-600"
+                            : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
                         )}
                       >
                         <Icon className="w-4 h-4 flex-shrink-0" />
@@ -130,7 +130,7 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
         </nav>
 
         {/* Bottom Navigation */}
-        <div className="py-3 border-t border-white/[0.06]">
+        <div className="py-3 border-t border-gray-200">
           <ul className="space-y-0.5 px-2">
             {bottomNavItems.map((item) => {
               const active = isActive(item.href);
@@ -144,8 +144,8 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
                         className={cn(
                           "w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 mx-auto",
                           active
-                            ? "bg-emerald-500/10 text-emerald-400"
-                            : "text-[#888] hover:bg-white/[0.04] hover:text-white"
+                            ? "bg-blue-50 text-blue-600"
+                            : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
                         )}
                       >
                         <Icon className="w-4 h-4 flex-shrink-0" />
@@ -163,7 +163,7 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
       {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
           onClick={closeMobile}
         />
       )}
@@ -171,21 +171,21 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
       {/* Mobile Sidebar - Full width with labels */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-50 h-screen w-64 border-r border-white/[0.06] lg:hidden transition-transform duration-300 ease-in-out",
-          "bg-[#0d0d0d]",
+          "fixed left-0 top-0 z-50 h-screen w-64 border-r border-gray-200 lg:hidden transition-transform duration-300 ease-in-out",
+          "bg-white",
           isMobileOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex h-12 items-center justify-between border-b border-white/[0.06] px-3">
+          <div className="flex h-12 items-center justify-between border-b border-gray-200 px-3">
             <Link href="/dashboard" className="flex items-center gap-2">
-              <OpportunIQLogo className="w-7 h-7 text-emerald-400" />
+              <OpportunIQLogo className="w-7 h-7 text-blue-600" />
               <span className="text-[13px] font-semibold text-white">OpportunIQ</span>
             </Link>
             <button
               onClick={closeMobile}
-              className="p-1.5 rounded-md text-[#888] hover:text-white hover:bg-white/[0.04] transition-colors"
+              className="p-1.5 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
             >
               <IoClose className="h-4 w-4" />
             </button>
@@ -224,8 +224,8 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
                   className={cn(
                     "flex items-center gap-2.5 px-2.5 py-2 rounded-md transition-colors mb-0.5",
                     active
-                      ? "bg-emerald-500/10 text-emerald-400"
-                      : "text-[#888] hover:text-white hover:bg-white/[0.04]"
+                      ? "bg-blue-50 text-blue-600"
+                      : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -248,8 +248,8 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
                   className={cn(
                     "flex items-center gap-2.5 px-2.5 py-2 rounded-md transition-colors mb-0.5",
                     active
-                      ? "bg-emerald-500/10 text-emerald-400"
-                      : "text-[#888] hover:text-white hover:bg-white/[0.04]"
+                      ? "bg-blue-50 text-blue-600"
+                      : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -260,7 +260,7 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
           </nav>
 
           {/* User Section */}
-          <div className="border-t border-white/[0.06] p-3">
+          <div className="border-t border-gray-200 p-3">
             <div className="flex items-center gap-2.5 px-2 py-1.5 mb-1">
               {user.avatarUrl ? (
                 <Image
@@ -271,20 +271,20 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
                   className="w-7 h-7 rounded-full"
                 />
               ) : (
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-[11px] font-medium text-black">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-teal-500 flex items-center justify-center text-[11px] font-medium text-black">
                   {(user.name || user.email).charAt(0).toUpperCase()}
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-medium text-white truncate">
+                <p className="text-[13px] font-medium text-gray-900 truncate">
                   {user.name || "User"}
                 </p>
-                <p className="text-[11px] text-[#666] truncate">{user.email}</p>
+                <p className="text-[11px] text-gray-500 truncate">{user.email}</p>
               </div>
             </div>
             <Link
               href="/auth/logout"
-              className="flex items-center gap-2 px-2.5 py-2 rounded-md text-[#888] hover:text-red-400 hover:bg-red-500/10 transition-colors text-[13px]"
+              className="flex items-center gap-2 px-2.5 py-2 rounded-md text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-colors text-[13px]"
             >
               <IoLogOut className="h-4 w-4" />
               Sign out
@@ -294,12 +294,12 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
       </aside>
 
       {/* Mobile Header */}
-      <header className="fixed top-0 left-0 right-0 z-30 h-12 border-b border-white/[0.06] bg-[#111111] flex items-center px-3 lg:hidden">
+      <header className="fixed top-0 left-0 right-0 z-30 h-12 border-b border-gray-200 bg-white flex items-center px-3 lg:hidden">
         <Tooltip>
           <TooltipTrigger asChild>
             <button
               onClick={toggleMobile}
-              className="p-1.5 -ml-1 rounded-md text-[#888] hover:text-white hover:bg-white/[0.04] transition-colors"
+              className="p-1.5 -ml-1 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
             >
               <IoMenu className="h-4 w-4" />
             </button>
@@ -307,7 +307,7 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
           <TooltipContent side="bottom">Menu</TooltipContent>
         </Tooltip>
         <Link href="/dashboard" className="flex items-center gap-2 ml-2">
-          <OpportunIQLogo className="w-6 h-6 text-emerald-400" />
+          <OpportunIQLogo className="w-6 h-6 text-blue-600" />
           <span className="text-[13px] font-semibold text-white">OpportunIQ</span>
         </Link>
         <div className="ml-auto flex items-center gap-2">
@@ -315,7 +315,7 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
             <TooltipTrigger asChild>
               <Link
                 href="/notifications"
-                className="p-1.5 rounded-md text-[#666] hover:text-white hover:bg-white/[0.04] transition-colors relative"
+                className="p-1.5 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors relative"
               >
                 <IoNotifications className="h-4 w-4" />
                 <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-red-500 rounded-full" />
@@ -332,7 +332,7 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
               className="w-7 h-7 rounded-full"
             />
           ) : (
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-[10px] font-medium text-black">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-teal-500 flex items-center justify-center text-[10px] font-medium text-black">
               {(user.name || user.email).charAt(0).toUpperCase()}
             </div>
           )}

@@ -64,7 +64,6 @@ export async function updateLocationEncrypted(
 
     return { success: true };
   } catch (error) {
-    console.error("[Location Update] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to update location",

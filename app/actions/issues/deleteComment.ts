@@ -40,7 +40,6 @@ export async function deleteComment(
 
     return { success: true, commentId: deleted.id };
   } catch (error) {
-    console.error("[Delete Comment] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to delete comment",

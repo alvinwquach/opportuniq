@@ -56,7 +56,6 @@ export default async function WaitlistPage() {
     conversionStats = result.conversionStats || { total: 0, converted: 0, pending: 0, conversionRate: 0 };
   } catch (err) {
     error = err instanceof Error ? err.message : "Failed to load waitlist";
-    console.error("[Admin Waitlist] Error loading waitlist:", err);
   }
 
   if (error) {

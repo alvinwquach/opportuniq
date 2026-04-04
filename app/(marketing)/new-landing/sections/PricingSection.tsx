@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gsap, ScrollTrigger, animateCounter } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { IoCheckmark, IoSparkles, IoRocket } from "react-icons/io5";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -102,10 +102,13 @@ export function PricingSection() {
           trigger: el,
           start: "top 85%",
           onEnter: () => {
-            animateCounter(el as HTMLElement, value, {
+            gsap.to({ value: 0 }, {
+              value,
               duration: 1,
-              prefix: "$",
-              decimals: 0,
+              ease: "power2.out",
+              onUpdate() {
+                (el as HTMLElement).textContent = `$${Math.round(this.targets()[0].value)}`;
+              },
             });
           },
           once: true,

@@ -13,16 +13,16 @@ export function GuidesFilters({
   categories,
 }: GuidesFiltersProps) {
   return (
-    <div className="flex flex-col gap-2 sm:gap-3 bg-[#1a1a1a] p-3 sm:p-4 rounded-lg sm:rounded-xl border border-[#2a2a2a] shadow-sm">
+    <div className="flex flex-col gap-2 sm:gap-3 bg-white p-3 sm:p-4 rounded-lg sm:rounded-xl border border-gray-200 shadow-sm">
       {/* Source Filter */}
       <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-        <span className="text-[10px] sm:text-xs font-medium text-[#888]">Source:</span>
+        <span className="text-[10px] sm:text-xs font-medium text-gray-500">Source:</span>
         <button
           onClick={() => setSelectedSource("all")}
           className={`px-2 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-md sm:rounded-lg transition-all ${
             selectedSource === "all"
-              ? "bg-emerald-600 text-white shadow-sm"
-              : "bg-[#333] text-[#888] hover:bg-[#444]"
+              ? "bg-blue-600 text-gray-900 shadow-sm"
+              : "bg-gray-100 text-gray-500 hover:bg-gray-100"
           }`}
         >
           All Sources
@@ -35,8 +35,8 @@ export function GuidesFilters({
               onClick={() => setSelectedSource(source)}
               className={`px-2 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-md sm:rounded-lg transition-all flex items-center gap-1 ${
                 selectedSource === source
-                  ? "bg-emerald-600 text-white shadow-sm"
-                  : "bg-[#333] text-[#888] hover:opacity-80"
+                  ? "bg-blue-600 text-gray-900 shadow-sm"
+                  : "bg-gray-100 text-gray-500 hover:opacity-80"
               }`}
             >
               <span className="text-[10px]">{info.icon}</span>
@@ -48,14 +48,14 @@ export function GuidesFilters({
 
       {/* Category Filter */}
       <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-        <IoFilterOutline className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#666]" />
-        <span className="text-[10px] sm:text-xs font-medium text-[#888]">Category:</span>
+        <IoFilterOutline className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-500" />
+        <span className="text-[10px] sm:text-xs font-medium text-gray-500">Category:</span>
         <button
           onClick={() => setSelectedCategory(null)}
           className={`px-2 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-md sm:rounded-lg transition-all ${
             selectedCategory === null
-              ? "bg-emerald-600 text-white shadow-sm"
-              : "bg-[#333] text-[#888] hover:bg-[#444]"
+              ? "bg-blue-600 text-gray-900 shadow-sm"
+              : "bg-gray-100 text-gray-500 hover:bg-gray-100"
           }`}
         >
           All
@@ -68,7 +68,7 @@ export function GuidesFilters({
               onClick={() => setSelectedCategory(cat)}
               className={`px-2 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-md sm:rounded-lg transition-all flex items-center gap-1 ${
                 selectedCategory === cat
-                  ? "bg-emerald-600 text-white shadow-sm"
+                  ? "bg-blue-600 text-gray-900 shadow-sm"
                   : `${catConfig.bg} ${catConfig.text} hover:opacity-80`
               }`}
             >

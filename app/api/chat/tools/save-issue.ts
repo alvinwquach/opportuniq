@@ -151,7 +151,6 @@ async function getOrCreateUserGroup(userId: string): Promise<{ groupId: string; 
 
     return result;
   } catch (error) {
-    console.error("[saveIssue] Failed to create default group:", error);
     return null;
   }
 }
@@ -174,7 +173,6 @@ The saved issue will appear in the user's dashboard where they can:
 
     execute: async (input): Promise<SaveIssueResult> => {
       const startTime = Date.now();
-      console.log("[saveIssue] Starting issue creation...");
 
       // Validate user context
       if (!ctx.userId) {
@@ -196,7 +194,6 @@ The saved issue will appear in the user's dashboard where they can:
           };
         }
 
-        console.log("[saveIssue] Using group:", userGroup.groupId, "member:", userGroup.memberId);
 
         // Create the issue
         // NOTE: For now, we store in plaintext since server-side encryption
@@ -243,7 +240,6 @@ The saved issue will appear in the user's dashboard where they can:
           })
           .returning({ id: issues.id });
 
-        console.log("[saveIssue] Created issue:", newIssue.id);
 
         // Create the initial hypothesis
         await db.insert(issueHypotheses).values({
@@ -254,7 +250,6 @@ The saved issue will appear in the user's dashboard where they can:
           reasoningChain: input.reasoningChain || null,
         });
 
-        console.log("[saveIssue] Created hypothesis");
 
         // Create activity log entry
         await db.insert(issueActivityLog).values({
@@ -289,7 +284,6 @@ The saved issue will appear in the user's dashboard where they can:
         }
 
         const latency = Date.now() - startTime;
-        console.log("[saveIssue] Completed in", latency, "ms");
 
         const viewUrl = `/dashboard/issues/${newIssue.id}`;
 
@@ -300,7 +294,6 @@ The saved issue will appear in the user's dashboard where they can:
           viewUrl,
         };
       } catch (error) {
-        console.error("[saveIssue] Error:", error);
         Sentry.captureException(error, { extra: { tool: "saveIssue", userId: ctx.userId, title: input.title } });
         return {
           success: false,

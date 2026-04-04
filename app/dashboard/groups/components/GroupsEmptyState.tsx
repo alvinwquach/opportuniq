@@ -8,41 +8,41 @@ interface GroupsEmptyStateProps {
 
 export function GroupsEmptyState({ onCreateGroup }: GroupsEmptyStateProps) {
   return (
-    <div className="flex min-h-[calc(100vh-48px)] bg-[#0f0f0f]">
+    <div className="flex min-h-[calc(100vh-48px)] bg-gray-50">
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center max-w-sm">
-          <div className="w-16 h-16 rounded-2xl bg-[#1a1a1a] border border-[#2a2a2a] flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center mx-auto mb-4">
             <IoPeople className="w-8 h-8 text-[#444]" />
           </div>
-          <h3 className="text-lg font-semibold text-white mb-2">No Groups Yet</h3>
-          <p className="text-sm text-[#666] mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">No Groups Yet</h3>
+          <p className="text-sm text-gray-500 mb-4">
             Create a group to collaborate with family or roommates on home maintenance issues, share costs, and make decisions together.
           </p>
           <button
             onClick={onCreateGroup}
-            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-900 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors"
           >
             <IoAddOutline className="w-4 h-4" />
             Create New Group
           </button>
-          <div className="mt-6 pt-6 border-t border-[#2a2a2a]">
-            <p className="text-xs text-[#555] mb-3">What you can do with groups:</p>
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <p className="text-xs text-gray-400 mb-3">What you can do with groups:</p>
             <div className="grid grid-cols-2 gap-3 text-left">
               <div className="flex items-start gap-2">
-                <IoCheckmarkCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span className="text-xs text-[#888]">Track issues across multiple properties</span>
+                <IoCheckmarkCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                <span className="text-xs text-gray-500">Track issues across multiple properties</span>
               </div>
               <div className="flex items-start gap-2">
-                <IoCheckmarkCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span className="text-xs text-[#888]">Share a budget with family members</span>
+                <IoCheckmarkCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                <span className="text-xs text-gray-500">Share a budget with family members</span>
               </div>
               <div className="flex items-start gap-2">
-                <IoCheckmarkCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span className="text-xs text-[#888]">Invite collaborators with different roles</span>
+                <IoCheckmarkCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                <span className="text-xs text-gray-500">Invite collaborators with different roles</span>
               </div>
               <div className="flex items-start gap-2">
-                <IoCheckmarkCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span className="text-xs text-[#888]">See total savings across all properties</span>
+                <IoCheckmarkCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                <span className="text-xs text-gray-500">See total savings across all properties</span>
               </div>
             </div>
           </div>

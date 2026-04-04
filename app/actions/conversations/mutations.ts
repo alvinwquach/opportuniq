@@ -136,7 +136,6 @@ export async function createConversation(
       },
     };
   } catch (error) {
-    console.error("[createConversation] Error:", error);
     return { error: "Internal Server Error" };
   }
 }
@@ -196,7 +195,6 @@ export async function deleteConversation(
     // Step 5: Return success
     return { success: true };
   } catch (error) {
-    console.error("[deleteConversation] Error:", error);
     return { error: "Internal Server Error" };
   }
 }

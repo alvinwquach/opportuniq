@@ -33,13 +33,13 @@ export function CalendarCharts({
   return (
     <div className="grid md:grid-cols-3 gap-6">
       {/* Event Distribution */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-5 overflow-visible">
-        <h3 className="text-sm font-medium text-white mb-4">
+      <div className="bg-gray-100 rounded-xl border border-gray-200 p-5 overflow-visible">
+        <h3 className="text-sm font-medium text-gray-900 mb-4">
           Event Distribution
         </h3>
         <div className="h-[180px] overflow-visible">
           {eventTypeDistribution.length === 0 ? (
-            <div className="flex items-center justify-center h-full text-[#666] text-sm">
+            <div className="flex items-center justify-center h-full text-gray-500 text-sm">
               No events this month
             </div>
           ) : (
@@ -81,7 +81,7 @@ export function CalendarCharts({
                   className="w-2.5 h-2.5 rounded-full"
                   style={{ backgroundColor: item.color }}
                 />
-                <span className="text-xs text-[#888]">
+                <span className="text-xs text-gray-500">
                   {item.name.replace(" Projects", "")}
                 </span>
               </div>
@@ -91,8 +91,8 @@ export function CalendarCharts({
       </div>
 
       {/* Weekly Activity */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-5 overflow-visible">
-        <h3 className="text-sm font-medium text-white mb-4">Weekly Activity</h3>
+      <div className="bg-gray-100 rounded-xl border border-gray-200 p-5 overflow-visible">
+        <h3 className="text-sm font-medium text-gray-900 mb-4">Weekly Activity</h3>
         <div className="h-[180px] overflow-visible">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={weeklyActivity} barGap={4}>
@@ -120,7 +120,7 @@ export function CalendarCharts({
               />
               <Bar
                 dataKey="events"
-                fill="#3ECF8E"
+                fill="#2563EB"
                 radius={[4, 4, 0, 0]}
                 name="Events"
               />
@@ -135,26 +135,26 @@ export function CalendarCharts({
         </div>
         <div className="flex justify-center gap-6 mt-2">
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-            <span className="text-xs text-[#888]">Events</span>
+            <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+            <span className="text-xs text-gray-500">Events</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-            <span className="text-xs text-[#888]">Expenses</span>
+            <span className="text-xs text-gray-500">Expenses</span>
           </div>
         </div>
       </div>
 
       {/* Monthly Comparison */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-5">
-        <h3 className="text-sm font-medium text-white mb-4">Monthly Trend</h3>
+      <div className="bg-gray-100 rounded-xl border border-gray-200 p-5">
+        <h3 className="text-sm font-medium text-gray-900 mb-4">Monthly Trend</h3>
         <div className="h-[180px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={monthlyComparison}>
               <defs>
                 <linearGradient id="colorEventsChart" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3ECF8E" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#3ECF8E" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#2563EB" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient
                   id="colorCompletedChart"
@@ -188,7 +188,7 @@ export function CalendarCharts({
               <Area
                 type="monotone"
                 dataKey="events"
-                stroke="#3ECF8E"
+                stroke="#2563EB"
                 strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#colorEventsChart)"
@@ -208,12 +208,12 @@ export function CalendarCharts({
         </div>
         <div className="flex justify-center gap-6 mt-2">
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-            <span className="text-xs text-[#888]">Scheduled</span>
+            <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+            <span className="text-xs text-gray-500">Scheduled</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-            <span className="text-xs text-[#888]">Completed</span>
+            <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+            <span className="text-xs text-gray-500">Completed</span>
           </div>
         </div>
       </div>

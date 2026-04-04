@@ -76,9 +76,6 @@ export async function checkCostGuideChanges(
 
         // Invalidate cache: expire this URL's cost data immediately
         await invalidateCacheForUrl(url);
-        console.log(
-          `[CostMonitor] ${changes.length} change(s) detected — cache invalidated for ${url}`
-        );
       }
 
       results.push({
@@ -88,7 +85,6 @@ export async function checkCostGuideChanges(
         previousScrapeAt: ct?.previousScrapeAt,
       });
     } catch (error) {
-      console.error(`[CostMonitor] Failed to check ${url}:`, error);
       Sentry.captureException(error, {
         extra: { tool: "checkCostGuideChanges", url },
       });
@@ -97,9 +93,6 @@ export async function checkCostGuideChanges(
   }
 
   const changedCount = results.filter((r) => r.hasChanges).length;
-  console.log(
-    `[CostMonitor] Checked ${urls.length} URLs — ${changedCount} with changes`
-  );
 
   return results;
 }

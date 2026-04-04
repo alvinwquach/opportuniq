@@ -21,7 +21,6 @@ export function createPermitLookupTool(ctx: ToolContext) {
       state: z.string().describe("State abbreviation (e.g., 'CA', 'TX')"),
     }),
     execute: async ({ projectType, city, state }) => {
-      console.log(`[checkPermitRequirements] Looking up permits for: ${projectType} in ${city}, ${state}`);
 
       const generalGuidance = [
         "Most jurisdictions require permits for: electrical work, plumbing, structural changes, HVAC",
@@ -32,7 +31,6 @@ export function createPermitLookupTool(ctx: ToolContext) {
       ];
 
       if (!ctx.firecrawl) {
-        console.log(`[checkPermitRequirements] Firecrawl not available`);
         return {
           error: "Permit lookup not available",
           suggestion: `Search "${city} ${state} building permits ${projectType}" or call your local building department`,
@@ -53,7 +51,6 @@ export function createPermitLookupTool(ctx: ToolContext) {
         );
 
         if (searchResults?.web?.length) {
-          console.log(`[checkPermitRequirements] firecrawlSearch success, ${searchResults.web.length} results`);
           return {
             projectType,
             location: `${city}, ${state}`,
@@ -67,7 +64,6 @@ export function createPermitLookupTool(ctx: ToolContext) {
           };
         }
 
-        console.log(`[checkPermitRequirements] firecrawlSearch returned no results, falling back`);
       }
 
       // FALLBACK: existing Google scraping code
@@ -77,7 +73,6 @@ export function createPermitLookupTool(ctx: ToolContext) {
         const result = await scrapeWithTimeout(ctx.firecrawl, searchUrl, 20000);
 
         if (result?.markdown) {
-          console.log(`[checkPermitRequirements] Success, got ${result.markdown.length} chars`);
           return {
             projectType,
             location: `${city}, ${state}`,
@@ -87,7 +82,6 @@ export function createPermitLookupTool(ctx: ToolContext) {
           };
         }
 
-        console.log(`[checkPermitRequirements] Failed or timed out`);
         Sentry.captureMessage("Tool returned error", {
           level: "warning",
           extra: { tool: "checkPermitRequirements", error: "Timed out or failed", projectType, city, state },

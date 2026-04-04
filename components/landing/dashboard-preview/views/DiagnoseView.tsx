@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { IssuesSidebar, ChatArea, ResourcePanel, issuesData } from "./diagnose";
 import { DemoFlowProvider } from "./diagnose/DemoFlowContext";
 
-export function DiagnoseView() {
+export function DiagnoseView({ previewMode = false }: { previewMode?: boolean } = {}) {
   const [selectedIssueId, setSelectedIssueId] = useState("current");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<"all" | "active" | "resolved" | "pending">("all");
@@ -30,8 +30,8 @@ export function DiagnoseView() {
   }, []);
 
   return (
-    <DemoFlowProvider issue={currentIssue}>
-      <div className="h-full bg-[#0f0f0f] flex overflow-hidden">
+    <DemoFlowProvider issue={currentIssue} skipToComplete={previewMode}>
+      <div className="h-full bg-white flex overflow-hidden">
         {/* Left Column - Issue History & Search (hidden below lg) */}
         <div className="hidden lg:block">
           <IssuesSidebar

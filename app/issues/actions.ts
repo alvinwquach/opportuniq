@@ -92,7 +92,6 @@ export async function logIssueActivity({
     });
   } catch (error) {
     // Log error but don't fail the main operation
-    console.error("[IssueActivityLog] Failed to log activity:", error);
   }
 }
 
@@ -171,7 +170,6 @@ export async function updateIssueStatus(
 
     return { success: true };
   } catch (error) {
-    console.error("[Issues] updateIssueStatus error:", error);
     return { success: false, error: "Failed to update status" };
   }
 }
@@ -259,7 +257,6 @@ export async function setIssueResolution(
 
     return { success: true };
   } catch (error) {
-    console.error("[Issues] setIssueResolution error:", error);
     return { success: false, error: "Failed to set resolution" };
   }
 }
@@ -338,7 +335,6 @@ export async function reopenIssue(issueId: string, reason?: string) {
 
     return { success: true };
   } catch (error) {
-    console.error("[Issues] reopenIssue error:", error);
     return { success: false, error: "Failed to reopen issue" };
   }
 }
@@ -565,7 +561,6 @@ export async function getIssueTimeline(
       total: entries.length,
     };
   } catch (error) {
-    console.error("[Issues] getIssueTimeline error:", error);
     return { success: false, error: "Failed to fetch timeline", entries: [], total: 0 };
   }
 }
@@ -603,6 +598,7 @@ export interface IssueDetails {
     avatarUrl: string | null;
   };
   evidenceCount: number;
+  hypothesisCount: number;
   commentCount: number;
   scheduleCount: number;
 }
@@ -722,6 +718,11 @@ export async function getIssueDetails(
       .from(diySchedules)
       .where(eq(diySchedules.issueId, issueId));
 
+    const hypothesisResult = await db
+      .select({ id: issueHypotheses.id })
+      .from(issueHypotheses)
+      .where(eq(issueHypotheses.issueId, issueId));
+
     return {
       success: true,
       issue: {
@@ -749,12 +750,12 @@ export async function getIssueDetails(
         },
         resolvedBy: resolverDetails,
         evidenceCount: evidenceResult.length,
+        hypothesisCount: hypothesisResult.length,
         commentCount: commentResult.length,
         scheduleCount: scheduleResult.length,
       },
     };
   } catch (error) {
-    console.error("[Issues] getIssueDetails error:", error);
     return { success: false, error: "Failed to fetch issue details" };
   }
 }
@@ -832,7 +833,6 @@ export async function getDecisionForIssue(
       },
     };
   } catch (error) {
-    console.error("[Issues] getDecisionForIssue error:", error);
     return { success: false, error: "Failed to fetch decision" };
   }
 }

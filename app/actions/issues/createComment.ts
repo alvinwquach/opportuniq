@@ -37,7 +37,6 @@ export async function createCommentEncrypted(
 
     return { success: true, commentId: comment.id };
   } catch (error) {
-    console.error("[Create Comment] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to create comment",
@@ -68,7 +67,6 @@ export async function createCommentPlaintext(
 
     return { success: true, commentId: comment.id };
   } catch (error) {
-    console.error("[Create Comment] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to create comment",

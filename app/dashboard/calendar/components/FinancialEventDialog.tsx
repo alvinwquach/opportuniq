@@ -35,7 +35,7 @@ export function FinancialEventDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#0c0c0c] border-[#1f1f1f] sm:max-w-md">
+      <DialogContent className="bg-gray-50 border-gray-200 sm:max-w-md">
         {isIncome ? (
           <IncomeContent data={event.data as IncomeEvent} />
         ) : (
@@ -49,7 +49,7 @@ export function FinancialEventDialog({
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="border-[#1f1f1f] text-[#888] hover:text-white hover:bg-[#1f1f1f]"
+            className="border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-100"
           >
             Close
           </Button>
@@ -69,24 +69,24 @@ function IncomeContent({ data }: { data: IncomeEvent }) {
           </div>
           {data.source}
         </DialogTitle>
-        <DialogDescription className="text-[#666]">Income</DialogDescription>
+        <DialogDescription className="text-gray-500">Income</DialogDescription>
       </DialogHeader>
 
       <div className="space-y-4 py-4">
-        <div className="flex items-center justify-between p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
-          <span className="text-[#888]">Amount</span>
+        <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-200">
+          <span className="text-gray-500">Amount</span>
           <span className="text-[#10B981] font-semibold text-lg">
             ${parseFloat(data.amount).toLocaleString()}
           </span>
         </div>
 
-        <div className="flex items-center gap-3 text-[#888]">
+        <div className="flex items-center gap-3 text-gray-500">
           <IoRepeat className="w-4 h-4" />
           <span className="capitalize">{formatFrequency(data.frequency)}</span>
         </div>
 
         {data.description && (
-          <p className="text-sm text-[#666]">{data.description}</p>
+          <p className="text-sm text-gray-500">{data.description}</p>
         )}
       </div>
     </>
@@ -117,7 +117,7 @@ function ExpenseContent({
           </div>
           {data.category}
         </DialogTitle>
-        <DialogDescription className="text-[#666]">
+        <DialogDescription className="text-gray-500">
           {isUserExpense
             ? "Personal Expense"
             : `Group Expense • ${data.groupName}`}
@@ -125,20 +125,20 @@ function ExpenseContent({
       </DialogHeader>
 
       <div className="space-y-4 py-4">
-        <div className="flex items-center justify-between p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
-          <span className="text-[#888]">Amount</span>
+        <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-200">
+          <span className="text-gray-500">Amount</span>
           <span className={cn("font-semibold text-lg", colorClass)}>
             ${parseFloat(data.amount).toLocaleString()}
           </span>
         </div>
 
-        <div className="flex items-center gap-3 text-[#888]">
+        <div className="flex items-center gap-3 text-gray-500">
           <IoCalendar className="w-4 h-4" />
           <span>{format(new Date(data.date), "MMMM d, yyyy")}</span>
         </div>
 
         {data.isRecurring && data.recurringFrequency && (
-          <div className="flex items-center gap-3 text-[#888]">
+          <div className="flex items-center gap-3 text-gray-500">
             <IoRepeat className="w-4 h-4" />
             <span className="capitalize">
               Recurring • {formatFrequency(data.recurringFrequency)}
@@ -147,7 +147,7 @@ function ExpenseContent({
         )}
 
         {data.description && (
-          <p className="text-sm text-[#666]">{data.description}</p>
+          <p className="text-sm text-gray-500">{data.description}</p>
         )}
       </div>
     </>

@@ -142,7 +142,6 @@ export function ResolutionDialog({
       }
     } catch (err) {
       setError("An unexpected error occurred");
-      console.error("Resolution error:", err);
     } finally {
       setIsSubmitting(false);
     }

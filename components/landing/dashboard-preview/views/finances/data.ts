@@ -48,13 +48,13 @@ export const savingsRateData = [
 export const initialIncomeStreams: IncomeStream[] = [
   { id: "1", source: "Primary Salary", amount: 6500, frequency: "monthly", isActive: true, description: "Full-time job" },
   { id: "2", source: "Rental Income", amount: 1300, frequency: "monthly", isActive: true, description: "Apartment 2B" },
-  { id: "3", source: "Freelance", amount: 800, frequency: "monthly", isActive: true, description: "Side projects" },
+  { id: "3", source: "Freelance", amount: 800, frequency: "monthly", isActive: false, description: "Side projects" },
 ];
 
 export const initialExpenses: Expense[] = [
-  { id: "1", category: "Repairs", amount: 24.99, description: "Faucet cartridge", date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), isRecurring: false, issueTitle: "Leaky faucet", urgency: "important" },
-  { id: "2", category: "Repairs", amount: 8.49, description: "O-ring kit", date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), isRecurring: false, issueTitle: "Leaky faucet", urgency: "important" },
-  { id: "3", category: "Maintenance", amount: 12.99, description: "AC filter replacement", date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), isRecurring: false, urgency: "normal" },
-  { id: "4", category: "Insurance", amount: 150, description: "Home insurance", date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), isRecurring: true, frequency: "monthly", nextDueDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000), urgency: "critical" },
-  { id: "5", category: "Maintenance", amount: 120, description: "HVAC service", date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), isRecurring: true, frequency: "quarterly", nextDueDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), urgency: "normal" },
+  { id: "1", category: "Repairs", amount: 24.99, description: "Faucet cartridge", date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), isRecurring: false, issueTitle: "Leaky faucet", issueId: "issue-1", urgency: "important", approvalStatus: "approved" },
+  { id: "2", category: "Repairs", amount: 8.49, description: "O-ring kit", date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), isRecurring: false, issueTitle: "Leaky faucet", urgency: "important", approvalStatus: "pending" },
+  { id: "3", category: "Maintenance", amount: 12.99, description: "AC filter replacement", date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), isRecurring: false, issueId: "issue-1", urgency: "normal" },
+  { id: "4", category: "Insurance", amount: 150, description: "Home insurance", date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), isRecurring: true, frequency: "monthly", recurringFrequency: "monthly", nextDueDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000), urgency: "critical" },
+  { id: "5", category: "Maintenance", amount: 120, description: "HVAC service", date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), isRecurring: true, frequency: "quarterly", recurringFrequency: "quarterly", issueId: "issue-1", nextDueDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), urgency: "normal" },
 ];

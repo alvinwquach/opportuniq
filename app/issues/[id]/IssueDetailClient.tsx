@@ -56,6 +56,10 @@ export function IssueDetailClient({
                 <span className="text-xs text-white">{currentIssue.evidenceCount}</span>
               </div>
               <div className="flex justify-between">
+                <span className="text-xs text-[#666]">Hypotheses</span>
+                <span className="text-xs text-white">{currentIssue.hypothesisCount}</span>
+              </div>
+              <div className="flex justify-between">
                 <span className="text-xs text-[#666]">Comments</span>
                 <span className="text-xs text-white">{currentIssue.commentCount}</span>
               </div>

@@ -39,8 +39,8 @@ export function LocationForm({ initialValues }: LocationFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Why Location Matters */}
-      <div className="p-4 rounded-xl bg-[#00D4FF]/5 border border-[#00D4FF]/20">
-        <p className="text-sm text-[#00D4FF]">
+      <div className="p-4 rounded-xl bg-blue-50 border border-blue-200">
+        <p className="text-sm text-blue-600">
           <strong>Why we need your location:</strong> We use your ZIP code to
           find local contractors, check store availability, and show accurate
           pricing for your area.
@@ -48,16 +48,16 @@ export function LocationForm({ initialValues }: LocationFormProps) {
       </div>
 
       {/* ZIP Code Field */}
-      <div className="p-5 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+      <div className="p-5 rounded-xl bg-gray-50 border border-gray-200">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center">
-            <IoLocationSharp className="w-5 h-5 text-[#00D4FF]" />
+          <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+            <IoLocationSharp className="w-5 h-5 text-blue-600" />
           </div>
           <div>
-            <label className="text-sm font-medium text-white block">
+            <label className="text-sm font-medium text-gray-900 block">
               ZIP Code <span className="text-red-400">*</span>
             </label>
-            <p className="text-[11px] text-[#555]">
+            <p className="text-[11px] text-gray-400">
               Required for local search results
             </p>
           </div>
@@ -68,21 +68,21 @@ export function LocationForm({ initialValues }: LocationFormProps) {
           onChange={(e) => setValues({ ...values, zipCode: e.target.value })}
           placeholder="e.g., 90210"
           maxLength={10}
-          className="w-full h-11 px-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#00D4FF]/50 transition-colors"
+          className="w-full h-11 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-[#444] focus:outline-none focus:border-blue-500/50 transition-colors"
         />
       </div>
 
       {/* Full Address Field (Optional) */}
-      <div className="p-5 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+      <div className="p-5 rounded-xl bg-gray-50 border border-gray-200">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-            <IoHome className="w-5 h-5 text-emerald-500" />
+          <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+            <IoHome className="w-5 h-5 text-blue-500" />
           </div>
           <div>
-            <label className="text-sm font-medium text-white block">
+            <label className="text-sm font-medium text-gray-900 block">
               Full Address
             </label>
-            <p className="text-[11px] text-[#555]">
+            <p className="text-[11px] text-gray-400">
               Optional - helps find closest contractors
             </p>
           </div>
@@ -92,7 +92,7 @@ export function LocationForm({ initialValues }: LocationFormProps) {
           value={values.address}
           onChange={(e) => setValues({ ...values, address: e.target.value })}
           placeholder="123 Main St, City, State"
-          className="w-full h-11 px-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-emerald-500/50 transition-colors"
+          className="w-full h-11 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-[#444] focus:outline-none focus:border-blue-500/50 transition-colors"
         />
         <p className="text-[11px] text-[#444] mt-2">
           Your address is encrypted and never shared with third parties
@@ -100,16 +100,16 @@ export function LocationForm({ initialValues }: LocationFormProps) {
       </div>
 
       {/* Search Radius */}
-      <div className="p-5 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+      <div className="p-5 rounded-xl bg-gray-50 border border-gray-200">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
             <IoSpeedometer className="w-5 h-5 text-purple-500" />
           </div>
           <div>
-            <label className="text-sm font-medium text-white block">
+            <label className="text-sm font-medium text-gray-900 block">
               Search Radius
             </label>
-            <p className="text-[11px] text-[#555]">
+            <p className="text-[11px] text-gray-400">
               How far to search for contractors
             </p>
           </div>
@@ -122,7 +122,7 @@ export function LocationForm({ initialValues }: LocationFormProps) {
               onChange={(e) =>
                 setValues({ ...values, searchRadius: Number(e.target.value) })
               }
-              className="w-full h-11 px-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-purple-500/50 transition-colors appearance-none cursor-pointer"
+              className="w-full h-11 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-purple-500/50 transition-colors appearance-none cursor-pointer"
             >
               <option value={5}>5</option>
               <option value={10}>10</option>
@@ -141,7 +141,7 @@ export function LocationForm({ initialValues }: LocationFormProps) {
                   distanceUnit: e.target.value as "miles" | "kilometers",
                 })
               }
-              className="w-full h-11 px-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-purple-500/50 transition-colors appearance-none cursor-pointer"
+              className="w-full h-11 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-purple-500/50 transition-colors appearance-none cursor-pointer"
             >
               <option value="miles">miles</option>
               <option value="kilometers">km</option>
@@ -149,9 +149,9 @@ export function LocationForm({ initialValues }: LocationFormProps) {
           </div>
         </div>
 
-        <p className="text-xs text-[#666] mt-3">
+        <p className="text-xs text-gray-500 mt-3">
           Current: Searching within{" "}
-          <span className="text-white font-medium">
+          <span className="text-gray-900 font-medium">
             {values.searchRadius} {values.distanceUnit}
           </span>{" "}
           of your location
@@ -163,7 +163,7 @@ export function LocationForm({ initialValues }: LocationFormProps) {
         <button
           type="submit"
           disabled={isSubmitting || !values.zipCode}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#00D4FF] hover:bg-[#00D4FF]/90 disabled:bg-[#1f1f1f] disabled:text-[#555] text-[#0c0c0c] font-medium text-sm transition-colors"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-600/90 disabled:bg-gray-100 disabled:text-gray-400 text-white font-medium text-sm transition-colors"
         >
           {isSubmitting ? (
             <ImSpinner8 className="w-4 h-4 animate-spin" />
@@ -173,7 +173,7 @@ export function LocationForm({ initialValues }: LocationFormProps) {
           Save Location
         </button>
         {saveMessage && (
-          <span className="text-sm text-[#00D4FF]">{saveMessage}</span>
+          <span className="text-sm text-blue-600">{saveMessage}</span>
         )}
       </div>
     </form>

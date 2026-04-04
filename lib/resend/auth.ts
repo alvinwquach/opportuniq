@@ -37,13 +37,11 @@ export async function sendWelcomeEmail({
     });
 
     if (error) {
-      console.error("Failed to send welcome email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending welcome email:", error);
     return { success: false, error };
   }
 }
@@ -77,13 +75,11 @@ export async function sendAbandonedOnboardingEmail({
     });
 
     if (error) {
-      console.error("Failed to send abandoned onboarding email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending abandoned onboarding email:", error);
     return { success: false, error };
   }
 }
@@ -120,13 +116,11 @@ export async function sendMagicLinkEmail({
     });
 
     if (error) {
-      console.error("Failed to send magic link email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending magic link email:", error);
     return { success: false, error };
   }
 }

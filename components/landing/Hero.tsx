@@ -9,7 +9,7 @@ export function Hero() {
           <div className="text-center lg:text-left">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6 leading-[1.1]">
               Home projects,{" "}
-              <span className="text-teal-400">researched for you.</span>
+              <span className="text-blue-400">researched for you.</span>
             </h1>
 
             <p className="text-lg text-neutral-400 mb-8 max-w-md mx-auto lg:mx-0">
@@ -17,7 +17,7 @@ export function Hero() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
               <WaitlistModal>
-                <button className="w-full sm:w-auto px-8 py-4 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                <button className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
                   Join Waitlist
                   <IoArrowForward className="w-4 h-4" />
                 </button>
@@ -38,7 +38,7 @@ export function Hero() {
                 <span className="text-neutral-400">ceiling fan installation</span>
               </div>
               <div className="space-y-4">
-                <div className="flex items-center gap-4 p-4 rounded-xl border border-neutral-800 hover:border-teal-500/50 transition-colors bg-neutral-800/50">
+                <div className="flex items-center gap-4 p-4 rounded-xl border border-neutral-800 hover:border-blue-500/50 transition-colors bg-neutral-800/50">
                   <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
                     <IoStorefront className="w-5 h-5 text-blue-400" />
                   </div>
@@ -49,7 +49,7 @@ export function Hero() {
                   <span className="text-sm font-semibold text-emerald-400">$149</span>
                 </div>
 
-                <div className="flex items-center gap-4 p-4 rounded-xl border border-neutral-800 hover:border-teal-500/50 transition-colors bg-neutral-800/50">
+                <div className="flex items-center gap-4 p-4 rounded-xl border border-neutral-800 hover:border-blue-500/50 transition-colors bg-neutral-800/50">
                   <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
                     <IoConstruct className="w-5 h-5 text-amber-400" />
                   </div>
@@ -60,7 +60,7 @@ export function Hero() {
                   <span className="text-sm font-semibold text-emerald-400">$24</span>
                 </div>
 
-                <div className="flex items-center gap-4 p-4 rounded-xl border border-neutral-800 hover:border-teal-500/50 transition-colors bg-neutral-800/50">
+                <div className="flex items-center gap-4 p-4 rounded-xl border border-neutral-800 hover:border-blue-500/50 transition-colors bg-neutral-800/50">
                   <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
                     <span className="text-xs font-bold text-purple-400">PRO</span>
                   </div>

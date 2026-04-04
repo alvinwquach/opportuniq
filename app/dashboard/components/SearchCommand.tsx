@@ -290,13 +290,13 @@ export function SearchCommand({ open, onOpenChange, onAddIncome, initialQuery = 
               className={cn(
                 "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors",
                 index === selectedIndex
-                  ? "bg-[#00D4FF]/15 border border-[#00D4FF]/30 text-white shadow-sm"
-                  : "text-[#ddd] hover:bg-[#252525] hover:text-white border border-transparent"
+                  ? "bg-blue-600/15 border border-blue-500/30 text-gray-900 shadow-sm"
+                  : "text-[#ddd] hover:bg-gray-100 hover:text-gray-900 border border-transparent"
               )}
             >
               <Icon className={cn(
                 "w-4 h-4 shrink-0",
-                index === selectedIndex ? "text-[#00D4FF]" : "text-[#aaa]"
+                index === selectedIndex ? "text-blue-600" : "text-[#aaa]"
               )} />
               <div className="flex-1 min-w-0">
                 <p className="text-[14px] font-medium">{cmd.label}</p>
@@ -305,7 +305,7 @@ export function SearchCommand({ open, onOpenChange, onAddIncome, initialQuery = 
                 )}
               </div>
               {cmd.shortcut && (
-                <kbd className="text-[10px] px-1.5 py-0.5 rounded bg-[#0c0c0c] text-[#bbb] border border-[#444] font-mono">
+                <kbd className="text-[10px] px-1.5 py-0.5 rounded bg-gray-50 text-[#bbb] border border-[#444] font-mono">
                   {cmd.shortcut}
                 </kbd>
               )}
@@ -321,13 +321,13 @@ export function SearchCommand({ open, onOpenChange, onAddIncome, initialQuery = 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="bg-[#1a1a1a] border-[#3a3a3a] sm:max-w-2xl p-0 gap-0 shadow-2xl"
+        className="bg-gray-100 border-[#3a3a3a] sm:max-w-2xl p-0 gap-0 shadow-2xl"
         showCloseButton={false}
       >
         <VisuallyHidden asChild>
           <DialogTitle>Search Commands</DialogTitle>
         </VisuallyHidden>
-        <div className="flex items-center gap-3 px-4 py-4 border-b border-[#3a3a3a] bg-[#1f1f1f]">
+        <div className="flex items-center gap-3 px-4 py-4 border-b border-[#3a3a3a] bg-gray-100">
           <IoSearch className="w-5 h-5 text-[#aaa] shrink-0" />
           <input
             type="text"
@@ -335,13 +335,13 @@ export function SearchCommand({ open, onOpenChange, onAddIncome, initialQuery = 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             autoFocus
-            className="flex-1 bg-transparent text-white text-base placeholder:text-[#888] focus:outline-none"
+            className="flex-1 bg-transparent text-gray-900 text-base placeholder:text-gray-500 focus:outline-none"
           />
-          <kbd className="text-[11px] px-2 py-1 rounded bg-[#0c0c0c] text-[#bbb] border border-[#444] flex items-center gap-0.5 shrink-0">
+          <kbd className="text-[11px] px-2 py-1 rounded bg-gray-50 text-[#bbb] border border-[#444] flex items-center gap-0.5 shrink-0">
             <FiCommand className="w-3 h-3" />K
           </kbd>
         </div>
-        <div className="max-h-[400px] overflow-y-auto p-3 space-y-2 bg-[#1a1a1a]">
+        <div className="max-h-[400px] overflow-y-auto p-3 space-y-2 bg-gray-100">
           {flatFiltered.length === 0 ? (
             <p className="text-sm text-[#aaa] text-center py-8">No commands found</p>
           ) : (
@@ -360,19 +360,19 @@ export function SearchCommand({ open, onOpenChange, onAddIncome, initialQuery = 
             </>
           )}
         </div>
-        <div className="flex items-center gap-4 px-4 py-3 border-t border-[#3a3a3a] text-[11px] text-[#aaa] bg-[#1f1f1f]">
+        <div className="flex items-center gap-4 px-4 py-3 border-t border-[#3a3a3a] text-[11px] text-[#aaa] bg-gray-100">
           <span className="flex items-center gap-1.5">
-            <kbd className="px-1.5 py-0.5 rounded bg-[#0c0c0c] border border-[#333] text-[#aaa]">↑</kbd>
-            <kbd className="px-1.5 py-0.5 rounded bg-[#0c0c0c] border border-[#333] text-[#aaa]">↓</kbd>
-            <span className="text-[#999]">navigate</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-gray-50 border border-[#333] text-[#aaa]">↑</kbd>
+            <kbd className="px-1.5 py-0.5 rounded bg-gray-50 border border-[#333] text-[#aaa]">↓</kbd>
+            <span className="text-gray-400">navigate</span>
           </span>
           <span className="flex items-center gap-1.5">
-            <kbd className="px-1.5 py-0.5 rounded bg-[#0c0c0c] border border-[#333] text-[#aaa]">↵</kbd>
-            <span className="text-[#999]">select</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-gray-50 border border-[#333] text-[#aaa]">↵</kbd>
+            <span className="text-gray-400">select</span>
           </span>
           <span className="flex items-center gap-1.5">
-            <kbd className="px-1.5 py-0.5 rounded bg-[#0c0c0c] border border-[#333] text-[#aaa]">esc</kbd>
-            <span className="text-[#999]">close</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-gray-50 border border-[#333] text-[#aaa]">esc</kbd>
+            <span className="text-gray-400">close</span>
           </span>
         </div>
       </DialogContent>

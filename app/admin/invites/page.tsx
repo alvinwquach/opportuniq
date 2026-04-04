@@ -41,7 +41,6 @@ export default async function InvitesPage() {
     dailyInvites = result.dailyInvites;
   } catch (err) {
     error = err instanceof Error ? err.message : "Failed to load invites";
-    console.error("[Admin Invites] Error loading invites:", err);
   }
 
   if (error) {

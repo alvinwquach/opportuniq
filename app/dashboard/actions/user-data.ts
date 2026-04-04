@@ -89,7 +89,6 @@ export async function getUserData(userId: string) {
 
   // Debug: Log groupIds to ensure it's an array
   if (groupIds.length > 0) {
-    console.log("[Dashboard] groupIds array:", { length: groupIds.length, first: groupIds[0], isArray: Array.isArray(groupIds) });
   }
 
   return {

@@ -34,7 +34,6 @@ export default async function Referrals() {
     referralGrowthData = result.referralGrowthData || [];
   } catch (err: unknown) {
     error = (err as Error)?.message || "Failed to load referrals";
-    console.error("[Admin Referrals] Error loading referrals:", err);
   }
 
   if (error) {

@@ -4,8 +4,7 @@ import { useEffect, useRef } from "react";
 import {
   gsap,
   ScrollTrigger,
-  animateCounter,
-  scrambleText,
+  ScrambleTextPlugin,
 } from "@/lib/gsap";
 import { IoCamera, IoPlayCircle } from "react-icons/io5";
 import { OpportunIQLogo } from "@/components/landing/OpportunIQLogo";
@@ -74,10 +73,13 @@ export function HeroSection() {
       // Counter animation for savings stat
       if (savingsRef.current) {
         tl.add(() => {
-          animateCounter(savingsRef.current!, 2847, {
+          gsap.to({ value: 0 }, {
+            value: 2847,
             duration: 1.5,
-            prefix: "$",
-            suffix: "/year",
+            ease: "power2.out",
+            onUpdate() {
+              savingsRef.current!.textContent = `$${Math.round(this.targets()[0].value).toLocaleString()}/year`;
+            },
           });
         }, "-=1.2");
       }
@@ -85,9 +87,9 @@ export function HeroSection() {
       // Scramble text for total saved
       if (totalSavedRef.current) {
         tl.add(() => {
-          scrambleText(totalSavedRef.current!, "$6.8M+", {
+          gsap.to(totalSavedRef.current!, {
+            scrambleText: { text: "$6.8M+", chars: "$0123456789M+." },
             duration: 1.2,
-            chars: "$0123456789M+.",
           });
         }, "-=1");
       }
@@ -133,7 +135,7 @@ export function HeroSection() {
         >
           Stop Losing Money
           <br />
-          <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
             On Home Repairs
           </span>
         </h1>
@@ -230,7 +232,7 @@ export function HeroSection() {
           </div>
         </div>
         {/* Glow effect */}
-        <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-emerald-500/20 rounded-3xl blur-2xl -z-10 opacity-50" />
+        <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/20 via-blue-500/20 to-emerald-500/20 rounded-3xl blur-2xl -z-10 opacity-50" />
       </div>
 
       {/* Scroll indicator */}

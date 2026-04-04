@@ -122,21 +122,21 @@ const getTypeIcon = (type: string) => {
 const getTypeColor = (type: string) => {
   switch (type) {
     case "contractor": return "bg-blue-500 text-white";
-    case "diy": return "bg-emerald-500 text-white";
+    case "diy": return "bg-blue-500 text-white";
     case "reminder": return "bg-amber-500 text-white";
     case "expense": return "bg-red-500 text-white";
     case "income": return "bg-green-500 text-white";
-    default: return "bg-[#333] text-white";
+    default: return "bg-gray-100 text-gray-900";
   }
 };
 
 const getStatusBadge = (status: string) => {
   switch (status) {
-    case "confirmed": return "bg-emerald-500/20 text-emerald-400";
-    case "scheduled": return "bg-blue-500/20 text-blue-400";
-    case "pending": return "bg-amber-500/20 text-amber-400";
-    case "completed": return "bg-[#333] text-[#888]";
-    default: return "bg-[#333] text-[#888]";
+    case "confirmed": return "bg-blue-100 text-blue-600";
+    case "scheduled": return "bg-blue-100 text-blue-600";
+    case "pending": return "bg-amber-100 text-amber-600";
+    case "completed": return "bg-gray-100 text-gray-500";
+    default: return "bg-gray-100 text-gray-500";
   }
 };
 
@@ -146,11 +146,11 @@ export function TimelineTab() {
       {/* Timeline Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-medium text-white">Upcoming Events</h3>
-          <p className="text-xs text-[#666]">Next 14 days</p>
+          <h3 className="text-sm font-medium text-gray-900">Upcoming Events</h3>
+          <p className="text-xs text-gray-500">Next 14 days</p>
         </div>
         <div className="flex items-center gap-2">
-          <select className="px-3 py-1.5 text-xs bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-[#888] focus:outline-none focus:border-emerald-500/50">
+          <select className="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded-lg text-gray-500 focus:outline-none focus:border-blue-500/50">
             <option>All Types</option>
             <option>DIY</option>
             <option>Pro Visits</option>
@@ -166,25 +166,25 @@ export function TimelineTab() {
           <div key={day.date}>
             {/* Date Header */}
             <div className="flex items-center gap-3 mb-3">
-              <div className={`w-3 h-3 rounded-full ${day.isToday ? "bg-emerald-500" : "bg-[#333]"}`} />
-              <h4 className={`text-sm font-medium ${day.isToday ? "text-emerald-400" : "text-white"}`}>
+              <div className={`w-3 h-3 rounded-full ${day.isToday ? "bg-blue-500" : "bg-gray-300"}`} />
+              <h4 className={`text-sm font-medium ${day.isToday ? "text-blue-600" : "text-gray-900"}`}>
                 {day.date}
               </h4>
               {day.isToday && (
-                <span className="text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-full">
+                <span className="text-[10px] px-2 py-0.5 bg-blue-100 text-blue-600 rounded-full">
                   Today
                 </span>
               )}
             </div>
 
             {/* Events for this day */}
-            <div className="ml-6 space-y-2 border-l border-[#2a2a2a] pl-4">
+            <div className="ml-6 space-y-2 border-l border-gray-200 pl-4">
               {day.events.map((event) => {
                 const Icon = getTypeIcon(event.type);
                 return (
                   <div
                     key={event.id}
-                    className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4 hover:bg-[#1f1f1f] cursor-pointer transition-colors group"
+                    className="bg-white rounded-xl border border-gray-200 p-4 hover:bg-gray-50 cursor-pointer transition-colors group"
                   >
                     <div className="flex items-start gap-3">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${getTypeColor(event.type)}`}>
@@ -193,15 +193,15 @@ export function TimelineTab() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <h5 className="text-sm font-medium text-white">{event.title}</h5>
+                            <h5 className="text-sm font-medium text-gray-900">{event.title}</h5>
                             <div className="flex items-center gap-2 mt-1">
-                              <IoTimeOutline className="w-3.5 h-3.5 text-[#555]" />
-                              <span className="text-xs text-[#888]">{event.time}</span>
+                              <IoTimeOutline className="w-3.5 h-3.5 text-gray-600" />
+                              <span className="text-xs text-gray-500">{event.time}</span>
                               {event.location && (
                                 <>
-                                  <span className="text-[#555]">·</span>
-                                  <IoLocationOutline className="w-3.5 h-3.5 text-[#555]" />
-                                  <span className="text-xs text-[#888]">{event.location}</span>
+                                  <span className="text-gray-600">·</span>
+                                  <IoLocationOutline className="w-3.5 h-3.5 text-gray-600" />
+                                  <span className="text-xs text-gray-500">{event.location}</span>
                                 </>
                               )}
                             </div>
@@ -210,24 +210,24 @@ export function TimelineTab() {
                             <span className={`text-[10px] px-2 py-0.5 rounded capitalize ${getStatusBadge(event.status)}`}>
                               {event.status}
                             </span>
-                            <button className="p-1.5 text-[#555] hover:text-white hover:bg-[#333] rounded opacity-0 group-hover:opacity-100 transition-all">
+                            <button className="p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded opacity-0 group-hover:opacity-100 transition-all">
                               <IoEllipsisHorizontal className="w-4 h-4" />
                             </button>
                           </div>
                         </div>
 
                         {/* Additional Details */}
-                        <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#2a2a2a]">
+                        <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-200">
                           {event.assignee && (
                             <div className="flex items-center gap-1.5">
-                              <IoPersonOutline className="w-3.5 h-3.5 text-[#555]" />
-                              <span className="text-xs text-[#888]">{event.assignee}</span>
+                              <IoPersonOutline className="w-3.5 h-3.5 text-gray-600" />
+                              <span className="text-xs text-gray-500">{event.assignee}</span>
                             </div>
                           )}
                           {event.estimatedCost > 0 && (
                             <div className="flex items-center gap-1.5">
-                              <IoCashOutline className="w-3.5 h-3.5 text-[#555]" />
-                              <span className={`text-xs ${event.type === "expense" ? "text-red-400" : "text-[#888]"}`}>
+                              <IoCashOutline className="w-3.5 h-3.5 text-gray-600" />
+                              <span className={`text-xs ${event.type === "expense" ? "text-red-600" : "text-gray-500"}`}>
                                 ${event.estimatedCost}
                               </span>
                             </div>
@@ -245,7 +245,7 @@ export function TimelineTab() {
 
       {/* Load More */}
       <div className="text-center pt-4">
-        <button className="px-4 py-2 text-xs font-medium text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-colors">
+        <button className="px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
           Load more events
         </button>
       </div>

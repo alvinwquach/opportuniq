@@ -73,7 +73,6 @@ export async function createIssueEncrypted(
 
     return { success: true, issueId: issue.id };
   } catch (error) {
-    console.error("[Create Issue] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to create issue",
@@ -137,7 +136,6 @@ export async function createIssuePlaintext(
 
     return { success: true, issueId: issue.id };
   } catch (error) {
-    console.error("[Create Issue] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to create issue",

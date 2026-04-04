@@ -19,7 +19,6 @@ export async function GET(req: Request) {
 
   // Handle user denying access
   if (error) {
-    console.error("[Gmail Callback] OAuth error:", error);
     const redirectUrl = new URL("/diagnose", req.url);
     redirectUrl.searchParams.set("gmail_error", error);
     return NextResponse.redirect(redirectUrl);
@@ -54,13 +53,11 @@ export async function GET(req: Request) {
 
         // Verify the state belongs to this user
         if (stateData.userId !== user.id) {
-          console.error("[Gmail Callback] State user ID mismatch");
           return NextResponse.redirect(
             new URL("/diagnose?gmail_error=invalid_state", req.url)
           );
         }
       } catch {
-        console.error("[Gmail Callback] Failed to parse state");
       }
     }
 
@@ -68,7 +65,6 @@ export async function GET(req: Request) {
     const tokens = await exchangeCodeForTokens(code);
 
     if (!tokens.access_token || !tokens.refresh_token) {
-      console.error("[Gmail Callback] Missing tokens:", {
         hasAccessToken: !!tokens.access_token,
         hasRefreshToken: !!tokens.refresh_token,
       });
@@ -111,17 +107,12 @@ export async function GET(req: Request) {
         },
       });
 
-    console.log("[Gmail Callback] Gmail connected successfully:", {
-      userId: user.id,
-      gmailAddress,
-    });
 
     // Redirect back with success
     const redirectUrl = new URL(redirectTo, req.url);
     redirectUrl.searchParams.set("gmail_connected", "true");
     return NextResponse.redirect(redirectUrl);
   } catch (error) {
-    console.error("[Gmail Callback] Error:", error);
     return NextResponse.redirect(
       new URL("/diagnose?gmail_error=connection_failed", req.url)
     );

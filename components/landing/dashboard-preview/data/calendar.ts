@@ -7,7 +7,7 @@ export const calendarEvents: CalendarEvent[] = [
     date: 'Mon, Feb 3',
     time: '10:00 AM',
     type: 'contractor',
-    color: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    color: 'bg-blue-100 text-blue-700 border-blue-200',
   },
   {
     id: '2',
@@ -15,7 +15,7 @@ export const calendarEvents: CalendarEvent[] = [
     date: 'Wed, Feb 5',
     time: '2:00 PM',
     type: 'diy',
-    color: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    color: 'bg-blue-100 text-blue-700 border-blue-200',
   },
   {
     id: '3',

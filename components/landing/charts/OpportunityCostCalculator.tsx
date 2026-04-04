@@ -154,7 +154,7 @@ export function OpportunityCostCalculator() {
                   [&::-webkit-slider-thumb]:w-5
                   [&::-webkit-slider-thumb]:h-5
                   [&::-webkit-slider-thumb]:rounded-full
-                  [&::-webkit-slider-thumb]:bg-teal-700
+                  [&::-webkit-slider-thumb]:bg-blue-700
                   [&::-webkit-slider-thumb]:cursor-pointer
                   [&::-webkit-slider-thumb]:shadow-md
                   [&::-webkit-slider-thumb]:transition-transform
@@ -162,7 +162,7 @@ export function OpportunityCostCalculator() {
                   [&::-moz-range-thumb]:w-5
                   [&::-moz-range-thumb]:h-5
                   [&::-moz-range-thumb]:rounded-full
-                  [&::-moz-range-thumb]:bg-teal-700
+                  [&::-moz-range-thumb]:bg-blue-700
                   [&::-moz-range-thumb]:border-0
                   [&::-moz-range-thumb]:cursor-pointer"
               />
@@ -180,7 +180,7 @@ export function OpportunityCostCalculator() {
                     onClick={() => setSelectedScenario(scenario)}
                     className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
                       selectedScenario.name === scenario.name
-                        ? "bg-teal-700 text-white font-medium"
+                        ? "bg-blue-700 text-white font-medium"
                         : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
                     }`}
                     aria-pressed={selectedScenario.name === scenario.name}

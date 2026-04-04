@@ -84,7 +84,7 @@ export default async function DashboardLayout({
   return (
     <SidebarProvider>
       <ThemeSync savedTheme={savedTheme} />
-      <div className="min-h-screen bg-[#0c0c0c] flex">
+      <div className="min-h-screen bg-gray-50 flex">
         <DashboardSidebar
           user={{
             id: userData.id,

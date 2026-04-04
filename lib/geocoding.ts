@@ -33,7 +33,6 @@ export async function geocodePostalCode(
   const token = process.env.MAPBOX_ACCESS_TOKEN || process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
   if (!token) {
-    console.error("Mapbox token not configured for server-side geocoding");
     return null;
   }
 
@@ -74,12 +73,10 @@ export async function geocodePostalCode(
         console.warn("Mapbox geocoding request aborted due to timeout");
         return null; // Return null instead of throwing
       }
-      console.error("Mapbox geocoding fetch error:", error);
       return null; // Return null on any error
     }
 
     if (!response.ok) {
-      console.error("Mapbox geocoding API error:", response.status, response.statusText);
       return null;
     }
 
@@ -99,7 +96,6 @@ export async function geocodePostalCode(
       formattedAddress: feature.place_name,
     };
   } catch (error) {
-    console.error("Geocoding error:", error);
     return null;
   }
 }

@@ -117,7 +117,6 @@ export async function searchYouTubeVideos(
       nextPageToken: data.nextPageToken,
     };
   } catch (error) {
-    console.error("YouTube search error:", error);
     return {
       success: false,
       guides: [],
@@ -225,7 +224,6 @@ export async function getYouTubeVideoDetails(
       guide,
     };
   } catch (error) {
-    console.error("YouTube video details error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to get video details",

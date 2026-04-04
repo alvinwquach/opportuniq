@@ -133,10 +133,10 @@ const getCategoryColors = (color: string) => {
   switch (color) {
     case "teal":
       return {
-        bg: "bg-teal-500/20",
-        border: "border-teal-500/40",
-        text: "text-teal-400",
-        hoverBorder: "hover:border-teal-500/50",
+        bg: "bg-blue-500/20",
+        border: "border-blue-500/40",
+        text: "text-blue-400",
+        hoverBorder: "hover:border-blue-500/50",
       };
     case "amber":
       return {
@@ -154,10 +154,10 @@ const getCategoryColors = (color: string) => {
       };
     default:
       return {
-        bg: "bg-teal-500/20",
-        border: "border-teal-500/40",
-        text: "text-teal-400",
-        hoverBorder: "hover:border-teal-500/50",
+        bg: "bg-blue-500/20",
+        border: "border-blue-500/40",
+        text: "text-blue-400",
+        hoverBorder: "hover:border-blue-500/50",
       };
   }
 };
@@ -168,14 +168,14 @@ export default function ProductPage() {
       {/* Hero */}
       <section className="pt-28 pb-16 px-6 bg-neutral-950">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-500/40 text-teal-400 text-xs font-mono mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-400 text-xs font-mono mb-6">
             <IoSparkles className="w-4 h-4" />
             Product Overview
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             Everything you need to{" "}
-            <span className="text-teal-400">
+            <span className="text-blue-400">
               fix smarter
             </span>
           </h1>
@@ -186,7 +186,7 @@ export default function ProductPage() {
           </p>
 
           <WaitlistModal>
-            <Button className="h-12 px-8 font-mono font-bold bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
+            <Button className="h-12 px-8 font-mono font-bold bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
               Get Early Access
             </Button>
           </WaitlistModal>
@@ -246,7 +246,7 @@ export default function ProductPage() {
       <section className="py-20 px-6 border-t border-neutral-800 bg-neutral-950">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs uppercase tracking-[0.2em] text-teal-400 mb-3">How It Works</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-blue-400 mb-3">How It Works</p>
             <h2 className="text-3xl font-bold text-white mb-4">From problem to solution in minutes</h2>
             <p className="text-neutral-400 max-w-lg mx-auto">Five simple steps to diagnose, decide, and manage any repair</p>
           </div>
@@ -320,7 +320,7 @@ export default function ProductPage() {
           <div className="lg:hidden">
             <div className="relative">
               {/* Vertical connecting line */}
-              <div className="absolute left-5 top-5 bottom-5 w-px bg-gradient-to-b from-teal-500/40 via-amber-500/40 to-emerald-500/40" />
+              <div className="absolute left-5 top-5 bottom-5 w-px bg-gradient-to-b from-blue-500/40 via-amber-500/40 to-emerald-500/40" />
 
               <div className="space-y-6">
                 {[
@@ -359,7 +359,7 @@ export default function ProductPage() {
             Get AI-powered repair guidance that saves you time and money.
           </p>
           <WaitlistModal>
-            <Button className="h-14 px-8 font-mono font-bold text-lg bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
+            <Button className="h-14 px-8 font-mono font-bold text-lg bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
               Join the Waitlist
             </Button>
           </WaitlistModal>

@@ -63,34 +63,34 @@ export function GroupPlanningTab({ weather, location }: GroupPlanningTabProps) {
       <LocationWeatherCard weather={weather} location={location} />
 
       {/* Planning Tips */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4 mt-5">
-        <h3 className="text-sm font-medium text-white mb-3">Planning Tips</h3>
+      <div className="bg-white rounded-xl border border-gray-200 p-4 mt-5">
+        <h3 className="text-sm font-medium text-gray-900 mb-3">Planning Tips</h3>
         <div className="space-y-3">
-          <div className="flex items-start gap-3 p-3 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a]">
-            <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+          <div className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
+            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
               <span className="text-sm">🌤</span>
             </div>
             <div>
-              <p className="text-sm font-medium text-white">Best days for outdoor work</p>
-              <p className="text-xs text-[#666]">Thursday and Friday look ideal for exterior painting or yard work with low precipitation and moderate temperatures.</p>
+              <p className="text-sm font-medium text-gray-900">Best days for outdoor work</p>
+              <p className="text-xs text-gray-500">Thursday and Friday look ideal for exterior painting or yard work with low precipitation and moderate temperatures.</p>
             </div>
           </div>
-          <div className="flex items-start gap-3 p-3 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a]">
-            <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+          <div className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
+            <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
               <span className="text-sm">⚠️</span>
             </div>
             <div>
-              <p className="text-sm font-medium text-white">Rain expected Monday</p>
-              <p className="text-xs text-[#666]">Plan indoor tasks or postpone exterior work. Good day for organizing the garage or indoor repairs.</p>
+              <p className="text-sm font-medium text-gray-900">Rain expected Monday</p>
+              <p className="text-xs text-gray-500">Plan indoor tasks or postpone exterior work. Good day for organizing the garage or indoor repairs.</p>
             </div>
           </div>
-          <div className="flex items-start gap-3 p-3 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a]">
-            <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+          <div className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
+            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
               <span className="text-sm">🛠</span>
             </div>
             <div>
-              <p className="text-sm font-medium text-white">Upcoming maintenance</p>
-              <p className="text-xs text-[#666]">HVAC filter replacement due in 2 weeks. Consider scheduling during cooler morning hours.</p>
+              <p className="text-sm font-medium text-gray-900">Upcoming maintenance</p>
+              <p className="text-xs text-gray-500">HVAC filter replacement due in 2 weeks. Consider scheduling during cooler morning hours.</p>
             </div>
           </div>
         </div>

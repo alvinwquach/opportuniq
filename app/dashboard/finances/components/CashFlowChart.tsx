@@ -17,12 +17,12 @@ interface CashFlowChartProps {
 
 export function CashFlowChart({ data }: CashFlowChartProps) {
   return (
-    <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
-      <h3 className="text-sm font-semibold text-white mb-4">Cash Flow History</h3>
+    <div className="bg-gray-100 rounded-xl border border-gray-200 p-4">
+      <h3 className="text-sm font-semibold text-gray-900 mb-4">Cash Flow History</h3>
 
       {data.length === 0 ? (
         <div className="h-48 flex items-center justify-center">
-          <p className="text-sm text-[#666]">No data available</p>
+          <p className="text-sm text-gray-500">No data available</p>
         </div>
       ) : (
         <div className="h-48">
@@ -30,8 +30,8 @@ export function CashFlowChart({ data }: CashFlowChartProps) {
             <AreaChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
               <defs>
                 <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3ECF8E" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#3ECF8E" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#2563EB" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="expenseGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
@@ -68,7 +68,7 @@ export function CashFlowChart({ data }: CashFlowChartProps) {
               <Area
                 type="monotone"
                 dataKey="income"
-                stroke="#3ECF8E"
+                stroke="#2563EB"
                 strokeWidth={2}
                 fill="url(#incomeGradient)"
                 name="Income"

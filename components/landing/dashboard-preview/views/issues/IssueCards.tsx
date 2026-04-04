@@ -23,8 +23,8 @@ export function IssueCards({ activeIssues, completedIssues, onIssueClick }: Issu
       {/* Active Issues */}
       {activeIssues.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-500" />
+          <h2 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-blue-500" />
             Active Issues ({activeIssues.length})
           </h2>
 
@@ -36,7 +36,7 @@ export function IssueCards({ activeIssues, completedIssues, onIssueClick }: Issu
                 <div
                   key={issue.id}
                   onClick={() => onIssueClick(issue.id)}
-                  className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4 hover:border-emerald-500/30 hover:bg-[#1f1f1f] transition-all cursor-pointer group"
+                  className="bg-white border border-gray-200 rounded-xl p-4 hover:border-blue-500/30 hover:bg-gray-50 transition-all cursor-pointer group"
                 >
                   {/* Header */}
                   <div className="flex items-start justify-between mb-3">
@@ -45,21 +45,21 @@ export function IssueCards({ activeIssues, completedIssues, onIssueClick }: Issu
                         <Icon className={`w-5 h-5 ${issue.iconColor}`} />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-white group-hover:text-emerald-400 transition-colors">{issue.title}</p>
-                        <p className="text-xs text-[#666]">{issue.group} · {issue.category}</p>
+                        <p className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors">{issue.title}</p>
+                        <p className="text-xs text-gray-500">{issue.group} · {issue.category}</p>
                       </div>
                     </div>
-                    <IoArrowForward className="w-4 h-4 text-[#444] group-hover:text-emerald-400 transition-colors" />
+                    <IoArrowForward className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
                   </div>
 
                   {/* Diagnosis */}
-                  <div className="mb-3 p-3 bg-[#0f0f0f] rounded-lg">
+                  <div className="mb-3 p-3 bg-white rounded-lg">
                     <div className="flex items-center gap-2 mb-1">
-                      <IoSparkles className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-xs text-emerald-400 font-medium">AI Diagnosis</span>
-                      <span className="text-xs text-[#555]">· {issue.confidence}%</span>
+                      <IoSparkles className="w-3.5 h-3.5 text-blue-600" />
+                      <span className="text-xs text-blue-600 font-medium">AI Diagnosis</span>
+                      <span className="text-xs text-gray-600">· {issue.confidence}%</span>
                     </div>
-                    <p className="text-xs text-[#999] line-clamp-2">{issue.diagnosis}</p>
+                    <p className="text-xs text-gray-500 line-clamp-2">{issue.diagnosis}</p>
                   </div>
 
                   {/* Footer */}
@@ -72,11 +72,11 @@ export function IssueCards({ activeIssues, completedIssues, onIssueClick }: Issu
                     </div>
                     <div className="flex items-center gap-2">
                       {issue.diyCost > 0 && (
-                        <span className="text-xs text-emerald-400 font-medium">
+                        <span className="text-xs text-blue-600 font-medium">
                           Save ${(issue.proCost - issue.diyCost).toFixed(0)}
                         </span>
                       )}
-                      <span className="text-xs text-[#555]">{issue.updatedAt}</span>
+                      <span className="text-xs text-gray-600">{issue.updatedAt}</span>
                     </div>
                   </div>
                 </div>
@@ -89,8 +89,8 @@ export function IssueCards({ activeIssues, completedIssues, onIssueClick }: Issu
       {/* Completed Issues */}
       {completedIssues.length > 0 && (
         <div>
-          <h2 className="text-sm font-semibold text-[#888] mb-4 flex items-center gap-2">
-            <IoCheckmarkCircle className="w-4 h-4 text-emerald-400" />
+          <h2 className="text-sm font-semibold text-gray-500 mb-4 flex items-center gap-2">
+            <IoCheckmarkCircle className="w-4 h-4 text-blue-600" />
             Resolved ({completedIssues.length})
           </h2>
 
@@ -100,45 +100,45 @@ export function IssueCards({ activeIssues, completedIssues, onIssueClick }: Issu
                 <div
                   key={issue.id}
                   onClick={() => onIssueClick(issue.id)}
-                  className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4 hover:border-emerald-500/30 transition-all cursor-pointer group opacity-80 hover:opacity-100"
+                  className="bg-white border border-gray-200 rounded-xl p-4 hover:border-blue-500/30 transition-all cursor-pointer group opacity-80 hover:opacity-100"
                 >
                   {/* Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                        <IoCheckmarkCircle className="w-5 h-5 text-emerald-400" />
+                      <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+                        <IoCheckmarkCircle className="w-5 h-5 text-blue-600" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-[#ccc] group-hover:text-white transition-colors">{issue.title}</p>
-                        <p className="text-xs text-[#666]">{issue.group} · {issue.category}</p>
+                        <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">{issue.title}</p>
+                        <p className="text-xs text-gray-500">{issue.group} · {issue.category}</p>
                       </div>
                     </div>
-                    <IoOpenOutline className="w-4 h-4 text-[#444] group-hover:text-emerald-400 transition-colors" />
+                    <IoOpenOutline className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
                   </div>
 
                   {/* Resolution Info */}
-                  <div className="flex items-center justify-between p-3 bg-[#0f0f0f] rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-white rounded-lg">
                     <div>
-                      <p className="text-xs text-[#666] mb-0.5">Resolved by</p>
-                      <p className="text-sm font-medium text-white">
+                      <p className="text-xs text-gray-500 mb-0.5">Resolved by</p>
+                      <p className="text-sm font-medium text-gray-900">
                         {issue.resolvedBy === "diy" ? "DIY" : issue.proUsed || "Professional"}
                       </p>
                     </div>
                     {issue.savedAmount && issue.savedAmount > 0 && (
                       <div className="text-right">
-                        <p className="text-xs text-[#666] mb-0.5">Saved</p>
-                        <p className="text-lg font-bold text-emerald-400">${issue.savedAmount}</p>
+                        <p className="text-xs text-gray-500 mb-0.5">Saved</p>
+                        <p className="text-lg font-bold text-blue-600">${issue.savedAmount}</p>
                       </div>
                     )}
                   </div>
 
                   {/* Footer */}
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#2a2a2a]">
-                    <div className="flex items-center gap-2 text-xs text-[#555]">
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200">
+                    <div className="flex items-center gap-2 text-xs text-gray-400">
                       <IoCalendarOutline className="w-3.5 h-3.5" />
                       Resolved {issue.resolvedAt}
                     </div>
-                    <span className="w-6 h-6 rounded-full bg-[#333] flex items-center justify-center text-[10px] font-medium text-[#888]">{getInitials(issue.assignee.name)}</span>
+                    <span className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-[10px] font-medium text-gray-500">{getInitials(issue.assignee.name)}</span>
                   </div>
                 </div>
               );

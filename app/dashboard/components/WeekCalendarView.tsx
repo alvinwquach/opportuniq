@@ -56,13 +56,13 @@ export function WeekCalendarView({ events }: WeekCalendarViewProps) {
             key={index}
             className={cn(
               "text-center py-2 px-1 rounded-lg",
-              today ? "bg-[#00D4FF]/10 border border-[#00D4FF]/30" : "bg-[#1a1a1a]"
+              today ? "bg-blue-50 border border-blue-500/30" : "bg-gray-100"
             )}
           >
-            <p className="text-[9px] text-[#666] uppercase">
+            <p className="text-[9px] text-gray-500 uppercase">
               {day.toLocaleDateString(undefined, { weekday: "short" }).charAt(0)}
             </p>
-            <p className={cn("text-sm font-medium", today ? "text-[#00D4FF]" : "text-white")}>
+            <p className={cn("text-sm font-medium", today ? "text-blue-600" : "text-gray-900")}>
               {day.getDate()}
             </p>
             {dayEvents.length > 0 && (
@@ -72,7 +72,7 @@ export function WeekCalendarView({ events }: WeekCalendarViewProps) {
                     key={i}
                     className={cn(
                       "w-1.5 h-1.5 rounded-full",
-                      event.type === "diy" ? "bg-[#00D4FF]" :
+                      event.type === "diy" ? "bg-blue-600" :
                       event.type === "contractor" ? "bg-purple-400" :
                       "bg-amber-400"
                     )}

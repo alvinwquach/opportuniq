@@ -148,7 +148,6 @@ export async function getUserSchedules(startDate?: Date, endDate?: Date) {
 
     return { success: true, schedules };
   } catch (error) {
-    console.error("[Calendar] getUserSchedules error:", error);
     return { success: false, error: "Failed to fetch schedules" };
   }
 }
@@ -233,7 +232,6 @@ export async function createSchedule(data: {
 
     return { success: true, schedule: newSchedule };
   } catch (error) {
-    console.error("[Calendar] createSchedule error:", error);
     return { success: false, error: "Failed to create schedule" };
   }
 }
@@ -346,7 +344,6 @@ export async function updateSchedule(
 
     return { success: true, schedule: updatedSchedule };
   } catch (error) {
-    console.error("[Calendar] updateSchedule error:", error);
     return { success: false, error: "Failed to update schedule" };
   }
 }
@@ -436,7 +433,6 @@ export async function deleteSchedule(scheduleId: string) {
 
     return { success: true };
   } catch (error) {
-    console.error("[Calendar] deleteSchedule error:", error);
     return { success: false, error: "Failed to delete schedule" };
   }
 }
@@ -493,7 +489,6 @@ export async function getGroupMembersForScheduling(groupId: string) {
       currentUserMemberId: membership.id,
     };
   } catch (error) {
-    console.error("[Calendar] getGroupMembersForScheduling error:", error);
     return { success: false, error: "Failed to fetch group members" };
   }
 }
@@ -553,7 +548,6 @@ export async function getUserIssuesForScheduling() {
       })),
     };
   } catch (error) {
-    console.error("[Calendar] getUserIssuesForScheduling error:", error);
     return { success: false, error: "Failed to fetch issues" };
   }
 }
@@ -635,7 +629,6 @@ export async function getUserIncomeForCalendar() {
 
     return { success: true, incomeEvents };
   } catch (error) {
-    console.error("[Calendar] getUserIncomeForCalendar error:", error);
     return { success: false, error: "Failed to fetch income" };
   }
 }
@@ -684,7 +677,6 @@ export async function getUserExpensesForCalendar() {
 
     return { success: true, expenseEvents };
   } catch (error) {
-    console.error("[Calendar] getUserExpensesForCalendar error:", error);
     return { success: false, error: "Failed to fetch expenses" };
   }
 }
@@ -753,7 +745,6 @@ export async function getGroupExpensesForCalendar() {
 
     return { success: true, expenseEvents };
   } catch (error) {
-    console.error("[Calendar] getGroupExpensesForCalendar error:", error);
     return { success: false, error: "Failed to fetch group expenses" };
   }
 }

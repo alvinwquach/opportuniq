@@ -64,21 +64,21 @@ export default function PhotoAnalysisPage() {
         <div className="max-w-4xl mx-auto text-center">
           {/* Breadcrumb */}
           <nav className="flex items-center justify-center gap-2 text-sm text-neutral-500 mb-6">
-            <Link href="/product" className="hover:text-teal-400 transition-colors">
+            <Link href="/product" className="hover:text-blue-400 transition-colors">
               Product
             </Link>
             <IoChevronForward className="w-3 h-3" />
             <span className="text-neutral-300">Photo Analysis</span>
           </nav>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-500/40 text-teal-400 text-xs font-mono mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-400 text-xs font-mono mb-6">
             <IoCameraOutline className="w-4 h-4" />
             Photo Analysis
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             See the problem.{" "}
-            <span className="text-teal-400">
+            <span className="text-blue-400">
               Know the solution.
             </span>
           </h1>
@@ -89,7 +89,7 @@ export default function PhotoAnalysisPage() {
           </p>
 
           <WaitlistModal>
-            <Button className="h-12 px-8 font-mono font-bold bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
+            <Button className="h-12 px-8 font-mono font-bold bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
               Try Photo Analysis
             </Button>
           </WaitlistModal>
@@ -102,7 +102,7 @@ export default function PhotoAnalysisPage() {
           <div className="grid md:grid-cols-3 gap-8">
             {FEATURES.map((feature, i) => (
               <div key={i} className="p-6 rounded-xl bg-neutral-900 border border-neutral-700">
-                <div className="w-12 h-12 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 mb-4">
+                <div className="w-12 h-12 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 mb-4">
                   <feature.icon className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
@@ -129,7 +129,7 @@ export default function PhotoAnalysisPage() {
               <ul className="space-y-3">
                 {FEATURE_LIST.slice(0, 3).map((feature, i) => (
                   <li key={i} className="flex items-center gap-3 text-neutral-300">
-                    <IoCheckmarkCircle className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                    <IoCheckmarkCircle className="w-5 h-5 text-blue-400 flex-shrink-0" />
                     {feature}
                   </li>
                 ))}
@@ -139,7 +139,7 @@ export default function PhotoAnalysisPage() {
             <div className="bg-neutral-900 rounded-xl border border-neutral-700 overflow-hidden">
               <div className="px-4 py-3 border-b border-neutral-700 flex items-center justify-between">
                 <span className="text-sm font-medium text-neutral-300">Analysis Results</span>
-                <span className="text-xs text-teal-400">{SAMPLE_ANALYSIS.issues.length} issues found</span>
+                <span className="text-xs text-blue-400">{SAMPLE_ANALYSIS.issues.length} issues found</span>
               </div>
               <div className="p-4 space-y-3">
                 {SAMPLE_ANALYSIS.issues.map((item, i) => (
@@ -151,7 +151,7 @@ export default function PhotoAnalysisPage() {
                           ? "bg-red-500/20 text-red-400"
                           : item.severity === "moderate"
                           ? "bg-amber-500/20 text-amber-400"
-                          : "bg-teal-500/20 text-teal-400"
+                          : "bg-blue-500/20 text-blue-400"
                       }`}>
                         {item.severity}
                       </span>
@@ -162,7 +162,7 @@ export default function PhotoAnalysisPage() {
                     </div>
                     <div className="h-1.5 bg-neutral-700 rounded-full overflow-hidden mt-1">
                       <div
-                        className="h-full bg-teal-500 rounded-full"
+                        className="h-full bg-blue-500 rounded-full"
                         style={{ width: `${item.confidence}%` }}
                       />
                     </div>
@@ -204,7 +204,7 @@ export default function PhotoAnalysisPage() {
               <ul className="space-y-3">
                 {FEATURE_LIST.slice(3).map((feature, i) => (
                   <li key={i} className="flex items-center gap-3 text-neutral-300">
-                    <IoCheckmarkCircle className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                    <IoCheckmarkCircle className="w-5 h-5 text-blue-400 flex-shrink-0" />
                     {feature}
                   </li>
                 ))}
@@ -224,7 +224,7 @@ export default function PhotoAnalysisPage() {
             Join the waitlist to be first in line when we launch.
           </p>
           <WaitlistModal>
-            <Button className="h-14 px-8 font-mono font-bold text-lg bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
+            <Button className="h-14 px-8 font-mono font-bold text-lg bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
               Join the Waitlist
             </Button>
           </WaitlistModal>

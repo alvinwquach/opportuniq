@@ -99,21 +99,21 @@ export default function GuidesPage() {
         <div className="max-w-4xl mx-auto text-center">
           {/* Breadcrumb */}
           <nav className="flex items-center justify-center gap-2 text-sm text-neutral-500 mb-6">
-            <Link href="/product" className="hover:text-teal-400 transition-colors">
+            <Link href="/product" className="hover:text-blue-400 transition-colors">
               Product
             </Link>
             <IoChevronForward className="w-3 h-3" />
             <span className="text-neutral-300">DIY Guides</span>
           </nav>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-500/40 text-teal-400 text-xs font-mono mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-400 text-xs font-mono mb-6">
             <IoBookOutline className="w-4 h-4" />
             DIY Guides
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             Learn to fix{" "}
-            <span className="text-teal-400">
+            <span className="text-blue-400">
               anything
             </span>
           </h1>
@@ -124,7 +124,7 @@ export default function GuidesPage() {
           </p>
 
           <WaitlistModal>
-            <Button className="h-12 px-8 font-mono font-bold bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
+            <Button className="h-12 px-8 font-mono font-bold bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
               Get Early Access
             </Button>
           </WaitlistModal>
@@ -137,7 +137,7 @@ export default function GuidesPage() {
           <div className="grid md:grid-cols-2 gap-8">
             {FEATURES.map((feature, i) => (
               <div key={i} className="p-6 rounded-xl bg-neutral-900 border border-neutral-700">
-                <div className="w-12 h-12 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 mb-4">
+                <div className="w-12 h-12 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 mb-4">
                   <feature.icon className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
@@ -162,13 +162,13 @@ export default function GuidesPage() {
             {SAMPLE_GUIDES.map((guide, i) => (
               <div
                 key={i}
-                className="p-4 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-teal-500/30 transition-colors"
+                className="p-4 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-blue-500/30 transition-colors"
               >
                 <div className="flex items-center gap-2 mb-3">
                   {guide.source === "YouTube" ? (
                     <IoLogoYoutube className="w-4 h-4 text-red-500" />
                   ) : (
-                    <IoBookOutline className="w-4 h-4 text-teal-400" />
+                    <IoBookOutline className="w-4 h-4 text-blue-400" />
                   )}
                   <span className="text-xs text-neutral-500">{guide.source}</span>
                   <span className="text-xs text-neutral-600">•</span>
@@ -180,7 +180,7 @@ export default function GuidesPage() {
                     <span className={`text-xs px-2 py-0.5 rounded-full ${
                       guide.difficulty === "Easy"
                         ? "bg-green-500/20 text-green-400"
-                        : "bg-teal-500/20 text-teal-400"
+                        : "bg-blue-500/20 text-blue-400"
                     }`}>
                       {guide.difficulty}
                     </span>
@@ -222,7 +222,7 @@ export default function GuidesPage() {
               { value: "$180", label: "Avg savings/guide" },
             ].map((stat, i) => (
               <div key={i}>
-                <p className="text-3xl font-bold text-teal-400 mb-1">{stat.value}</p>
+                <p className="text-3xl font-bold text-blue-400 mb-1">{stat.value}</p>
                 <p className="text-sm text-neutral-400">{stat.label}</p>
               </div>
             ))}
@@ -240,7 +240,7 @@ export default function GuidesPage() {
             Join the waitlist and get access to the best DIY guides on the web.
           </p>
           <WaitlistModal>
-            <Button className="h-14 px-8 font-mono font-bold text-lg bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
+            <Button className="h-14 px-8 font-mono font-bold text-lg bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
               Join the Waitlist
             </Button>
           </WaitlistModal>

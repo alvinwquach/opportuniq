@@ -43,7 +43,6 @@ export async function updateLocationPlaintext(
         );
         geocodingResult = await Promise.race([geocodePromise, timeoutPromise]);
       } catch (geocodeError) {
-        console.error("[Location Update] Geocoding error:", geocodeError);
       }
     }
 
@@ -70,7 +69,6 @@ export async function updateLocationPlaintext(
 
     return { success: true };
   } catch (error) {
-    console.error("[Location Update] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to update location",

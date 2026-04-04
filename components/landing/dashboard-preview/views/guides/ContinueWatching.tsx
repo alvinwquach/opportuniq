@@ -16,10 +16,10 @@ export function ContinueWatching({ guides }: ContinueWatchingProps) {
     <div className="mb-6">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <IoPlayCircleOutline className="w-5 h-5 text-emerald-400" />
-          <h3 className="text-sm font-semibold text-white">Continue Where You Left Off</h3>
+          <IoPlayCircleOutline className="w-5 h-5 text-blue-600" />
+          <h3 className="text-sm font-semibold text-gray-900">Continue Where You Left Off</h3>
         </div>
-        <span className="text-xs text-[#666]">{guides.length} in progress</span>
+        <span className="text-xs text-gray-500">{guides.length} in progress</span>
       </div>
       <div className="grid md:grid-cols-2 gap-4">
         {guides.map((guide) => {
@@ -28,7 +28,7 @@ export function ContinueWatching({ guides }: ContinueWatchingProps) {
           return (
             <div
               key={guide.id}
-              className="bg-gradient-to-br from-emerald-500/10 to-[#1a1a1a] rounded-xl border border-emerald-500/30 p-4 hover:border-emerald-500/50 hover:shadow-lg transition-all cursor-pointer group"
+              className="bg-gradient-to-br from-blue-50 to-white rounded-xl border border-blue-200 p-4 hover:border-blue-400 hover:shadow-lg transition-all cursor-pointer group"
             >
               <div className="flex items-start gap-3">
                 {/* Thumbnail */}
@@ -47,9 +47,9 @@ export function ContinueWatching({ guides }: ContinueWatchingProps) {
                     )}
                   </div>
                   {/* Progress indicator overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#333] rounded-b-lg overflow-hidden">
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-200 rounded-b-lg overflow-hidden">
                     <div
-                      className="h-full bg-emerald-500"
+                      className="h-full bg-blue-500"
                       style={{ width: `${guide.progress}%` }}
                     />
                   </div>
@@ -58,22 +58,22 @@ export function ContinueWatching({ guides }: ContinueWatchingProps) {
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1">
-                    <span className="px-1.5 py-0.5 text-[9px] font-medium rounded bg-[#333] text-[#888]">
+                    <span className="px-1.5 py-0.5 text-[9px] font-medium rounded bg-gray-100 text-gray-700">
                       {sourceInfo.icon} {sourceInfo.name}
                     </span>
-                    <span className="text-[9px] text-[#666]">
+                    <span className="text-[9px] text-gray-500">
                       {guide.completedSteps}/{guide.totalSteps} steps
                     </span>
                   </div>
-                  <h4 className="text-sm font-semibold text-white mb-1 truncate group-hover:text-emerald-400 transition-colors">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-1 truncate group-hover:text-blue-600 transition-colors">
                     {guide.title}
                   </h4>
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-[10px] text-[#666]">
+                    <div className="flex items-center gap-2 text-[10px] text-gray-500">
                       <IoTimeOutline className="w-3 h-3" />
                       <span>{guide.timeEstimate}</span>
                     </div>
-                    <button className="flex items-center gap-1 text-xs text-emerald-400 font-semibold hover:text-emerald-300 transition-colors group/btn">
+                    <button className="flex items-center gap-1 text-xs text-blue-600 font-semibold hover:text-blue-700 transition-colors group/btn">
                       Continue
                       <IoArrowForward className="w-3 h-3 group-hover/btn:translate-x-0.5 transition-transform" />
                     </button>
@@ -83,13 +83,13 @@ export function ContinueWatching({ guides }: ContinueWatchingProps) {
 
               {/* Progress bar */}
               <div className="mt-3">
-                <div className="flex items-center justify-between text-[10px] text-[#888] mb-1">
+                <div className="flex items-center justify-between text-[10px] text-gray-500 mb-1">
                   <span>Progress</span>
-                  <span className="font-semibold text-emerald-400">{guide.progress}%</span>
+                  <span className="font-semibold text-blue-600">{guide.progress}%</span>
                 </div>
-                <div className="h-1.5 bg-[#333] rounded-full overflow-hidden">
+                <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full transition-all"
+                    className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all"
                     style={{ width: `${guide.progress}%` }}
                   />
                 </div>

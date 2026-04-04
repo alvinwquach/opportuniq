@@ -60,7 +60,6 @@ export async function GET(request: NextRequest, context: RouteContext) {
       count: guides.length,
     });
   } catch (error) {
-    console.error("[Guides API] GET error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -132,7 +131,6 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
     return NextResponse.json({ success: true, action });
   } catch (error) {
-    console.error("[Guides API] PATCH error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

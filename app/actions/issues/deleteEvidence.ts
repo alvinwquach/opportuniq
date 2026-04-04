@@ -35,7 +35,6 @@ export async function deleteEvidence(
 
     return { success: true, evidenceId: deleted.id };
   } catch (error) {
-    console.error("[Delete Evidence] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to delete evidence",

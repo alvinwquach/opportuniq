@@ -148,7 +148,7 @@ export function DashboardPreviewSection() {
           style={{ perspective: "1000px" }}
         >
           {/* Glow effect */}
-          <div className="absolute -inset-8 bg-gradient-to-r from-emerald-500/20 via-teal-500/10 to-emerald-500/20 rounded-3xl blur-2xl opacity-50" />
+          <div className="absolute -inset-8 bg-gradient-to-r from-emerald-500/20 via-blue-500/10 to-emerald-500/20 rounded-3xl blur-2xl opacity-50" />
 
           {/* Dashboard container */}
           <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#111] shadow-2xl">

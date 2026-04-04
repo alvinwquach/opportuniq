@@ -8,7 +8,7 @@ export function FinalCTA() {
     <section className="relative py-20 lg:py-28 bg-gradient-to-b from-neutral-900 to-neutral-950">
       {/* Teal glow effect */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-teal-500/20 rounded-full blur-[100px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-blue-500/20 rounded-full blur-[100px]" />
       </div>
 
       <div className="container mx-auto px-6 max-w-3xl relative">
@@ -21,7 +21,7 @@ export function FinalCTA() {
           </p>
           <div suppressHydrationWarning>
             <WaitlistModal>
-              <button className="group inline-flex items-center gap-2 px-8 py-4 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-lg transition-colors duration-200 shadow-lg shadow-teal-600/20">
+              <button className="group inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-colors duration-200 shadow-lg shadow-blue-600/20">
                 Join the Waitlist
                 <IoArrowForward className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>

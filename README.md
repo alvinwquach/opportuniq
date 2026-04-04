@@ -16,12 +16,14 @@ A user opens the chat and shares their problem — a photo of a ceiling stain, a
 
 The model can chain up to 12 autonomous steps per response. After the diagnosis, users report what contractors actually quoted and what the repair ultimately cost. Those outcomes feed back into PgVector embeddings so future diagnoses are grounded in real user data — not just scraped averages.
 
+Data is sourced from 12 live integrations: HomeAdvisor, Angi, Home Depot, Reddit, YouTube, iFixit, Stack Exchange, Instructables, Yelp, Foursquare, CPSC, and NHTSA.
+
 ## Features
 
 ### AI Diagnosis
 
 - Multi-modal input: text, photos (GPT-4o vision), video (frame extraction via FFmpeg + audio analysis via gpt-4o-audio-preview), and voice (Google Cloud Speech-to-Text with 40+ language support)
-- 11 autonomous chat tools: cost estimates, contractor search, product search, Reddit community search, safety recall checks, utility rebates, RFQ email drafting, calendar reminders, inventory checks, product reviews, and tutorial finder
+- 12 autonomous chat tools: cost estimates, contractor search, product search, Reddit community search, safety recall checks, utility rebates, RFQ email drafting, calendar reminders, inventory checks, product reviews, tutorial finder, and permit lookup
 - 604-line dynamic system prompt with conditional sections: language instructions, property age warnings (asbestos for pre-1980, lead paint for pre-1978), RAG context injection, and prompt A/B testing via feature flags
 - Severity assessment: minor, moderate, urgent, emergency with PPE recommendations
 - DIY feasibility rating: recommended, possible with experience, not recommended, dangerous
@@ -128,9 +130,9 @@ The model can chain up to 12 autonomous steps per response. After the diagnosis,
 | Layer | Technology |
 |-------|-----------|
 | Frontend | Next.js 16, React 19, TypeScript (strict), Tailwind CSS, Radix UI |
-| Animations | GSAP, Three.js (landing page), Recharts, D3 (charts) |
+| Animations | GSAP Club (SplitText, ScrambleText, MorphSVG, DrawSVG, Observer, Flip), Three.js, Recharts, D3 (charts) |
 | Backend | Next.js App Router, Server Actions, REST API routes |
-| Database | PostgreSQL on Supabase, Drizzle ORM, PgVector, 84 tables |
+| Database | PostgreSQL on Neon, Drizzle ORM, PgVector, 84 tables |
 | AI | GPT-4o (vision + audio), text-embedding-3-small, Vercel AI SDK |
 | Web Scraping | Firecrawl (14 features), Yelp Fusion, Foursquare Places |
 | Voice | Google Cloud Speech-to-Text, Google Cloud Text-to-Speech |
@@ -147,7 +149,7 @@ The model can chain up to 12 autonomous steps per response. After the diagnosis,
 ```
 app/
 ├── api/                    # 34 REST API routes
-│   ├── chat/               # AI chat with 11 tools
+│   ├── chat/               # AI chat with 12 tools
 │   │   └── tools/          # Tool implementations
 │   ├── gmail/              # OAuth connect, send, status
 │   ├── google-calendar/    # OAuth connect, events
@@ -231,7 +233,7 @@ npm run dev        # Start development server
 
 See `.env.example` for the complete list. Key variables:
 
-- `DATABASE_URL` — Supabase pooled Postgres connection
+- `DATABASE_URL` — Neon pooled Postgres connection
 - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase auth
 - `OPENAI_API_KEY` — GPT-4o and embeddings
 - `FIRECRAWL_API_KEY` — Web scraping (100K credits/month)

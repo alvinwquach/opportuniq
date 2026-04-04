@@ -153,7 +153,7 @@ export function InlineIncomeSetup({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#0c0c0c] border-[#1f1f1f] sm:max-w-md">
+      <DialogContent className="bg-gray-50 border-gray-200 sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-white flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-[#5eead4]/10 flex items-center justify-center">
@@ -161,36 +161,36 @@ export function InlineIncomeSetup({
             </div>
             Add Income
           </DialogTitle>
-          <DialogDescription className="text-[#666]">
+          <DialogDescription className="text-gray-500">
             Add your income to calculate your hourly rate and make better DIY vs
             hire decisions.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 mt-2">
           <div>
-            <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+            <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
               Source
             </label>
             <div className="relative">
-              <IoBriefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555]" />
+              <IoBriefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
                 placeholder="e.g., Salary, Freelance, Side gig"
                 value={source}
                 onChange={(e) => setSource(e.target.value)}
-                className="w-full h-10 pl-10 pr-3 rounded-lg bg-[#161616] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                className="w-full h-10 pl-10 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
               />
             </div>
           </div>
           <div className="grid grid-cols-[100px_1fr] gap-3">
             <div>
-              <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+              <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                 Currency
               </label>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value as Currency)}
-                className="w-full h-10 px-2 rounded-lg bg-[#161616] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
+                className="w-full h-10 px-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
               >
                 {CURRENCY_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -200,11 +200,11 @@ export function InlineIncomeSetup({
               </select>
             </div>
             <div>
-              <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+              <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                 Amount
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555] text-sm">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
                   {currencySymbol}
                 </span>
                 <input
@@ -212,19 +212,19 @@ export function InlineIncomeSetup({
                   placeholder="0"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  className="w-full h-10 pl-8 pr-3 rounded-lg bg-[#161616] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                  className="w-full h-10 pl-8 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                 />
               </div>
             </div>
           </div>
           <div>
-            <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+            <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
               Frequency
             </label>
             <select
               value={frequency}
               onChange={(e) => setFrequency(e.target.value as IncomeFrequency)}
-              className="w-full h-10 px-3 rounded-lg bg-[#161616] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
+              className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
             >
               {FREQUENCY_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -235,28 +235,28 @@ export function InlineIncomeSetup({
           </div>
           {frequency !== "hourly" && (
             <div>
-              <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+              <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                 {frequency === "bi_weekly" ? "Next Payday" : "Start Date"}{" "}
                 <span className="text-[#444]">(optional)</span>
               </label>
               <div className="relative">
-                <IoCalendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555]" />
+                <IoCalendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full h-10 pl-10 pr-3 rounded-lg bg-[#161616] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                  className="w-full h-10 pl-10 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                 />
               </div>
               {frequency === "bi_weekly" && (
-                <p className="text-[10px] text-[#555] mt-1">
+                <p className="text-[10px] text-gray-400 mt-1">
                   We&apos;ll calculate your recurring paydays from this date.
                 </p>
               )}
             </div>
           )}
           <div>
-            <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+            <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
               Description <span className="text-[#444]">(optional)</span>
             </label>
             <input
@@ -264,12 +264,12 @@ export function InlineIncomeSetup({
               placeholder="e.g., Software Engineer at Acme Corp"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg bg-[#161616] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+              className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
             />
           </div>
           {amount && parseFloat(amount) > 0 && (
-            <div className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
-              <p className="text-[10px] uppercase tracking-wider text-[#555] mb-2">
+            <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
+              <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-2">
                 Preview
               </p>
               <div className="grid grid-cols-2 gap-3">
@@ -277,16 +277,16 @@ export function InlineIncomeSetup({
                   <p className="text-lg font-semibold text-white">
                     {currencySymbol}{monthlyAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </p>
-                  <p className="text-[11px] text-[#555]">per month</p>
+                  <p className="text-[11px] text-gray-400">per month</p>
                 </div>
                 <div>
                   <p className="text-lg font-semibold text-[#5eead4]">
                     {currencySymbol}{hourlyRate.toFixed(2)}
                   </p>
-                  <p className="text-[11px] text-[#555]">per hour</p>
+                  <p className="text-[11px] text-gray-400">per hour</p>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 mt-2 text-[11px] text-[#666]">
+              <div className="flex items-center gap-1.5 mt-2 text-[11px] text-gray-500">
                 <IoTime className="w-3 h-3" />
                 <span>
                   A 4-hour DIY project costs you {currencySymbol}{(hourlyRate * 4).toFixed(0)} in time
@@ -298,7 +298,7 @@ export function InlineIncomeSetup({
             <button
               onClick={handleSubmit}
               disabled={isPending || isEncrypting || !source.trim() || !amount || parseFloat(amount) <= 0}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-[#1f1f1f] disabled:text-[#555] text-[#0c0c0c] font-medium text-sm transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-gray-100 disabled:text-gray-400 text-white font-medium text-sm transition-colors"
             >
               {isPending || isEncrypting ? (
                 <IoReload className="w-4 h-4 animate-spin" />
@@ -312,7 +312,7 @@ export function InlineIncomeSetup({
                 resetForm();
                 onOpenChange(false);
               }}
-              className="px-4 py-2.5 rounded-lg text-[#888] hover:text-white hover:bg-[#1f1f1f] text-sm transition-colors"
+              className="px-4 py-2.5 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 text-sm transition-colors"
             >
               Cancel
             </button>

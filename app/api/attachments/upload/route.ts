@@ -106,7 +106,6 @@ export async function POST(req: NextRequest) {
       });
 
     if (uploadError) {
-      console.error("[Upload] Storage upload failed:", uploadError);
       return NextResponse.json(
         { error: "Failed to upload file" },
         { status: 500 }
@@ -140,12 +139,6 @@ export async function POST(req: NextRequest) {
         storagePath: encryptedAttachments.storagePath,
       });
 
-    console.log("[Upload] Attachment created:", {
-      attachmentId: attachment.id,
-      storagePath: attachment.storagePath,
-      originalSize,
-      encryptedSize: encryptedFile.size,
-    });
 
     return NextResponse.json({
       success: true,
@@ -159,7 +152,6 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("[Upload] Error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -220,7 +212,6 @@ export async function GET(req: NextRequest) {
       .createSignedUrl(attachment.storagePath, 3600);
 
     if (signedUrlError) {
-      console.error("[Upload] Failed to generate signed URL:", signedUrlError);
       return NextResponse.json(
         { error: "Failed to generate download URL" },
         { status: 500 }
@@ -239,7 +230,6 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("[Upload] GET Error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

@@ -20,7 +20,7 @@ const tabs: { id: CalendarTab; label: string; icon: typeof IoCalendarOutline }[]
 export function CalendarTabs({ activeTab, onTabChange }: CalendarTabsProps) {
   return (
     <div className="mb-4">
-      <div className="flex gap-0.5 p-1 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a]">
+      <div className="flex gap-0.5 p-1 bg-white rounded-lg border border-gray-200">
         {tabs.map(({ id, label, icon: Icon }) => (
           <Tooltip key={id}>
             <TooltipTrigger asChild>
@@ -28,8 +28,8 @@ export function CalendarTabs({ activeTab, onTabChange }: CalendarTabsProps) {
                 onClick={() => onTabChange(id)}
                 className={`flex-1 flex items-center justify-center gap-1 px-1.5 py-2 text-[11px] font-medium rounded-md transition-colors ${
                   activeTab === id
-                    ? "bg-[#2a2a2a] text-white"
-                    : "text-[#888] hover:text-white"
+                    ? "bg-gray-100 text-gray-900"
+                    : "text-gray-500 hover:text-gray-900"
                 }`}
               >
                 <Icon className="w-4 h-4 shrink-0" />

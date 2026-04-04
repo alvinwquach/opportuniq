@@ -18,7 +18,7 @@ function CalculatorSkeleton() {
         </div>
         <div className="bg-white rounded-2xl border border-neutral-300 p-8 shadow-sm">
           <div className="flex items-center justify-center gap-2 mb-8">
-            <IoCalculator className="w-5 h-5 text-teal-600" />
+            <IoCalculator className="w-5 h-5 text-blue-600" />
             <span className="text-sm font-medium text-neutral-700">Loading calculator...</span>
           </div>
           <div className="flex flex-wrap justify-center gap-2 mb-8">

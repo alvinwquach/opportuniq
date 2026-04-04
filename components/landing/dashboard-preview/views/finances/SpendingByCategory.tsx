@@ -15,23 +15,23 @@ interface SpendingByCategoryProps {
 export function SpendingByCategory({ data }: SpendingByCategoryProps) {
   if (data.length === 0) {
     return (
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-5">
+      <div className="bg-white rounded-xl border border-gray-200 p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-medium text-white">Spending by Category</h3>
-          <span className="text-xs text-[#666]">This month</span>
+          <h3 className="text-sm font-medium text-gray-900">Spending by Category</h3>
+          <span className="text-xs text-gray-500">This month</span>
         </div>
         <div className="h-32 flex items-center justify-center">
-          <p className="text-xs text-[#555]">No expenses this month</p>
+          <p className="text-xs text-gray-600">No expenses this month</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-5">
+    <div className="bg-white rounded-xl border border-gray-200 p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-medium text-white">Spending by Category</h3>
-        <span className="text-xs text-[#666]">This month</span>
+        <h3 className="text-sm font-medium text-gray-900">Spending by Category</h3>
+        <span className="text-xs text-gray-500">This month</span>
       </div>
       <div className="h-32">
         <ResponsiveContainer width="100%" height="100%">
@@ -40,7 +40,7 @@ export function SpendingByCategory({ data }: SpendingByCategoryProps) {
             <YAxis
               type="category"
               dataKey="category"
-              tick={{ fontSize: 10, fill: '#888' }}
+              tick={{ fontSize: 10, fill: '#6b7280' }}
               width={80}
               axisLine={false}
               tickLine={false}
@@ -50,11 +50,11 @@ export function SpendingByCategory({ data }: SpendingByCategoryProps) {
               contentStyle={{
                 fontSize: 11,
                 borderRadius: 8,
-                backgroundColor: "#1a1a1a",
-                border: "1px solid #2a2a2a",
+                backgroundColor: "#ffffff",
+                border: "1px solid #e5e7eb",
               }}
-              itemStyle={{ color: "#fff" }}
-              labelStyle={{ color: "#888" }}
+              itemStyle={{ color: "#111827" }}
+              labelStyle={{ color: "#6b7280" }}
               formatter={(value: number) => [`$${value}`, ""]}
             />
             <Bar dataKey="amount" radius={[0, 4, 4, 0]}>

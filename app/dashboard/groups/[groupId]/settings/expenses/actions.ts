@@ -115,7 +115,6 @@ export async function getExpenseSettings(groupId: string) {
       userRole: permission.role,
     };
   } catch (error) {
-    console.error("[ExpenseSettings] getExpenseSettings error:", error);
     return { success: false, error: "Failed to fetch expense settings" };
   }
 }
@@ -187,7 +186,6 @@ export async function updateExpenseSettings(groupId: string, data: ExpenseSettin
 
     return { success: true, settings: result };
   } catch (error) {
-    console.error("[ExpenseSettings] updateExpenseSettings error:", error);
     return { success: false, error: "Failed to update expense settings" };
   }
 }
@@ -219,7 +217,6 @@ export async function getExpenseCategories(groupId: string) {
       userRole: permission.role,
     };
   } catch (error) {
-    console.error("[ExpenseSettings] getExpenseCategories error:", error);
     return { success: false, error: "Failed to fetch categories" };
   }
 }
@@ -278,7 +275,6 @@ export async function addExpenseCategory(groupId: string, data: CategoryFormValu
 
     return { success: true, category: newCategory };
   } catch (error) {
-    console.error("[ExpenseSettings] addExpenseCategory error:", error);
     return { success: false, error: "Failed to add category" };
   }
 }
@@ -340,7 +336,6 @@ export async function updateExpenseCategory(groupId: string, categoryId: string,
 
     return { success: true, category: updatedCategory };
   } catch (error) {
-    console.error("[ExpenseSettings] updateExpenseCategory error:", error);
     return { success: false, error: "Failed to update category" };
   }
 }
@@ -383,7 +378,6 @@ export async function deleteExpenseCategory(groupId: string, categoryId: string)
 
     return { success: true };
   } catch (error) {
-    console.error("[ExpenseSettings] deleteExpenseCategory error:", error);
     return { success: false, error: "Failed to delete category" };
   }
 }

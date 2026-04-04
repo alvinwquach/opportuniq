@@ -19,13 +19,13 @@ export function SavingsChart() {
   const totalWouldCost = guideSavingsData.reduce((sum, item) => sum + item.wouldCost, 0);
 
   return (
-    <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4 shadow-sm">
+    <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <IoWalletOutline className="w-4 h-4 text-emerald-400" />
-          <h3 className="text-sm font-semibold text-white">Money Saved by DIY</h3>
+          <IoWalletOutline className="w-4 h-4 text-green-600" />
+          <h3 className="text-sm font-semibold text-gray-900">Money Saved by DIY</h3>
         </div>
-        <span className="text-xs font-bold text-emerald-400">${totalSaved} saved</span>
+        <span className="text-xs font-bold text-green-600">${totalSaved} saved</span>
       </div>
       <div className="h-32">
         <ResponsiveContainer width="100%" height="100%">
@@ -40,16 +40,16 @@ export function SavingsChart() {
                 <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis
               dataKey="month"
-              tick={{ fill: "#888", fontSize: 10 }}
-              axisLine={{ stroke: "#2a2a2a" }}
+              tick={{ fill: "#6b7280", fontSize: 10 }}
+              axisLine={{ stroke: "#e5e7eb" }}
               tickLine={false}
             />
             <YAxis
-              tick={{ fill: "#888", fontSize: 10 }}
-              axisLine={{ stroke: "#2a2a2a" }}
+              tick={{ fill: "#6b7280", fontSize: 10 }}
+              axisLine={{ stroke: "#e5e7eb" }}
               tickLine={false}
               width={35}
               tickFormatter={(value) => `$${value}`}
@@ -84,12 +84,12 @@ export function SavingsChart() {
       </div>
       <div className="flex items-center justify-center gap-4 mt-2">
         <div className="flex items-center gap-1.5 text-[9px]">
-          <div className="w-3 h-3 rounded bg-emerald-500/30 border border-emerald-500" />
-          <span className="text-[#888]">DIY Cost</span>
+          <div className="w-3 h-3 rounded bg-green-100 border border-green-500" />
+          <span className="text-gray-500">DIY Cost</span>
         </div>
         <div className="flex items-center gap-1.5 text-[9px]">
           <div className="w-3 h-3 rounded bg-red-500/20 border border-red-500 border-dashed" />
-          <span className="text-[#888]">Pro Cost</span>
+          <span className="text-gray-500">Pro Cost</span>
         </div>
       </div>
     </div>

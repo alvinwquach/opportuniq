@@ -276,7 +276,6 @@ export function FinancesClient() {
   const handleAddIncome = () => {
     setShowAddDropdown(false);
     // Would open modal - for now just log
-    console.log("Open add income modal");
   };
 
   // Handle the user clicking "Expense" in the "Add" dropdown.
@@ -284,7 +283,6 @@ export function FinancesClient() {
   const handleAddExpense = () => {
     setShowAddDropdown(false);
     // Would open modal - for now just log
-    console.log("Open add expense modal");
   };
 
   // Guard: while the server request is in flight, show the skeleton placeholder.
@@ -295,7 +293,7 @@ export function FinancesClient() {
   // Guard: if the server request failed, show a centered error message.
   if (error) {
     return (
-      <div className="p-6 min-h-[calc(100vh-48px)] bg-[#0f0f0f]">
+      <div className="p-6 min-h-[calc(100vh-48px)] bg-gray-50">
         <div className="text-center py-12">
           <p className="text-red-400">Failed to load finances. Please try again.</p>
         </div>
@@ -305,12 +303,12 @@ export function FinancesClient() {
 
   // Happy path: data loaded — render the full finances page.
   return (
-    <div className="p-6 min-h-[calc(100vh-48px)] bg-[#0f0f0f]">
+    <div className="p-6 min-h-[calc(100vh-48px)] bg-gray-50">
       {/* ─── PAGE HEADER ──────────────────────────────────────── */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-lg font-semibold text-white">Finances</h2>
-          <p className="text-sm text-[#666]">
+          <p className="text-sm text-gray-500">
             Track income, expenses, and home maintenance costs
           </p>
         </div>
@@ -320,7 +318,7 @@ export function FinancesClient() {
           {/* Clicking the button toggles the dropdown open/closed. */}
           <button
             onClick={() => setShowAddDropdown(!showAddDropdown)}
-            className="flex items-center gap-1.5 px-4 py-2 text-sm text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 text-sm text-gray-900 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
           >
             <IoAdd className="w-4 h-4" />
             Add
@@ -334,20 +332,20 @@ export function FinancesClient() {
           {/* Dropdown menu: only rendered when showAddDropdown is true. */}
           {showAddDropdown && (
             // z-50 ensures the dropdown renders above all other page content.
-            <div className="absolute right-0 top-full mt-1 w-40 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] shadow-lg z-50 overflow-hidden">
+            <div className="absolute right-0 top-full mt-1 w-40 bg-gray-100 rounded-lg border border-gray-200 shadow-lg z-50 overflow-hidden">
               {/* "Income" option: green upward arrow to signal money coming in. */}
               <button
                 onClick={handleAddIncome}
-                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-[#888] hover:bg-[#333] transition-colors"
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-gray-500 hover:bg-[#333] transition-colors"
               >
-                <IoArrowUp className="w-4 h-4 text-emerald-400" />
+                <IoArrowUp className="w-4 h-4 text-blue-600" />
                 Income
               </button>
               {/* "Expense" option: amber downward arrow to signal money going out.
                   border-t separates it from the Income option. */}
               <button
                 onClick={handleAddExpense}
-                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-[#888] hover:bg-[#333] transition-colors border-t border-[#2a2a2a]"
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-gray-500 hover:bg-[#333] transition-colors border-t border-gray-200"
               >
                 <IoArrowDown className="w-4 h-4 text-amber-400" />
                 Expense
@@ -360,7 +358,7 @@ export function FinancesClient() {
       {/* ─── TAB NAVIGATION ───────────────────────────────────── */}
       {/* Three tabs in a pill container: Overview | Income | Expenses.
           Only one tab is active at a time; clicking a tab sets activeTab state. */}
-      <div className="flex items-center gap-1 mb-6 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-1 w-fit">
+      <div className="flex items-center gap-1 mb-6 bg-gray-100 rounded-lg border border-gray-200 p-1 w-fit">
         {/* Iterate over the three tab names as a constant tuple to guarantee type safety. */}
         {(["overview", "income", "expenses"] as const).map((tab) => (
           <button
@@ -369,8 +367,8 @@ export function FinancesClient() {
             className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
               // Active tab gets the emerald highlight; inactive tabs are grey.
               activeTab === tab
-                ? "bg-emerald-500/20 text-emerald-400"
-                : "text-[#888] hover:text-white"
+                ? "bg-blue-100 text-blue-600"
+                : "text-gray-500 hover:text-gray-900"
             }`}
           >
             {/* Capitalize the first letter for display: "overview" → "Overview". */}

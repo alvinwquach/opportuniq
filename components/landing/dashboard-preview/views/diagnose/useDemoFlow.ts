@@ -5,7 +5,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 export type DemoPhase =
   | "idle"           // No issue selected
   | "streaming"      // AI is streaming the diagnosis
-  | "researching"    // Finding guides/parts (brief)
+  | "researching"    // Showing tool call indicators
   | "revealing"      // Progressive reveal of resources
   | "complete";      // Everything shown, interactive
 
@@ -14,6 +14,8 @@ export interface DemoFlowState {
   // Diagnosis streaming
   streamedDiagnosis: string;
   diagnosisComplete: boolean;
+  // Tool call indicators
+  visibleToolCalls: number;
   // Resource reveal progress
   showCost: boolean;
   visibleGuides: number;
@@ -37,7 +39,7 @@ interface UseDemoFlowOptions {
 const DEFAULT_OPTIONS = {
   streamSpeed: 20,
   charsPerTick: 3,
-  researchDelay: 400,
+  researchDelay: 2200,
   guideRevealDelay: 200,
   partRevealDelay: 150,
 };
@@ -58,6 +60,7 @@ export function useDemoFlow(issueId: string | null, options: UseDemoFlowOptions)
     phase: "idle",
     streamedDiagnosis: "",
     diagnosisComplete: false,
+    visibleToolCalls: 0,
     showCost: false,
     visibleGuides: 0,
     visibleParts: 0,
@@ -84,6 +87,7 @@ export function useDemoFlow(issueId: string | null, options: UseDemoFlowOptions)
       phase: "idle",
       streamedDiagnosis: "",
       diagnosisComplete: false,
+      visibleToolCalls: 0,
       showCost: false,
       visibleGuides: 0,
       visibleParts: 0,
@@ -99,6 +103,7 @@ export function useDemoFlow(issueId: string | null, options: UseDemoFlowOptions)
       phase: "complete",
       streamedDiagnosis: diagnosis,
       diagnosisComplete: true,
+      visibleToolCalls: 4,
       showCost: true,
       visibleGuides: totalGuides,
       visibleParts: totalParts,
@@ -140,7 +145,19 @@ export function useDemoFlow(issueId: string | null, options: UseDemoFlowOptions)
           phase: "researching",
         }));
 
-        // Phase 2: Brief "researching" state
+        // Phase 2: Show tool call indicators one by one
+        const TOOL_CALL_INTERVAL = 500;
+        const NUM_TOOL_CALLS = 4;
+        let toolCallsShown = 0;
+        const toolCallInterval = setInterval(() => {
+          toolCallsShown++;
+          setState(prev => ({ ...prev, visibleToolCalls: toolCallsShown }));
+          if (toolCallsShown >= NUM_TOOL_CALLS) {
+            clearInterval(toolCallInterval);
+          }
+        }, TOOL_CALL_INTERVAL);
+        intervalsRef.current.push(toolCallInterval);
+
         const researchTimeout = setTimeout(() => {
           setState(prev => ({ ...prev, phase: "revealing", showCost: true }));
 
@@ -209,12 +226,12 @@ export function useDemoFlow(issueId: string | null, options: UseDemoFlowOptions)
       previousIssueRef.current = null;
       reset();
     }
-  }, [issueId, startFlow, reset]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => clearTimers();
-  }, [clearTimers]);
+    return () => {
+      // Reset ref so Strict Mode's cleanup+re-run correctly restarts the flow
+      previousIssueRef.current = null;
+      clearTimers();
+    };
+  }, [issueId, startFlow, reset, clearTimers]);
 
   return {
     ...state,

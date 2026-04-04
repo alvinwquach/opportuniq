@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger, scrambleText } from "@/lib/gsap";
+import { gsap, ScrollTrigger, ScrambleTextPlugin } from "@/lib/gsap";
 import { IoStar } from "react-icons/io5";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -71,9 +71,9 @@ export function TestimonialsSection() {
         start: "top 80%",
         onEnter: () => {
           if (savedRef.current) {
-            scrambleText(savedRef.current, "$6.8M+", {
+            gsap.to(savedRef.current, {
+              scrambleText: { text: "$6.8M+", chars: "$0123456789M+" },
               duration: 1.5,
-              chars: "$0123456789M+",
             });
           }
         },

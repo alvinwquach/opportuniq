@@ -99,7 +99,6 @@ export async function updateIssueEncrypted(
 
     return { success: true, issueId };
   } catch (error) {
-    console.error("[Update Issue] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to update issue",
@@ -170,7 +169,6 @@ export async function updateIssuePlaintext(
 
     return { success: true, issueId };
   } catch (error) {
-    console.error("[Update Issue] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to update issue",

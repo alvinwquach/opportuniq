@@ -170,7 +170,7 @@ export async function inviteMember(
         role,
         groupUrl,
         message,
-      }).catch((err) => console.error("[Groups] Failed to send invitation confirmation email:", err));
+      }).catch(() => {});
     }
 
     // Log audit event
@@ -191,7 +191,6 @@ export async function inviteMember(
 
     return { success: true, invitation };
   } catch (error) {
-    console.error("[Groups] inviteMember error:", error);
     return { success: false, error: "Failed to send invitation" };
   }
 }
@@ -270,7 +269,7 @@ export async function cancelInvitation(groupId: string, invitationId: string) {
       email: invitation.email,
       groupName: group?.name || "the group",
       revokedBy: revoker?.name || "A coordinator",
-    }).catch((err) => console.error("[Groups] Failed to send invitation revoked email:", err));
+    }).catch(() => {});
 
     // Send confirmation email to revoker
     if (revoker?.email) {
@@ -280,7 +279,7 @@ export async function cancelInvitation(groupId: string, invitationId: string) {
         inviteeEmail: invitation.email,
         groupName: group?.name || "the group",
         groupUrl,
-      }).catch((err) => console.error("[Groups] Failed to send invitation revoked confirmation email:", err));
+      }).catch(() => {});
     }
 
     // Log audit event
@@ -296,7 +295,6 @@ export async function cancelInvitation(groupId: string, invitationId: string) {
 
     return { success: true };
   } catch (error) {
-    console.error("[Groups] cancelInvitation error:", error);
     return { success: false, error: "Failed to cancel invitation" };
   }
 }
@@ -392,7 +390,7 @@ export async function updateInvitationRole(
       oldRole,
       newRole,
       inviteUrl,
-    }).catch((err) => console.error("[Groups] Failed to send invitation role updated email:", err));
+    }).catch(() => {});
 
     // Send confirmation email to the changer
     const [changerUser] = await db
@@ -410,7 +408,7 @@ export async function updateInvitationRole(
         role: newRole,
         groupUrl,
         message: `Role updated from ${oldRole} to ${newRole}`,
-      }).catch((err) => console.error("[Groups] Failed to send invitation role update confirmation email:", err));
+      }).catch(() => {});
     }
 
     // Log audit event
@@ -428,7 +426,6 @@ export async function updateInvitationRole(
 
     return { success: true, oldRole, newRole, email: invitation.email };
   } catch (error) {
-    console.error("[Groups] updateInvitationRole error:", error);
     return { success: false, error: "Failed to update invitation role" };
   }
 }
@@ -527,7 +524,7 @@ export async function resendInvitation(groupId: string, invitationId: string) {
         role: invitation.role,
         groupUrl,
         message: invitation.message || undefined,
-      }).catch((err) => console.error("[Groups] Failed to send invitation resent confirmation email:", err));
+      }).catch(() => {});
     }
 
     // Log audit event
@@ -547,7 +544,6 @@ export async function resendInvitation(groupId: string, invitationId: string) {
 
     return { success: true, email: invitation.email };
   } catch (error) {
-    console.error("[Groups] resendInvitation error:", error);
     return { success: false, error: "Failed to resend invitation" };
   }
 }
@@ -659,7 +655,7 @@ export async function extendInvitation(
         role: invitation.role,
         groupUrl,
         message: invitation.message || undefined,
-      }).catch((err) => console.error("[Groups] Failed to send invitation extended confirmation email:", err));
+      }).catch(() => {});
     }
 
     // Log audit event
@@ -677,7 +673,6 @@ export async function extendInvitation(
 
     return { success: true, email: invitation.email };
   } catch (error) {
-    console.error("[Groups] extendInvitation error:", error);
     return { success: false, error: "Failed to extend invitation" };
   }
 }
@@ -850,7 +845,6 @@ export async function inviteMultipleMembers(
 
       results.push({ email: emailLower, success: true });
     } catch (error) {
-      console.error(`[Groups] Failed to invite ${emailLower}:`, error);
       results.push({ email: emailLower, success: false, error: "Failed to send invitation" });
     }
   }
@@ -871,7 +865,7 @@ export async function inviteMultipleMembers(
       failedCount,
       successEmails,
       groupUrl,
-    }).catch((err) => console.error("[Groups] Failed to send bulk invitation confirmation email:", err));
+    }).catch(() => {});
   }
 
   // Log audit events for successful bulk invitations
@@ -963,7 +957,7 @@ export async function declineInvitation(token: string) {
         inviteeEmail: invitation.email,
         groupName: group?.name || "the group",
         groupUrl,
-      }).catch((err) => console.error("[Groups] Failed to send invitation declined email:", err));
+      }).catch(() => {});
     }
 
     // Log audit event - use inviter as performer since invitee may not have an account
@@ -983,7 +977,6 @@ export async function declineInvitation(token: string) {
 
     return { success: true, groupName: group?.name };
   } catch (error) {
-    console.error("[Groups] declineInvitation error:", error);
     return { success: false, error: "Failed to decline invitation" };
   }
 }

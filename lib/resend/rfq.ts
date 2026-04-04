@@ -107,7 +107,6 @@ ${APP_URL}`;
     });
 
     if (error) {
-      console.error("Failed to send RFQ email:", error);
       return null;
     }
 
@@ -117,7 +116,6 @@ ${APP_URL}`;
       bodyText,
     };
   } catch (error) {
-    console.error("Error sending RFQ email:", error);
     return null;
   }
 }

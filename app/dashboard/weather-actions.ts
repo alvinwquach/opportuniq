@@ -80,7 +80,6 @@ export async function getLocationWeatherData(
       airQuality: aqiData,
     };
   } catch (error) {
-    console.error("Failed to fetch weather data:", error);
     return { weather: null, airQuality: null };
   }
 }

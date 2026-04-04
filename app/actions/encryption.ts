@@ -87,7 +87,6 @@ export async function getPublicKeyInfo(): Promise<PublicKeyInfo | { error: strin
       createdAt: userData.publicKeyCreatedAt?.toISOString() || null,
     };
   } catch (error) {
-    console.error("[getPublicKeyInfo] Error:", error);
     return { error: "Internal Server Error" };
   }
 }
@@ -156,7 +155,6 @@ export async function registerPublicKey(
       keyVersion: result[0].publicKeyVersion!,
     };
   } catch (error) {
-    console.error("[registerPublicKey] Error:", error);
     return { error: "Internal Server Error" };
   }
 }
@@ -237,11 +235,9 @@ export async function getEncryptionKey(): Promise<EncryptionKeyResult | { error:
       })
       .where(eq(users.id, user.id));
 
-    console.log("[getEncryptionKey] Generated new encryption key for user:", user.id);
 
     return { key: newKey };
   } catch (error) {
-    console.error("[getEncryptionKey] Error:", error);
     return { error: "Failed to fetch encryption key" };
   }
 }
@@ -307,7 +303,6 @@ export async function getAttachmentMetadata(
       .createSignedUrl(attachment.storagePath, 3600);
 
     if (signedUrlError) {
-      console.error("[getAttachmentMetadata] Failed to generate signed URL:", signedUrlError);
       return { error: "Failed to generate download URL" };
     }
 
@@ -324,7 +319,6 @@ export async function getAttachmentMetadata(
       },
     };
   } catch (error) {
-    console.error("[getAttachmentMetadata] Error:", error);
     return { error: "Internal server error" };
   }
 }

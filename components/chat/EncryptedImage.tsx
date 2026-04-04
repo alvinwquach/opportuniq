@@ -73,7 +73,6 @@ export function EncryptedImage({
           }
         })
         .catch((err) => {
-          console.error("[EncryptedImage] Decryption error:", err);
           setError("Decryption failed");
         })
         .finally(() => {

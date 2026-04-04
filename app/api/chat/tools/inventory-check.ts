@@ -32,12 +32,8 @@ export function createInventoryCheckTool(ctx: ToolContext) {
       zipCode: z.string().describe("User's zip code for local store lookup"),
     }),
     execute: async ({ query, zipCode }) => {
-      console.log(
-        `[checkLocalInventory] Starting inventory check for: ${query} near ${zipCode}`
-      );
 
       if (!ctx.firecrawl) {
-        console.log(`[checkLocalInventory] Firecrawl not available`);
         return {
           error: "Inventory check not available",
           suggestion: `Check inventory at homedepot.com or lowes.com using zip code ${zipCode}`,
@@ -89,7 +85,6 @@ export function createInventoryCheckTool(ctx: ToolContext) {
             console.warn("[checkLocalInventory] stopInteraction failed:", err);
           });
 
-          console.log(`[checkLocalInventory] Interact flow success`);
           return {
             query,
             zipCode,
@@ -124,9 +119,6 @@ export function createInventoryCheckTool(ctx: ToolContext) {
         ]);
 
         if (result?.markdown) {
-          console.log(
-            `[checkLocalInventory] Success, got ${result.markdown.length} chars`
-          );
           return {
             query,
             zipCode,
@@ -136,7 +128,6 @@ export function createInventoryCheckTool(ctx: ToolContext) {
           };
         }
 
-        console.log(`[checkLocalInventory] Failed or timed out`);
         Sentry.captureMessage("Tool returned error", {
           level: "warning",
           extra: {

@@ -5,8 +5,8 @@ const TRUST_POINTS = [
     icon: IoSearch,
     title: "Smart Research",
     description: "We crawl forums, stores, and review sites so you don't have to.",
-    color: "text-teal-700",
-    bgColor: "bg-teal-100",
+    color: "text-blue-700",
+    bgColor: "bg-blue-100",
   },
   {
     icon: IoLocation,

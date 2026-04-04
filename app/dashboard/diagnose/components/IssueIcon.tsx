@@ -40,7 +40,7 @@ export function getIconBgColor(iconName: string | null): string {
   const name = iconName ?? "construct";
   switch (name) {
     case "water":
-      return "bg-blue-500/20";
+      return "bg-blue-100";
     case "flash":
       return "bg-yellow-500/20";
     case "snow":
@@ -53,6 +53,6 @@ export function getIconBgColor(iconName: string | null): string {
       return "bg-red-500/20";
     case "construct":
     default:
-      return "bg-emerald-500/20";
+      return "bg-blue-100";
   }
 }

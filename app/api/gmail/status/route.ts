@@ -48,7 +48,6 @@ export async function GET() {
       needsRefresh: new Date() >= tokenRecord.expiresAt,
     });
   } catch (error) {
-    console.error("[Gmail Status] Error:", error);
     return NextResponse.json(
       { error: "Failed to get Gmail status" },
       { status: 500 }

@@ -88,29 +88,29 @@ const linkedIssues = [
 
 const getPriorityColor = (priority: string) => {
   switch (priority) {
-    case "high": return "bg-red-500/20 text-red-400";
-    case "medium": return "bg-amber-500/20 text-amber-400";
-    case "low": return "bg-[#333] text-[#888]";
-    default: return "bg-[#333] text-[#888]";
+    case "high": return "bg-red-100 text-red-600";
+    case "medium": return "bg-amber-100 text-amber-600";
+    case "low": return "bg-gray-100 text-gray-500";
+    default: return "bg-gray-100 text-gray-500";
   }
 };
 
 const getStatusInfo = (status: string) => {
   switch (status) {
-    case "open": return { color: "text-amber-400", label: "Open", icon: IoAlertCircleOutline };
-    case "investigating": return { color: "text-blue-400", label: "Investigating", icon: IoConstructOutline };
-    case "in_progress": return { color: "text-emerald-400", label: "In Progress", icon: IoConstructOutline };
-    case "resolved": return { color: "text-[#888]", label: "Resolved", icon: IoCheckmarkCircle };
-    default: return { color: "text-[#888]", label: status, icon: IoAlertCircleOutline };
+    case "open": return { color: "text-amber-600", label: "Open", icon: IoAlertCircleOutline };
+    case "investigating": return { color: "text-blue-600", label: "Investigating", icon: IoConstructOutline };
+    case "in_progress": return { color: "text-blue-600", label: "In Progress", icon: IoConstructOutline };
+    case "resolved": return { color: "text-gray-500", label: "Resolved", icon: IoCheckmarkCircle };
+    default: return { color: "text-gray-500", label: status, icon: IoAlertCircleOutline };
   }
 };
 
 const getEventStatusColor = (status: string) => {
   switch (status) {
-    case "confirmed": return "bg-emerald-500/20 text-emerald-400";
-    case "pending": return "bg-amber-500/20 text-amber-400";
-    case "completed": return "bg-[#333] text-[#888]";
-    default: return "bg-[#333] text-[#888]";
+    case "confirmed": return "bg-blue-100 text-blue-600";
+    case "pending": return "bg-amber-100 text-amber-600";
+    case "completed": return "bg-gray-100 text-gray-500";
+    default: return "bg-gray-100 text-gray-500";
   }
 };
 
@@ -124,39 +124,39 @@ export function LinkedIssuesTab() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-medium text-white">Linked Issues</h3>
-          <p className="text-xs text-[#666]">Issues connected to calendar events</p>
+          <h3 className="text-sm font-medium text-gray-900">Linked Issues</h3>
+          <p className="text-xs text-gray-500">Issues connected to calendar events</p>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3">
-          <p className="text-lg font-bold text-white">{linkedIssues.length}</p>
-          <p className="text-[10px] text-[#666]">Total Issues</p>
+        <div className="bg-white rounded-lg border border-gray-200 p-3">
+          <p className="text-lg font-bold text-gray-900">{linkedIssues.length}</p>
+          <p className="text-[10px] text-gray-500">Total Issues</p>
         </div>
-        <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3">
-          <p className="text-lg font-bold text-emerald-400">{issuesWithEvents.length}</p>
-          <p className="text-[10px] text-[#666]">Scheduled</p>
+        <div className="bg-white rounded-lg border border-gray-200 p-3">
+          <p className="text-lg font-bold text-blue-600">{issuesWithEvents.length}</p>
+          <p className="text-[10px] text-gray-500">Scheduled</p>
         </div>
-        <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3">
-          <p className="text-lg font-bold text-amber-400">{issuesNeedingSchedule.length}</p>
-          <p className="text-[10px] text-[#666]">Need Scheduling</p>
+        <div className="bg-white rounded-lg border border-gray-200 p-3">
+          <p className="text-lg font-bold text-amber-600">{issuesNeedingSchedule.length}</p>
+          <p className="text-[10px] text-gray-500">Need Scheduling</p>
         </div>
-        <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3">
-          <p className="text-lg font-bold text-[#888]">{resolvedIssues.length}</p>
-          <p className="text-[10px] text-[#666]">Resolved</p>
+        <div className="bg-white rounded-lg border border-gray-200 p-3">
+          <p className="text-lg font-bold text-gray-500">{resolvedIssues.length}</p>
+          <p className="text-[10px] text-gray-500">Resolved</p>
         </div>
       </div>
 
       {/* Issues Needing Scheduling - Alert */}
       {issuesNeedingSchedule.length > 0 && (
-        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
           <div className="flex items-start gap-3">
-            <IoWarningOutline className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+            <IoWarningOutline className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
-              <h4 className="text-sm font-medium text-amber-400">Issues Need Scheduling</h4>
-              <p className="text-xs text-[#888] mt-1">
+              <h4 className="text-sm font-medium text-amber-600">Issues Need Scheduling</h4>
+              <p className="text-xs text-gray-500 mt-1">
                 {issuesNeedingSchedule.length} open issue{issuesNeedingSchedule.length > 1 ? "s" : ""} without scheduled events
               </p>
               <div className="mt-3 space-y-2">
@@ -165,16 +165,16 @@ export function LinkedIssuesTab() {
                   return (
                     <div
                       key={issue.id}
-                      className="flex items-center justify-between p-2.5 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a]"
+                      className="flex items-center justify-between p-2.5 bg-white rounded-lg border border-gray-200"
                     >
                       <div className="flex items-center gap-2">
                         <span className={`text-[10px] px-1.5 py-0.5 rounded capitalize ${getPriorityColor(issue.priority)}`}>
                           {issue.priority}
                         </span>
-                        <span className="text-xs text-white">{issue.issueTitle}</span>
-                        <span className="text-[10px] text-[#666]">· {issue.category}</span>
+                        <span className="text-xs text-gray-900">{issue.issueTitle}</span>
+                        <span className="text-[10px] text-gray-500">· {issue.category}</span>
                       </div>
-                      <button className="flex items-center gap-1 px-2 py-1 text-[10px] text-emerald-400 hover:bg-emerald-500/10 rounded transition-colors">
+                      <button className="flex items-center gap-1 px-2 py-1 text-[10px] text-blue-600 hover:bg-blue-50 rounded transition-colors">
                         <IoCalendarOutline className="w-3 h-3" />
                         Schedule
                       </button>
@@ -188,31 +188,31 @@ export function LinkedIssuesTab() {
       )}
 
       {/* Scheduled Issues */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#2a2a2a]">
-          <h4 className="text-sm font-medium text-white">Issues with Scheduled Events</h4>
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="px-4 py-3 border-b border-gray-200">
+          <h4 className="text-sm font-medium text-gray-900">Issues with Scheduled Events</h4>
         </div>
-        <div className="divide-y divide-[#2a2a2a]">
+        <div className="divide-y divide-gray-200">
           {issuesWithEvents.filter(i => i.status !== "resolved").map((issue) => {
             const statusInfo = getStatusInfo(issue.status);
             const StatusIcon = statusInfo.icon;
 
             return (
-              <div key={issue.id} className="p-4 hover:bg-[#1f1f1f] transition-colors">
+              <div key={issue.id} className="p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <StatusIcon className={`w-4 h-4 ${statusInfo.color}`} />
-                      <h5 className="text-sm font-medium text-white">{issue.issueTitle}</h5>
+                      <h5 className="text-sm font-medium text-gray-900">{issue.issueTitle}</h5>
                       <span className={`text-[9px] px-1.5 py-0.5 rounded capitalize ${getPriorityColor(issue.priority)}`}>
                         {issue.priority}
                       </span>
                     </div>
-                    <p className="text-xs text-[#666] mt-1">{issue.category}</p>
+                    <p className="text-xs text-gray-500 mt-1">{issue.category}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] text-[#555]">Est. Savings</p>
-                    <p className="text-sm font-medium text-emerald-400">${issue.estimatedSavings}</p>
+                    <p className="text-[10px] text-gray-600">Est. Savings</p>
+                    <p className="text-sm font-medium text-blue-600">${issue.estimatedSavings}</p>
                   </div>
                 </div>
 
@@ -221,23 +221,23 @@ export function LinkedIssuesTab() {
                   {issue.events.map((event) => (
                     <div
                       key={event.id}
-                      className="flex items-center justify-between p-2.5 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a]"
+                      className="flex items-center justify-between p-2.5 bg-white rounded-lg border border-gray-200"
                     >
                       <div className="flex items-center gap-2">
-                        <IoCalendarOutline className="w-4 h-4 text-emerald-400" />
-                        <span className="text-xs text-white">{event.title}</span>
+                        <IoCalendarOutline className="w-4 h-4 text-blue-600" />
+                        <span className="text-xs text-gray-900">{event.title}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-[#888]">{event.date}</span>
-                        <span className="text-[10px] text-[#555]">·</span>
-                        <span className="text-xs text-[#888]">{event.time}</span>
+                        <span className="text-xs text-gray-500">{event.date}</span>
+                        <span className="text-[10px] text-gray-600">·</span>
+                        <span className="text-xs text-gray-500">{event.time}</span>
                         <span className={`text-[9px] px-1.5 py-0.5 rounded capitalize ${getEventStatusColor(event.status)}`}>
                           {event.status}
                         </span>
                       </div>
                     </div>
                   ))}
-                  <button className="flex items-center gap-1 text-[10px] text-[#666] hover:text-emerald-400 transition-colors">
+                  <button className="flex items-center gap-1 text-[10px] text-gray-500 hover:text-blue-600 transition-colors">
                     <IoAddOutline className="w-3 h-3" />
                     Add another event
                   </button>
@@ -250,28 +250,28 @@ export function LinkedIssuesTab() {
 
       {/* Recently Resolved */}
       {resolvedIssues.length > 0 && (
-        <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] overflow-hidden">
-          <div className="px-4 py-3 border-b border-[#2a2a2a]">
-            <h4 className="text-sm font-medium text-white">Recently Resolved</h4>
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-200">
+            <h4 className="text-sm font-medium text-gray-900">Recently Resolved</h4>
           </div>
-          <div className="divide-y divide-[#2a2a2a]">
+          <div className="divide-y divide-gray-200">
             {resolvedIssues.map((issue) => (
               <div key={issue.id} className="p-4 opacity-70">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <IoCheckmarkCircle className="w-4 h-4 text-emerald-400" />
-                      <h5 className="text-sm font-medium text-white">{issue.issueTitle}</h5>
+                      <IoCheckmarkCircle className="w-4 h-4 text-blue-600" />
+                      <h5 className="text-sm font-medium text-gray-900">{issue.issueTitle}</h5>
                     </div>
-                    <p className="text-xs text-[#666] mt-1">{issue.category}</p>
+                    <p className="text-xs text-gray-500 mt-1">{issue.category}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] text-[#555]">Saved</p>
-                    <p className="text-sm font-medium text-emerald-400">${issue.actualSavings}</p>
+                    <p className="text-[10px] text-gray-600">Saved</p>
+                    <p className="text-sm font-medium text-blue-600">${issue.actualSavings}</p>
                   </div>
                 </div>
                 {issue.events[0] && (
-                  <div className="mt-2 flex items-center gap-2 text-xs text-[#666]">
+                  <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
                     <IoCalendarOutline className="w-3.5 h-3.5" />
                     <span>{issue.events[0].title}</span>
                     <span>·</span>

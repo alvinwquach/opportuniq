@@ -3,202 +3,181 @@ import { createPageMetadata } from "@/lib/seo";
 export const metadata = createPageMetadata({
   title: "Terms of Service",
   description:
-    "Terms and conditions for using OpportunIQ. Acceptance, service description, and user responsibilities.",
+    "Terms and conditions for using OpportunIQ.",
   path: "/terms-of-service",
 });
 
 export default function TermsOfService() {
   return (
-    <div className="min-h-screen bg-neutral-950">
-      <div className="mx-auto max-w-4xl px-6 pt-32 pb-24">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 text-xs font-mono mb-6">
-          Legal
-        </div>
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">Terms of Service</h1>
-        <p className="text-sm text-neutral-500 mb-12">
-          Last updated: {new Date().toLocaleDateString()}
-        </p>
-        <div className="prose prose-lg prose-invert max-w-none">
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Acceptance of Terms
-            </h2>
-            <p className="text-neutral-400 leading-relaxed">
-              By accessing or using OpportunIQ (&quot;the Service&quot;), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service.
+    <div className="min-h-screen bg-white">
+      <div className="mx-auto max-w-3xl px-6 pt-28 pb-24">
+        {/* Header */}
+        <p className="text-sm font-medium text-blue-600 uppercase tracking-wider mb-4">Legal</p>
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">Terms of Service</h1>
+        <p className="text-sm text-gray-400 mb-12">Last updated: April 3, 2026</p>
+
+        <div className="space-y-10 text-sm leading-relaxed text-gray-600">
+
+          <section>
+            <h2 className="text-base font-semibold text-gray-900 mb-3">Acceptance of Terms</h2>
+            <p>
+              By accessing or using OpportunIQ (&ldquo;the Service&rdquo;), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Service.
             </p>
           </section>
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Description of Service
-            </h2>
-            <p className="text-neutral-400 mb-4">
-              OpportunIQ is a decision-support platform that helps you frame real-world decisions—repairs, purchases, and projects. Our service includes:
+
+          <section>
+            <h2 className="text-base font-semibold text-gray-900 mb-3">Description of Service</h2>
+            <p className="mb-3">
+              OpportunIQ is an AI-powered assistant for home and auto issues. The Service includes:
             </p>
-            <ul className="list-disc pl-6 space-y-2 text-neutral-400">
-              <li>Decision framing for DIY, outsource, or defer choices</li>
-              <li>Opportunity cost calculations based on your time value</li>
-              <li>Safety and risk assessment guidance</li>
-              <li>Decision logging and history tracking</li>
-              <li>Email integration with Gmail and Outlook</li>
-              <li>Household member collaboration</li>
+            <ul className="list-disc pl-5 space-y-1.5">
+              <li>AI diagnosis of home and auto issues via text, photo, video, or voice</li>
+              <li>Safety and urgency assessment</li>
+              <li>DIY feasibility guidance and step-by-step repair guides</li>
+              <li>Cost estimates sourced from HomeAdvisor, Angi, and Home Depot</li>
+              <li>Local contractor discovery and quote request drafting</li>
+              <li>Maintenance reminders via Google Calendar integration</li>
+              <li>Contractor outreach via Gmail integration</li>
+              <li>Group and household collaboration</li>
+              <li>Diagnosis history and expense tracking</li>
             </ul>
           </section>
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              User Accounts
-            </h2>
-            <p className="text-neutral-400 mb-4">
-              You must create an account to use the Service. You are responsible for:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-neutral-400">
+
+          <section>
+            <h2 className="text-base font-semibold text-gray-900 mb-3">User Accounts</h2>
+            <p className="mb-3">You must create an account to use the Service. You are responsible for:</p>
+            <ul className="list-disc pl-5 space-y-1.5">
               <li>Maintaining the confidentiality of your account credentials</li>
-              <li>All activities that occur under your account</li>
+              <li>All activity that occurs under your account</li>
               <li>Notifying us immediately of any unauthorized access</li>
               <li>Providing accurate and complete information</li>
             </ul>
           </section>
-          <section className="mb-10 p-6 bg-amber-500/10 border border-amber-500/30 rounded-xl">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Disclaimers and Limitations
+
+          <section className="p-5 bg-amber-50 border border-amber-200 rounded-xl">
+            <h2 className="text-base font-semibold text-gray-900 mb-3">
+              Disclaimers — Please Read Carefully
             </h2>
-            <p className="font-semibold text-amber-400 mb-4">
-              IMPORTANT: Please read this section carefully.
+            <p className="font-medium text-amber-700 mb-3">
+              OpportunIQ provides AI-generated guidance for informational purposes only. We are not licensed contractors, electricians, plumbers, or any other type of trade professional.
             </p>
-            <p className="text-neutral-300 mb-4">
-              OpportunIQ provides decision-framing tools and information, but we are not licensed contractors, electricians, plumbers, or other professionals. Our guidance is for informational purposes only and should not replace professional advice.
-            </p>
-            <p className="text-neutral-300 font-medium mb-2">
-              You acknowledge and agree that:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-neutral-300">
-              <li>We do not guarantee the accuracy of cost estimates or time calculations</li>
-              <li>You should always consult licensed professionals for safety-critical issues</li>
-              <li>We are not responsible for the quality of work performed by contractors</li>
-              <li>You are responsible for verifying any information before making decisions</li>
+            <p className="mb-3">You acknowledge and agree that:</p>
+            <ul className="list-disc pl-5 space-y-1.5">
+              <li>AI diagnoses are not a substitute for professional inspection or advice</li>
+              <li>Cost estimates are reference points, not guarantees</li>
+              <li>You should always consult a licensed professional for safety-critical issues</li>
+              <li>We are not responsible for the quality or outcome of work performed by contractors you hire</li>
               <li>You assume all risk when acting on information from the Service</li>
-              <li>We are not liable for any damages resulting from your use of the Service</li>
+              <li>You are responsible for verifying any information before taking action</li>
             </ul>
           </section>
 
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Email Integration
-            </h2>
-            <p className="text-neutral-400 mb-4">
-              When you connect your Gmail or Outlook account, you authorize us to:
+          <section>
+            <h2 className="text-base font-semibold text-gray-900 mb-3">Google Integrations</h2>
+            <p className="mb-3">
+              When you connect Google Calendar or Gmail, you authorize OpportunIQ to:
             </p>
-            <ul className="list-disc pl-6 space-y-2 text-neutral-400">
-              <li>Draft and send emails on your behalf</li>
-              <li>Access emails related to your decision-making activities</li>
-              <li>Store email content necessary for service functionality</li>
+            <ul className="list-disc pl-5 space-y-1.5">
+              <li>Create calendar events for maintenance reminders and follow-ups</li>
+              <li>Draft and send contractor quote request emails on your behalf</li>
             </ul>
-            <p className="mt-4 text-neutral-400">
-              You can revoke this authorization at any time from your account settings.
+            <p className="mt-3">
+              You can revoke these permissions at any time from Settings &rarr; Integrations. We do not access your existing emails or calendar events.
             </p>
           </section>
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Acceptable Use
-            </h2>
-            <p className="text-neutral-400 mb-4">You agree not to:</p>
-            <ul className="list-disc pl-6 space-y-2 text-neutral-400">
-              <li>Use the Service for any illegal purpose</li>
-              <li>Upload malicious content or viruses</li>
-              <li>Harass or spam other users</li>
-              <li>Attempt to hack or compromise the Service</li>
-              <li>Scrape or copy content without permission</li>
-              <li>Create multiple accounts to abuse the free tier</li>
-              <li>Impersonate others or provide false information</li>
+
+          <section>
+            <h2 className="text-base font-semibold text-gray-900 mb-3">Acceptable Use</h2>
+            <p className="mb-3">You agree not to:</p>
+            <ul className="list-disc pl-5 space-y-1.5">
+              <li>Use the Service for any unlawful purpose</li>
+              <li>Upload malicious content, viruses, or harmful files</li>
+              <li>Abuse, harass, or impersonate other users</li>
+              <li>Attempt to access, compromise, or reverse-engineer the Service</li>
+              <li>Scrape or reproduce content without permission</li>
+              <li>Create multiple accounts to circumvent usage limits</li>
             </ul>
           </section>
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Intellectual Property
-            </h2>
-            <p className="text-neutral-400 mb-4">
-              The Service and its content (including text, graphics, logos, and software) are owned by OpportunIQ and protected by copyright and other intellectual property laws. You may not copy, modify, or distribute our content without permission.
+
+          <section>
+            <h2 className="text-base font-semibold text-gray-900 mb-3">Intellectual Property</h2>
+            <p className="mb-3">
+              The Service and its content — including the AI models, UI, text, and branding — are owned by OpportunIQ and protected by applicable intellectual property law. You may not copy, modify, or distribute our content without permission.
             </p>
-            <p className="text-neutral-400">
-              You retain ownership of content you upload, but grant us a license to use it to provide the Service.
-            </p>
-          </section>
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Termination
-            </h2>
-            <p className="text-neutral-400 leading-relaxed">
-              We may suspend or terminate your account at any time for violations of these Terms or for any other reason. You may delete your account at any time from your account settings.
+            <p>
+              You retain ownership of content you upload (photos, descriptions, etc.), but grant us a limited license to use it to provide and improve the Service.
             </p>
           </section>
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Payment and Subscriptions
-            </h2>
-            <p className="text-neutral-400 mb-4">
-              OpportunIQ offers a free tier and paid subscription plans. By subscribing to a paid plan:
+
+          <section>
+            <h2 className="text-base font-semibold text-gray-900 mb-3">Beta Service</h2>
+            <p>
+              OpportunIQ is currently in beta. The Service is provided as-is during this period. Features may change, and we make no guarantees of uptime, data retention, or feature availability. We will make reasonable efforts to preserve your data but cannot guarantee continuity during beta.
             </p>
-            <ul className="list-disc pl-6 space-y-2 text-neutral-400">
-              <li>You agree to pay the fees displayed at the time of purchase</li>
-              <li>Subscriptions automatically renew unless cancelled</li>
-              <li>Refunds are provided only as required by law</li>
-              <li>We may change pricing with 30 days notice</li>
-            </ul>
           </section>
-          <section className="mb-10 p-6 bg-neutral-900 border border-neutral-800 rounded-xl">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Limitation of Liability
-            </h2>
-            <p className="font-semibold text-neutral-400 mb-4 uppercase text-sm tracking-wide">
+
+          <section>
+            <h2 className="text-base font-semibold text-gray-900 mb-3">Pricing</h2>
+            <p>
+              OpportunIQ is currently free to use. If we introduce paid plans in the future, we will provide at least 30 days&apos; notice. Any pricing changes will not apply retroactively to active users without consent.
+            </p>
+          </section>
+
+          <section className="p-5 bg-gray-50 border border-gray-200 rounded-xl">
+            <h2 className="text-base font-semibold text-gray-900 mb-3">Limitation of Liability</h2>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
               To the maximum extent permitted by law:
             </p>
-            <p className="text-neutral-400 mb-4">
-              OpportunIQ and its affiliates will not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses resulting from:
+            <p className="mb-3">
+              OpportunIQ and its affiliates will not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of data, revenue, or goodwill, resulting from:
             </p>
-            <ul className="list-disc pl-6 space-y-2 text-neutral-400">
-              <li>Your use or inability to use the Service</li>
-              <li>Decisions you make based on information from the Service</li>
-              <li>Actions taken by contractors you hire</li>
+            <ul className="list-disc pl-5 space-y-1.5">
+              <li>Your use of or inability to use the Service</li>
+              <li>Decisions made based on AI-generated guidance</li>
+              <li>Actions taken by contractors you hire through or outside the Service</li>
               <li>Unauthorized access to your account or data</li>
-              <li>Errors, mistakes, or inaccuracies in content</li>
+              <li>Errors or inaccuracies in diagnosis, cost estimates, or guides</li>
             </ul>
           </section>
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Indemnification
-            </h2>
-            <p className="text-neutral-400 leading-relaxed">
-              You agree to indemnify and hold OpportunIQ harmless from any claims, damages, or expenses arising from your use of the Service, your violation of these Terms, or your violation of any rights of another.
+
+          <section>
+            <h2 className="text-base font-semibold text-gray-900 mb-3">Indemnification</h2>
+            <p>
+              You agree to indemnify and hold OpportunIQ harmless from any claims, damages, or expenses arising from your use of the Service, your violation of these Terms, or your violation of any rights of a third party.
             </p>
           </section>
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Governing Law
-            </h2>
-            <p className="text-neutral-400 leading-relaxed">
-              These Terms are governed by the laws of the State of California, without regard to its conflict of law provisions. Any disputes will be resolved in the courts of San Francisco County, California.
+
+          <section>
+            <h2 className="text-base font-semibold text-gray-900 mb-3">Termination</h2>
+            <p>
+              We may suspend or terminate your account for violations of these Terms or for any other reason with reasonable notice. You may delete your account at any time from Settings &rarr; Account.
             </p>
           </section>
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Changes to Terms
-            </h2>
-            <p className="text-neutral-400 leading-relaxed">
-              We may modify these Terms at any time. We will notify you of material changes by email or through the Service. Your continued use of the Service after changes constitutes acceptance of the new Terms.
+
+          <section>
+            <h2 className="text-base font-semibold text-gray-900 mb-3">Governing Law</h2>
+            <p>
+              These Terms are governed by the laws of the State of California, without regard to conflict of law provisions. Disputes will be resolved in the courts of San Francisco County, California.
             </p>
           </section>
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Contact Us
-            </h2>
-            <p className="text-neutral-400 leading-relaxed">
-              If you have questions about these Terms, please contact us at:
+
+          <section>
+            <h2 className="text-base font-semibold text-gray-900 mb-3">Changes to Terms</h2>
+            <p>
+              We may modify these Terms at any time. Material changes will be communicated by email or in-app notification. Continued use of the Service after changes constitutes acceptance of the revised Terms.
             </p>
-            <p className="mt-2">
-              <a href="mailto:legal@opportuniq.app" className="text-teal-400 hover:text-teal-300 transition-colors">
+          </section>
+
+          <section>
+            <h2 className="text-base font-semibold text-gray-900 mb-3">Contact</h2>
+            <p>
+              Questions about these Terms?{" "}
+              <a href="mailto:legal@opportuniq.app" className="text-blue-600 hover:text-blue-700 transition-colors">
                 legal@opportuniq.app
               </a>
             </p>
           </section>
+
         </div>
       </div>
     </div>

@@ -15,8 +15,8 @@ export function SpendingCategorySection({ categories }: SpendingCategorySectionP
   if (categories.length === 0) return null;
 
   return (
-    <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
-      <h3 className="text-sm font-medium text-white mb-4">Spending</h3>
+    <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
+      <h3 className="text-sm font-medium text-gray-900 mb-4">Spending</h3>
       <SpendingBar
         data={categories.map((s) => ({
           category: s.category,

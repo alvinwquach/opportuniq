@@ -92,21 +92,21 @@ export default function FeaturesPage() {
         <div className="max-w-4xl mx-auto text-center">
           {/* Breadcrumb */}
           <nav className="flex items-center justify-center gap-2 text-sm text-neutral-500 mb-6">
-            <Link href="/product" className="hover:text-teal-400 transition-colors">
+            <Link href="/product" className="hover:text-blue-400 transition-colors">
               Product
             </Link>
             <IoChevronForward className="w-3 h-3" />
             <span className="text-neutral-300">Features</span>
           </nav>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-500/40 text-teal-400 text-xs font-mono mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-400 text-xs font-mono mb-6">
             <IoTrendingUpOutline className="w-4 h-4" />
             Deep Dive Features
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             Features that{" "}
-            <span className="text-teal-400">
+            <span className="text-blue-400">
               make the difference
             </span>
           </h1>
@@ -116,7 +116,7 @@ export default function FeaturesPage() {
           </p>
 
           <WaitlistModal>
-            <Button className="h-12 px-8 font-mono font-bold bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
+            <Button className="h-12 px-8 font-mono font-bold bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
               Get Early Access
             </Button>
           </WaitlistModal>
@@ -345,7 +345,7 @@ export default function FeaturesPage() {
             Join the waitlist to be first in line when we launch.
           </p>
           <WaitlistModal>
-            <Button className="h-14 px-8 font-mono font-bold text-lg bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
+            <Button className="h-14 px-8 font-mono font-bold text-lg bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
               Join the Waitlist
             </Button>
           </WaitlistModal>

@@ -46,15 +46,15 @@ export function LocationSetupDialog({ userId }: LocationSetupDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="w-full text-left p-4 rounded-xl bg-[#161616] border border-[#1f1f1f] hover:border-[#333] transition-colors group">
+        <button className="w-full text-left p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-[#333] transition-colors group">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-[#1f1f1f] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
               <IoLocation className="w-4 h-4 text-[#a3a3a3]" />
             </div>
-            <h3 className="text-sm font-medium text-[#ccc] group-hover:text-white transition-colors">
+            <h3 className="text-sm font-medium text-[#ccc] group-hover:text-gray-900 transition-colors">
               Set your location
             </h3>
-            <div className="ml-auto w-6 h-6 rounded-full bg-[#1f1f1f] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="ml-auto w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
               <IoAdd className="w-3.5 h-3.5 text-[#a3a3a3]" />
             </div>
           </div>
@@ -63,29 +63,29 @@ export function LocationSetupDialog({ userId }: LocationSetupDialogProps) {
           </p>
         </button>
       </DialogTrigger>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] sm:max-w-md">
+      <DialogContent className="bg-white border-gray-200 sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-[#5eead4]/10 flex items-center justify-center">
               <IoLocation className="w-4 h-4 text-[#5eead4]" />
             </div>
-            <DialogTitle className="text-white">Set Location</DialogTitle>
+            <DialogTitle className="text-gray-900">Set Location</DialogTitle>
           </div>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label className="text-[10px] uppercase tracking-wider text-[#9a9a9a] mb-1.5 block">
+              <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                 Postal Code
               </label>
               <div className="relative">
-                <IoLocation className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9a9a9a]" />
+                <IoLocation className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="e.g., 90210"
                   value={postalCode}
                   onChange={(e) => setPostalCode(e.target.value)}
-                  className="w-full h-10 pl-10 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#9a9a9a] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                  className="w-full h-10 pl-10 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                   autoComplete="postal-code"
                 />
               </div>
@@ -93,7 +93,7 @@ export function LocationSetupDialog({ userId }: LocationSetupDialogProps) {
                 <p className="text-[10px] text-red-400 mt-1">{error}</p>
               )}
             </div>
-            <p className="text-[10px] text-[#9a9a9a]">
+            <p className="text-[10px] text-gray-400">
               Your location helps us show local weather conditions, find vendors near you, and recommend the best days for outdoor projects.
             </p>
           </div>
@@ -102,7 +102,7 @@ export function LocationSetupDialog({ userId }: LocationSetupDialogProps) {
             <button
               type="submit"
               disabled={isPending}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-[#1f1f1f] disabled:text-[#9a9a9a] text-[#0c0c0c] font-medium text-sm transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-gray-100 disabled:text-gray-400 text-white font-medium text-sm transition-colors"
             >
               {isPending ? (
                 <IoReload className="w-4 h-4 animate-spin" />
@@ -114,7 +114,7 @@ export function LocationSetupDialog({ userId }: LocationSetupDialogProps) {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-white hover:bg-[#1f1f1f] text-sm transition-colors"
+              className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-gray-900 hover:bg-gray-100 text-sm transition-colors"
             >
               Cancel
             </button>
