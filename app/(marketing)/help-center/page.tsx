@@ -27,7 +27,7 @@ const FAQ_ITEMS = [
   {
     question: "How does the AI diagnose issues?",
     answer:
-      "It combines your description, any photos or videos you share, and 12 live data sources — including HomeAdvisor, Angi, Home Depot, Reddit, YouTube, iFixit, and others — to assess safety, urgency, DIY feasibility, and cost.",
+      "It combines your description, any photos or videos you share, and 13 live data sources — including HomeAdvisor, Angi, Home Depot, Reddit, YouTube, iFixit, and others — to assess safety, urgency, DIY feasibility, and cost.",
   },
   {
     question: "Can I trust the cost estimates?",

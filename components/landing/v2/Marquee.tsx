@@ -47,7 +47,7 @@ export function Marquee({ items, speed = 60, reverse = false, className = "" }: 
     const singleSetWidth = fullWidth / (copies + 1);
 
     const dirMultiplier = reverse ? 1 : -1;
-    let currentSpeed = speed;
+    const currentSpeed = speed;
     let targetSpeed = speed;
     const duration = singleSetWidth / currentSpeed;
 

@@ -23,7 +23,7 @@ export function Toast({ message, isVisible, onClose, duration = 3000 }: ToastPro
       }, duration);
       return () => clearTimeout(timer);
     } else {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setMounted(false);
     }
   }, [isVisible, duration, onClose]);

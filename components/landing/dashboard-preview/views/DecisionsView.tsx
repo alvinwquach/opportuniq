@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { createElement, useState } from "react";
 import {
   IoFlashOutline,
   IoHomeOutline,
@@ -348,7 +348,7 @@ function DecisionRow({
     >
       <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5 ${priorityDot[decision.priority]}`} />
       <div className={`w-6 h-6 rounded-md border flex items-center justify-center flex-shrink-0 ${dark ? "bg-white/[0.06] border-white/10" : "bg-gray-50 border-gray-100"}`}>
-        <Icon className={`w-3.5 h-3.5 ${dark ? "text-gray-500" : "text-gray-500"}`} />
+        {createElement(Icon, { className: `w-3.5 h-3.5 ${dark ? "text-gray-500" : "text-gray-500"}` })}
       </div>
       <div className="flex-1 min-w-0">
         <p className={`text-xs truncate ${isResolved ? dark ? "text-gray-600 font-normal" : "text-gray-400 font-normal" : dark ? "text-gray-200 font-medium" : "text-gray-900 font-medium"}`}>
@@ -505,7 +505,7 @@ function DecisionDetail({ decision }: { decision: Decision }) {
       <div className={`px-5 py-4 border-b ${b}`}>
         <div className="flex items-start gap-3 mb-2">
           <div className={`w-9 h-9 rounded-xl border flex items-center justify-center flex-shrink-0 ${dark ? "bg-white/[0.06] border-white/10" : "bg-gray-50 border-gray-100"}`}>
-            <Icon className={`w-4.5 h-4.5 ${dark ? "text-gray-500" : "text-gray-600"}`} />
+            {createElement(Icon, { className: `w-4.5 h-4.5 ${dark ? "text-gray-500" : "text-gray-600"}` })}
           </div>
           <div className="flex-1 min-w-0">
             <h2 className={`text-sm font-semibold ${dark ? "text-gray-100" : "text-gray-900"}`}>{decision.title}</h2>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { createElement, useEffect, useState, useRef, useCallback, useMemo, startTransition } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import {
@@ -49,7 +49,7 @@ export function CommandPalette({ open, onOpenChange, onNavigate }: CommandPalett
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const navigationItems: CommandItem[] = [
+  const navigationItems = useMemo<CommandItem[]>(() => [
     {
       id: "nav-dashboard",
       label: "Dashboard",
@@ -122,20 +122,26 @@ export function CommandPalette({ open, onOpenChange, onNavigate }: CommandPalett
       action: () => { onNavigate?.("settings"); onOpenChange(false); },
       category: "navigation",
     },
-  ];
+  ], [onNavigate, onOpenChange]);
 
   // Filter items based on query
-  const filteredNavigation = navigationItems.filter(
-    (item) =>
-      item.label.toLowerCase().includes(query.toLowerCase()) ||
-      item.description?.toLowerCase().includes(query.toLowerCase())
-  );
+  const filteredNavigation = useMemo(() => {
+    const lq = query.toLowerCase();
+    return navigationItems.filter(
+      (item) =>
+        item.label.toLowerCase().includes(lq) ||
+        item.description?.toLowerCase().includes(lq)
+    );
+  }, [query, navigationItems]);
 
-  const filteredIssues = MOCK_ISSUES.filter((issue) =>
-    issue.title.toLowerCase().includes(query.toLowerCase())
-  );
+  const filteredIssues = useMemo(() => {
+    const lq = query.toLowerCase();
+    return MOCK_ISSUES.filter((issue) =>
+      issue.title.toLowerCase().includes(lq)
+    );
+  }, [query]);
 
-  const allItems = [
+  const allItems = useMemo(() => [
     ...filteredNavigation,
     ...filteredIssues.map((issue) => ({
       id: issue.id,
@@ -145,27 +151,28 @@ export function CommandPalette({ open, onOpenChange, onNavigate }: CommandPalett
       action: () => { onNavigate?.("projects"); onOpenChange(false); },
       category: "issues" as const,
     })),
-  ];
+  ], [filteredNavigation, filteredIssues, onNavigate, onOpenChange]);
 
   // Reset selection when query changes
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setSelectedIndex(0);
+    startTransition(() => {
+      setSelectedIndex(0);
+    });
   }, [query]);
 
   // Focus input when opened
   useEffect(() => {
     if (open) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setQuery("");
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSelectedIndex(0);
+      startTransition(() => {
+        setQuery("");
+        setSelectedIndex(0);
+      });
       setTimeout(() => inputRef.current?.focus(), 0);
     }
   }, [open]);
 
   // Keyboard navigation
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       switch (e.key) {
@@ -189,7 +196,7 @@ export function CommandPalette({ open, onOpenChange, onNavigate }: CommandPalett
           break;
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     [allItems, selectedIndex, onOpenChange]
   );
 
@@ -255,7 +262,7 @@ export function CommandPalette({ open, onOpenChange, onNavigate }: CommandPalett
                           isSelected ? "bg-blue-50 text-blue-600" : "text-gray-600 hover:bg-gray-100"
                         }`}
                       >
-                        <Icon className={`w-4 h-4 ${isSelected ? "text-blue-600" : "text-gray-400"}`} />
+                        {createElement(Icon, { className: `w-4 h-4 ${isSelected ? "text-blue-600" : "text-gray-400"}` })}
                         <div className="flex-1 text-left">
                           <p className={`text-sm font-medium ${isSelected ? "text-gray-900" : "text-gray-700"}`}>
                             {item.label}

@@ -181,7 +181,7 @@ export function BeyondDiagnosis() {
 
   useEffect(() => {
     animateContent();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [activeTab]);
 
   const handleTabClick = (i: number) => {

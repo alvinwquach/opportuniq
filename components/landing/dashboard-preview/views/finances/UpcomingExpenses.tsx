@@ -10,7 +10,7 @@ interface UpcomingExpensesProps {
 }
 
 export function UpcomingExpenses({ expenses }: UpcomingExpensesProps) {
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+   
   const [now] = useState(() => Date.now());
   const upcomingBills = expenses
     .filter(e => e.isRecurring && e.nextDueDate)

@@ -110,7 +110,6 @@ jest.mock("drizzle-orm", () => ({
 // ─── Imports (after mocks) ────────────────────────────────────────────────────
 
 import { bulkScrapeCostGuides } from "@/lib/integrations/cost-scraper";
-import { createInventoryCheckTool } from "@/app/api/chat/tools/inventory-check";
 
 // Access mocks via requireMock
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -223,46 +222,3 @@ describe("map → filter → batch pipeline", () => {
   });
 });
 
-// ─── Interact inventory flow ──────────────────────────────────────────────────
-
-describe("interact inventory flow", () => {
-  it("scrape → interact with zip → returns availability", async () => {
-    featureFlagsMod.getFeatureFlag.mockImplementation(async (flag: string) => {
-      if (flag === "firecrawl-interact") return true;
-      return false;
-    });
-
-    const mockScrape = jest.fn().mockResolvedValue({
-      markdown: "Product search results",
-      metadata: { scrapeId: "scrape-pipeline-001" },
-    });
-    const mockInteract = jest.fn().mockResolvedValue({
-      output: "Available at 3 nearby stores: Mission (2 units), SoMa (5 units)",
-    });
-    const mockStop = jest.fn().mockResolvedValue(undefined);
-
-    const tool = createInventoryCheckTool({
-      firecrawl: {
-        scrape: mockScrape,
-        interact: mockInteract,
-        stopInteraction: mockStop,
-      } as never,
-      userId: "user-pipeline-test",
-      zipCode: "94102",
-    }) as unknown as {
-      execute: (args: { query: string; zipCode: string }, opts: never) => Promise<unknown>;
-    };
-
-    const result = await tool.execute({ query: "power drill", zipCode: "94102" }, {} as never);
-
-    expect(result).toMatchObject({
-      inventory: expect.stringContaining("3 nearby stores"),
-      source: expect.stringContaining("interact"),
-    });
-    expect(mockInteract).toHaveBeenCalledWith(
-      "scrape-pipeline-001",
-      expect.objectContaining({ prompt: expect.stringContaining("94102") })
-    );
-    expect(mockStop).toHaveBeenCalledWith("scrape-pipeline-001");
-  });
-});

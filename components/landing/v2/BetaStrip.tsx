@@ -9,14 +9,14 @@ const betaItems = [
   "Free during beta",
   "No credit card required",
   "40+ languages",
-  "12 data sources",
+  "9 data sources",
 ];
 
 const launchItems = [
   "Free to start",
   "No credit card required",
   "40+ languages",
-  "12 data sources",
+  "9 data sources",
 ];
 
 export function BetaStrip() {

@@ -85,7 +85,7 @@ export function DIYTab({
       const toolsKey = getStorageKey(storageTitle, "tools");
       const savedTools = localStorage.getItem(toolsKey);
       if (savedTools) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+         
         setCheckedTools(new Set(JSON.parse(savedTools)));
       }
     } catch {

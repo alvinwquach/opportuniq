@@ -14,16 +14,16 @@ A user opens the chat and shares their problem — a photo of a ceiling stain, a
 6. **Save money** — finds utility rebates and federal tax credits for energy upgrades
 7. **Take action** — drafts a professional quote request email and sends it through the user's Gmail
 
-The model can chain up to 12 autonomous steps per response. After the diagnosis, users report what contractors actually quoted and what the repair ultimately cost. Those outcomes feed back into PgVector embeddings so future diagnoses are grounded in real user data — not just scraped averages.
+The model can chain up to 5 autonomous steps per response. After the diagnosis, users report what contractors actually quoted and what the repair ultimately cost. Those outcomes feed back into PgVector embeddings so future diagnoses are grounded in real user data — not just scraped averages.
 
-Data is sourced from 12 live integrations: HomeAdvisor, Angi, Home Depot, Reddit, YouTube, iFixit, Stack Exchange, Instructables, Yelp, Foursquare, CPSC, and NHTSA.
+Data is sourced from 13 live integrations: HomeAdvisor, Angi, Home Depot, Reddit, YouTube, iFixit, Stack Exchange, Instructables, Yelp, Foursquare, CPSC, and NHTSA.
 
 ## Features
 
 ### AI Diagnosis
 
 - Multi-modal input: text, photos (GPT-4o vision), video (frame extraction via FFmpeg + audio analysis via gpt-4o-audio-preview), and voice (Google Cloud Speech-to-Text with 40+ language support)
-- 12 autonomous chat tools: cost estimates, contractor search, product search, Reddit community search, safety recall checks, utility rebates, RFQ email drafting, calendar reminders, inventory checks, product reviews, tutorial finder, and permit lookup
+- 9 autonomous chat tools: cost estimates, contractor search, product search (buy or compare by reviews), Reddit community search, safety recall checks, local info lookup (permits + rebates), RFQ email drafting, calendar reminders, and tutorial finder
 - 604-line dynamic system prompt with conditional sections: language instructions, property age warnings (asbestos for pre-1980, lead paint for pre-1978), RAG context injection, and prompt A/B testing via feature flags
 - Severity assessment: minor, moderate, urgent, emergency with PPE recommendations
 - DIY feasibility rating: recommended, possible with experience, not recommended, dangerous
@@ -149,7 +149,7 @@ Data is sourced from 12 live integrations: HomeAdvisor, Angi, Home Depot, Reddit
 ```
 app/
 ├── api/                    # 34 REST API routes
-│   ├── chat/               # AI chat with 12 tools
+│   ├── chat/               # AI chat with 9 tools
 │   │   └── tools/          # Tool implementations
 │   ├── gmail/              # OAuth connect, send, status
 │   ├── google-calendar/    # OAuth connect, events

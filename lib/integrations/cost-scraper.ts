@@ -732,7 +732,7 @@ export async function bulkScrapeCostGuides(
     serviceType: string;
   };
 
-  let discoveredUrls: DiscoveredEntry[] = [];
+  const discoveredUrls: DiscoveredEntry[] = [];
 
   // Step 1: Discover URLs via firecrawl.map() (1 credit per domain, returns up to 500 URLs)
   try {

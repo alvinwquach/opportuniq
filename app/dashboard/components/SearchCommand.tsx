@@ -258,7 +258,7 @@ export function SearchCommand({ open, onOpenChange, onAddIncome, initialQuery = 
     if (!open) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSearch("");
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setSelectedIndex(0);
     }
   }, [open]);

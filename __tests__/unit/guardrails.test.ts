@@ -6,7 +6,7 @@ import { checkDiagnosisGuardrails } from "../../lib/guardrails";
 
 const costTool = () => ({ name: "getCostEstimate", args: {} });
 const redditTool = () => ({ name: "searchReddit", args: {} });
-const rebatesTool = () => ({ name: "findUtilityRebates", args: {} });
+const rebatesTool = () => ({ name: "lookupLocalInfo", args: {} });
 
 describe("checkDiagnosisGuardrails", () => {
   it("passes when response has costs and getCostEstimate was called", () => {
@@ -38,7 +38,7 @@ describe("checkDiagnosisGuardrails", () => {
     expect(result.violations.some((v) => v.includes("HALLUCINATED_COST"))).toBe(false);
   });
 
-  it("does not flag $ amounts that came from findUtilityRebates tool", () => {
+  it("does not flag $ amounts that came from lookupLocalInfo tool", () => {
     const result = checkDiagnosisGuardrails(
       "There is a $500 rebate available from your utility provider.",
       [rebatesTool()]

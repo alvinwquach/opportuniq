@@ -417,7 +417,7 @@ async function handleStructuredRequest(body: StructuredRequest, userId: string, 
     messages: [{ role: "user", content: messageContent }],
     tools,
     toolChoice: "auto",
-    stopWhen: stepCountIs(12),
+    stopWhen: stepCountIs(5),
     onStepFinish: (stepResult) => {
       stepCount++;
       const stepTime = Date.now() - streamStartTime;
@@ -738,7 +738,7 @@ async function handleFollowUpRequest(body: FollowUpRequest, userId: string, star
     messages: modelMessages,
     tools,
     toolChoice: "auto",
-    stopWhen: stepCountIs(12),
+    stopWhen: stepCountIs(5),
     onStepFinish: (stepResult) => {
       if (stepResult.toolCalls?.length) {
         for (const tc of stepResult.toolCalls) {

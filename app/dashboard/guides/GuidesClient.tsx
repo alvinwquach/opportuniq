@@ -144,7 +144,7 @@ export function GuidesClient() {
 
   // Apply all active filters (tab, search, source, category) to allGuides.
   // useMemo caches this so filtering only reruns when allGuides or any filter value changes.
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization
+   
   const filteredGuides = useMemo(() => {
     return filterGuides(allGuides, {
       searchQuery,

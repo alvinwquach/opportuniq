@@ -192,7 +192,7 @@ describe("Firecrawl edge cases", () => {
 
     const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
     const fc = new FirecrawlApp({ apiKey: "test" });
-    const result = await fc.map("https://example.com", { limit: 10000 });
+    const result = await fc.map("https://example.com", { limit: 10000 }) as unknown as { urls: string[] };
     expect(result.urls).toHaveLength(10000);
   });
 
@@ -232,7 +232,7 @@ describe("Firecrawl edge cases", () => {
 
     const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
     const fc = new FirecrawlApp({ apiKey: "test" });
-    const result = await fc.search("plumber near me", { limit: 5 });
+    const result = await fc.search("plumber near me", { limit: 5 }) as { data: { markdown: string }[] };
     const nonEmpty = result.data.filter((r: { markdown: string }) => r.markdown.length > 0);
     expect(nonEmpty).toHaveLength(0);
   });
@@ -251,12 +251,12 @@ describe("Firecrawl edge cases", () => {
     const FirecrawlApp = (jest.requireMock("@mendable/firecrawl-js") as { default: typeof FirecrawlAppClass }).default;
     const fc = new FirecrawlApp({ apiKey: "test" });
     const result = await fc.scrape("https://angi.com/contractors", {
-      formats: ["extract"],
+      formats: ["markdown"],
       extract: { schema: {} },
-    });
+    }) as unknown as { extract: Record<string, unknown> };
 
     expect(result.extract).toEqual(wrongShape);
-    expect(result.extract.contractors).toBeUndefined(); // wrong shape detected
+    expect(result.extract["contractors"]).toBeUndefined(); // wrong shape detected
   });
 
   // --- Feature flag -------------------------------------------------------

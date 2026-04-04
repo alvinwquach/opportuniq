@@ -25,6 +25,7 @@ import { useDarkMode } from "../DarkModeContext";
 
 // ── constants ─────────────────────────────────────────────────────────────────
 
+const NOW = Date.now();
 const monthlyIncome   = calculateMonthlyIncome(initialIncomeStreams);
 const monthlyBudget   = 800;
 const diySaved        = 1190;
@@ -346,7 +347,7 @@ export function FinancesView() {
           <div className="space-y-3">
             {upcomingBills.map((bill) => {
               const due = bill.nextDueDate!;
-              const daysUntil = Math.ceil((due.getTime() - Date.now()) / 86400000);
+              const daysUntil = Math.ceil((due.getTime() - NOW) / 86400000);
               const isUrgent = daysUntil <= 7;
               return (
                 <div key={bill.id} className="flex items-start gap-2">

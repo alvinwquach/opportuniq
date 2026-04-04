@@ -186,7 +186,7 @@ function IncomeForm({
   isSubmitting,
   onCancel,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   form: any;
   isPending: boolean;
   isSubmitting: boolean;

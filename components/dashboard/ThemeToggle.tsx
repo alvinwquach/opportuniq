@@ -28,11 +28,11 @@ export function ThemeToggle({ className }: { className?: string }) {
       setTheme(stored);
       document.documentElement.setAttribute("data-theme", stored);
     } else if (systemPrefersDark) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setTheme("dark");
       document.documentElement.setAttribute("data-theme", "dark");
     } else {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setTheme("light");
       document.documentElement.setAttribute("data-theme", "light");
     }
@@ -82,7 +82,7 @@ export function useTheme(): Theme {
       setTheme(stored);
     } else {
       const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setTheme(systemPrefersDark ? "dark" : "light");
     }
 

@@ -226,9 +226,9 @@ const TOOL_RULES = `## TOOL USAGE
    - \`searchProducts\` with category: "ppe"
 3. If relevant:
    - \`checkRecalls\` - For appliances/vehicles
-   - \`findUtilityRebates\` - For energy upgrades
-   - \`searchProductReviews\` - When user is comparing two specific products (e.g., DeWalt vs Milwaukee)
-   - \`checkLocalInventory\` - When user needs the item today or asks about in-store pickup
+   - \`lookupLocalInfo\` with mode "rebates" - For energy upgrades (rebates/tax credits)
+   - \`lookupLocalInfo\` with mode "permits" - When a permit may be required
+   - \`searchProducts\` with mode "review" - When user is comparing two specific products (e.g., DeWalt vs Milwaukee)
 
 **For HOW-TO/LEARNING requests:**
 1. \`findTutorial\` - Find a YouTube video showing exactly how to do this repair
@@ -596,16 +596,15 @@ export function buildFollowUpPrompt(postalCode: string, language?: string): stri
 - Costs → getCostEstimate
 - Contractors → searchContractors
 - Products/materials/tools to buy → searchProducts
-- Product reviews & ratings (comparing brands/models) → searchProductReviews
-- In-store availability today → checkLocalInventory
+- Product search (buy or compare) → searchProducts (mode: "buy" to purchase, mode: "review" to compare brands/models)
 - How-to videos & tutorials → findTutorial
 - Real user experiences & costs → searchReddit
 - Recalls → checkRecalls
-- Rebates → findUtilityRebates
+- Permits or rebates → lookupLocalInfo (mode: "permits" for permit requirements, mode: "rebates" for utility rebates/tax credits)
 - Draft contractor email → draftContractorEmail (use when user wants help contacting a contractor)
 - Calendar reminder → scheduleReminder
 
-**Tool selection guide:** Use \`searchProducts\` to find items to purchase. Use \`searchProductReviews\` to compare product quality when the user is choosing between specific models. Use \`findTutorial\` for step-by-step how-to videos. Use \`searchReddit\` for real costs and community advice. Use \`checkLocalInventory\` only when the user needs in-store pickup today.
+**Tool selection guide:** Use \`searchProducts\` with mode "buy" to find items to purchase, mode "review" to compare product quality. Use \`findTutorial\` for step-by-step how-to videos. Use \`searchReddit\` for real costs and community advice. Use \`lookupLocalInfo\` for both permit requirements and energy rebates.
 
 Remember: You help with repairs, how-to learning, assembly, maintenance, and DIY projects of all kinds.
 

@@ -15,7 +15,7 @@ export function checkDiagnosisGuardrails(
   const hasCostToolCall = toolCalls.some((tc) => tc.name === "getCostEstimate");
   if (hasDollarAmounts && !hasCostToolCall) {
     const hasRedditOrOtherSource = toolCalls.some((tc) =>
-      ["searchReddit", "findUtilityRebates"].includes(tc.name)
+      ["searchReddit", "lookupLocalInfo"].includes(tc.name)
     );
     if (!hasRedditOrOtherSource) {
       violations.push(
