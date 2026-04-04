@@ -4,6 +4,7 @@ import { IoEllipsisHorizontal, IoRepeat, IoCalendarOutline, IoPencil, IoTrash } 
 import { CalendarDay } from "./types";
 import { extendedEvents } from "./data";
 import { getEventColor, getEventIcon } from "./utils";
+import { useDarkMode } from "../../DarkModeContext";
 
 interface MonthGridProps {
   calendarDays: CalendarDay[];
@@ -36,13 +37,16 @@ export function MonthGrid({
   onEventClick,
   onMenuToggle,
 }: MonthGridProps) {
+  const dark = useDarkMode();
+  const b = dark ? "border-white/[0.06]" : "border-gray-200";
+
   return (
-    <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] overflow-hidden">
+    <div className={`rounded-xl border overflow-hidden ${dark ? "bg-[#1a1a1a] border-white/[0.06]" : "bg-white border-gray-200"}`}>
       {/* Week day headers */}
-      <div className="grid grid-cols-7 border-b border-[#2a2a2a] bg-[#0f0f0f]">
+      <div className={`grid grid-cols-7 border-b ${b} ${dark ? "bg-[#1a1a1a]" : "bg-white"}`}>
         {weekDays.map((day, idx) => (
-          <div key={day} className={`px-3 py-2.5 text-center border-r border-[#2a2a2a] last:border-r-0 ${idx === 0 || idx === 6 ? 'bg-[#0a0a0a]' : ''}`}>
-            <p className="text-xs font-semibold text-[#888] uppercase tracking-wider">{day}</p>
+          <div key={day} className={`px-3 py-2.5 text-center border-r last:border-r-0 ${b} ${idx === 0 || idx === 6 ? dark ? 'bg-white/[0.02]' : 'bg-gray-50' : ''}`}>
+            <p className={`text-xs font-semibold uppercase tracking-wider ${dark ? "text-gray-600" : "text-gray-500"}`}>{day}</p>
           </div>
         ))}
       </div>
@@ -58,12 +62,12 @@ export function MonthGrid({
           return (
             <div
               key={index}
-              className={`min-h-[100px] p-2 border-r border-b border-[#2a2a2a] last:border-r-0 transition-colors ${
-                isDragOver ? 'bg-emerald-500/20 ring-2 ring-emerald-500 ring-inset' :
-                isOtherMonth ? 'bg-[#0a0a0a]' :
-                isToday ? 'bg-emerald-500/10' :
-                isWeekend ? 'bg-[#141414] hover:bg-[#1a1a1a]' :
-                'bg-[#1a1a1a] hover:bg-[#252525]'
+              className={`min-h-[100px] p-2 border-r border-b last:border-r-0 transition-colors ${b} ${
+                isDragOver ? 'bg-blue-500/20 ring-2 ring-blue-500 ring-inset' :
+                isOtherMonth ? dark ? 'bg-white/[0.01]' : 'bg-gray-50' :
+                isToday ? dark ? 'bg-blue-500/10' : 'bg-blue-50' :
+                isWeekend ? dark ? 'bg-white/[0.02] hover:bg-white/[0.04]' : 'bg-gray-100 hover:bg-white' :
+                dark ? 'bg-transparent hover:bg-white/[0.03]' : 'bg-white hover:bg-gray-100'
               }`}
               onDragOver={(e) => !isOtherMonth && onDragOver(e, day.date)}
               onDragLeave={onDragLeave}
@@ -71,8 +75,8 @@ export function MonthGrid({
             >
               <div className="flex items-center justify-between mb-1">
                 <span className={`text-sm font-medium ${
-                  isToday ? 'w-7 h-7 flex items-center justify-center bg-emerald-500 text-white rounded-full' :
-                  isOtherMonth ? 'text-[#444]' : 'text-white'
+                  isToday ? 'w-7 h-7 flex items-center justify-center bg-blue-500 text-white rounded-full' :
+                  isOtherMonth ? dark ? 'text-gray-700' : 'text-gray-300' : dark ? 'text-gray-300' : 'text-gray-900'
                 }`}>
                   {day.date}
                 </span>
@@ -110,14 +114,14 @@ export function MonthGrid({
                         </div>
                         <span className="text-[9px] opacity-75 mt-0.5 block">{event.time}</span>
                         {openMenuId === event.id && (
-                          <div className="absolute right-0 top-6 z-20 w-28 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] shadow-lg py-1">
+                          <div className={`absolute right-0 top-6 z-20 w-28 rounded-lg border shadow-lg py-1 ${dark ? "bg-[#252525] border-white/10" : "bg-white border-gray-200"}`}>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 onEventClick(event.id);
                                 onMenuToggle(null);
                               }}
-                              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[#888] hover:bg-[#333] transition-colors"
+                              className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs transition-colors ${dark ? "text-gray-400 hover:bg-white/[0.06]" : "text-gray-500 hover:bg-gray-100"}`}
                             >
                               <IoCalendarOutline className="w-3 h-3" />
                               View
@@ -127,7 +131,7 @@ export function MonthGrid({
                                 e.stopPropagation();
                                 onMenuToggle(null);
                               }}
-                              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[#888] hover:bg-[#333] transition-colors"
+                              className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs transition-colors ${dark ? "text-gray-400 hover:bg-white/[0.06]" : "text-gray-500 hover:bg-gray-100"}`}
                             >
                               <IoPencil className="w-3 h-3" />
                               Edit
@@ -137,7 +141,7 @@ export function MonthGrid({
                                 e.stopPropagation();
                                 onMenuToggle(null);
                               }}
-                              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10 transition-colors"
+                              className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs transition-colors ${dark ? "text-red-400 hover:bg-red-500/10" : "text-red-600 hover:bg-red-50"}`}
                             >
                               <IoTrash className="w-3 h-3" />
                               Delete
@@ -148,7 +152,7 @@ export function MonthGrid({
                     );
                   })}
                   {day.events.length > 2 && (
-                    <div className="text-[10px] text-[#666] font-medium px-1 cursor-pointer hover:text-emerald-400">
+                    <div className={`text-[10px] font-medium px-1 cursor-pointer ${dark ? "text-gray-600 hover:text-blue-400" : "text-gray-500 hover:text-blue-600"}`}>
                       +{day.events.length - 2} more
                     </div>
                   )}

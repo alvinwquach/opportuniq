@@ -33,8 +33,8 @@ interface CalendarDialogProps {
 const eventConfig = {
   contractor: {
     icon: IoConstruct,
-    color: "text-blue-400",
-    bg: "bg-blue-500/10",
+    color: "text-blue-600",
+    bg: "bg-blue-50",
     label: "Contractor",
   },
   diy: {
@@ -87,10 +87,10 @@ export function CalendarDialog({ events, open, onOpenChange }: CalendarDialogPro
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#0c0c0c] border-[#1f1f1f] sm:max-w-125 p-0 gap-0">
+      <DialogContent className="bg-gray-50 border-gray-200 sm:max-w-125 p-0 gap-0">
         <DialogHeader className="px-4 pt-4 pb-2">
           <DialogTitle className="text-white flex items-center gap-2">
-            <IoCalendar className="w-4 h-4 text-[#00D4FF]" />
+            <IoCalendar className="w-4 h-4 text-blue-600" />
             Calendar
           </DialogTitle>
         </DialogHeader>
@@ -103,7 +103,7 @@ export function CalendarDialog({ events, open, onOpenChange }: CalendarDialogPro
                   newDate.setMonth(newDate.getMonth() - 1);
                   setSelectedDate(newDate);
                 }}
-                className="p-1.5 rounded-md text-[#666] hover:text-white hover:bg-[#1f1f1f] transition-colors"
+                className="p-1.5 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
               >
                 <IoChevronBack className="w-4 h-4" />
               </button>
@@ -116,7 +116,7 @@ export function CalendarDialog({ events, open, onOpenChange }: CalendarDialogPro
                   newDate.setMonth(newDate.getMonth() + 1);
                   setSelectedDate(newDate);
                 }}
-                className="p-1.5 rounded-md text-[#666] hover:text-white hover:bg-[#1f1f1f] transition-colors"
+                className="p-1.5 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
               >
                 <IoChevronForward className="w-4 h-4" />
               </button>
@@ -125,7 +125,7 @@ export function CalendarDialog({ events, open, onOpenChange }: CalendarDialogPro
             <div>
               <div className="grid grid-cols-7 mb-2">
                 {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
-                  <div key={day} className="h-9 w-9 flex items-center justify-center text-[#666] text-xs font-medium">
+                  <div key={day} className="h-9 w-9 flex items-center justify-center text-gray-500 text-xs font-medium">
                     {day}
                   </div>
                 ))}
@@ -163,12 +163,12 @@ export function CalendarDialog({ events, open, onOpenChange }: CalendarDialogPro
                         className={cn(
                           "h-9 w-9 rounded-md text-sm font-normal transition-colors flex items-center justify-center",
                           isSelected
-                            ? "bg-[#00D4FF] text-[#0c0c0c]"
+                            ? "bg-blue-600 text-white"
                             : isTodayDate
-                            ? "bg-[#1f1f1f] text-white"
+                            ? "bg-gray-100 text-white"
                             : hasEvent
-                            ? "bg-[#00D4FF]/20 text-white"
-                            : "text-[#888] hover:bg-[#1f1f1f] hover:text-white"
+                            ? "bg-blue-100 text-white"
+                            : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
                         )}
                       >
                         {day}
@@ -180,9 +180,9 @@ export function CalendarDialog({ events, open, onOpenChange }: CalendarDialogPro
                 })()}
               </div>
             </div>
-            <div className="mt-4 pt-4 border-t border-[#1f1f1f] grid grid-cols-2 gap-2">
+            <div className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-2 gap-2">
               {Object.entries(eventConfig).map(([type, config]) => (
-                <div key={type} className="flex items-center gap-1.5 text-[10px] text-[#666]">
+                <div key={type} className="flex items-center gap-1.5 text-[10px] text-gray-500">
                   <config.icon className="h-3 w-3" />
                   <span>{config.label}</span>
                 </div>
@@ -196,7 +196,7 @@ export function CalendarDialog({ events, open, onOpenChange }: CalendarDialogPro
                   {selectedDate ? getDateLabel(selectedDate) : "Select a date"}
                 </p>
                 {selectedDate && (
-                  <p className="text-[10px] text-[#555]">
+                  <p className="text-[10px] text-gray-400">
                     {format(selectedDate, "EEEE, MMMM d, yyyy")}
                   </p>
                 )}
@@ -205,11 +205,11 @@ export function CalendarDialog({ events, open, onOpenChange }: CalendarDialogPro
             {selectedEvents.length === 0 ? (
               <div className="py-8 text-center">
                 <IoTime className="w-8 h-8 text-[#333] mx-auto mb-2" />
-                <p className="text-sm text-[#555]">No events</p>
+                <p className="text-sm text-gray-400">No events</p>
                 <button
                   onClick={() => {
                   }}
-                  className="mt-3 flex items-center gap-1.5 mx-auto px-3 py-1.5 rounded-md bg-[#1f1f1f] text-[#888] hover:text-white hover:bg-[#2a2a2a] transition-colors text-[11px]"
+                  className="mt-3 flex items-center gap-1.5 mx-auto px-3 py-1.5 rounded-md bg-gray-100 text-gray-500 hover:text-gray-900 hover:bg-gray-200 transition-colors text-[11px]"
                 >
                   <IoAdd className="w-3 h-3" />
                   Add event
@@ -224,7 +224,7 @@ export function CalendarDialog({ events, open, onOpenChange }: CalendarDialogPro
                   return (
                     <div
                       key={event.id}
-                      className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]"
+                      className="p-3 rounded-lg bg-gray-50 border border-gray-200"
                     >
                       <div className="flex items-start gap-2">
                         <div
@@ -238,13 +238,13 @@ export function CalendarDialog({ events, open, onOpenChange }: CalendarDialogPro
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-white">{event.title}</p>
                           {event.time && (
-                            <p className="text-[10px] text-[#666] flex items-center gap-1 mt-0.5">
+                            <p className="text-[10px] text-gray-500 flex items-center gap-1 mt-0.5">
                               <IoTime className="w-3 h-3" />
                               {event.time}
                             </p>
                           )}
                           {event.groupName && (
-                            <p className="text-[10px] text-[#555] mt-0.5">{event.groupName}</p>
+                            <p className="text-[10px] text-gray-400 mt-0.5">{event.groupName}</p>
                           )}
                         </div>
                       </div>
@@ -256,7 +256,7 @@ export function CalendarDialog({ events, open, onOpenChange }: CalendarDialogPro
             <button
               onClick={() => {
               }}
-              className="mt-4 w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-[#00D4FF]/10 text-[#00D4FF] hover:bg-[#00D4FF]/20 transition-colors text-sm"
+              className="mt-4 w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors text-sm"
             >
               <IoAdd className="w-4 h-4" />
               Add Event
@@ -285,7 +285,7 @@ export function CalendarButton({
       <TooltipTrigger asChild>
         <button
           onClick={onOpenCalendar}
-          className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[#888] hover:text-white hover:bg-[#1f1f1f] transition-colors"
+          className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
         >
           <IoCalendar className="h-4 w-4" />
           <span className="text-[12px] hidden sm:inline">
@@ -294,7 +294,7 @@ export function CalendarButton({
               : format(now, "EEE, MMM d, yyyy")}
           </span>
           {todayEvents.length > 0 && (
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00D4FF]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
           )}
         </button>
       </TooltipTrigger>

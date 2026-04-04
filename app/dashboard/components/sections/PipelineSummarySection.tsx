@@ -34,22 +34,22 @@ export function PipelineSummarySection({ summary }: PipelineSummarySectionProps)
     summary.in_progress;
 
   return (
-    <section className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+    <section className="p-4 rounded-xl bg-gray-50 border border-gray-200">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center">
-            <IoGrid className="w-4 h-4 text-[#00D4FF]" />
+          <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+            <IoGrid className="w-4 h-4 text-blue-600" />
           </div>
           <div>
             <h2 className="text-sm font-medium text-white">Project Pipeline</h2>
-            <p className="text-[10px] text-[#9a9a9a]">
+            <p className="text-[10px] text-gray-400">
               {activeCount} active · {summary.completed} completed
             </p>
           </div>
         </div>
         <Link
           href="/projects"
-          className="text-xs text-[#00D4FF] hover:text-[#00D4FF]/80 transition-colors"
+          className="text-xs text-blue-600 hover:text-blue-600/80 transition-colors"
         >
           View Board
         </Link>

@@ -200,7 +200,6 @@ export async function getCostEstimate(
       return formatCostData(freshData);
     }
   } catch (error) {
-    console.error("[CostScraper] Failed to scrape fresh data:", error);
     Sentry.captureException(error, {
       extra: { tool: "getCostEstimate", serviceType: normalizedService, region },
     });
@@ -228,7 +227,6 @@ export async function scrapeCostGuide(
       ? `https://www.homeadvisor.com/cost/${serviceSlug}/`
       : `https://www.angi.com/articles/${serviceSlug}.htm`;
 
-  console.log(`[CostScraper] Scraping ${source}: ${url}`);
 
   Sentry.setContext("firecrawl", { feature: "scrapeCostGuide", url });
 
@@ -292,11 +290,9 @@ export async function scrapeCostGuide(
         }
 
         // JSON extraction returned null/empty/invalid — fall back to regex on existing markdown
-        console.log(`[CostScraper] JSON extraction invalid, falling back to regex for ${url}`);
         const parsed = parseCostContent(result.markdown, source);
         return { source, sourceUrl: url, rawContent: result.markdown, ...parsed };
       } catch (jsonError) {
-        console.error(`[CostScraper] JSON extraction failed, falling back to scrapePage:`, jsonError);
         Sentry.captureException(jsonError, {
           extra: { tool: "scrapeCostGuide", url, source, path: "json-extraction" },
         });
@@ -315,7 +311,6 @@ export async function scrapeCostGuide(
     const parsed = parseCostContent(result.markdown, source);
     return { source, sourceUrl: url, rawContent: result.markdown, ...parsed };
   } catch (error) {
-    console.error(`[CostScraper] Error scraping ${url}:`, error);
     Sentry.captureException(error, { extra: { tool: "scrapeCostGuide", url, source } });
     return null;
   }
@@ -510,7 +505,6 @@ async function saveCostData(
     })
     .returning();
 
-  console.log(`[CostScraper] Saved cost data for ${serviceType} in ${region}`);
   return inserted;
 }
 
@@ -738,7 +732,7 @@ export async function bulkScrapeCostGuides(
     serviceType: string;
   };
 
-  let discoveredUrls: DiscoveredEntry[] = [];
+  const discoveredUrls: DiscoveredEntry[] = [];
 
   // Step 1: Discover URLs via firecrawl.map() (1 credit per domain, returns up to 500 URLs)
   try {
@@ -776,9 +770,6 @@ export async function bulkScrapeCostGuides(
       }
     }
 
-    console.log(
-      `[CostScraper] Discovered ${discoveredUrls.length} cost guide URLs via map()`
-    );
   } catch (error) {
     console.warn(
       "[CostScraper] map() failed, falling back to SERVICE_URL_MAP:",
@@ -791,7 +782,6 @@ export async function bulkScrapeCostGuides(
 
   // Step 2: Fall back to SERVICE_URL_MAP if map() returned nothing
   if (discoveredUrls.length === 0) {
-    console.log("[CostScraper] No URLs from map(), using SERVICE_URL_MAP fallback");
     for (const [serviceType, urls] of Object.entries(SERVICE_URL_MAP)) {
       if (urls.homeadvisor) {
         discoveredUrls.push({
@@ -818,10 +808,6 @@ export async function bulkScrapeCostGuides(
       // Rate limit: 2 seconds between requests
       await new Promise((resolve) => setTimeout(resolve, 2000));
     } catch (error) {
-      console.error(
-        `[CostScraper] Failed to scrape ${source}/${slug}:`,
-        error
-      );
       Sentry.captureException(error, {
         extra: { tool: "bulkScrapeCostGuides", source, slug, region },
       });
@@ -829,8 +815,5 @@ export async function bulkScrapeCostGuides(
     }
   }
 
-  console.log(
-    `[CostScraper] Bulk scrape complete: ${success} success, ${failed} failed`
-  );
   return { success, failed };
 }

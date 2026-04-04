@@ -35,19 +35,19 @@ export function GuidesList({
 
   if (guides.length === 0) {
     return (
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-12 text-center">
+      <div className="bg-gray-100 rounded-xl border border-gray-200 p-12 text-center">
         <div className="w-16 h-16 rounded-full bg-[#333] flex items-center justify-center mx-auto mb-4">
-          <IoSearchOutline className="w-8 h-8 text-[#666]" />
+          <IoSearchOutline className="w-8 h-8 text-gray-500" />
         </div>
-        <p className="text-sm font-semibold text-white mb-1">No guides found</p>
-        <p className="text-xs text-[#666] mb-4">
+        <p className="text-sm font-semibold text-gray-900 mb-1">No guides found</p>
+        <p className="text-xs text-gray-500 mb-4">
           {searchQuery
             ? `No results for "${searchQuery}". Try different keywords.`
             : "No guides match your current filters."}
         </p>
         <button
           onClick={onClearFilters}
-          className="text-xs text-emerald-400 font-medium hover:text-emerald-300"
+          className="text-xs text-blue-600 font-medium hover:text-blue-500"
         >
           Clear all filters
         </button>
@@ -65,7 +65,7 @@ export function GuidesList({
     <div>
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-white">{getTitle()}</h3>
-        <span className="text-xs text-[#666]">
+        <span className="text-xs text-gray-500">
           Showing {visibleGuides.length} of {guides.length} guides
         </span>
       </div>
@@ -87,11 +87,11 @@ export function GuidesList({
         <div className="mt-6 text-center">
           <button
             onClick={handleLoadMore}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl text-sm font-medium text-white hover:bg-[#222] hover:border-emerald-500/50 transition-all"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-100 border border-gray-200 rounded-xl text-sm font-medium text-gray-900 hover:bg-gray-200 hover:border-blue-500/50 transition-all"
           >
             <span>Load More</span>
-            <span className="text-xs text-[#888]">({remaining} remaining)</span>
-            <IoChevronDown className="w-4 h-4 text-[#666]" />
+            <span className="text-xs text-gray-500">({remaining} remaining)</span>
+            <IoChevronDown className="w-4 h-4 text-gray-500" />
           </button>
         </div>
       )}

@@ -124,7 +124,6 @@ async function fetchAdminStats() {
       }).from(referrals).orderBy(desc(referrals.createdAt)).limit(5),
     ]);
 
-    console.log("[Admin Stats] Completed in", Date.now() - startTime, "ms");
 
     const combinedUserStats = {
       total: Number(userStats.total) || 0,
@@ -225,7 +224,6 @@ async function fetchAdminStats() {
       },
     };
   } catch (error) {
-    console.error("[Admin Stats] Error after", Date.now() - startTime, "ms:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",
@@ -281,7 +279,6 @@ async function fetchGuideAnalytics() {
         .limit(10),
     ]);
 
-    console.log("[Guide Analytics] Completed in", Date.now() - startTime, "ms");
 
     return {
       success: true,
@@ -304,7 +301,6 @@ async function fetchGuideAnalytics() {
       },
     };
   } catch (error) {
-    console.error("[Guide Analytics] Error after", Date.now() - startTime, "ms:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",
@@ -380,7 +376,6 @@ async function fetchFinanceAnalytics() {
     const totalStreams = Number(incomeStats?.totalStreams) || 0;
     const totalExpenses = Number(expenseStats?.totalExpenses) || 0;
 
-    console.log("[Finance Analytics] Completed in", Date.now() - startTime, "ms");
 
     return {
       success: true,
@@ -402,7 +397,6 @@ async function fetchFinanceAnalytics() {
       },
     };
   } catch (error) {
-    console.error("[Finance Analytics] Error after", Date.now() - startTime, "ms:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",
@@ -482,7 +476,6 @@ async function fetchIssueDecisionAnalytics() {
         .where(sql`${issues.completedAt} is not null`),
     ]);
 
-    console.log("[Issue/Decision Analytics] Completed in", Date.now() - startTime, "ms");
 
     return {
       success: true,
@@ -511,7 +504,6 @@ async function fetchIssueDecisionAnalytics() {
       },
     };
   } catch (error) {
-    console.error("[Issue/Decision Analytics] Error after", Date.now() - startTime, "ms:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",

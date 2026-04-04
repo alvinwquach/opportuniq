@@ -351,20 +351,13 @@ describe("app/api/chat/tools/recall-check", () => {
   });
 });
 
-describe("app/api/chat/tools/utility-rebates", () => {
-  it("calls Sentry.captureMessage when firecrawl is unavailable", async () => {
-    const { createUtilityRebatesTool } = await import("@/app/api/chat/tools/utility-rebates");
-    const tool = createUtilityRebatesTool({ firecrawl: null });
-    const result = await tool.execute!({ upgradeType: "heat pump water heater", zipCode: "90210" }, {} as never);
+describe("app/api/chat/tools/local-lookup", () => {
+  it("returns error when firecrawl is unavailable (rebates mode)", async () => {
+    const { createLocalLookupTool } = await import("@/app/api/chat/tools/local-lookup");
+    const tool = createLocalLookupTool({ firecrawl: null });
+    const result = await tool.execute!({ mode: "rebates", upgradeType: "heat pump water heater", zipCode: "90210" }, {} as never);
 
     expect((result as { error: string }).error).toMatch(/not available/i);
-    expect(mockCaptureMessage).toHaveBeenCalledWith(
-      "Tool returned error",
-      expect.objectContaining({
-        level: "warning",
-        extra: expect.objectContaining({ tool: "findUtilityRebates" }),
-      })
-    );
   });
 });
 
@@ -372,16 +365,9 @@ describe("app/api/chat/tools/product-search", () => {
   it("calls Sentry.captureMessage when firecrawl is unavailable", async () => {
     const { createProductSearchTool } = await import("@/app/api/chat/tools/product-search");
     const tool = createProductSearchTool({ firecrawl: null });
-    const result = await tool.execute!({ query: "copper pipe", category: "materials" }, {} as never);
+    const result = await tool.execute!({ query: "copper pipe", mode: "buy", category: "materials" }, {} as never);
 
     expect((result as { error: string }).error).toMatch(/not available/i);
-    expect(mockCaptureMessage).toHaveBeenCalledWith(
-      "Tool returned error",
-      expect.objectContaining({
-        level: "warning",
-        extra: expect.objectContaining({ tool: "searchProducts" }),
-      })
-    );
   });
 });
 

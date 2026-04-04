@@ -191,7 +191,6 @@ export function IssueChat({
       addDecryptedUrl(attachmentId, url);
       return url;
     } catch (err) {
-      console.error("[Chat] Failed to decrypt:", attachmentId, err);
       return null;
     }
   }, [decryptAttachment, decryptedUrls, addDecryptedUrl]);
@@ -231,7 +230,6 @@ export function IssueChat({
   };
 
   const prepareVideoAttachment = async (video: NonNullable<typeof selectedVideo>): Promise<DiagnosisRequest["attachments"] | undefined> => {
-    console.log("[Chat] ========== VIDEO PREPARATION START ==========");
     const totalStart = performance.now();
 
     console.time("[Chat] Video processing");
@@ -239,17 +237,9 @@ export function IssueChat({
     console.timeEnd("[Chat] Video processing");
 
     if (!videoResult) {
-      console.error("[Chat] Video processing returned null");
       return undefined;
     }
 
-    console.log("[Chat] Video processed:", {
-      duration: videoResult.duration,
-      hasAudio: videoResult.hasAudio,
-      frames: videoResult.diagnosticFramesBase64.length,
-      compressedSize: `${(videoResult.compressedBlob.size / 1024 / 1024).toFixed(2)}MB`,
-      audioSize: videoResult.audioBlob ? `${(videoResult.audioBlob.size / 1024).toFixed(1)}KB` : "none",
-    });
 
     // Transcribe audio if available (for speech - backup context)
     let transcript: string | undefined;
@@ -263,11 +253,9 @@ export function IssueChat({
         console.time("[Chat] Audio to base64");
         audioBase64 = await blobToBase64(videoResult.audioBlob);
         console.timeEnd("[Chat] Audio to base64");
-        console.log("[Chat] Audio converted to base64, length:", audioBase64.length);
 
         // Also try Whisper transcription for speech (as backup context)
         console.time("[Chat] Audio transcription");
-        console.log("[Chat] Transcribing video audio...", `${(videoResult.audioBlob.size / 1024).toFixed(1)}KB`);
 
         const formData = new FormData();
         formData.append("audio", videoResult.audioBlob, "video-audio.webm");
@@ -283,21 +271,14 @@ export function IssueChat({
           const transcriptionResult = await response.json();
           transcript = transcriptionResult.text;
           transcriptLanguage = transcriptionResult.language;
-          console.log("[Chat] Audio transcribed successfully:", {
-            length: transcript?.length,
-            language: transcriptLanguage,
-            preview: transcript?.substring(0, 100),
-          });
         } else {
           const errorText = await response.text();
           console.warn("[Chat] Audio transcription failed:", response.status, errorText);
         }
       } catch (err) {
-        console.error("[Chat] Failed to process video audio:", err);
         // Continue without audio - not a fatal error
       }
     } else {
-      console.log("[Chat] No audio to process:", { hasAudio: videoResult.hasAudio, hasBlob: !!videoResult.audioBlob });
     }
 
     startEncrypting();
@@ -307,8 +288,6 @@ export function IssueChat({
       console.timeEnd("[Chat] Video encryption & upload");
 
       const totalTime = performance.now() - totalStart;
-      console.log("[Chat] ========== VIDEO PREPARATION COMPLETE ==========");
-      console.log("[Chat] Total preparation time:", `${totalTime.toFixed(0)}ms`);
 
       return [{
         attachmentId: result.attachmentId,
@@ -337,12 +316,11 @@ export function IssueChat({
 
     let attachments: DiagnosisRequest["attachments"] | undefined;
     if (imageFile) {
-      try { attachments = await prepareImageAttachment(imageFile); } catch (err) { console.error("[Chat] Failed to encrypt image:", err); }
+      try { attachments = await prepareImageAttachment(imageFile); } catch (err) {}
     } else if (selectedVideo) {
       try {
         attachments = await prepareVideoAttachment(selectedVideo);
       } catch (err) {
-        console.error("[Chat] Failed to process video:", err);
         const errorMessage = err instanceof Error ? err.message : "Failed to process video";
         showError(
           errorMessage.includes("unavailable")
@@ -380,12 +358,11 @@ export function IssueChat({
 
     let attachments: DiagnosisRequest["attachments"] | undefined;
     if (hasImage) {
-      try { attachments = await prepareImageAttachment(imageFile); } catch (err) { console.error("[Chat] Failed to encrypt image:", err); }
+      try { attachments = await prepareImageAttachment(imageFile); } catch (err) {}
     } else if (hasVideoMedia) {
       try {
         attachments = await prepareVideoAttachment(selectedVideo);
       } catch (err) {
-        console.error("[Chat] Failed to process video:", err);
         const errorMessage = err instanceof Error ? err.message : "Failed to process video";
         showError(
           errorMessage.includes("unavailable")

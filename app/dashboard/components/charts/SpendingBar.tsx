@@ -108,7 +108,7 @@ export function SpendingBar({ data, height = 200 }: SpendingBarProps) {
 
   if (data.length === 0) {
     return (
-      <div className="flex items-center justify-center h-[200px] text-[#666] text-sm">
+      <div className="flex items-center justify-center h-[200px] text-gray-500 text-sm">
         No spending data this month
       </div>
     );

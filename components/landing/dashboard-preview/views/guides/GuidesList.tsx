@@ -33,19 +33,19 @@ export function GuidesList({
 
   if (guides.length === 0) {
     return (
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-12 text-center">
-        <div className="w-16 h-16 rounded-full bg-[#333] flex items-center justify-center mx-auto mb-4">
-          <IoSearchOutline className="w-8 h-8 text-[#666]" />
+      <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+          <IoSearchOutline className="w-8 h-8 text-gray-500" />
         </div>
-        <p className="text-sm font-semibold text-white mb-1">No guides found</p>
-        <p className="text-xs text-[#666] mb-4">
+        <p className="text-sm font-semibold text-gray-900 mb-1">No guides found</p>
+        <p className="text-xs text-gray-500 mb-4">
           {searchQuery
             ? `No results for "${searchQuery}". Try different keywords.`
             : "No guides match your current filters."}
         </p>
         <button
           onClick={onClearFilters}
-          className="text-xs text-emerald-400 font-medium hover:text-emerald-300"
+          className="text-xs text-blue-600 font-medium hover:text-blue-700"
         >
           Clear all filters
         </button>
@@ -62,8 +62,8 @@ export function GuidesList({
   return (
     <div>
       <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <h3 className="text-xs sm:text-sm font-semibold text-white">{getTitle()}</h3>
-        <span className="text-[10px] sm:text-xs text-[#666]">
+        <h3 className="text-xs sm:text-sm font-semibold text-gray-900">{getTitle()}</h3>
+        <span className="text-[10px] sm:text-xs text-gray-500">
           {visibleGuides.length} of {guides.length}
         </span>
       </div>
@@ -79,11 +79,11 @@ export function GuidesList({
         <div className="mt-4 sm:mt-6 text-center">
           <button
             onClick={handleLoadMore}
-            className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium text-white hover:bg-[#222] hover:border-emerald-500/50 transition-all"
+            className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 bg-white border border-gray-200 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium text-gray-900 hover:bg-gray-100 hover:border-blue-500/50 transition-all"
           >
             <span>Load More</span>
-            <span className="text-[10px] sm:text-xs text-[#888]">({remaining})</span>
-            <IoChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#666]" />
+            <span className="text-[10px] sm:text-xs text-gray-500">({remaining})</span>
+            <IoChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500" />
           </button>
         </div>
       )}

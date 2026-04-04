@@ -164,7 +164,6 @@ export function SupportChatRoom({
         setMessages(data.messages || []);
       }
     } catch (error) {
-      console.error("Failed to load messages:", error);
     } finally {
       setIsLoadingMessages(false);
     }
@@ -197,7 +196,6 @@ export function SupportChatRoom({
         setInputValue(content);
       }
     } catch (error) {
-      console.error("Failed to send message:", error);
       alert("Failed to send message. Please try again.");
       setInputValue(content);
     } finally {

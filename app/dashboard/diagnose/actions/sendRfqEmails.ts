@@ -162,7 +162,6 @@ export async function sendRfqEmails(input: SendRfqEmailsInput): Promise<SendRfqE
           failedCount++;
         }
       } catch (error) {
-        console.error(`Error sending RFQ to ${pro.email}:`, error);
 
         results.push({
           recipientEmail: pro.email,
@@ -181,7 +180,6 @@ export async function sendRfqEmails(input: SendRfqEmailsInput): Promise<SendRfqE
       results,
     };
   } catch (error) {
-    console.error("Error in sendRfqEmails:", error);
     return {
       success: false,
       sentCount: 0,

@@ -30,7 +30,7 @@ export function GuidesTabs({ activeTab, setActiveTab, guides }: GuidesTabsProps)
   const counts = getTabCounts(guides);
 
   return (
-    <div className="flex items-center gap-0.5 border-b border-[#2a2a2a] bg-[#1a1a1a] rounded-t-xl px-1 sm:px-2 pt-1 sm:pt-2">
+    <div className="flex items-center gap-0.5 border-b border-gray-200 bg-white rounded-t-xl px-1 sm:px-2 pt-1 sm:pt-2">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const count = counts[tab.id];
@@ -41,15 +41,15 @@ export function GuidesTabs({ activeTab, setActiveTab, guides }: GuidesTabsProps)
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 sm:py-2.5 text-xs font-medium border-b-2 transition-colors ${
                   activeTab === tab.id
-                    ? "border-emerald-400 text-emerald-400"
-                    : "border-transparent text-[#666] hover:text-white"
+                    ? "border-blue-400 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-900"
                 }`}
               >
                 <Icon className="w-3.5 h-3.5 shrink-0" />
                 <span className="hidden sm:inline">{tab.label}</span>
                 <span
                   className={`px-1 sm:px-1.5 py-0.5 rounded-full text-[10px] font-medium ${
-                    activeTab === tab.id ? "bg-emerald-500/20 text-emerald-400" : "bg-[#333] text-[#888]"
+                    activeTab === tab.id ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-500"
                   }`}
                 >
                   {count}

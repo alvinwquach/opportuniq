@@ -105,7 +105,7 @@ export async function updateMemberRole(
         oldRole,
         newRole,
         groupUrl,
-      }).catch((err) => console.error("[Groups] Failed to send role changed email:", err));
+      }).catch(() => {});
 
       // Log audit event
       await logMemberAction({
@@ -124,7 +124,6 @@ export async function updateMemberRole(
 
     return { success: true, oldRole, newRole };
   } catch (error) {
-    console.error("[Groups] updateMemberRole error:", error);
     return { success: false, error: "Failed to update member role" };
   }
 }
@@ -213,7 +212,7 @@ export async function removeMember(groupId: string, memberId: string) {
         groupName: group?.name || "the group",
         removedBy: remover?.name || "A coordinator",
         dashboardUrl,
-      }).catch((err) => console.error("[Groups] Failed to send member removed email:", err));
+      }).catch(() => {});
 
       // Log audit event
       await logMemberAction({
@@ -231,7 +230,6 @@ export async function removeMember(groupId: string, memberId: string) {
 
     return { success: true };
   } catch (error) {
-    console.error("[Groups] removeMember error:", error);
     return { success: false, error: "Failed to remove member" };
   }
 }
@@ -307,14 +305,13 @@ export async function approveMember(groupId: string, memberId: string) {
         memberName: memberUser.name || "there",
         groupName: group?.name || "the group",
         groupUrl,
-      }).catch((err) => console.error("[Groups] Failed to send approval email:", err));
+      }).catch(() => {});
     }
 
     revalidatePath(`/dashboard/groups/${groupId}`);
 
     return { success: true };
   } catch (error) {
-    console.error("[Groups] approveMember error:", error);
     return { success: false, error: "Failed to approve member" };
   }
 }
@@ -374,7 +371,6 @@ export async function rejectMember(groupId: string, memberId: string) {
 
     return { success: true };
   } catch (error) {
-    console.error("[Groups] rejectMember error:", error);
     return { success: false, error: "Failed to reject member" };
   }
 }
@@ -468,7 +464,6 @@ export async function getGroupMembers(groupId: string) {
       currentUserId: user.id,
     };
   } catch (error) {
-    console.error("[Groups] getGroupMembers error:", error);
     return { success: false, error: "Failed to fetch members" };
   }
 }

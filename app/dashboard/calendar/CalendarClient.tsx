@@ -302,7 +302,6 @@ export function CalendarClient() {
   const handleDrop = (e: React.DragEvent, date: number) => {
     e.preventDefault();
     if (draggedEvent) {
-      console.log(`Moving event ${draggedEvent} to date ${date}`);
       // TODO: Implement event move via mutation
     }
     // Reset drag state regardless of whether the move succeeded.
@@ -343,11 +342,11 @@ export function CalendarClient() {
   // Guard: if the server request failed, show a centered error message.
   if (error) {
     return (
-      <div className="min-h-[calc(100vh-48px)] bg-[#0f0f0f] flex items-center justify-center">
+      <div className="min-h-[calc(100vh-48px)] bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-400 mb-2">Error loading calendar</p>
           {/* Show the specific error message so the user knows what went wrong. */}
-          <p className="text-sm text-[#666]">{error.message}</p>
+          <p className="text-sm text-gray-500">{error.message}</p>
         </div>
       </div>
     );
@@ -374,7 +373,7 @@ export function CalendarClient() {
   // Happy path: data loaded and events exist — render the full calendar page.
   return (
     <>
-      <div className="p-6 min-h-[calc(100vh-48px)] bg-[#0f0f0f]">
+      <div className="p-6 min-h-[calc(100vh-48px)] bg-gray-50">
         {/* Top navigation bar: month/year display, prev/next/today buttons,
             view mode toggle (month/week), and "Add Event" button. */}
         <CalendarHeader
@@ -404,8 +403,8 @@ export function CalendarClient() {
               className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
                 // Active filter chip gets the emerald highlight; others get the grey default.
                 activeFilter === filter.id
-                  ? "bg-emerald-500/20 text-emerald-400"
-                  : "bg-[#1a1a1a] text-[#888] border border-[#2a2a2a] hover:bg-[#333]"
+                  ? "bg-blue-100 text-blue-600"
+                  : "bg-gray-100 text-gray-500 border border-gray-200 hover:bg-[#333]"
               }`}
             >
               {filter.label}

@@ -66,7 +66,6 @@ export async function loadFFmpeg(
     // Set up progress logging
     ffmpegInstance.on("log", ({ message }) => {
       // Parse FFmpeg progress from logs if needed
-      console.log("[FFmpeg]", message);
     });
 
     ffmpegInstance.on("progress", ({ progress }) => {

@@ -20,12 +20,10 @@ export function RevokeButton({ inviteId, email }: RevokeButtonProps) {
     try {
       const result = await revokeInvite(inviteId);
       if (result.error) {
-        console.error(result.error);
       } else {
         router.refresh();
       }
     } catch (error) {
-      console.error("Failed to revoke invite:", error);
     } finally {
       setLoading(false);
       setShowConfirm(false);

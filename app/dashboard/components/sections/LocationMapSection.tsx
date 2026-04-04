@@ -106,13 +106,13 @@ function getWeatherIcon(code: number, isDay: boolean = true) {
     return <WiFog className="w-6 h-6 text-gray-400" />;
   }
   if (code >= 51 && code <= 67) {
-    return <WiRain className="w-6 h-6 text-blue-400" />;
+    return <WiRain className="w-6 h-6 text-blue-600" />;
   }
   if (code >= 71 && code <= 77) {
     return <WiSnow className="w-6 h-6 text-blue-200" />;
   }
   if (code >= 80 && code <= 82) {
-    return <WiRain className="w-6 h-6 text-blue-400" />;
+    return <WiRain className="w-6 h-6 text-blue-600" />;
   }
   if (code >= 85 && code <= 86) {
     return <WiSnow className="w-6 h-6 text-blue-200" />;
@@ -331,9 +331,9 @@ export function LocationMapSection({ userProfile, weatherData }: LocationMapSect
     <section>
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-medium text-white">Your Area</h2>
-        <span className="text-xs text-[#9a9a9a]">{userProfile.postalCode}</span>
+        <span className="text-xs text-gray-400">{userProfile.postalCode}</span>
       </div>
-      <div className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
+      <div className="rounded-xl bg-gray-50 border border-gray-200 overflow-hidden">
         {weatherAlerts.length > 0 && (
           <div className="p-3 bg-amber-500/10 border-b border-amber-500/20">
             <div className="flex items-start gap-2">
@@ -347,11 +347,11 @@ export function LocationMapSection({ userProfile, weatherData }: LocationMapSect
           </div>
         )}
         {weather && (
-          <div className="p-4 border-b border-[#1f1f1f]">
+          <div className="p-4 border-b border-gray-200">
             {/* Current Weather */}
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-lg bg-[#1f1f1f] flex items-center justify-center">
+                <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center">
                   {getWeatherIcon(weather.current.weatherCode, weather.current.isDay)}
                 </div>
                 <div>
@@ -359,29 +359,29 @@ export function LocationMapSection({ userProfile, weatherData }: LocationMapSect
                     <span className="text-2xl font-semibold text-white">
                       {Math.round(weather.current.temperature)}°
                     </span>
-                    <span className="text-xs text-[#9a9a9a]">F</span>
+                    <span className="text-xs text-gray-400">F</span>
                   </div>
                   <p className="text-xs text-[#a3a3a3]">{weather.current.weatherDescription}</p>
                 </div>
               </div>
               <div className="text-right space-y-1">
-                <div className="flex items-center justify-end gap-1 text-xs text-[#9a9a9a]">
+                <div className="flex items-center justify-end gap-1 text-xs text-gray-400">
                   <WiThermometer className="w-4 h-4" />
                   <span>Feels {Math.round(weather.current.feelsLike)}°</span>
                 </div>
-                <div className="flex items-center justify-end gap-1 text-xs text-[#9a9a9a]">
+                <div className="flex items-center justify-end gap-1 text-xs text-gray-400">
                   <WiStrongWind className="w-4 h-4" />
                   <span>{Math.round(weather.current.windSpeed)} mph</span>
                 </div>
-                <div className="flex items-center justify-end gap-1 text-xs text-[#9a9a9a]">
+                <div className="flex items-center justify-end gap-1 text-xs text-gray-400">
                   <WiRaindrop className="w-4 h-4" />
                   <span>{weather.current.humidity}%</span>
                 </div>
               </div>
             </div>
             <div className="flex gap-2 mb-4">
-              <div className="flex-1 p-2 rounded-lg bg-[#1a1a1a]">
-                <p className="text-[10px] text-[#9a9a9a] mb-1">UV Index</p>
+              <div className="flex-1 p-2 rounded-lg bg-gray-100">
+                <p className="text-[10px] text-gray-400 mb-1">UV Index</p>
                 <div className="flex items-center gap-1">
                   <WiDaySunny className="w-4 h-4 text-yellow-400" />
                   <span className={cn("text-sm font-medium", getUVLevel(weather.current.uvIndex).color)}>
@@ -393,10 +393,10 @@ export function LocationMapSection({ userProfile, weatherData }: LocationMapSect
                 </div>
               </div>
               {airQuality && (
-                <div className="flex-1 p-2 rounded-lg bg-[#1a1a1a]">
-                  <p className="text-[10px] text-[#9a9a9a] mb-1">Air Quality</p>
+                <div className="flex-1 p-2 rounded-lg bg-gray-100">
+                  <p className="text-[10px] text-gray-400 mb-1">Air Quality</p>
                   <div className="flex items-center gap-1">
-                    <IoShieldCheckmark className="w-3.5 h-3.5 text-[#9a9a9a]" />
+                    <IoShieldCheckmark className="w-3.5 h-3.5 text-gray-400" />
                     <span className={cn("text-sm font-medium", getAQIColor(airQuality.aqi))}>
                       {airQuality.aqi}
                     </span>
@@ -407,8 +407,8 @@ export function LocationMapSection({ userProfile, weatherData }: LocationMapSect
                 </div>
               )}
               {todayForecast && (
-                <div className="flex-1 p-2 rounded-lg bg-[#1a1a1a]">
-                  <p className="text-[10px] text-[#9a9a9a] mb-1">Sun</p>
+                <div className="flex-1 p-2 rounded-lg bg-gray-100">
+                  <p className="text-[10px] text-gray-400 mb-1">Sun</p>
                   <div className="flex items-center gap-3 text-xs">
                     <div className="flex items-center gap-0.5">
                       <WiSunrise className="w-5 h-5 text-amber-400" />
@@ -446,15 +446,15 @@ export function LocationMapSection({ userProfile, weatherData }: LocationMapSect
                     className={cn(
                       "p-1.5 rounded-lg text-center transition-all",
                       isSelected
-                        ? "bg-[#00D4FF]/20 border border-[#00D4FF]/40"
+                        ? "bg-blue-100 border border-blue-500/40"
                         : isGood
                         ? "bg-green-500/10 border border-green-500/20 hover:bg-green-500/20"
-                        : "bg-[#1a1a1a] hover:bg-[#222] border border-transparent"
+                        : "bg-gray-100 hover:bg-gray-200 border border-transparent"
                     )}
                   >
                     <p className={cn(
                       "text-[10px] mb-0.5",
-                      isSelected ? "text-[#00D4FF]" : "text-[#9a9a9a]"
+                      isSelected ? "text-blue-600" : "text-gray-400"
                     )}>
                       {getDayName(day.date)}
                     </p>
@@ -463,22 +463,22 @@ export function LocationMapSection({ userProfile, weatherData }: LocationMapSect
                     </div>
                     <p className={cn(
                       "text-xs font-medium",
-                      isSelected ? "text-white" : "text-[#a3a3a3]"
+                      isSelected ? "text-gray-900" : "text-[#a3a3a3]"
                     )}>
                       {Math.round(day.temperatureMax)}°
                     </p>
-                    <p className="text-[10px] text-[#9a9a9a]">
+                    <p className="text-[10px] text-gray-400">
                       {Math.round(day.temperatureMin)}°
                     </p>
                   </button>
                 );
               })}
             </div>
-            <div className="pt-3 border-t border-[#1f1f1f] overflow-hidden">
+            <div className="pt-3 border-t border-gray-200 overflow-hidden">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1.5">
-                  <IoTime className="w-3 h-3 text-[#9a9a9a]" />
-                  <p className="text-[10px] text-[#9a9a9a]">
+                  <IoTime className="w-3 h-3 text-gray-400" />
+                  <p className="text-[10px] text-gray-400">
                     Hourly forecast · {selectedDayIndex === 0 ? "Today" : getDayName(weather.daily[selectedDayIndex]?.date || "")}
                   </p>
                 </div>
@@ -489,7 +489,7 @@ export function LocationMapSection({ userProfile, weatherData }: LocationMapSect
                     className={cn(
                       "p-1 rounded-md transition-colors",
                       canScrollLeft
-                        ? "bg-[#1f1f1f] hover:bg-[#2a2a2a] text-[#a3a3a3]"
+                        ? "bg-gray-100 hover:bg-gray-200 text-[#a3a3a3]"
                         : "text-[#4a4a4a] cursor-not-allowed"
                     )}
                     aria-label="Scroll left"
@@ -502,7 +502,7 @@ export function LocationMapSection({ userProfile, weatherData }: LocationMapSect
                     className={cn(
                       "p-1 rounded-md transition-colors",
                       canScrollRight
-                        ? "bg-[#1f1f1f] hover:bg-[#2a2a2a] text-[#a3a3a3]"
+                        ? "bg-gray-100 hover:bg-gray-200 text-[#a3a3a3]"
                         : "text-[#4a4a4a] cursor-not-allowed"
                     )}
                     aria-label="Scroll right"
@@ -532,7 +532,7 @@ export function LocationMapSection({ userProfile, weatherData }: LocationMapSect
                       <div key={hour.time} className="flex gap-2" data-hour-time={hour.time}>
                         {isNewDay && (
                           <div className="flex-shrink-0 w-px bg-[#333] mx-1 relative">
-                            <span className="absolute -top-1 left-1/2 -translate-x-1/2 text-[8px] text-[#666] whitespace-nowrap bg-[#161616] px-1">
+                            <span className="absolute -top-1 left-1/2 -translate-x-1/2 text-[8px] text-gray-500 whitespace-nowrap bg-gray-50 px-1">
                               {getDayName(hour.time.split("T")[0])}
                             </span>
                           </div>
@@ -541,15 +541,15 @@ export function LocationMapSection({ userProfile, weatherData }: LocationMapSect
                           className={cn(
                             "flex-shrink-0 w-14 py-2 px-1 rounded-xl text-center",
                             isCurrentHour
-                              ? "bg-[#00D4FF]/20 border border-[#00D4FF]/40"
+                              ? "bg-blue-100 border border-blue-500/40"
                               : isMidnight && !isCurrentHour
-                              ? "bg-[#1f1f1f] border border-[#333]"
-                              : "bg-[#1a1a1a]"
+                              ? "bg-gray-100 border border-[#333]"
+                              : "bg-gray-100"
                           )}
                         >
                           <p className={cn(
                             "text-[10px] mb-1",
-                            isCurrentHour ? "text-[#00D4FF] font-medium" : "text-[#9a9a9a]"
+                            isCurrentHour ? "text-blue-600 font-medium" : "text-gray-400"
                           )}>
                             {isCurrentHour ? "Now" : formatTime(hour.time)}
                           </p>
@@ -559,8 +559,8 @@ export function LocationMapSection({ userProfile, weatherData }: LocationMapSect
                           <p className="text-sm font-medium text-white">{Math.round(hour.temperature)}°</p>
                           {hour.precipitationProbability > 20 && (
                             <div className="flex items-center justify-center gap-0.5 mt-0.5">
-                              <WiRaindrop className="w-3.5 h-3.5 text-blue-400" />
-                              <span className="text-[10px] text-blue-400">
+                              <WiRaindrop className="w-3.5 h-3.5 text-blue-600" />
+                              <span className="text-[10px] text-blue-600">
                                 {hour.precipitationProbability}%
                               </span>
                             </div>

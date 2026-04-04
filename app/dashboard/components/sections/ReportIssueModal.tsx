@@ -85,7 +85,7 @@ export function ReportIssueModal({ trigger, variant = "default" }: ReportIssueMo
   }, [open, variant]);
 
   const defaultTrigger = (
-    <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00D4FF]/10 text-[#00D4FF] text-sm font-medium hover:bg-[#00D4FF]/20 transition-colors">
+    <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100 transition-colors">
       <IoCamera className="w-4 h-4" />
       Report an Issue
     </button>
@@ -96,10 +96,10 @@ export function ReportIssueModal({ trigger, variant = "default" }: ReportIssueMo
       <DialogTrigger asChild>
         {trigger || defaultTrigger}
       </DialogTrigger>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] sm:max-w-md">
+      <DialogContent className="bg-white border-gray-200 sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-white text-lg">Report an Issue</DialogTitle>
-          <p className="text-sm text-[#888] mt-1">
+          <p className="text-sm text-gray-500 mt-1">
             How would you like to document this issue?
           </p>
         </DialogHeader>
@@ -119,14 +119,14 @@ export function ReportIssueModal({ trigger, variant = "default" }: ReportIssueMo
                   }}
                   className={cn(
                     "flex flex-col items-center p-4 rounded-xl border transition-all group",
-                    "bg-[#161616] border-[#1f1f1f] hover:border-[#00D4FF]/50 hover:bg-[#00D4FF]/5"
+                    "bg-gray-50 border-gray-200 hover:border-blue-500/50 hover:bg-blue-50"
                   )}
                 >
-                  <div className="w-12 h-12 rounded-xl bg-[#00D4FF]/10 flex items-center justify-center mb-3 group-hover:bg-[#00D4FF]/20 transition-colors">
-                    <Icon className="w-6 h-6 text-[#00D4FF]" />
+                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-3 group-hover:bg-blue-100 transition-colors">
+                    <Icon className="w-6 h-6 text-blue-600" />
                   </div>
-                  <span className="text-sm font-medium text-white mb-0.5">{method.label}</span>
-                  <span className="text-[11px] text-[#666] text-center">{method.description}</span>
+                  <span className="text-sm font-medium text-gray-900 mb-0.5">{method.label}</span>
+                  <span className="text-[11px] text-gray-500 text-center">{method.description}</span>
                 </Link>
               );
             }
@@ -136,35 +136,35 @@ export function ReportIssueModal({ trigger, variant = "default" }: ReportIssueMo
                 key={method.id}
                 className={cn(
                   "flex flex-col items-center p-4 rounded-xl border relative",
-                  "bg-[#161616]/50 border-[#1f1f1f] opacity-60 cursor-not-allowed"
+                  "bg-gray-50/50 border-gray-200 opacity-60 cursor-not-allowed"
                 )}
               >
                 {method.comingSoon && (
-                  <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[9px] font-medium bg-[#00D4FF]/10 text-[#00D4FF]">
+                  <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[9px] font-medium bg-blue-50 text-blue-600">
                     Soon
                   </span>
                 )}
-                <div className="w-12 h-12 rounded-xl bg-[#1f1f1f] flex items-center justify-center mb-3">
-                  <Icon className="w-6 h-6 text-[#555]" />
+                <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center mb-3">
+                  <Icon className="w-6 h-6 text-gray-400" />
                 </div>
-                <span className="text-sm font-medium text-[#666] mb-0.5">{method.label}</span>
-                <span className="text-[11px] text-[#555] text-center">{method.description}</span>
+                <span className="text-sm font-medium text-gray-500 mb-0.5">{method.label}</span>
+                <span className="text-[11px] text-gray-400 text-center">{method.description}</span>
               </div>
             );
           })}
         </div>
 
-        <div className="mt-4 pt-4 border-t border-[#1f1f1f]">
+        <div className="mt-4 pt-4 border-t border-gray-200">
           <Link
             href="/issues/new"
             onClick={() => setOpen(false)}
-            className="flex items-center justify-between p-3 rounded-lg bg-[#1f1f1f] hover:bg-[#2a2a2a] transition-colors group"
+            className="flex items-center justify-between p-3 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors group"
           >
             <div>
               <span className="text-sm font-medium text-white">Quick Report</span>
-              <p className="text-[11px] text-[#666]">Just describe the issue with text</p>
+              <p className="text-[11px] text-gray-500">Just describe the issue with text</p>
             </div>
-            <IoChevronForward className="w-4 h-4 text-[#666] group-hover:text-white transition-colors" />
+            <IoChevronForward className="w-4 h-4 text-gray-500 group-hover:text-gray-900 transition-colors" />
           </Link>
         </div>
       </DialogContent>
@@ -180,7 +180,7 @@ export function ReportIssueButton({ className }: { className?: string }) {
       trigger={
         <button
           className={cn(
-            "flex items-center gap-2 px-2.5 py-2 rounded-md text-[13px] bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20 hover:bg-[#00D4FF]/20 transition-colors w-full",
+            "flex items-center gap-2 px-2.5 py-2 rounded-md text-[13px] bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 transition-colors w-full",
             className
           )}
         >
@@ -200,7 +200,7 @@ export function ReportIssueIconButton({ className }: { className?: string }) {
       trigger={
         <button
           className={cn(
-            "flex items-center justify-center w-9 h-9 mx-auto rounded-md bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20 hover:bg-[#00D4FF]/20 transition-colors",
+            "flex items-center justify-center w-9 h-9 mx-auto rounded-md bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 transition-colors",
             className
           )}
         >

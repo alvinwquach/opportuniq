@@ -107,7 +107,6 @@ export async function searchInstructables(
 
     if (!response.ok) {
       // Fall back to Firecrawl scraping
-      console.log("[Instructables] Internal API failed, trying Firecrawl fallback");
       return searchInstructablesViaFirecrawl(query, { limit });
     }
 
@@ -140,7 +139,6 @@ export async function searchInstructables(
       totalResults: data.count || guides.length,
     };
   } catch (error) {
-    console.error("Instructables search error:", error);
     // Try Firecrawl fallback
     return searchInstructablesViaFirecrawl(query, { limit: options?.limit ?? 10 });
   }
@@ -188,7 +186,6 @@ export async function getInstructablesFeatured(
       totalResults: guides.length,
     };
   } catch (error) {
-    console.error("Instructables featured error:", error);
     return {
       success: false,
       guides: [],
@@ -240,7 +237,6 @@ export async function getInstructablesByChannel(
       totalResults: guides.length,
     };
   } catch (error) {
-    console.error("Instructables channel error:", error);
     return {
       success: false,
       guides: [],
@@ -351,7 +347,6 @@ async function searchInstructablesViaFirecrawl(
       totalResults: guides.length,
     };
   } catch (error) {
-    console.error("Instructables Firecrawl fallback error:", error);
     return {
       success: false,
       guides: [],
@@ -469,7 +464,6 @@ export async function scrapeInstructablesGuide(url: string): Promise<GuideDetail
       guide,
     };
   } catch (error) {
-    console.error("Instructables guide scrape error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to scrape guide",

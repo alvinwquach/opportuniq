@@ -66,7 +66,6 @@ export async function POST(req: Request) {
 
     // Check if token is expired and refresh if needed
     if (new Date() >= tokenRecord.expiresAt) {
-      console.log("[Gmail Send] Token expired, refreshing...");
 
       try {
         const newCredentials = await refreshAccessToken(tokenRecord.refreshToken);
@@ -87,9 +86,7 @@ export async function POST(req: Request) {
           })
           .where(eq(gmailTokens.userId, user.id));
 
-        console.log("[Gmail Send] Token refreshed successfully");
       } catch (refreshError) {
-        console.error("[Gmail Send] Token refresh failed:", refreshError);
         Sentry.captureException(refreshError, {
           extra: { context: "gmail_token_refresh", userId: user.id, code: "GMAIL_TOKEN_EXPIRED" },
         });
@@ -112,11 +109,6 @@ export async function POST(req: Request) {
       replyTo: body.replyTo,
     });
 
-    console.log("[Gmail Send] Email sent successfully:", {
-      userId: user.id,
-      to: body.to,
-      messageId: result.messageId,
-    });
 
     return NextResponse.json({
       success: true,
@@ -125,7 +117,6 @@ export async function POST(req: Request) {
       sentFrom: tokenRecord.gmailAddress,
     });
   } catch (error) {
-    console.error("[Gmail Send] Error:", error);
 
     // Check for specific Gmail API errors
     if (error instanceof Error) {

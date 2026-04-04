@@ -18,8 +18,8 @@ export function StaticDemoIllustration() {
         <div className="grid md:grid-cols-3 gap-6">
           {/* Step 1: Describe */}
           <div className="bg-white rounded-2xl border border-neutral-200 p-6 shadow-sm">
-            <div className="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center mb-4">
-              <IoSearch className="w-6 h-6 text-teal-700" />
+            <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mb-4">
+              <IoSearch className="w-6 h-6 text-blue-700" />
             </div>
             <h3 className="text-lg font-semibold text-neutral-900 mb-2">1. Describe</h3>
             <p className="text-sm text-neutral-600 mb-4">

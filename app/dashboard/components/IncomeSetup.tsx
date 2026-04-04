@@ -89,10 +89,10 @@ export function IncomeSetup({ userId }: IncomeSetupProps) {
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#5eead4]/10 border border-[#5eead4]/20 mb-4">
           <IoCash className="w-7 h-7 text-[#5eead4]" />
         </div>
-        <h2 className="text-2xl font-semibold text-white mb-2">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-2">
           Set up your income
         </h2>
-        <p className="text-[#888] text-sm max-w-md mx-auto">
+        <p className="text-gray-500 text-sm max-w-md mx-auto">
           We use this to calculate your hourly rate, helping you decide if DIY is worth your time.
         </p>
       </div>
@@ -100,30 +100,30 @@ export function IncomeSetup({ userId }: IncomeSetupProps) {
         {streams.map((stream, index) => (
           <div
             key={index}
-            className="flex items-center gap-3 p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]"
+            className="flex items-center gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200"
           >
             <div className="flex-1 grid grid-cols-[1fr_120px_140px] gap-3">
               <div>
-                <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+                <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                   Source
                 </label>
                 <div className="relative">
-                  <IoBriefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555]" />
+                  <IoBriefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
                     placeholder="e.g., Salary, Freelance"
                     value={stream.source}
                     onChange={(e) => updateStream(index, "source", e.target.value)}
-                    className="w-full h-10 pl-10 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                    className="w-full h-10 pl-10 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+                <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                   Amount
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555] text-sm">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
                     $
                   </span>
                   <input
@@ -131,18 +131,18 @@ export function IncomeSetup({ userId }: IncomeSetupProps) {
                     placeholder="0"
                     value={stream.amount}
                     onChange={(e) => updateStream(index, "amount", e.target.value)}
-                    className="w-full h-10 pl-7 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                    className="w-full h-10 pl-7 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+                <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                   Frequency
                 </label>
                 <select
                   value={stream.frequency}
                   onChange={(e) => updateStream(index, "frequency", e.target.value)}
-                  className="w-full h-10 px-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
+                  className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
                 >
                   {FREQUENCY_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -155,7 +155,7 @@ export function IncomeSetup({ userId }: IncomeSetupProps) {
             {streams.length > 1 && (
               <button
                 onClick={() => removeStream(index)}
-                className="p-2 rounded-lg text-[#555] hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                className="p-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
               >
                 <IoTrash className="w-4 h-4" />
               </button>
@@ -165,16 +165,16 @@ export function IncomeSetup({ userId }: IncomeSetupProps) {
       </div>
       <button
         onClick={addStream}
-        className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#888] hover:text-white hover:bg-[#1f1f1f] transition-colors text-sm mb-8"
+        className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors text-sm mb-8"
       >
         <IoAdd className="w-4 h-4" />
         Add another income source
       </button>
       {monthlyIncome > 0 && (
-        <div className="p-5 rounded-xl bg-[#161616] border border-[#1f1f1f] mb-8">
+        <div className="p-5 rounded-xl bg-gray-50 border border-gray-200 mb-8">
           <div className="grid grid-cols-3 gap-6">
             <div>
-              <p className="text-[10px] uppercase tracking-wider text-[#555] mb-1">
+              <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-1">
                 Monthly
               </p>
               <p className="text-xl font-semibold text-white">
@@ -182,7 +182,7 @@ export function IncomeSetup({ userId }: IncomeSetupProps) {
               </p>
             </div>
             <div>
-              <p className="text-[10px] uppercase tracking-wider text-[#555] mb-1">
+              <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-1">
                 Annual
               </p>
               <p className="text-xl font-semibold text-white">
@@ -190,7 +190,7 @@ export function IncomeSetup({ userId }: IncomeSetupProps) {
               </p>
             </div>
             <div>
-              <p className="text-[10px] uppercase tracking-wider text-[#555] mb-1">
+              <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-1">
                 Your hourly rate
               </p>
               <p className="text-xl font-semibold text-[#5eead4]">
@@ -198,7 +198,7 @@ export function IncomeSetup({ userId }: IncomeSetupProps) {
               </p>
             </div>
           </div>
-          <p className="text-[11px] text-[#555] mt-4">
+          <p className="text-[11px] text-gray-400 mt-4">
             A 4-hour DIY project costs you ${(hourlyRate * 4).toFixed(0)} in time.
             If hiring costs less, it might be worth it.
           </p>
@@ -207,7 +207,7 @@ export function IncomeSetup({ userId }: IncomeSetupProps) {
       <button
         onClick={handleSubmit}
         disabled={!isValid || isPending}
-        className="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-[#1f1f1f] disabled:text-[#555] text-[#0c0c0c] font-semibold text-sm transition-colors"
+        className="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-gray-100 disabled:text-gray-400 text-white font-semibold text-sm transition-colors"
       >
         {isPending ? (
           <>
@@ -221,7 +221,7 @@ export function IncomeSetup({ userId }: IncomeSetupProps) {
           </>
         )}
       </button>
-      <p className="text-center text-[11px] text-[#555] mt-4">
+      <p className="text-center text-[11px] text-gray-400 mt-4">
         Your financial data is private and never shared with other group members.
       </p>
     </div>

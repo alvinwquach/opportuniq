@@ -11,7 +11,7 @@ export function LocationCard({ scenario, mapContainerRef }: LocationCardProps) {
     <div className="ml-11 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="bg-white rounded-2xl border border-neutral-300 overflow-hidden shadow-sm">
         <div className="px-4 py-3 border-b border-neutral-300 flex items-center gap-2">
-          <IoLocation className="w-4 h-4 text-teal-700" />
+          <IoLocation className="w-4 h-4 text-blue-700" />
           <span className="text-sm font-semibold text-neutral-900">Location & Conditions</span>
         </div>
         <div className="grid md:grid-cols-5 gap-0">
@@ -25,7 +25,7 @@ export function LocationCard({ scenario, mapContainerRef }: LocationCardProps) {
                 <p className="text-xs text-neutral-500">{scenario.weather.condition}</p>
               </div>
               <div className="flex gap-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-teal-500" title="Task Location" />
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-500" title="Task Location" />
                 <span className="w-2.5 h-2.5 rounded-full bg-blue-500" title="Nearby Stores" />
               </div>
             </div>

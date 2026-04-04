@@ -169,7 +169,6 @@ export async function searchFirecrawlSource(
       totalResults: guideLinks.length,
     };
   } catch (error) {
-    console.error(`Firecrawl search error (${sourceKey}):`, error);
     return {
       success: false,
       guides: [],
@@ -298,7 +297,6 @@ export async function scrapeGuideDetails(url: string): Promise<GuideDetailRespon
       guide,
     };
   } catch (error) {
-    console.error("Firecrawl guide scrape error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to scrape guide",

@@ -35,13 +35,11 @@ export async function sendAlphaInviteEmail({
     });
 
     if (error) {
-      console.error("Failed to send alpha invite email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending alpha invite email:", error);
     return { success: false, error };
   }
 }
@@ -78,13 +76,11 @@ export async function sendBetaInviteEmail({
     });
 
     if (error) {
-      console.error("Failed to send beta invite email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending beta invite email:", error);
     return { success: false, error };
   }
 }
@@ -118,13 +114,11 @@ export async function sendJohatsuInviteEmail({
     });
 
     if (error) {
-      console.error("Failed to send Johatsu invite email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending Johatsu invite email:", error);
     return { success: false, error };
   }
 }
@@ -166,13 +160,11 @@ export async function sendWaitlistConfirmationEmail({
     });
 
     if (error) {
-      console.error("Failed to send waitlist confirmation email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending waitlist confirmation email:", error);
     return { success: false, error };
   }
 }
@@ -210,13 +202,11 @@ export async function sendReferralConvertedEmail({
     });
 
     if (error) {
-      console.error("Failed to send referral converted email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending referral converted email:", error);
     return { success: false, error };
   }
 }

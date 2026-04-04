@@ -38,19 +38,6 @@ export async function GET(request: Request) {
   const referralCode = searchParams.get("ref"); // From beta referral
   const next = searchParams.get("next") ?? "/";
 
-  console.log("[Auth Callback] Starting callback handler", {
-    url: url.toString(),
-    hasCode: !!code,
-    codeLength: code?.length,
-    hasError: !!errorParam,
-    error: errorParam,
-    errorCode: searchParams.get("error_code"),
-    hasInvitationToken: !!invitationToken,
-    hasInviteToken: !!inviteToken,
-    hasReferralCode: !!referralCode,
-    next,
-    origin,
-  });
 
   try {
     // Handle OAuth errors FIRST (before any processing)
@@ -58,15 +45,8 @@ export async function GET(request: Request) {
       const errorDescription = searchParams.get("error_description") || "Unknown error";
       const errorCode = searchParams.get("error_code");
 
-      console.error("[Auth Callback] OAuth error received", {
-        error: errorParam,
-        errorCode,
-        description: errorDescription,
-      });
-
       // If flow state not found, the code expired - redirect to login with message
       if (errorParam === "server_error" && errorCode === "flow_state_not_found") {
-        console.log("[Auth Callback] OAuth code expired - redirecting to login");
         return NextResponse.redirect(`${origin}/auth/login?error=expired&message=${encodeURIComponent("Your login session expired. Please try again.")}`, { status: 302 });
       }
 
@@ -75,7 +55,6 @@ export async function GET(request: Request) {
 
     // If someone visits callback directly without a code, redirect them appropriately
     if (!code) {
-      console.log("[Auth Callback] No code provided - redirecting");
       // If they have an invite token, send them to the join page
       if (inviteToken) {
         return NextResponse.redirect(`${origin}/join?token=${inviteToken}`, { status: 302 });
@@ -128,28 +107,18 @@ export async function GET(request: Request) {
     // CRITICAL: Exchange code IMMEDIATELY - codes expire in ~60 seconds
     // Do this BEFORE any database queries
     
-    console.log("[Auth Callback] Exchanging code for session (must be fast)", { codeLength: code.length });
     
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
-    console.log("[Auth Callback] Session exchange result", {
-      success: !error,
-      hasUser: !!data?.user,
-      userId: data?.user?.id,
-      userEmail: data?.user?.email,
-      error: error?.message,
-    });
 
     // Handle exchange errors
     if (error) {
-      console.error("[Auth Callback] Code exchange failed", { error: error.message });
 
       // Handle PKCE code verifier errors - this happens when:
       // 1. Auth flow was started on a different device/browser
       // 2. Cookies were cleared/blocked
       // 3. User navigated away and came back
       if (error.message.includes("code verifier") || error.message.includes("PKCE")) {
-        console.error("[Auth Callback] PKCE verification failed - cookies may not have been sent correctly");
         const errorMsg = encodeURIComponent("PKCE code verifier not found in storage. This can happen if the auth flow was initiated in a different browser or device, or if the storage was cleared. For SSR frameworks (Next.js, SvelteKit, etc.), use @supabase/ssr on both the server and client to store the code verifier in cookies.");
         return NextResponse.redirect(`${origin}/auth/error?error=${encodeURIComponent("pkce_error")}&error_description=${errorMsg}`, { status: 302 });
       }
@@ -163,7 +132,6 @@ export async function GET(request: Request) {
     }
 
     if (!data?.user) {
-      console.error("[Auth Callback] No user in session data");
       return NextResponse.redirect(`${origin}/auth/error`, { status: 302 });
     }
 
@@ -171,7 +139,6 @@ export async function GET(request: Request) {
     const userEmail = data.user.email!;
     const avatarUrl = data.user.user_metadata?.avatar_url || data.user.user_metadata?.picture || null;
 
-    console.log("[Auth Callback] Processing user", { userId, userEmail });
 
     // Fast path for known admin emails - skip DB query entirely
     const ADMIN_EMAILS = ["alvinwquach@gmail.com", "binarydecisions1111@gmail.com"];
@@ -181,26 +148,17 @@ export async function GET(request: Request) {
       // Admin fast path - redirect directly to admin without DB query
       // Skip fast path if they have an invite token that needs processing
       const destination = next !== "/" ? next : "/admin";
-      console.log("[Auth Callback] Admin fast path → redirecting to", destination);
       return createRedirectWithCookies(`${origin}${destination}`, supabaseResponse);
     }
 
     // For non-admins or admins with invitation tokens, check DB
-    console.log("[Auth Callback] Starting DB query...");
     const startTime = Date.now();
     const [existingUser] = await db
       .select({ id: users.id, role: users.role })
       .from(users)
       .where(eq(users.id, userId));
-    console.log("[Auth Callback] DB query completed in", Date.now() - startTime, "ms");
     const isNewUser = !existingUser;
 
-    console.log("[Auth Callback] User lookup result", {
-      userId,
-      userEmail,
-      isNewUser,
-      existingUserRole: existingUser?.role,
-    });
 
     // Step 1: For new users, validate access and store pending data in cookie
     // User creation is deferred to onboarding completion
@@ -231,10 +189,8 @@ export async function GET(request: Request) {
             referredById = invite.invitedBy;
             inviteId = invite.id; // Store for marking accepted after onboarding
 
-            console.log("[Auth Callback] Invite validated (will be marked accepted after onboarding)", { token: inviteToken, invitedBy: referredById, accessTier });
           } else {
             // Invalid or expired token - redirect to error
-            console.log("[Auth Callback] Invalid invite token", { token: inviteToken });
             return NextResponse.redirect(`${origin}/join?error=invalid_invite`, { status: 302 });
           }
         }
@@ -252,20 +208,16 @@ export async function GET(request: Request) {
               referredById = refCode.ownerId;
               referralCodeId = refCode.id; // Store for tracking after onboarding
 
-              console.log("[Auth Callback] Referral code validated (will be tracked after onboarding)", { referralCode, referredBy: referredById });
             } else {
-              console.log("[Auth Callback] Referral code max uses reached", { referralCode });
               return NextResponse.redirect(`${origin}/join?error=code_exhausted`, { status: 302 });
             }
           } else {
-            console.log("[Auth Callback] Invalid referral code", { referralCode });
             return NextResponse.redirect(`${origin}/join?error=invalid_code`, { status: 302 });
           }
         }
         // No valid access method for non-admin
         else if (!isAdmin) {
           // Block public signups - redirect to join page
-          console.log("[Auth Callback] No access token - blocking signup");
           return NextResponse.redirect(`${origin}/join?error=access_required`, { status: 302 });
         }
 
@@ -287,15 +239,6 @@ export async function GET(request: Request) {
           maxAge: 60 * 60, // 1 hour
         });
 
-        console.log("[Auth Callback] Stored pending user data in cookie (user will be created after onboarding)", {
-          userId,
-          userEmail,
-          isAdmin,
-          accessTier,
-          referredBy: referredById,
-          hasInviteId: !!inviteId,
-          hasReferralCodeId: !!referralCodeId,
-        });
       } else {
         // Update avatar and last login for existing users
         await db
@@ -310,7 +253,6 @@ export async function GET(request: Request) {
 
     // Step 4: Handle invitation token if present
     if (invitationToken) {
-        console.log("[Auth Callback] Processing invitation token", { invitationToken });
         const [invitation] = await db
           .select()
           .from(groupInvitations)
@@ -342,17 +284,11 @@ export async function GET(request: Request) {
 
             // NEW USERS with invitation → onboarding first, then to pending page
             if (isNewUser) {
-              console.log("[Auth Callback] New user with invitation → redirecting to onboarding", {
-                redirectAfter: `/groups/${invitation.groupId}/pending`,
-              });
               const redirectUrl = `${origin}/onboarding?redirect=/groups/${invitation.groupId}/pending`;
               return createRedirectWithCookies(redirectUrl, supabaseResponse);
             }
 
             // EXISTING USERS with invitation → directly to pending page
-            console.log("[Auth Callback] Existing user with invitation → redirecting to pending page", {
-              groupId: invitation.groupId,
-            });
             const redirectUrl = `${origin}/groups/${invitation.groupId}/pending`;
             return createRedirectWithCookies(redirectUrl, supabaseResponse);
           } else {
@@ -368,7 +304,6 @@ export async function GET(request: Request) {
     // Step 5: Regular redirect for solo users
     // NEW USERS without invitation → onboarding
     if (isNewUser) {
-      console.log("[Auth Callback] New user without invitation → redirecting to onboarding");
       const redirectUrl = `${origin}/onboarding`;
       return createRedirectWithCookies(redirectUrl, supabaseResponse);
     }
@@ -378,41 +313,25 @@ export async function GET(request: Request) {
     const isExistingAdmin = existingUser?.role === "admin";
     const destination = next !== "/" ? next : isExistingAdmin ? "/admin" : "/dashboard";
     
-    console.log("[Auth Callback] Existing user → redirecting to", {
-      isAdmin: isExistingAdmin,
-      requestedNext: next,
-      finalDestination: destination,
-    });
     
     // Create redirect response with absolute URL
     const redirectUrl = new URL(destination, origin).toString();
 
-    console.log("[Auth Callback] Redirect URL", { redirectUrl, origin, destination });
 
     // Use helper to preserve session cookies on redirect
     const finalResponse = createRedirectWithCookies(redirectUrl, supabaseResponse);
     finalResponse.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
 
-    console.log("[Auth Callback] Sending redirect response", {
-      status: 302,
-      location: redirectUrl
-    });
 
     return finalResponse;
   }
 
   // Error fallback
-  console.log("[Auth Callback] Error fallback - no valid code or session");
   return NextResponse.redirect(`${origin}/auth/error`);
 
   } catch (error: unknown) {
     // Catch-all for any unhandled errors to prevent 500s
     const err = error as { message?: string; stack?: string };
-    console.error("[Auth Callback] Unhandled error:", {
-      message: err?.message,
-      stack: err?.stack,
-    });
-
     const errorMsg = err?.message || "An unexpected error occurred";
 
     // Check for PKCE-related errors

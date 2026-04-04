@@ -173,13 +173,13 @@ export function BulkInviteMemberDialog({
           </button>
         )}
       </DialogTrigger>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] sm:max-w-lg">
+      <DialogContent className="bg-white border-gray-200 sm:max-w-lg">
         <DialogHeader>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
               <IoPeople className="w-4 h-4 text-purple-400" />
             </div>
-            <DialogTitle className="text-white">
+            <DialogTitle className="text-gray-900">
               Bulk Invite to {groupName}
             </DialogTitle>
           </div>
@@ -195,7 +195,7 @@ export function BulkInviteMemberDialog({
                 <p className="text-2xl font-semibold text-white">
                   {summary.successful}
                 </p>
-                <p className="text-xs text-[#666]">Sent</p>
+                <p className="text-xs text-gray-500">Sent</p>
               </div>
               {summary.failed > 0 && (
                 <div className="text-center">
@@ -205,17 +205,17 @@ export function BulkInviteMemberDialog({
                   <p className="text-2xl font-semibold text-white">
                     {summary.failed}
                   </p>
-                  <p className="text-xs text-[#666]">Failed</p>
+                  <p className="text-xs text-gray-500">Failed</p>
                 </div>
               )}
             </div>
 
             {summary.successful > 0 && (
               <div className="mb-4">
-                <p className="text-xs text-[#9a9a9a] mb-2">
+                <p className="text-xs text-gray-400 mb-2">
                   Successfully sent to:
                 </p>
-                <div className="max-h-32 overflow-y-auto rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] p-3">
+                <div className="max-h-32 overflow-y-auto rounded-lg bg-gray-50 border border-gray-200 p-3">
                   {results
                     .filter((r) => r.success)
                     .map((result, index) => (
@@ -233,8 +233,8 @@ export function BulkInviteMemberDialog({
 
             {summary.failed > 0 && (
               <div className="mb-4">
-                <p className="text-xs text-[#9a9a9a] mb-2">Failed to send:</p>
-                <div className="max-h-32 overflow-y-auto rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] p-3">
+                <p className="text-xs text-gray-400 mb-2">Failed to send:</p>
+                <div className="max-h-32 overflow-y-auto rounded-lg bg-gray-50 border border-gray-200 p-3">
                   {results
                     .filter((r) => !r.success)
                     .map((result, index) => (
@@ -245,7 +245,7 @@ export function BulkInviteMemberDialog({
                         <IoClose className="w-3.5 h-3.5 shrink-0" />
                         <span className="truncate">{result.email}</span>
                         {result.error && (
-                          <span className="text-[10px] text-[#666] ml-auto shrink-0">
+                          <span className="text-[10px] text-gray-500 ml-auto shrink-0">
                             {result.error}
                           </span>
                         )}
@@ -259,7 +259,7 @@ export function BulkInviteMemberDialog({
               <button
                 type="button"
                 onClick={handleInviteMore}
-                className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-[#0c0c0c] font-medium text-sm transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-600/90 text-white font-medium text-sm transition-colors"
               >
                 <IoPeople className="w-4 h-4" />
                 Invite More
@@ -267,7 +267,7 @@ export function BulkInviteMemberDialog({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-white text-sm transition-colors"
+                className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-gray-900 text-sm transition-colors"
               >
                 Done
               </button>
@@ -303,11 +303,11 @@ export function BulkInviteMemberDialog({
               >
                 {(field) => (
                   <div>
-                    <label className="text-xs text-[#9a9a9a] mb-1.5 block">
+                    <label className="text-xs text-gray-400 mb-1.5 block">
                       Email Addresses
                     </label>
                     <div className="relative">
-                      <IoCloudUploadOutline className="absolute left-3 top-3 w-4 h-4 text-[#9a9a9a]" />
+                      <IoCloudUploadOutline className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                       <textarea
                         placeholder="Enter email addresses separated by commas, spaces, or new lines..."
                         value={field.state.value}
@@ -318,13 +318,13 @@ export function BulkInviteMemberDialog({
                         onBlur={field.handleBlur}
                         disabled={inviteMultiple.isPending}
                         rows={4}
-                        className="w-full pl-10 pr-3 py-2 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#666] focus:outline-none focus:border-[#00D4FF]/50 transition-colors disabled:opacity-50 resize-none"
+                        className="w-full pl-10 pr-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 transition-colors disabled:opacity-50 resize-none"
                         autoFocus
                       />
                     </div>
                     {parsedEmails.length > 0 && (
                       <div className="flex items-center gap-3 mt-2 text-xs">
-                        <span className="text-[#9a9a9a]">
+                        <span className="text-gray-400">
                           {validEmails.length} valid email{validEmails.length !== 1 ? "s" : ""}
                         </span>
                         {invalidEmails.length > 0 && (
@@ -340,7 +340,7 @@ export function BulkInviteMemberDialog({
                           {field.state.meta.errors[0]}
                         </p>
                       )}
-                    <p className="text-[10px] text-[#666] mt-1">
+                    <p className="text-[10px] text-gray-500 mt-1">
                       Paste a list of emails or type them separated by commas
                     </p>
                   </div>
@@ -350,7 +350,7 @@ export function BulkInviteMemberDialog({
               <form.Field name="role">
                 {(field) => (
                   <div>
-                    <label className="text-xs text-[#9a9a9a] mb-1.5 block">
+                    <label className="text-xs text-gray-400 mb-1.5 block">
                       Role for All Invitees
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -359,8 +359,8 @@ export function BulkInviteMemberDialog({
                           key={option.value}
                           className={`flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer transition-colors ${
                             field.state.value === option.value
-                              ? "bg-[#00D4FF]/5 border-[#00D4FF]/30"
-                              : "bg-[#0c0c0c] border-[#2a2a2a] hover:border-[#3a3a3a]"
+                              ? "bg-blue-50 border-blue-500/30"
+                              : "bg-gray-50 border-gray-200 hover:border-[#3a3a3a]"
                           } ${inviteMultiple.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
                         >
                           <input
@@ -373,12 +373,12 @@ export function BulkInviteMemberDialog({
                             className="sr-only"
                           />
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs text-white font-medium">
+                            <p className="text-xs text-gray-900 font-medium">
                               {option.label}
                             </p>
                           </div>
                           {field.state.value === option.value && (
-                            <IoCheckmark className="w-3.5 h-3.5 text-[#00D4FF] shrink-0" />
+                            <IoCheckmark className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                           )}
                         </label>
                       ))}
@@ -390,9 +390,9 @@ export function BulkInviteMemberDialog({
               <form.Field name="message">
                 {(field) => (
                   <div>
-                    <label className="text-xs text-[#9a9a9a] mb-1.5 block">
+                    <label className="text-xs text-gray-400 mb-1.5 block">
                       Personal Message{" "}
-                      <span className="text-[#666]">(optional)</span>
+                      <span className="text-gray-500">(optional)</span>
                     </label>
                     <textarea
                       placeholder="Add a personal note to all invitations..."
@@ -401,9 +401,9 @@ export function BulkInviteMemberDialog({
                       disabled={inviteMultiple.isPending}
                       rows={2}
                       maxLength={500}
-                      className="w-full px-3 py-2 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#666] focus:outline-none focus:border-[#00D4FF]/50 transition-colors disabled:opacity-50 resize-none"
+                      className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 transition-colors disabled:opacity-50 resize-none"
                     />
-                    <p className="text-[10px] text-[#666] mt-1 text-right">
+                    <p className="text-[10px] text-gray-500 mt-1 text-right">
                       {field.state.value.length}/500
                     </p>
                   </div>
@@ -413,20 +413,20 @@ export function BulkInviteMemberDialog({
               <form.Field name="expiresAt">
                 {(field) => (
                   <div>
-                    <label className="text-xs text-[#9a9a9a] mb-1.5 block">
+                    <label className="text-xs text-gray-400 mb-1.5 block">
                       Invitation Expires{" "}
-                      <span className="text-[#666]">(optional)</span>
+                      <span className="text-gray-500">(optional)</span>
                     </label>
                     <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                       <PopoverTrigger asChild>
                         <button
                           type="button"
                           disabled={inviteMultiple.isPending}
-                          className="w-full h-10 px-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm text-left flex items-center justify-between hover:border-[#3a3a3a] focus:outline-none focus:border-[#00D4FF]/50 transition-colors disabled:opacity-50"
+                          className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm text-left flex items-center justify-between hover:border-[#3a3a3a] focus:outline-none focus:border-blue-500/50 transition-colors disabled:opacity-50"
                         >
                           <span
                             className={
-                              field.state.value ? "text-white" : "text-[#666]"
+                              field.state.value ? "text-gray-900" : "text-gray-500"
                             }
                           >
                             {field.state.value
@@ -434,7 +434,7 @@ export function BulkInviteMemberDialog({
                               : format(defaultDate, "MMMM d, yyyy") +
                                 " (default)"}
                           </span>
-                          <IoCalendarOutline className="w-4 h-4 text-[#666]" />
+                          <IoCalendarOutline className="w-4 h-4 text-gray-500" />
                         </button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -477,7 +477,7 @@ export function BulkInviteMemberDialog({
                       inviteMultiple.isPending ||
                       validEmails.length === 0
                     }
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00D4FF] hover:bg-[#00D4FF]/90 disabled:bg-[#1f1f1f] disabled:text-[#9a9a9a] text-[#0c0c0c] font-medium text-sm transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-600/90 disabled:bg-gray-100 disabled:text-gray-400 text-white font-medium text-sm transition-colors"
                   >
                     {inviteMultiple.isPending ? (
                       <IoReload className="w-4 h-4 animate-spin" />
@@ -493,7 +493,7 @@ export function BulkInviteMemberDialog({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-white hover:bg-[#1f1f1f] text-sm transition-colors"
+                className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-gray-900 hover:bg-gray-100 text-sm transition-colors"
               >
                 Cancel
               </button>

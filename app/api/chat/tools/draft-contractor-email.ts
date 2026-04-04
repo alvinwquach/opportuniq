@@ -94,9 +94,6 @@ export function createDraftContractorEmailTool(ctx: ToolContext) {
       preferredContactMethod,
       availabilityNotes,
     }): Promise<ContractorEmailDraftResult> => {
-      console.log(
-        `[draftContractorEmail] Generating email draft for ${contractorName}`
-      );
 
       // Build urgency language
       const urgencyText = {
@@ -175,9 +172,6 @@ ${body}
 \`\`\`
 <!-- /EMAIL_DRAFT -->`;
 
-      console.log(
-        `[draftContractorEmail] Generated email draft with subject: ${subject}`
-      );
 
       return {
         success: true,

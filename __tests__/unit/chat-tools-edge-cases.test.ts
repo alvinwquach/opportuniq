@@ -89,7 +89,7 @@ describe("chat tools edge cases", () => {
 
   // --- Null firecrawl context -------------------------------------------
 
-  it("all 8 tools return graceful error when ctx.firecrawl is null", async () => {
+  it("all 9 tools return graceful error when ctx.firecrawl is null", async () => {
     const { createChatTools } = await import("@/app/api/chat/tools/index");
     const tools = createChatTools(null, "user-123", "conv-1", "Test", "94105");
 
@@ -98,9 +98,10 @@ describe("chat tools edge cases", () => {
     expect(tools).toHaveProperty("searchProducts");
     expect(tools).toHaveProperty("searchReddit");
     expect(tools).toHaveProperty("checkRecalls");
-    expect(tools).toHaveProperty("findUtilityRebates");
+    expect(tools).toHaveProperty("lookupLocalInfo");
     expect(tools).toHaveProperty("draftContractorEmail");
     expect(tools).toHaveProperty("scheduleReminder");
+    expect(tools).toHaveProperty("findTutorial");
   });
 
   it("all 8 tools handle undefined userId in context", async () => {
@@ -113,7 +114,7 @@ describe("chat tools edge cases", () => {
       undefined
     );
 
-    expect(Object.keys(tools)).toHaveLength(8);
+    expect(Object.keys(tools)).toHaveLength(9);
   });
 
   // --- scrapeWithTimeout --------------------------------------------------

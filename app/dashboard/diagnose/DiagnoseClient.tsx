@@ -298,7 +298,7 @@ export function DiagnoseClient() {
   // Guard: if the server request failed, show a centered error message.
   if (error) {
     return (
-      <div className="h-[calc(100vh-48px)] bg-[#0f0f0f] flex items-center justify-center">
+      <div className="h-[calc(100vh-48px)] bg-gray-50 flex items-center justify-center">
         <div className="text-center py-12">
           <p className="text-red-400">Failed to load diagnose data. Please try again.</p>
         </div>
@@ -311,7 +311,7 @@ export function DiagnoseClient() {
     // fixed + full viewport ensures the diagnose page fills the entire screen
     // and doesn't scroll with the page. The top/left offsets account for the
     // navigation bar (48px) and the collapsed icon sidebar (56px) on large screens.
-    <div className="fixed left-0 right-0 bottom-0 top-0 lg:top-[48px] lg:left-[56px] bg-[#0f0f0f] flex overflow-hidden z-20 border-t border-white/[0.06]">
+    <div className="fixed left-0 right-0 bottom-0 top-0 lg:top-[48px] lg:left-[56px] bg-gray-50 flex overflow-hidden z-20 border-t border-gray-200">
       {/* ─── LEFT COLUMN: ISSUE HISTORY SIDEBAR ─────────────── */}
       {/* Shows a list of past issues so the user can switch between them,
           plus a "New Issue" button at the top. */}
@@ -359,19 +359,19 @@ export function DiagnoseClient() {
           // Branch 2: An existing issue is selected — show its history and allow follow-ups.
           <>
             {/* Issue header: icon, title, difficulty, confidence, and resolved/active badge. */}
-            <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
+            <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {/* Icon box: emerald when resolved, type-specific color when active. */}
                 <div
                   className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                    currentIssue.isResolved ? "bg-emerald-500/20" : getIconBgColor(currentIssue.icon)
+                    currentIssue.isResolved ? "bg-blue-100" : getIconBgColor(currentIssue.icon)
                   }`}
                 >
                   {/* The IssueIcon component renders the correct SVG based on the icon name. */}
                   <IssueIcon
                     iconName={currentIssue.icon}
                     className={`w-5 h-5 ${
-                      currentIssue.isResolved ? "text-emerald-400" : currentIssue.iconColor
+                      currentIssue.isResolved ? "text-blue-600" : currentIssue.iconColor
                     }`}
                   />
                 </div>
@@ -379,14 +379,14 @@ export function DiagnoseClient() {
                   {/* Issue title */}
                   <h2 className="text-base font-semibold text-white">{currentIssue.title}</h2>
                   {/* Metadata row: creation date, difficulty level (color-coded), and AI confidence. */}
-                  <div className="flex items-center gap-2 text-xs text-[#888]">
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
                     <span>{new Date(currentIssue.createdAt).toLocaleDateString()}</span>
                     <span>·</span>
                     {/* Difficulty color: green = Easy, red = Professional Required, amber = Medium. */}
                     <span
                       className={
                         currentIssue.difficulty === "Easy"
-                          ? "text-emerald-400"
+                          ? "text-blue-600"
                           : currentIssue.difficulty.includes("Professional")
                           ? "text-red-400"
                           : "text-amber-400"
@@ -404,8 +404,8 @@ export function DiagnoseClient() {
               <span
                 className={`text-xs px-3 py-1.5 rounded-full font-medium ${
                   currentIssue.isResolved
-                    ? "bg-[#2a2a2a] text-[#888]"
-                    : "bg-emerald-500/20 text-emerald-400"
+                    ? "bg-gray-200 text-gray-500"
+                    : "bg-blue-100 text-blue-600"
                 }`}
               >
                 {currentIssue.isResolved ? "Resolved" : "Active"}
@@ -424,10 +424,10 @@ export function DiagnoseClient() {
               />
 
               {/* Diagnosis Summary card: shows the AI's written diagnosis and cost comparison. */}
-              <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4 mt-4">
+              <div className="bg-gray-100 border border-gray-200 rounded-xl p-4 mt-4">
                 <div className="flex items-center gap-2 mb-3">
                   {/* Small OpportunIQ logo icon to brand the AI output. */}
-                  <OpportunIQLogo className="w-4 h-4 text-emerald-400" />
+                  <OpportunIQLogo className="w-4 h-4 text-blue-600" />
                   <span className="text-sm font-medium text-white">Diagnosis Summary</span>
                 </div>
                 {/* The AI's written summary of what's wrong. Falls back to a loading message. */}
@@ -441,24 +441,24 @@ export function DiagnoseClient() {
                   <div
                     className={`p-3 rounded-lg border ${
                       (currentIssue.parts?.length ?? 0) > 0
-                        ? "bg-emerald-500/10 border-emerald-500/20"
-                        : "bg-[#0f0f0f] border-[#2a2a2a]"
+                        ? "bg-blue-50 border-blue-500/20"
+                        : "bg-gray-50 border-gray-200"
                     }`}
                   >
                     <div className="flex items-center gap-2 mb-1">
-                      <IoHammerOutline className="w-4 h-4 text-emerald-400" />
-                      <span className="text-xs text-emerald-400">DIY Cost</span>
+                      <IoHammerOutline className="w-4 h-4 text-blue-600" />
+                      <span className="text-xs text-blue-600">DIY Cost</span>
                     </div>
                     {/* Show the DIY cost formatted to 2 decimal places, or "N/A" if unavailable. */}
-                    <p className="text-lg font-bold text-emerald-400">
+                    <p className="text-lg font-bold text-blue-600">
                       {currentIssue.diyCost ? `$${currentIssue.diyCost.toFixed(2)}` : "N/A"}
                     </p>
                   </div>
                   {/* Professional cost panel: always blue regardless of available data. */}
-                  <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                  <div className="p-3 bg-blue-50 rounded-lg border border-blue-500/20">
                     <div className="flex items-center gap-2 mb-1">
-                      <IoPeople className="w-4 h-4 text-blue-400" />
-                      <span className="text-xs text-blue-400">Pro Cost</span>
+                      <IoPeople className="w-4 h-4 text-blue-600" />
+                      <span className="text-xs text-blue-600">Pro Cost</span>
                     </div>
                     {/* Show the professional cost to 0 decimal places (whole dollars only), or "N/A". */}
                     <p className="text-lg font-bold text-white">
@@ -482,18 +482,18 @@ export function DiagnoseClient() {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center max-w-md px-4">
               {/* Large icon box to visually represent the empty state. */}
-              <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
-                <IoConstruct className="w-8 h-8 text-emerald-400" />
+              <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                <IoConstruct className="w-8 h-8 text-blue-600" />
               </div>
-              <h2 className="text-xl font-semibold text-white mb-2">No Issues Yet</h2>
-              <p className="text-[#888] mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">No Issues Yet</h2>
+              <p className="text-gray-500 mb-6">
                 Start by reporting a home maintenance issue. We&apos;ll help diagnose the problem
                 and find the best solution.
               </p>
               {/* CTA button: calls handleCreateNewIssue to enter new-issue mode. */}
               <button
                 onClick={handleCreateNewIssue}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-xl transition-colors mx-auto"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-gray-900 font-medium rounded-xl transition-colors mx-auto"
               >
                 <IoAdd className="w-5 h-5" />
                 Report New Issue

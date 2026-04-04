@@ -18,13 +18,13 @@ export function StatsGrid({ stats }: StatsGridProps) {
       {stats.map((stat) => (
         <div
           key={stat.label}
-          className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-2.5 sm:p-3"
+          className="bg-white rounded-lg border border-gray-200 p-2.5 sm:p-3"
         >
           <div className="flex items-center justify-between mb-1">
-            <p className="text-[10px] sm:text-xs text-[#888]">{stat.label}</p>
+            <p className="text-[10px] sm:text-xs text-gray-500">{stat.label}</p>
             <span
               className={`text-[9px] sm:text-[10px] font-medium flex items-center gap-0.5 ${
-                stat.up ? "text-emerald-400" : "text-[#666]"
+                stat.up ? "text-blue-600" : "text-gray-500"
               }`}
             >
               {stat.up ? (
@@ -35,7 +35,7 @@ export function StatsGrid({ stats }: StatsGridProps) {
               {stat.trend}
             </span>
           </div>
-          <p className="text-lg sm:text-xl font-semibold text-white">
+          <p className="text-lg sm:text-xl font-semibold text-gray-900">
             {stat.prefix}
             {typeof stat.value === "number"
               ? stat.value.toLocaleString()

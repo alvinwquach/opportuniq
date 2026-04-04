@@ -33,15 +33,15 @@ export const stats: StatCard[] = [
 ];
 
 export const pipeline: PipelineStage[] = [
-  { stage: 'Open', count: 3, color: '#3ECF8E' },
+  { stage: 'Open', count: 3, color: '#2563EB' },
   { stage: 'Investigating', count: 2, color: '#f59e0b' },
   { stage: 'In Progress', count: 1, color: '#8b5cf6' },
   { stage: 'Completed', count: 8, color: '#10b981' },
 ];
 
 export const budgetCategories: BudgetCategory[] = [
-  { category: 'HVAC', amount: 650, color: '#3ECF8E' },
-  { category: 'Plumbing', amount: 380, color: '#3ECF8E' },
+  { category: 'HVAC', amount: 650, color: '#2563EB' },
+  { category: 'Plumbing', amount: 380, color: '#2563EB' },
   { category: 'Electrical', amount: 220, color: '#f59e0b' },
   { category: 'Exterior', amount: 190, color: '#8b5cf6' },
   { category: 'Other', amount: 160, color: '#6b7280' },

@@ -143,7 +143,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ inviteLink, emailSent });
   } catch (error) {
-    console.error("[Admin Invite] Error:", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

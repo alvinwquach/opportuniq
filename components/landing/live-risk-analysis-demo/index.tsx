@@ -114,7 +114,7 @@ export function LiveRiskAnalysisDemo() {
               className={cn(
                 "px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all",
                 selectedScenario.id === scenario.id
-                  ? "bg-teal-700 text-white shadow-md"
+                  ? "bg-blue-700 text-white shadow-md"
                   : "bg-white text-neutral-700 border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
               )}
             >
@@ -132,7 +132,7 @@ export function LiveRiskAnalysisDemo() {
             </div>
             <div className="bg-white rounded-2xl rounded-tl-md border border-neutral-200 px-4 py-3 shadow-sm">
               <p className="text-sm text-neutral-900">
-                I want to <span className="font-medium text-teal-700">{selectedScenario.title.toLowerCase()}</span> in{" "}
+                I want to <span className="font-medium text-blue-700">{selectedScenario.title.toLowerCase()}</span> in{" "}
                 <span className="font-medium">{selectedScenario.location.name}</span>
               </p>
             </div>
@@ -140,7 +140,7 @@ export function LiveRiskAnalysisDemo() {
 
           {/* AI Streaming Panel */}
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-teal-700 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-full bg-blue-700 flex items-center justify-center shrink-0">
               <IoAnalytics className="w-4 h-4 text-white" />
             </div>
             <div className="flex-1 min-w-0">
@@ -156,7 +156,7 @@ export function LiveRiskAnalysisDemo() {
                   </div>
                   <div className="flex items-center gap-2">
                     {isStreaming && (
-                      <div className="flex items-center gap-2 text-teal-400">
+                      <div className="flex items-center gap-2 text-blue-400">
                         <ImSpinner8 className="w-3 h-3 animate-spin" />
                         <span className="text-xs font-mono">analyzing</span>
                       </div>
@@ -170,7 +170,7 @@ export function LiveRiskAnalysisDemo() {
                     {!isStreaming && !analysisComplete && (
                       <button
                         onClick={startStreaming}
-                        className="px-2.5 py-1 bg-teal-700 hover:bg-teal-500 text-white text-xs font-medium rounded transition-colors flex items-center gap-1.5"
+                        className="px-2.5 py-1 bg-blue-700 hover:bg-blue-500 text-white text-xs font-medium rounded transition-colors flex items-center gap-1.5"
                       >
                         <IoPlay className="w-3 h-3" />
                         Run
@@ -181,18 +181,18 @@ export function LiveRiskAnalysisDemo() {
                 <div className="p-4 h-36 overflow-y-auto font-mono text-xs bg-neutral-900/50">
                   {streamedText.length === 0 && !isStreaming && (
                     <p className="text-neutral-500">
-                      <span className="text-teal-400">$</span> Waiting to analyze &quot;{selectedScenario.title}&quot;...
+                      <span className="text-blue-400">$</span> Waiting to analyze &quot;{selectedScenario.title}&quot;...
                     </p>
                   )}
                   {streamedText.map((text, i) => (
                     <div key={`stream-${i}-${text.slice(0, 10)}`} className="flex items-start gap-2 mb-1.5">
-                      <IoChevronForward className="w-3 h-3 text-teal-400 mt-0.5 shrink-0" />
+                      <IoChevronForward className="w-3 h-3 text-blue-400 mt-0.5 shrink-0" />
                       <span className="text-neutral-300">{text}</span>
                     </div>
                   ))}
                   {isStreaming && (
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="w-2 h-4 bg-teal-400 animate-pulse" />
+                      <span className="w-2 h-4 bg-blue-400 animate-pulse" />
                     </div>
                   )}
                 </div>

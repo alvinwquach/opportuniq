@@ -17,7 +17,7 @@ export function PendingDecisionsSection({ decisions }: PendingDecisionsSectionPr
         <h2 className="text-sm font-medium text-white">Pending Decisions</h2>
         <Link
           href="/decisions"
-          className="text-xs text-[#9a9a9a] hover:text-white transition-colors"
+          className="text-xs text-gray-400 hover:text-gray-900 transition-colors"
         >
           View all
         </Link>
@@ -27,12 +27,12 @@ export function PendingDecisionsSection({ decisions }: PendingDecisionsSectionPr
           <Link
             key={issue.id}
             href={`/issues/${issue.id}`}
-            className="block p-4 rounded-xl bg-[#161616] border border-[#1f1f1f] hover:border-[#2a2a2a] transition-colors group"
+            className="block p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-200 transition-colors group"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1f1f1f] text-[#9a9a9a] uppercase tracking-wider">
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-400 uppercase tracking-wider">
                     {group.name}
                   </span>
                   {issue.priority === "urgent" && (
@@ -41,10 +41,10 @@ export function PendingDecisionsSection({ decisions }: PendingDecisionsSectionPr
                     </span>
                   )}
                 </div>
-                <h3 className="text-sm text-white font-medium truncate group-hover:text-[#00D4FF] transition-colors">
+                <h3 className="text-sm text-gray-900 font-medium truncate group-hover:text-blue-600 transition-colors">
                   {issue.title}
                 </h3>
-                <p className="text-xs text-[#9a9a9a] mt-1">
+                <p className="text-xs text-gray-400 mt-1">
                   {option.type === "diy" ? "DIY" : option.type === "hire" ? "Hire" : option.type}
                   {option.costMin && option.costMax && (
                     <span className="text-[#a3a3a3]">
@@ -52,16 +52,16 @@ export function PendingDecisionsSection({ decisions }: PendingDecisionsSectionPr
                     </span>
                   )}
                   {option.timeEstimate && (
-                    <span className="text-[#9a9a9a]"> · {option.timeEstimate}</span>
+                    <span className="text-gray-400"> · {option.timeEstimate}</span>
                   )}
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1 text-xs text-[#9a9a9a]">
+                <div className="flex items-center gap-1 text-xs text-gray-400">
                   <IoThumbsUp className="w-3.5 h-3.5" />
                   <span>0/1</span>
                 </div>
-                <IoChevronForward className="w-4 h-4 text-[#666] group-hover:text-[#00D4FF] transition-colors" />
+                <IoChevronForward className="w-4 h-4 text-gray-500 group-hover:text-blue-600 transition-colors" />
               </div>
             </div>
           </Link>

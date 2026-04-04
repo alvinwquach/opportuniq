@@ -57,7 +57,7 @@ export const calendarSyncStatus: SyncStatusItem[] = [
 ];
 
 export const eventTypeData = [
-  { name: 'DIY Projects', value: 3, color: '#3ECF8E' },
+  { name: 'DIY Projects', value: 3, color: '#2563EB' },
   { name: 'Pro Visits', value: 2, color: '#3b82f6' },
   { name: 'Reminders', value: 2, color: '#f59e0b' },
 ];

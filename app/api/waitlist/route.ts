@@ -84,7 +84,6 @@ export async function POST(request: NextRequest) {
       referralCode: newEntry.myReferralCode,
     });
   } catch (error) {
-    console.error("Waitlist signup error:", error);
     return NextResponse.json(
       { success: false, error: "Failed to join waitlist" },
       { status: 500 }
@@ -101,7 +100,6 @@ export async function GET(request: NextRequest) {
       count: entries.length,
     });
   } catch (error) {
-    console.error("Waitlist count error:", error);
     return NextResponse.json({ count: 0 });
   }
 }

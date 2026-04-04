@@ -83,15 +83,9 @@ export async function POST(req: Request) {
 
   if (type !== "batch_scrape.completed" || !Array.isArray(data)) {
     // Unknown type or no data — acknowledge and skip
-    console.log(
-      `[Firecrawl Webhook] Skipping event type "${type}" for job ${jobId}`
-    );
     return NextResponse.json({ ok: true });
   }
 
-  console.log(
-    `[Firecrawl Webhook] Processing ${data.length} pages for job ${jobId}`
-  );
 
   let updated = 0;
   let skipped = 0;
@@ -151,10 +145,6 @@ export async function POST(req: Request) {
 
       updated++;
     } catch (error) {
-      console.error(
-        `[Firecrawl Webhook] Failed to process ${page.url}:`,
-        error
-      );
       Sentry.captureException(error, {
         extra: { tool: "firecrawl-webhook", url: page.url, jobId },
       });
@@ -169,9 +159,6 @@ export async function POST(req: Request) {
     data: { jobId, updated, skipped },
   });
 
-  console.log(
-    `[Firecrawl Webhook] Job ${jobId} complete: ${updated} updated, ${skipped} skipped`
-  );
 
   return NextResponse.json({ ok: true, updated, skipped });
 }

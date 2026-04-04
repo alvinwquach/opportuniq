@@ -159,7 +159,6 @@ export async function getConversations(
       })),
     };
   } catch (error) {
-    console.error("[getConversations] Error:", error);
     return { error: "Internal Server Error" };
   }
 }
@@ -359,7 +358,6 @@ export async function getConversation(
       })),
     };
   } catch (error) {
-    console.error("[getConversation] Error:", error);
     return { error: "Internal Server Error" };
   }
 }

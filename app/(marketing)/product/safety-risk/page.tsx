@@ -58,21 +58,21 @@ export default function SafetyRiskPage() {
         <div className="max-w-4xl mx-auto text-center">
           {/* Breadcrumb */}
           <nav className="flex items-center justify-center gap-2 text-sm text-neutral-500 mb-6">
-            <Link href="/product" className="hover:text-teal-400 transition-colors">
+            <Link href="/product" className="hover:text-blue-400 transition-colors">
               Product
             </Link>
             <IoChevronForward className="w-3 h-3" />
             <span className="text-neutral-300">Safety & Risk</span>
           </nav>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-500/40 text-teal-400 text-xs font-mono mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-400 text-xs font-mono mb-6">
             <IoShieldCheckmarkOutline className="w-4 h-4" />
             Safety & Risk
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             Safety{" "}
-            <span className="text-teal-400">
+            <span className="text-blue-400">
               built into every diagnosis
             </span>
           </h1>
@@ -83,7 +83,7 @@ export default function SafetyRiskPage() {
           </p>
 
           <WaitlistModal>
-            <Button className="h-12 px-8 font-mono font-bold bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
+            <Button className="h-12 px-8 font-mono font-bold bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
               Get Early Access
             </Button>
           </WaitlistModal>
@@ -153,7 +153,7 @@ export default function SafetyRiskPage() {
             <div className="bg-neutral-950/80 rounded-xl border border-neutral-800 overflow-hidden">
               <div className="px-4 py-3 border-b border-neutral-800 flex items-center justify-between">
                 <span className="text-sm font-medium text-neutral-400">PPE for This Task</span>
-                <span className="text-xs text-teal-400">Auto-generated</span>
+                <span className="text-xs text-blue-400">Auto-generated</span>
               </div>
               <div className="p-4 space-y-3">
                 {PPE_ITEMS.map((ppe, i) => (
@@ -192,7 +192,7 @@ export default function SafetyRiskPage() {
                   { label: "Suggested", desc: "Nice to have for comfort and convenience" },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <IoCheckmarkCircle className="w-5 h-5 text-teal-400 mt-0.5 flex-shrink-0" />
+                    <IoCheckmarkCircle className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
                     <div>
                       <p className="text-white font-medium">{item.label}</p>
                       <p className="text-sm text-neutral-500">{item.desc}</p>
@@ -220,7 +220,7 @@ export default function SafetyRiskPage() {
           <div className="grid md:grid-cols-2 gap-6">
             {FEATURES.map((feature, i) => (
               <div key={i} className="p-6 rounded-xl bg-neutral-900 border border-neutral-700">
-                <div className="w-12 h-12 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 mb-4">
+                <div className="w-12 h-12 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 mb-4">
                   <feature.icon className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
@@ -241,7 +241,7 @@ export default function SafetyRiskPage() {
             Get repair guidance that prioritizes your safety with every response.
           </p>
           <WaitlistModal>
-            <Button className="h-14 px-8 font-mono font-bold text-lg bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
+            <Button className="h-14 px-8 font-mono font-bold text-lg bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
               Join the Waitlist
             </Button>
           </WaitlistModal>

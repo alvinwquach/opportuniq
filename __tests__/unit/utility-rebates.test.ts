@@ -1,8 +1,6 @@
 /**
- * Unit tests for app/api/chat/tools/utility-rebates.ts
+ * Unit tests for rebates mode of app/api/chat/tools/local-lookup.ts
  */
-
-// ─── Sentry mock ──────────────────────────────────────────────────────────────
 
 jest.mock("@sentry/nextjs", () => ({
   captureException: jest.fn(),
@@ -12,21 +10,15 @@ jest.mock("@sentry/nextjs", () => ({
   setTag: jest.fn(),
 }));
 
-// ─── Feature flag mock ────────────────────────────────────────────────────────
-
 const mockGetFeatureFlag = jest.fn();
 jest.mock("@/lib/feature-flags", () => ({
   getFeatureFlag: (...args: [unknown, ...unknown[]]) => mockGetFeatureFlag(...args),
 }));
 
-// ─── firecrawlSearch mock ─────────────────────────────────────────────────────
-
 const mockFirecrawlSearch = jest.fn();
 jest.mock("@/lib/integrations/firecrawl-search", () => ({
   firecrawlSearch: (...args: [unknown, ...unknown[]]) => mockFirecrawlSearch(...args),
 }));
-
-// ─── FirecrawlApp mock ────────────────────────────────────────────────────────
 
 const mockScrape = jest.fn();
 jest.mock("@mendable/firecrawl-js", () => ({
@@ -37,14 +29,12 @@ jest.mock("@mendable/firecrawl-js", () => ({
   })),
 }));
 
-// ─── ai mock ──────────────────────────────────────────────────────────────────
-
 jest.mock("ai", () => ({
   tool: (config: unknown) => config,
 }));
 
 import FirecrawlApp from "@mendable/firecrawl-js";
-import { createUtilityRebatesTool } from "@/app/api/chat/tools/utility-rebates";
+import { createLocalLookupTool } from "@/app/api/chat/tools/local-lookup";
 import type { ToolContext } from "@/app/api/chat/tools/types";
 
 const firecrawl = new FirecrawlApp({ apiKey: "test" });
@@ -57,8 +47,8 @@ const baseCtx: ToolContext = {
 };
 
 function getExecute(ctx: ToolContext) {
-  const toolDef = createUtilityRebatesTool(ctx) as unknown as {
-    execute: (args: { upgradeType: string; zipCode: string }) => Promise<unknown>;
+  const toolDef = createLocalLookupTool(ctx) as unknown as {
+    execute: (args: { mode: "permits" | "rebates"; upgradeType?: string; zipCode?: string }) => Promise<unknown>;
   };
   return toolDef.execute;
 }
@@ -67,8 +57,7 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-describe("utility rebates tool", () => {
+describe("local lookup tool — rebates mode", () => {
   describe("flag ON", () => {
     beforeEach(() => {
       mockGetFeatureFlag.mockResolvedValue(true);
@@ -80,7 +69,7 @@ describe("utility rebates tool", () => {
       });
 
       const execute = getExecute(baseCtx);
-      await execute({ upgradeType: "heat pump water heater", zipCode: "94102" });
+      await execute({ mode: "rebates", upgradeType: "heat pump water heater", zipCode: "94102" });
 
       expect(mockFirecrawlSearch).toHaveBeenCalledTimes(1);
       const [, query] = mockFirecrawlSearch.mock.calls[0] as [unknown, string];
@@ -88,15 +77,13 @@ describe("utility rebates tool", () => {
       expect(query).toContain("94102");
     });
 
-    it("returns baseResources + commonRebates + search results", async () => {
+    it("returns resources + commonRebates + search results", async () => {
       mockFirecrawlSearch.mockResolvedValue({
-        web: [
-          { url: "https://dsire.org/search", title: "DSIRE Result", description: "State rebate" },
-        ],
+        web: [{ url: "https://dsire.org/search", title: "DSIRE Result", description: "State rebate" }],
       });
 
       const execute = getExecute(baseCtx);
-      const result = await execute({ upgradeType: "smart thermostat", zipCode: "94102" }) as {
+      const result = await execute({ mode: "rebates", upgradeType: "smart thermostat", zipCode: "94102" }) as {
         resources: unknown[];
         commonRebates: string[];
         searchResults: Array<{ url: string }>;
@@ -110,12 +97,12 @@ describe("utility rebates tool", () => {
       expect(result.searchResults[0]).toMatchObject({ url: "https://dsire.org/search" });
     });
 
-    it("falls back to old code when search returns null", async () => {
+    it("falls back to scrape when search returns null", async () => {
       mockFirecrawlSearch.mockResolvedValue(null);
       mockScrape.mockResolvedValue({ markdown: "Google fallback result" });
 
       const execute = getExecute(baseCtx);
-      const result = await execute({ upgradeType: "insulation", zipCode: "94102" }) as {
+      const result = await execute({ mode: "rebates", upgradeType: "insulation", zipCode: "94102" }) as {
         searchResults: string;
       };
 
@@ -129,11 +116,11 @@ describe("utility rebates tool", () => {
       mockGetFeatureFlag.mockResolvedValue(false);
     });
 
-    it("uses old Google scraping code", async () => {
+    it("uses Google scraping code path", async () => {
       mockScrape.mockResolvedValue({ markdown: "Google rebate results" });
 
       const execute = getExecute(baseCtx);
-      await execute({ upgradeType: "heat pump", zipCode: "12345" });
+      await execute({ mode: "rebates", upgradeType: "heat pump", zipCode: "12345" });
 
       expect(mockFirecrawlSearch).not.toHaveBeenCalled();
       expect(mockScrape).toHaveBeenCalledTimes(1);
@@ -149,32 +136,31 @@ describe("utility rebates tool", () => {
       mockGetFeatureFlag.mockResolvedValue(true);
     });
 
-    it("handles invalid zip code (empty string)", async () => {
+    it("handles empty zip code", async () => {
       mockFirecrawlSearch.mockResolvedValue({ web: [] });
       mockScrape.mockResolvedValue({ markdown: "result" });
 
       const execute = getExecute(baseCtx);
-      const result = await execute({ upgradeType: "heat pump", zipCode: "" });
+      const result = await execute({ mode: "rebates", upgradeType: "heat pump", zipCode: "" });
       expect(result).toBeDefined();
     });
 
-    it("handles invalid zip code (letters)", async () => {
+    it("handles non-numeric zip code", async () => {
       mockFirecrawlSearch.mockResolvedValue({ web: [] });
       mockScrape.mockResolvedValue({ markdown: "result" });
 
       const execute = getExecute(baseCtx);
-      const result = await execute({ upgradeType: "heat pump", zipCode: "ABCDE" });
+      const result = await execute({ mode: "rebates", upgradeType: "heat pump", zipCode: "ABCDE" });
       expect(result).toBeDefined();
     });
 
-    it("handles search timeout (returns null)", async () => {
+    it("falls back to scrape on search timeout (null return)", async () => {
       mockFirecrawlSearch.mockResolvedValue(null);
       mockScrape.mockResolvedValue({ markdown: "fallback" });
 
       const execute = getExecute(baseCtx);
-      await execute({ upgradeType: "heat pump", zipCode: "94102" });
+      await execute({ mode: "rebates", upgradeType: "heat pump", zipCode: "94102" });
 
-      // Should fall back to scrape after search timeout
       expect(mockScrape).toHaveBeenCalledTimes(1);
     });
   });

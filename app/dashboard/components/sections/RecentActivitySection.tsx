@@ -16,8 +16,8 @@ interface RecentActivitySectionProps {
 
 export function RecentActivitySection({ activities }: RecentActivitySectionProps) {
   return (
-    <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
-      <h3 className="text-sm font-medium text-white mb-3">Recent Activity</h3>
+    <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
+      <h3 className="text-sm font-medium text-gray-900 mb-3">Recent Activity</h3>
       {activities.length > 0 ? (
         <div className="space-y-3">
           {activities.slice(0, 5).map((activity, index) => (
@@ -25,7 +25,7 @@ export function RecentActivitySection({ activities }: RecentActivitySectionProps
           ))}
         </div>
       ) : (
-        <p className="text-xs text-[#9a9a9a]">
+        <p className="text-xs text-gray-400">
           No recent activity yet. Report an issue or make a decision to see updates here.
         </p>
       )}

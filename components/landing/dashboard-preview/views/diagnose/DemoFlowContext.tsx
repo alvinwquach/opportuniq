@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useMemo, ReactNode } from "react";
+import { createContext, useContext, useMemo, useEffect, ReactNode } from "react";
 import { useDemoFlow, DemoFlowState } from "./useDemoFlow";
 import type { IssueData } from "./types";
 
@@ -32,13 +32,14 @@ export function useDemoFlowContextSafe(): DemoFlowContextValue | null {
 interface DemoFlowProviderProps {
   children: ReactNode;
   issue: IssueData | null;
+  /** Skip straight to complete state — use in landing page previews */
+  skipToComplete?: boolean;
 }
 
-export function DemoFlowProvider({ children, issue }: DemoFlowProviderProps) {
+export function DemoFlowProvider({ children, issue, skipToComplete: autoComplete = false }: DemoFlowProviderProps) {
   // Calculate totals including PPE
   const totalGuides = issue?.guides.length ?? 0;
   const baseParts = issue?.parts.length ?? 0;
-  // Estimate PPE parts (2 for most DIY issues)
   const ppeCount = issue && !issue.difficulty.includes("Professional") ? 2 : 0;
   const totalParts = baseParts + ppeCount;
 
@@ -50,6 +51,14 @@ export function DemoFlowProvider({ children, issue }: DemoFlowProviderProps) {
       totalParts,
     }
   );
+
+  // For landing page previews: jump straight to complete so visitors see the full UI
+  useEffect(() => {
+    if (autoComplete && issue) {
+      demoFlow.skipToComplete();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoComplete, issue?.title]);
 
   const value = useMemo(() => demoFlow, [demoFlow]);
 

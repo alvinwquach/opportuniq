@@ -75,13 +75,13 @@ const roleOptions: { value: GroupRole; label: string; description: string }[] = 
 function getRoleColor(role: string) {
   switch (role) {
     case "coordinator":
-      return "bg-[#00D4FF]/10 text-[#00D4FF]";
+      return "bg-blue-50 text-blue-600";
     case "collaborator":
       return "bg-purple-500/10 text-purple-400";
     case "contributor":
       return "bg-green-500/10 text-green-400";
     default:
-      return "bg-[#1f1f1f] text-[#9a9a9a]";
+      return "bg-gray-100 text-gray-400";
   }
 }
 
@@ -145,25 +145,25 @@ export function MemberActionsMenu({ groupId, member }: MemberActionsMenuProps) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="p-1.5 text-[#666] hover:text-white hover:bg-[#2a2a2a] rounded transition-colors">
+          <button className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-200 rounded transition-colors">
             <IoEllipsisHorizontal className="w-4 h-4" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="w-48 bg-[#1a1a1a] border-[#2a2a2a]"
+          className="w-48 bg-gray-100 border-gray-200"
         >
           <DropdownMenuItem
             onClick={() => {
               setSelectedRole(member.role as GroupRole);
               setShowRoleDialog(true);
             }}
-            className="flex items-center gap-2 text-sm text-white hover:bg-[#2a2a2a] cursor-pointer"
+            className="flex items-center gap-2 text-sm text-gray-900 hover:bg-gray-200 cursor-pointer"
           >
-            <IoShieldOutline className="w-4 h-4 text-[#9a9a9a]" />
+            <IoShieldOutline className="w-4 h-4 text-gray-400" />
             Change Role
           </DropdownMenuItem>
-          <DropdownMenuSeparator className="bg-[#2a2a2a]" />
+          <DropdownMenuSeparator className="bg-gray-200" />
           <DropdownMenuItem
             onClick={() => setShowRemoveDialog(true)}
             className="flex items-center gap-2 text-sm text-red-400 hover:bg-red-500/10 cursor-pointer"
@@ -176,15 +176,15 @@ export function MemberActionsMenu({ groupId, member }: MemberActionsMenuProps) {
 
       {/* Change Role Dialog */}
       <Dialog open={showRoleDialog} onOpenChange={setShowRoleDialog}>
-        <DialogContent className="bg-[#111] border-[#1f1f1f] sm:max-w-md">
+        <DialogContent className="bg-white border-gray-200 sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-white">Change Role</DialogTitle>
-            <DialogDescription className="text-[#9a9a9a]">
+            <DialogTitle className="text-gray-900">Change Role</DialogTitle>
+            <DialogDescription className="text-gray-400">
               Update the role for {displayName}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] mb-4">
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-200 mb-4">
             {member.user.avatarUrl ? (
               <Image
                 src={member.user.avatarUrl}
@@ -194,13 +194,13 @@ export function MemberActionsMenu({ groupId, member }: MemberActionsMenuProps) {
                 className="rounded-full"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-linear-to-br from-[#00D4FF]/20 to-[#00B4D8]/20 flex items-center justify-center text-sm font-medium text-[#00D4FF]">
+              <div className="w-10 h-10 rounded-full bg-linear-to-br from-[#00D4FF]/20 to-[#00B4D8]/20 flex items-center justify-center text-sm font-medium text-blue-600">
                 {getInitials(member.user.name, member.user.email)}
               </div>
             )}
             <div>
               <p className="text-sm font-medium text-white">{displayName}</p>
-              <p className="text-xs text-[#666]">{member.user.email}</p>
+              <p className="text-xs text-gray-500">{member.user.email}</p>
             </div>
           </div>
 
@@ -210,8 +210,8 @@ export function MemberActionsMenu({ groupId, member }: MemberActionsMenuProps) {
                 key={option.value}
                 className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
                   selectedRole === option.value
-                    ? "bg-[#00D4FF]/5 border-[#00D4FF]/30"
-                    : "bg-[#0c0c0c] border-[#2a2a2a] hover:border-[#3a3a3a]"
+                    ? "bg-blue-50 border-blue-500/30"
+                    : "bg-gray-50 border-gray-200 hover:border-[#3a3a3a]"
                 } ${isUpdatingRole ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 <input
@@ -225,21 +225,21 @@ export function MemberActionsMenu({ groupId, member }: MemberActionsMenuProps) {
                 />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm text-white font-medium">
+                    <p className="text-sm text-gray-900 font-medium">
                       {option.label}
                     </p>
                     {member.role === option.value && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1f1f1f] text-[#666]">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">
                         Current
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-[#666] mt-0.5">
+                  <p className="text-xs text-gray-500 mt-0.5">
                     {option.description}
                   </p>
                 </div>
                 {selectedRole === option.value && (
-                  <IoCheckmark className="w-4 h-4 text-[#00D4FF] shrink-0 mt-0.5" />
+                  <IoCheckmark className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                 )}
               </label>
             ))}
@@ -249,14 +249,14 @@ export function MemberActionsMenu({ groupId, member }: MemberActionsMenuProps) {
             <button
               onClick={handleRoleChange}
               disabled={isUpdatingRole || selectedRole === member.role}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[#00D4FF] hover:bg-[#00D4FF]/90 disabled:bg-[#1f1f1f] disabled:text-[#666] text-[#0c0c0c] font-medium text-sm transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-600/90 disabled:bg-gray-100 disabled:text-gray-500 text-white font-medium text-sm transition-colors"
             >
               {isUpdatingRole ? "Updating..." : "Update Role"}
             </button>
             <button
               onClick={() => setShowRoleDialog(false)}
               disabled={isUpdatingRole}
-              className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-white hover:bg-[#1f1f1f] text-sm transition-colors"
+              className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-gray-900 hover:bg-gray-100 text-sm transition-colors"
             >
               Cancel
             </button>
@@ -266,18 +266,18 @@ export function MemberActionsMenu({ groupId, member }: MemberActionsMenuProps) {
 
       {/* Remove Member Dialog */}
       <Dialog open={showRemoveDialog} onOpenChange={setShowRemoveDialog}>
-        <DialogContent className="bg-[#111] border-[#1f1f1f] sm:max-w-md">
+        <DialogContent className="bg-white border-gray-200 sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-white flex items-center gap-2">
               <IoWarning className="w-5 h-5 text-red-400" />
               Remove Member
             </DialogTitle>
-            <DialogDescription className="text-[#9a9a9a]">
+            <DialogDescription className="text-gray-400">
               Are you sure you want to remove {displayName} from this group?
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] mb-4">
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-200 mb-4">
             {member.user.avatarUrl ? (
               <Image
                 src={member.user.avatarUrl}
@@ -287,7 +287,7 @@ export function MemberActionsMenu({ groupId, member }: MemberActionsMenuProps) {
                 className="rounded-full"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-linear-to-br from-[#00D4FF]/20 to-[#00B4D8]/20 flex items-center justify-center text-sm font-medium text-[#00D4FF]">
+              <div className="w-10 h-10 rounded-full bg-linear-to-br from-[#00D4FF]/20 to-[#00B4D8]/20 flex items-center justify-center text-sm font-medium text-blue-600">
                 {getInitials(member.user.name, member.user.email)}
               </div>
             )}
@@ -299,7 +299,7 @@ export function MemberActionsMenu({ groupId, member }: MemberActionsMenuProps) {
                 >
                   {member.role}
                 </span>
-                <span className="text-xs text-[#666]">{member.user.email}</span>
+                <span className="text-xs text-gray-500">{member.user.email}</span>
               </div>
             </div>
           </div>
@@ -315,7 +315,7 @@ export function MemberActionsMenu({ groupId, member }: MemberActionsMenuProps) {
             <button
               onClick={handleRemove}
               disabled={isRemoving}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 disabled:bg-red-500/50 text-white font-medium text-sm transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 disabled:bg-red-500/50 text-gray-900 font-medium text-sm transition-colors"
             >
               {isRemoving ? (
                 "Removing..."
@@ -329,7 +329,7 @@ export function MemberActionsMenu({ groupId, member }: MemberActionsMenuProps) {
             <button
               onClick={() => setShowRemoveDialog(false)}
               disabled={isRemoving}
-              className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-white hover:bg-[#1f1f1f] text-sm transition-colors"
+              className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-gray-900 hover:bg-gray-100 text-sm transition-colors"
             >
               Cancel
             </button>

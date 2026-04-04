@@ -54,7 +54,7 @@ export function EncryptedImage({
 
     // If we have a cached URL, use it
     if (cachedUrl) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setDecryptedUrl(cachedUrl);
       return;
     }
@@ -73,7 +73,6 @@ export function EncryptedImage({
           }
         })
         .catch((err) => {
-          console.error("[EncryptedImage] Decryption error:", err);
           setError("Decryption failed");
         })
         .finally(() => {

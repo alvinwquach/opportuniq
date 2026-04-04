@@ -148,19 +148,11 @@ export async function processVideo(
   file: File,
   onProgress?: ProgressCallback
 ): Promise<VideoProcessingResult> {
-  console.log("[video-processor] === Starting video processing ===");
-  console.log("[video-processor] File:", {
-    name: file.name,
-    size: `${(file.size / 1024 / 1024).toFixed(2)}MB`,
-    type: file.type,
-  });
 
   const startTime = performance.now();
   const processingStrategy = getProcessingStrategy();
   const canUseClient = canUseClientFFmpeg();
 
-  console.log("[video-processor] Strategy:", processingStrategy);
-  console.log("[video-processor] Can use client FFmpeg:", canUseClient);
 
   const errors: string[] = [];
 
@@ -170,7 +162,6 @@ export async function processVideo(
     progress: number,
     message?: string
   ) => {
-    console.log("[video-processor] Progress:", stage, `${progress}%`);
     onProgress?.({
       stage,
       progress,
@@ -181,32 +172,24 @@ export async function processVideo(
   reportProgress("validating", 0);
 
   // Validate file
-  console.log("[video-processor] Validating file...");
   const fileValidation = validateVideoFile(file);
   if (!fileValidation.valid) {
-    console.error("[video-processor] File validation failed:", fileValidation.error);
     throw new Error(fileValidation.error);
   }
-  console.log("[video-processor] File validation passed");
 
   // Validate duration
-  console.log("[video-processor] Validating duration...");
   const durationValidation = await validateVideoDuration(file);
   if (!durationValidation.valid) {
-    console.error("[video-processor] Duration validation failed:", durationValidation.error);
     throw new Error(durationValidation.error);
   }
-  console.log("[video-processor] Duration validation passed:", durationValidation.duration, "seconds");
 
   reportProgress("validating", 100);
 
   // Process based on strategy
   if (processingStrategy === "server" || !canUseClient) {
-    console.log("[video-processor] Using SERVER-SIDE processing");
     return processVideoServer(file, startTime, onProgress);
   }
 
-  console.log("[video-processor] Using CLIENT-SIDE processing");
   return processVideoClient(file, startTime, errors, onProgress);
 }
 
@@ -269,7 +252,6 @@ async function processVideoClient(
     reportProgress("compressing", 100);
   } catch (error) {
     errors.push("Video compression failed");
-    console.error("Compression error:", error);
     // Continue with original file
   }
 
@@ -292,7 +274,6 @@ async function processVideoClient(
     diagnosticFramesBase64 = frameResult.diagnosticFramesBase64;
   } catch (error) {
     errors.push("Frame extraction failed");
-    console.error("Frame extraction error:", error);
   }
 
   // Extract audio
@@ -309,7 +290,6 @@ async function processVideoClient(
     reportProgress("extracting-audio", 100);
   } catch (error) {
     errors.push("Audio extraction failed");
-    console.error("Audio extraction error:", error);
   }
 
   // Calculate confidence
@@ -401,14 +381,12 @@ async function processVideoServer(
   startTime: number,
   onProgress?: ProgressCallback
 ): Promise<VideoProcessingResult> {
-  console.log("[video-processor] processVideoServer() - Starting");
 
   const reportProgress = (
     stage: ProcessingStage,
     progress: number,
     message?: string
   ) => {
-    console.log("[video-processor] Server progress:", stage, `${progress}%`);
     onProgress?.({
       stage,
       progress,
@@ -419,17 +397,10 @@ async function processVideoServer(
   reportProgress("uploading", 0, "Uploading video to server...");
 
   try {
-    console.log("[video-processor] Calling processVideoOnServer...");
     const result = await processVideoOnServer(file, (stage, progress) => {
       reportProgress(stage, progress);
     });
 
-    console.log("[video-processor] Server processing completed:", {
-      compressedSize: result.compressedVideoBlob.size,
-      thumbnailSize: result.thumbnailBlob.size,
-      diagnosticFrames: result.diagnosticFramesBase64.length,
-      hasAudio: result.hasAudio,
-    });
 
     // Calculate confidence
     const confidence = calculateConfidence({
@@ -441,12 +412,10 @@ async function processVideoServer(
       processingErrors: [],
     });
 
-    console.log("[video-processor] Confidence score:", confidence.score);
 
     reportProgress("complete", 100);
 
     const totalTime = performance.now() - startTime;
-    console.log("[video-processor] Total server processing time:", totalTime.toFixed(0), "ms");
 
     return {
       compressedBlob: result.compressedVideoBlob,
@@ -467,7 +436,6 @@ async function processVideoServer(
       confidence,
     };
   } catch (err) {
-    console.error("[video-processor] Server processing failed:", err);
     throw err;
   }
 }

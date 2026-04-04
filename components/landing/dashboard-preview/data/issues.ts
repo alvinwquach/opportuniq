@@ -111,7 +111,7 @@ export const deferredDecisions = [
 
 export const issueAnalytics = {
   statusDistribution: [
-    { status: 'Open', count: 2, color: '#3ECF8E' },
+    { status: 'Open', count: 2, color: '#2563EB' },
     { status: 'Investigating', count: 1, color: '#f59e0b' },
     { status: 'In Progress', count: 1, color: '#8b5cf6' },
     { status: 'Completed', count: 8, color: '#10b981' },
@@ -122,16 +122,16 @@ export const issueAnalytics = {
     { priority: 'Low', count: 1, color: '#64748b' },
   ],
   categoryBreakdown: [
-    { category: 'HVAC', count: 2, color: '#3ECF8E' },
-    { category: 'Plumbing', count: 1, color: '#3ECF8E' },
+    { category: 'HVAC', count: 2, color: '#2563EB' },
+    { category: 'Plumbing', count: 1, color: '#2563EB' },
     { category: 'Garage', count: 1, color: '#f59e0b' },
   ],
   avgResolutionTime: '2.8 days',
 };
 
 export const resolutionTypeBreakdown = [
-  { type: 'DIY', count: 6, color: '#3ECF8E' },
-  { type: 'Hired', count: 1, color: '#3ECF8E' },
+  { type: 'DIY', count: 6, color: '#2563EB' },
+  { type: 'Hired', count: 1, color: '#2563EB' },
   { type: 'Replaced', count: 1, color: '#8b5cf6' },
   { type: 'Deferred', count: 0, color: '#f59e0b' },
 ];

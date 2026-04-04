@@ -8,11 +8,17 @@ import {
   IoSend,
   IoVideocam,
   IoPeople,
+  IoSearch,
+  IoCash,
+  IoPerson,
+  IoShieldCheckmark,
+  IoLogoReddit,
 } from "react-icons/io5";
 import { IoHammerOutline } from "react-icons/io5";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { OpportunIQLogo } from "../../../OpportunIQLogo";
 import { useDemoFlowContextSafe } from "./DemoFlowContext";
+import { useDarkMode } from "../../DarkModeContext";
 import type { IssueData, ChatMessage } from "./types";
 
 const WELCOME_MESSAGE = "Hey! I'm here to help you diagnose issues, plan DIY projects, or find the right professional for the job. Describe what you're working on, share a photo, or use voice in any language.";
@@ -60,6 +66,7 @@ interface ChatAreaProps {
 }
 
 export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
+  const dark = useDarkMode();
   const [messageInput, setMessageInput] = useState("");
   const [welcomeText, setWelcomeText] = useState("");
   const [isTypingWelcome, setIsTypingWelcome] = useState(false);
@@ -185,24 +192,22 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
 
   if (isCreatingNewIssue) {
     return (
-      <div className="flex-1 h-full flex flex-col min-w-0">
-        {/* Chat Area */}
+      <div className={`flex-1 h-full flex flex-col min-w-0 ${dark ? "bg-[#1a1a1a]" : "bg-white"}`}>
         <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-2xl mx-auto space-y-4">
-            {/* Welcome Message */}
             <div className="flex justify-start">
               <div className="max-w-[90%]">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                    <OpportunIQLogo className="w-5 h-5 text-emerald-400" />
+                  <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
+                    <OpportunIQLogo className="w-5 h-5 text-blue-600" />
                   </div>
-                  <span className="text-sm font-medium text-white">OpportunIQ</span>
+                  <span className={`text-sm font-medium ${dark ? "text-gray-200" : "text-gray-900"}`}>OpportunIQ</span>
                 </div>
                 <div className="pl-10">
-                  <p className="text-[15px] text-[#e0e0e0] leading-relaxed">
+                  <p className={`text-[15px] leading-relaxed ${dark ? "text-gray-400" : "text-gray-700"}`}>
                     {welcomeText}
                     {isTypingWelcome && (
-                      <span className="inline-block w-2 h-4 bg-emerald-400 ml-0.5 animate-pulse" />
+                      <span className="inline-block w-2 h-4 bg-blue-600 ml-0.5 animate-pulse" />
                     )}
                   </p>
                 </div>
@@ -213,14 +218,14 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
 
         {/* Chat Input */}
         <div className="shrink-0 p-4">
-          <div className="bg-[#1a1a1a] rounded-2xl border border-[#2a2a2a] focus-within:border-emerald-500/50 transition-colors">
+          <div className={`rounded-2xl border focus-within:border-blue-500/50 transition-colors ${dark ? "bg-[#252525] border-white/10" : "bg-white border-gray-200"}`}>
             <textarea
               placeholder="Describe your issue..."
               value={messageInput}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               rows={3}
-              className="w-full px-4 py-3 bg-transparent text-[15px] text-white placeholder:text-[#555] focus:outline-none resize-none"
+              className={`w-full px-4 py-3 bg-transparent text-[15px] focus:outline-none resize-none placeholder:text-gray-500 ${dark ? "text-gray-200" : "text-gray-900"}`}
             />
             <div className="flex items-center justify-between px-3 pb-3">
               <div className="flex items-center gap-1">
@@ -228,7 +233,7 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
                   <TooltipTrigger asChild>
                     <button
                       type="button"
-                      className="p-2 text-[#555] hover:text-emerald-400 rounded-full hover:bg-emerald-500/10 transition-colors"
+                      className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
                     >
                       <IoCamera className="w-5 h-5" />
                     </button>
@@ -239,7 +244,7 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
                   <TooltipTrigger asChild>
                     <button
                       type="button"
-                      className="p-2 text-[#555] hover:text-emerald-400 rounded-full hover:bg-emerald-500/10 transition-colors"
+                      className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
                     >
                       <IoAttach className="w-5 h-5" />
                     </button>
@@ -252,7 +257,7 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
                   <TooltipTrigger asChild>
                     <button
                       type="button"
-                      className="p-2.5 text-[#555] hover:text-emerald-400 rounded-full hover:bg-emerald-500/10 transition-colors"
+                      className="p-2.5 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
                     >
                       <IoMic className="w-5 h-5" />
                     </button>
@@ -264,7 +269,7 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
                     <button
                       type="button"
                       onClick={handleSend}
-                      className="p-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full transition-colors"
+                      className="p-2.5 bg-blue-500 hover:bg-blue-400 text-white rounded-full transition-colors"
                     >
                       <IoSend className="w-5 h-5" />
                     </button>
@@ -281,11 +286,11 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
 
   if (!issue) {
     return (
-      <div className="flex-1 h-full flex flex-col min-w-0">
+      <div className={`flex-1 h-full flex flex-col min-w-0 ${dark ? "bg-[#1a1a1a]" : "bg-white"}`}>
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="text-center">
-            <IoHammerOutline className="w-12 h-12 text-[#333] mx-auto mb-3" />
-            <p className="text-sm text-[#666]">Select an issue to view details</p>
+            <IoHammerOutline className={`w-12 h-12 mx-auto mb-3 ${dark ? "text-gray-700" : "text-gray-300"}`} />
+            <p className={`text-sm ${dark ? "text-gray-600" : "text-gray-500"}`}>Select an issue to view details</p>
           </div>
         </div>
       </div>
@@ -294,12 +299,12 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
 
   const Icon = issue.icon;
   const iconBg = issue.status === "resolved"
-    ? "bg-emerald-500/20"
-    : issue.iconColor.includes("blue") ? "bg-blue-500/20"
-    : issue.iconColor.includes("cyan") ? "bg-cyan-500/20"
-    : issue.iconColor.includes("amber") ? "bg-amber-500/20"
-    : issue.iconColor.includes("yellow") ? "bg-yellow-500/20"
-    : "bg-emerald-500/20";
+    ? "bg-blue-50"
+    : issue.iconColor.includes("blue") ? "bg-blue-50"
+    : issue.iconColor.includes("cyan") ? "bg-cyan-50"
+    : issue.iconColor.includes("amber") ? "bg-amber-50"
+    : issue.iconColor.includes("yellow") ? "bg-yellow-50"
+    : "bg-blue-50";
 
   const hasGuides = issue.guides.length > 0;
   const hasParts = issue.parts.length > 0;
@@ -315,25 +320,25 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
   const diagnosisToShow = demoFlow?.streamedDiagnosis ?? originalAssistantMessage?.content ?? "";
   const showDiagnosis = diagnosisToShow.length > 0;
 
+  const msgBubbleDark = dark ? "bg-[#252525] text-gray-200 border border-white/[0.06]" : "bg-white text-gray-900 border border-gray-200";
+
   return (
-    <div className="flex-1 h-full flex flex-col min-w-0">
+    <div className={`flex-1 h-full flex flex-col min-w-0 ${dark ? "bg-[#1a1a1a]" : "bg-white"}`}>
       {/* Issue Header */}
-      <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between shrink-0">
+      <div className={`px-5 py-4 border-b flex items-center justify-between shrink-0 ${dark ? "border-white/[0.06]" : "border-gray-200"}`}>
         <div className="flex items-center gap-3">
           <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconBg}`}>
-            <Icon className={`w-5 h-5 ${
-              issue.status === "resolved" ? "text-emerald-400" : issue.iconColor
-            }`} />
+            <Icon className={`w-5 h-5 ${issue.status === "resolved" ? "text-blue-600" : issue.iconColor}`} />
           </div>
           <div>
-            <h2 className="text-base font-semibold text-white">{issue.title}</h2>
-            <div className="flex items-center gap-2 text-xs text-[#888]">
+            <h2 className={`text-base font-semibold ${dark ? "text-gray-100" : "text-gray-900"}`}>{issue.title}</h2>
+            <div className={`flex items-center gap-2 text-xs ${dark ? "text-gray-500" : "text-gray-500"}`}>
               <span>{issue.date}</span>
               <span>·</span>
               <span className={
-                issue.difficulty === "Easy" ? "text-emerald-400" :
-                issue.difficulty.includes("Professional") ? "text-red-400" :
-                "text-amber-400"
+                issue.difficulty === "Easy" ? "text-blue-500" :
+                issue.difficulty.includes("Professional") ? "text-red-500" :
+                "text-amber-500"
               }>{issue.difficulty}</span>
               <span>·</span>
               <span>{issue.confidence}% confident</span>
@@ -342,8 +347,8 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
         </div>
         <span className={`text-xs px-3 py-1.5 rounded-full font-medium ${
           issue.status === "resolved"
-            ? "bg-[#2a2a2a] text-[#888]"
-            : "bg-emerald-500/20 text-emerald-400"
+            ? dark ? "bg-white/10 text-gray-500" : "bg-gray-100 text-gray-500"
+            : "bg-blue-100 text-blue-600"
         }`}>
           {issue.status === "resolved" ? "Resolved" : "Active"}
         </span>
@@ -351,19 +356,18 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
 
       {/* Chat Messages */}
       <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-5 space-y-4">
-        {/* User's original message */}
         {userMessage && (
           <div className="flex justify-end">
             <div className="max-w-[85%]">
-              <div className={`px-4 py-3 rounded-2xl bg-emerald-600 text-white rounded-br-md`}>
+              <div className="px-4 py-3 rounded-2xl bg-blue-600 text-white rounded-br-md">
                 {userMessage.hasImage && (
-                  <div className="flex items-center gap-2 text-xs opacity-80 mb-2 pb-2 border-b border-white/20">
+                  <div className="flex items-center gap-2 text-xs opacity-80 mb-2 pb-2 border-b border-blue-500">
                     <IoCamera className="w-4 h-4" />
                     <span>Photo attached</span>
                   </div>
                 )}
                 {userMessage.hasVoice && (
-                  <div className="flex items-center gap-2 text-xs opacity-80 mb-2 pb-2 border-b border-white/20">
+                  <div className="flex items-center gap-2 text-xs opacity-80 mb-2 pb-2 border-b border-blue-500">
                     <IoMic className="w-4 h-4" />
                     <span>Voice note transcribed</span>
                   </div>
@@ -374,21 +378,20 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
           </div>
         )}
 
-        {/* AI Diagnosis (streamed) */}
         {showDiagnosis && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">
               <div className="flex items-center gap-2 mb-1.5">
-                <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                  <OpportunIQLogo className="w-4 h-4 text-emerald-400" />
+                <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                  <OpportunIQLogo className="w-4 h-4 text-blue-600" />
                 </div>
-                <span className="text-xs text-[#888]">OpportunIQ</span>
+                <span className={`text-xs ${dark ? "text-gray-500" : "text-gray-500"}`}>OpportunIQ</span>
               </div>
-              <div className="px-4 py-3 rounded-2xl bg-[#1a1a1a] text-[#e0e0e0] border border-[#2a2a2a] rounded-bl-md">
+              <div className={`px-4 py-3 rounded-2xl rounded-bl-md ${msgBubbleDark}`}>
                 <p className="text-sm whitespace-pre-wrap">
                   {diagnosisToShow}
                   {showDiagnosisCursor && (
-                    <span className="inline-block w-2 h-4 bg-emerald-400 ml-0.5 animate-pulse" />
+                    <span className="inline-block w-2 h-4 bg-blue-600 ml-0.5 animate-pulse" />
                   )}
                 </p>
               </div>
@@ -396,22 +399,21 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
           </div>
         )}
 
-        {/* Additional messages from user interaction */}
         {additionalMessages.map((msg, idx) => (
           <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             <div className="max-w-[85%]">
               {msg.role === "assistant" && (
                 <div className="flex items-center gap-2 mb-1.5">
-                  <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                    <OpportunIQLogo className="w-4 h-4 text-emerald-400" />
+                  <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                    <OpportunIQLogo className="w-4 h-4 text-blue-600" />
                   </div>
-                  <span className="text-xs text-[#888]">OpportunIQ</span>
+                  <span className={`text-xs ${dark ? "text-gray-500" : "text-gray-500"}`}>OpportunIQ</span>
                 </div>
               )}
               <div className={`px-4 py-3 rounded-2xl ${
                 msg.role === "user"
-                  ? "bg-emerald-600 text-white rounded-br-md"
-                  : "bg-[#1a1a1a] text-[#e0e0e0] border border-[#2a2a2a] rounded-bl-md"
+                  ? "bg-blue-600 text-white rounded-br-md"
+                  : `${msgBubbleDark} rounded-bl-md`
               }`}>
                 <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
               </div>
@@ -419,53 +421,92 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
           </div>
         ))}
 
-        {/* Streaming response for follow-up questions */}
         {isStreamingResponse && streamingMessage && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">
               <div className="flex items-center gap-2 mb-1.5">
-                <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                  <OpportunIQLogo className="w-4 h-4 text-emerald-400" />
+                <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                  <OpportunIQLogo className="w-4 h-4 text-blue-600" />
                 </div>
-                <span className="text-xs text-[#888]">OpportunIQ</span>
+                <span className={`text-xs ${dark ? "text-gray-500" : "text-gray-500"}`}>OpportunIQ</span>
               </div>
-              <div className="px-4 py-3 rounded-2xl bg-[#1a1a1a] text-[#e0e0e0] border border-[#2a2a2a] rounded-bl-md">
+              <div className={`px-4 py-3 rounded-2xl rounded-bl-md ${msgBubbleDark}`}>
                 <p className="text-sm whitespace-pre-wrap">
                   {streamingMessage}
-                  <span className="inline-block w-2 h-4 bg-emerald-400 ml-0.5 animate-pulse" />
+                  <span className="inline-block w-2 h-4 bg-blue-600 ml-0.5 animate-pulse" />
                 </p>
               </div>
             </div>
           </div>
         )}
 
-        {/* Cost Comparison Card - show after diagnosis complete */}
+        {demoFlow?.diagnosisComplete && issue && (() => {
+          const toolCalls = [
+            { icon: IoCash, label: "getCostEstimate", result: `$${issue.diyCost > 0 ? issue.diyCost.toFixed(0) : "N/A"} DIY · $${issue.proCost.toFixed(0)} pro`, done: true },
+            { icon: IoSearch, label: "searchReddit", result: `${issue.research.filter(r => r.type === "reddit").length} threads found`, done: true },
+            { icon: IoPerson, label: "searchContractors", result: `${issue.pros.length} rated pros near you`, done: true },
+            { icon: IoShieldCheckmark, label: "checkRecalls", result: issue.difficulty.includes("Professional") ? "1 recall notice found" : "No recalls found", done: true },
+          ];
+          const visible = Math.min(demoFlow.visibleToolCalls, toolCalls.length);
+          if (visible === 0) return null;
+          return (
+            <div className="space-y-1.5">
+              {toolCalls.slice(0, visible).map((tc, idx) => {
+                const Icon = tc.icon;
+                const isLast = idx === visible - 1 && demoFlow.phase === "researching";
+                return (
+                  <div key={tc.label} className={`flex items-center gap-2.5 px-3 py-2 rounded-lg border ${dark ? "bg-white/[0.03] border-white/[0.06]" : "bg-gray-50 border-gray-100"}`}>
+                    <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${dark ? "text-gray-600" : "text-gray-400"}`} />
+                    <span className={`text-[11px] font-mono flex-1 ${dark ? "text-gray-600" : "text-gray-400"}`}>{tc.label}</span>
+                    {isLast ? (
+                      <div className="w-3 h-3 border-2 border-blue-400/50 border-t-transparent rounded-full animate-spin flex-shrink-0" />
+                    ) : (
+                      <span className={`text-[11px] flex-shrink-0 ${dark ? "text-gray-500" : "text-gray-500"}`}>{tc.result}</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })()}
+
+        {demoFlow?.isComplete && issue && issue.research.filter(r => r.type === "reddit").length > 0 && additionalMessages.length === 0 && !isStreamingResponse && (
+          <div className="space-y-1.5">
+            <p className={`text-[11px] font-medium uppercase tracking-wide px-1 ${dark ? "text-gray-600" : "text-gray-400"}`}>From the community</p>
+            {issue.research.filter(r => r.type === "reddit").map((r, idx) => (
+              <div key={idx} className={`flex items-start gap-2.5 px-3 py-2.5 rounded-lg border ${dark ? "bg-white/[0.03] border-white/[0.06]" : "bg-gray-50 border-gray-100"}`}>
+                <IoLogoReddit className="w-3.5 h-3.5 text-orange-500 flex-shrink-0 mt-0.5" />
+                <div className="min-w-0">
+                  <p className={`text-xs leading-snug truncate ${dark ? "text-gray-400" : "text-gray-700"}`}>{r.title}</p>
+                  <p className={`text-[10px] mt-0.5 ${dark ? "text-gray-600" : "text-gray-400"}`}>{r.meta}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {demoFlow?.diagnosisComplete && additionalMessages.length === 0 && !isStreamingResponse && (
-          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4 mt-4">
+          <div className={`border rounded-xl p-4 mt-4 ${dark ? "bg-[#252525] border-white/10" : "bg-white border-gray-200"}`}>
             <div className="flex items-center gap-2 mb-3">
-              <OpportunIQLogo className="w-4 h-4 text-emerald-400" />
-              <span className="text-sm font-medium text-white">Cost Comparison</span>
+              <OpportunIQLogo className="w-4 h-4 text-blue-600" />
+              <span className={`text-sm font-medium ${dark ? "text-gray-200" : "text-gray-900"}`}>Cost Comparison</span>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div className={`p-3 rounded-lg border ${
-                hasDiyContent
-                  ? "bg-emerald-500/10 border-emerald-500/20"
-                  : "bg-[#0f0f0f] border-[#2a2a2a]"
-              }`}>
+              <div className={`p-3 rounded-lg border ${hasDiyContent ? "bg-blue-50 border-blue-200" : dark ? "bg-white/[0.04] border-white/10" : "bg-white border-gray-200"}`}>
                 <div className="flex items-center gap-2 mb-1">
-                  <IoHammerOutline className="w-4 h-4 text-emerald-400" />
-                  <span className="text-xs text-emerald-400">DIY Cost</span>
+                  <IoHammerOutline className="w-4 h-4 text-blue-600" />
+                  <span className="text-xs text-blue-600">DIY Cost</span>
                 </div>
-                <p className="text-lg font-bold text-emerald-400">
+                <p className="text-lg font-bold text-blue-600">
                   {issue.diyCost > 0 ? `$${issue.diyCost.toFixed(2)}` : "N/A"}
                 </p>
               </div>
-              <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+              <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="flex items-center gap-2 mb-1">
-                  <IoPeople className="w-4 h-4 text-blue-400" />
-                  <span className="text-xs text-blue-400">Pro Cost</span>
+                  <IoPeople className="w-4 h-4 text-blue-600" />
+                  <span className="text-xs text-blue-600">Pro Cost</span>
                 </div>
-                <p className="text-lg font-bold text-white">${issue.proCost.toFixed(0)}</p>
+                <p className={`text-lg font-bold ${dark ? "text-gray-200" : "text-gray-900"}`}>${issue.proCost.toFixed(0)}</p>
               </div>
             </div>
           </div>
@@ -474,11 +515,9 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
         <div ref={chatEndRef} />
       </div>
 
-      {/* Suggested Follow-ups + Chat Input */}
+      {/* Chat Input */}
       <div className="shrink-0">
-        {/* Chat Input with integrated suggestions */}
         <div className="p-4">
-          {/* Suggestion chips - horizontal layout above input */}
           {availableSuggestions.length > 0 && !isAnyStreaming && demoFlow?.diagnosisComplete && (
             <div className="flex flex-wrap gap-2 mb-2">
               {availableSuggestions.map((suggestion, idx) => (
@@ -486,7 +525,11 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
                   key={idx}
                   type="button"
                   onClick={() => handleSuggestionClick(suggestion)}
-                  className="px-3 py-1.5 text-xs text-[#999] bg-[#1a1a1a] border border-[#2a2a2a] rounded-full hover:border-emerald-500/40 hover:text-emerald-400 transition-colors"
+                  className={`px-3 py-1.5 text-xs rounded-full transition-colors border ${
+                    dark
+                      ? "text-gray-500 bg-transparent border-white/10 hover:border-blue-500/40 hover:text-blue-400"
+                      : "text-gray-400 bg-white border-gray-200 hover:border-blue-200 hover:text-blue-600"
+                  }`}
                 >
                   {suggestion}
                 </button>
@@ -494,7 +537,7 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
             </div>
           )}
 
-          <div className="bg-[#1a1a1a] rounded-2xl border border-[#2a2a2a] focus-within:border-emerald-500/50 transition-colors">
+          <div className={`rounded-2xl border focus-within:border-blue-500/50 transition-colors ${dark ? "bg-[#252525] border-white/10" : "bg-white border-gray-200"}`}>
             <textarea
               placeholder="Ask a follow-up question..."
               value={messageInput}
@@ -502,13 +545,13 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
               onKeyDown={handleKeyDown}
               disabled={isAnyStreaming}
               rows={1}
-              className="w-full px-4 py-3 bg-transparent text-sm text-white placeholder:text-[#555] focus:outline-none resize-none disabled:opacity-50"
+              className={`w-full px-4 py-3 bg-transparent text-sm focus:outline-none resize-none disabled:opacity-50 placeholder:text-gray-500 ${dark ? "text-gray-200" : "text-gray-900"}`}
             />
             <div className="flex items-center justify-between px-3 pb-3">
               <div className="flex items-center gap-1">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button type="button" className="p-2 text-[#555] hover:text-emerald-400 rounded-full hover:bg-emerald-500/10 transition-colors">
+                    <button type="button" className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors">
                       <IoCamera className="w-4 h-4" />
                     </button>
                   </TooltipTrigger>
@@ -516,7 +559,7 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button type="button" className="p-2 text-[#555] hover:text-emerald-400 rounded-full hover:bg-emerald-500/10 transition-colors">
+                    <button type="button" className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors">
                       <IoVideocam className="w-4 h-4" />
                     </button>
                   </TooltipTrigger>
@@ -524,7 +567,7 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button type="button" className="p-2 text-[#555] hover:text-emerald-400 rounded-full hover:bg-emerald-500/10 transition-colors">
+                    <button type="button" className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors">
                       <IoMic className="w-4 h-4" />
                     </button>
                   </TooltipTrigger>
@@ -532,7 +575,7 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button type="button" className="p-2 text-[#555] hover:text-emerald-400 rounded-full hover:bg-emerald-500/10 transition-colors">
+                    <button type="button" className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors">
                       <IoAttach className="w-4 h-4" />
                     </button>
                   </TooltipTrigger>
@@ -545,7 +588,7 @@ export function ChatArea({ issue, isCreatingNewIssue }: ChatAreaProps) {
                     type="button"
                     onClick={handleSend}
                     disabled={isAnyStreaming || !messageInput.trim()}
-                    className="p-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-600/50 disabled:cursor-not-allowed text-white rounded-full transition-colors"
+                    className="p-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/50 disabled:cursor-not-allowed text-white rounded-full transition-colors"
                   >
                     <IoSend className="w-4 h-4" />
                   </button>

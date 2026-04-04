@@ -29,12 +29,10 @@ export function createTutorialFinderTool(ctx: ToolContext) {
         ),
     }),
     execute: async ({ repairTask }) => {
-      console.log(`[findTutorial] Searching tutorials for: ${repairTask}`);
 
       const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(repairTask + " DIY how to")}`;
 
       if (!ctx.firecrawl) {
-        console.log(`[findTutorial] Firecrawl not available`);
         return {
           error: "Tutorial search not available",
           suggestion: `Search YouTube for "${repairTask} DIY tutorial"`,
@@ -55,9 +53,6 @@ export function createTutorialFinderTool(ctx: ToolContext) {
         );
 
         if (searchResults?.web?.length) {
-          console.log(
-            `[findTutorial] firecrawlSearch success, ${searchResults.web.length} results`
-          );
 
           const tutorials = searchResults.web.map((item) => ({
             title: "title" in item ? (item.title as string | undefined) : undefined,
@@ -79,7 +74,6 @@ export function createTutorialFinderTool(ctx: ToolContext) {
           };
         }
 
-        console.log(`[findTutorial] firecrawlSearch returned no results, falling back`);
       }
 
       // ── Fallback: scrape YouTube search results ────────────────────────────
@@ -87,7 +81,6 @@ export function createTutorialFinderTool(ctx: ToolContext) {
         const result = await scrapeWithTimeout(ctx.firecrawl, youtubeSearchUrl, 20000);
 
         if (result?.markdown) {
-          console.log(`[findTutorial] Fallback success, got ${result.markdown.length} chars`);
           return {
             searchQuery: repairTask,
             youtubeUrl: youtubeSearchUrl,
@@ -101,7 +94,6 @@ export function createTutorialFinderTool(ctx: ToolContext) {
           };
         }
 
-        console.log(`[findTutorial] Fallback failed or timed out`);
         Sentry.captureMessage("Tool returned error", {
           level: "warning",
           extra: { tool: "findTutorial", error: "Timed out or failed", repairTask },

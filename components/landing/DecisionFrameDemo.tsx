@@ -418,9 +418,9 @@ export function DecisionFrameDemo() {
       <div className="relative container mx-auto px-6 max-w-7xl">
         {/* Header */}
         <div className="demo-header text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-teal-500/30 bg-teal-500/10 mb-6">
-            <IoShield className="w-4 h-4 text-teal-400" />
-            <span className="text-sm font-medium text-teal-400">Live Risk Analysis Demo</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 mb-6">
+            <IoShield className="w-4 h-4 text-blue-400" />
+            <span className="text-sm font-medium text-blue-400">Live Risk Analysis Demo</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 tracking-tight">
             See Decision Frames in Action
@@ -441,7 +441,7 @@ export function DecisionFrameDemo() {
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-medium transition-all",
                 selectedScenario.id === scenario.id
-                  ? "bg-teal-500 text-black"
+                  ? "bg-blue-500 text-black"
                   : "bg-neutral-800 text-neutral-300 hover:bg-neutral-700"
               )}
             >
@@ -454,7 +454,7 @@ export function DecisionFrameDemo() {
             <div className="bg-neutral-900 rounded-2xl border border-neutral-800 overflow-hidden">
               <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <IoLocation className="w-4 h-4 text-teal-400" />
+                  <IoLocation className="w-4 h-4 text-blue-400" />
                   <span className="text-sm font-medium text-white">Location Context</span>
                 </div>
                 <span className="text-xs text-neutral-500">{selectedScenario.location.name}</span>
@@ -465,7 +465,7 @@ export function DecisionFrameDemo() {
             {/* Weather Card */}
             <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-4">
               <div className="flex items-center gap-2 mb-4">
-                <IoThermometer className="w-4 h-4 text-teal-400" />
+                <IoThermometer className="w-4 h-4 text-blue-400" />
                 <span className="text-sm font-medium text-white">Weather Conditions</span>
               </div>
               <div className="grid grid-cols-3 gap-4">
@@ -492,7 +492,7 @@ export function DecisionFrameDemo() {
             {analysisComplete && (
               <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-4">
                 <div className="flex items-center gap-2 mb-4">
-                  <IoHardwareChip className="w-4 h-4 text-teal-400" />
+                  <IoHardwareChip className="w-4 h-4 text-blue-400" />
                   <span className="text-sm font-medium text-white">Safety Equipment</span>
                 </div>
                 <div className="space-y-2">
@@ -524,20 +524,20 @@ export function DecisionFrameDemo() {
             <div className="bg-neutral-900 rounded-2xl border border-neutral-800 overflow-hidden">
               <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <IoWarning className="w-4 h-4 text-teal-400" />
+                  <IoWarning className="w-4 h-4 text-blue-400" />
                   <span className="text-sm font-medium text-white">Risk Analysis Stream</span>
                 </div>
                 {!isStreaming && !analysisComplete && (
                   <button
                     onClick={startStreaming}
-                    className="px-4 py-1.5 bg-teal-500 hover:bg-teal-400 text-black text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                    className="px-4 py-1.5 bg-blue-500 hover:bg-blue-400 text-black text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                   >
                     Start Analysis
                     <IoChevronForward className="w-4 h-4" />
                   </button>
                 )}
                 {isStreaming && (
-                  <div className="flex items-center gap-2 text-teal-400">
+                  <div className="flex items-center gap-2 text-blue-400">
                     <ImSpinner8 className="w-4 h-4 animate-spin" />
                     <span className="text-sm">Analyzing...</span>
                   </div>
@@ -555,13 +555,13 @@ export function DecisionFrameDemo() {
                 )}
                 {streamedText.map((text, i) => (
                   <div key={i} className="flex items-start gap-2 mb-2">
-                    <IoChevronForward className="w-4 h-4 text-teal-400 mt-0.5 shrink-0" />
+                    <IoChevronForward className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
                     <span className="text-neutral-300">{text}</span>
                   </div>
                 ))}
                 {isStreaming && (
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-4 bg-teal-400 animate-pulse" />
+                    <div className="w-2 h-4 bg-blue-400 animate-pulse" />
                   </div>
                 )}
               </div>
@@ -569,7 +569,7 @@ export function DecisionFrameDemo() {
             <div className="bg-neutral-900 rounded-2xl border border-neutral-800 overflow-hidden">
               <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <IoShield className="w-4 h-4 text-teal-400" />
+                  <IoShield className="w-4 h-4 text-blue-400" />
                   <span className="text-sm font-medium text-white">Risk Severity Matrix</span>
                 </div>
                 <div className="flex items-center gap-4 text-xs">
@@ -621,13 +621,13 @@ export function DecisionFrameDemo() {
                 </div>
                 <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-4">
                   <div className="flex items-center gap-2 mb-4">
-                    <IoTime className="w-4 h-4 text-teal-400" />
+                    <IoTime className="w-4 h-4 text-blue-400" />
                     <span className="text-sm font-medium text-white">Analysis Summary</span>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center p-3 rounded-lg bg-neutral-800">
                       <p className="text-xs text-neutral-500 mb-1">Time Estimate</p>
-                      <p className="text-lg font-semibold text-teal-400">{currentRiskData.timeEstimate}</p>
+                      <p className="text-lg font-semibold text-blue-400">{currentRiskData.timeEstimate}</p>
                     </div>
                     <div className="text-center p-3 rounded-lg bg-neutral-800">
                       <p className="text-xs text-neutral-500 mb-1">Confidence</p>

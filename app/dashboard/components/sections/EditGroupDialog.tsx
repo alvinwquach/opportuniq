@@ -82,19 +82,19 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {trigger || (
-          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#1f1f1f] hover:bg-[#2a2a2a] text-[#9a9a9a] hover:text-white text-sm transition-colors">
+          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-900 text-sm transition-colors">
             <IoSettings className="w-4 h-4" />
             Edit
           </button>
         )}
       </DialogTrigger>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] sm:max-w-md">
+      <DialogContent className="bg-white border-gray-200 sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center">
-              <IoPeople className="w-4 h-4 text-[#00D4FF]" />
+            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+              <IoPeople className="w-4 h-4 text-blue-600" />
             </div>
-            <DialogTitle className="text-white">Edit Group</DialogTitle>
+            <DialogTitle className="text-gray-900">Edit Group</DialogTitle>
           </div>
         </DialogHeader>
         <form
@@ -118,11 +118,11 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
             >
               {(field) => (
                 <div>
-                  <label className="text-xs text-[#9a9a9a] mb-1.5 block">
+                  <label className="text-xs text-gray-400 mb-1.5 block">
                     Group Name
                   </label>
                   <div className="relative">
-                    <IoPeople className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9a9a9a]" />
+                    <IoPeople className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="text"
                       placeholder="e.g., Johnson Family, Apartment 4B"
@@ -130,7 +130,7 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
                       onChange={(e) => field.handleChange(e.target.value)}
                       onBlur={field.handleBlur}
                       disabled={updateGroup.isPending}
-                      className="w-full h-10 pl-10 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#666] focus:outline-none focus:border-[#00D4FF]/50 transition-colors disabled:opacity-50"
+                      className="w-full h-10 pl-10 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 transition-colors disabled:opacity-50"
                       autoFocus
                     />
                   </div>
@@ -159,12 +159,12 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
             >
               {(field) => (
                 <div>
-                  <label className="text-xs text-[#9a9a9a] mb-1.5 block">
+                  <label className="text-xs text-gray-400 mb-1.5 block">
                     Postal Code{" "}
-                    <span className="text-[#666]">(optional)</span>
+                    <span className="text-gray-500">(optional)</span>
                   </label>
                   <div className="relative">
-                    <IoLocation className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9a9a9a]" />
+                    <IoLocation className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="text"
                       placeholder="e.g., 94102, SW1A 1AA, K1A 0B1"
@@ -173,7 +173,7 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
                       onBlur={field.handleBlur}
                       disabled={updateGroup.isPending}
                       maxLength={10}
-                      className="w-full h-10 pl-10 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#666] focus:outline-none focus:border-[#00D4FF]/50 transition-colors disabled:opacity-50"
+                      className="w-full h-10 pl-10 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 transition-colors disabled:opacity-50"
                     />
                   </div>
                   {field.state.meta.isTouched &&
@@ -182,7 +182,7 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
                         {field.state.meta.errors[0]}
                       </p>
                     )}
-                  <p className="text-[10px] text-[#666] mt-1">
+                  <p className="text-[10px] text-gray-500 mt-1">
                     Used to find nearby contractors and services
                   </p>
                 </div>
@@ -191,7 +191,7 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
             <form.Field name="defaultSearchRadius">
               {(field) => (
                 <div>
-                  <label className="text-xs text-[#9a9a9a] mb-1.5 block">
+                  <label className="text-xs text-gray-400 mb-1.5 block">
                     Search Radius: {field.state.value} miles
                   </label>
                   <input
@@ -204,9 +204,9 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
                       field.handleChange(parseInt(e.target.value))
                     }
                     disabled={updateGroup.isPending}
-                    className="w-full h-2 bg-[#2a2a2a] rounded-lg appearance-none cursor-pointer accent-[#00D4FF] disabled:opacity-50"
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#00D4FF] disabled:opacity-50"
                   />
-                  <div className="flex justify-between text-[10px] text-[#666] mt-1">
+                  <div className="flex justify-between text-[10px] text-gray-500 mt-1">
                     <span>5 mi</span>
                     <span>50 mi</span>
                     <span>100 mi</span>
@@ -228,7 +228,7 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
                 <button
                   type="submit"
                   disabled={!canSubmit || updateGroup.isPending || deleteGroup.isPending}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00D4FF] hover:bg-[#00D4FF]/90 disabled:bg-[#1f1f1f] disabled:text-[#9a9a9a] text-[#0c0c0c] font-medium text-sm transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-600/90 disabled:bg-gray-100 disabled:text-gray-400 text-white font-medium text-sm transition-colors"
                 >
                   {updateGroup.isPending ? (
                     <IoReload className="w-4 h-4 animate-spin" />
@@ -242,14 +242,14 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-white hover:bg-[#1f1f1f] text-sm transition-colors"
+              className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-gray-900 hover:bg-gray-100 text-sm transition-colors"
             >
               Cancel
             </button>
           </div>
         </form>
 
-        <div className="border-t border-[#1f1f1f] pt-4 mt-4">
+        <div className="border-t border-gray-200 pt-4 mt-4">
           {!showDeleteConfirm ? (
             <button
               type="button"
@@ -283,7 +283,7 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
                   type="button"
                   onClick={handleDelete}
                   disabled={deleteGroup.isPending}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 disabled:bg-red-500/50 text-white font-medium text-sm transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 disabled:bg-red-500/50 text-gray-900 font-medium text-sm transition-colors"
                 >
                   {deleteGroup.isPending ? (
                     <IoReload className="w-4 h-4 animate-spin" />
@@ -296,7 +296,7 @@ export function EditGroupDialog({ group, trigger }: EditGroupDialogProps) {
                   type="button"
                   onClick={() => setShowDeleteConfirm(false)}
                   disabled={deleteGroup.isPending}
-                  className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-white hover:bg-[#1f1f1f] text-sm transition-colors"
+                  className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-gray-900 hover:bg-gray-100 text-sm transition-colors"
                 >
                   Cancel
                 </button>

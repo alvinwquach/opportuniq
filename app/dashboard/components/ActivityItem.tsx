@@ -37,15 +37,15 @@ export function ActivityItem({ activity }: ActivityItemProps) {
 
   return (
     <div className="flex items-start gap-3">
-      <div className="w-6 h-6 rounded-md bg-[#1f1f1f] flex items-center justify-center shrink-0 mt-0.5">
+      <div className="w-6 h-6 rounded-md bg-gray-100 flex items-center justify-center shrink-0 mt-0.5">
         {getIcon()}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-white truncate">{activity.title}</p>
+        <p className="text-xs text-gray-900 truncate">{activity.title}</p>
         <div className="flex items-center gap-1.5 mt-0.5">
-          <span className="text-[10px] text-[#555]">{activity.groupName}</span>
+          <span className="text-[10px] text-gray-400">{activity.groupName}</span>
           <span className="text-[10px] text-[#333]">·</span>
-          <span className="text-[10px] text-[#555]">{getTimeAgo(activity.timestamp)}</span>
+          <span className="text-[10px] text-gray-400">{getTimeAgo(activity.timestamp)}</span>
         </div>
       </div>
     </div>

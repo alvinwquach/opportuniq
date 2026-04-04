@@ -53,7 +53,6 @@ export async function getUserGroups() {
 
     return { success: true, groups: userGroups };
   } catch (error) {
-    console.error("[Groups] getUserGroups error:", error);
     return { success: false, error: "Failed to fetch groups" };
   }
 }
@@ -124,7 +123,6 @@ export async function createGroup(data: CreateGroupFormValues) {
       membership: result.membership,
     };
   } catch (error) {
-    console.error("[Groups] createGroup error:", error);
     return { success: false, error: "Failed to create group" };
   }
 }
@@ -237,7 +235,7 @@ export async function updateGroup(groupId: string, data: UpdateGroupFormValues) 
             updatedBy: updaterName,
             changes,
             groupUrl,
-          }).catch((err) => console.error("[Groups] Failed to send update email:", err));
+          }).catch(() => {});
         }
       }
     }
@@ -251,7 +249,6 @@ export async function updateGroup(groupId: string, data: UpdateGroupFormValues) 
       changes,
     };
   } catch (error) {
-    console.error("[Groups] updateGroup error:", error);
     return { success: false, error: "Failed to update group" };
   }
 }
@@ -331,7 +328,7 @@ export async function deleteGroup(groupId: string) {
           groupName,
           deletedBy: deleterName,
           dashboardUrl,
-        }).catch((err) => console.error("[Groups] Failed to send delete email:", err));
+        }).catch(() => {});
       }
     }
 
@@ -340,7 +337,6 @@ export async function deleteGroup(groupId: string) {
 
     return { success: true, memberCount };
   } catch (error) {
-    console.error("[Groups] deleteGroup error:", error);
     return { success: false, error: "Failed to delete group" };
   }
 }
@@ -480,7 +476,6 @@ export async function getGroupDetails(groupId: string) {
       pendingInvitations,
     };
   } catch (error) {
-    console.error("[Groups] getGroupDetails error:", error);
     return { success: false, error: "Failed to fetch group details" };
   }
 }

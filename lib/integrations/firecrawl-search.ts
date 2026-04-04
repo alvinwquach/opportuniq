@@ -55,7 +55,6 @@ export async function firecrawlSearch(
       } as Parameters<FirecrawlApp["search"]>[1]),
       new Promise<null>((resolve) => {
         setTimeout(() => {
-          console.log(`[firecrawlSearch] Timeout after ${timeoutMs}ms for "${query}"`);
           resolve(null);
         }, timeoutMs);
       }),

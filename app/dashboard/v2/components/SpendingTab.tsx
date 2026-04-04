@@ -27,10 +27,10 @@ export function SpendingTab({ data }: SpendingTabProps) {
 
   if (!hasSpendingData) {
     return (
-      <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-6 text-center">
-        <IoWalletOutline className="w-12 h-12 mx-auto mb-3 text-emerald-400/50" />
-        <h3 className="text-sm font-medium text-white mb-1">No Spending Data Yet</h3>
-        <p className="text-xs text-[#888]">
+      <div className="bg-gray-100 rounded-lg border border-gray-200 p-6 text-center">
+        <IoWalletOutline className="w-12 h-12 mx-auto mb-3 text-blue-600/50" />
+        <h3 className="text-sm font-medium text-gray-900 mb-1">No Spending Data Yet</h3>
+        <p className="text-xs text-gray-500">
           Start tracking expenses to see your spending breakdown and savings over time.
         </p>
       </div>
@@ -41,12 +41,12 @@ export function SpendingTab({ data }: SpendingTabProps) {
     <>
       {/* Spending by Category Chart */}
       {budgetCategories.length > 0 && (
-        <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3 sm:p-4">
+        <div className="bg-gray-100 rounded-lg border border-gray-200 p-3 sm:p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xs sm:text-sm font-medium text-white">
               Spending by Category
             </h3>
-            <button className="p-1 text-[#666] hover:text-white transition-colors">
+            <button className="p-1 text-gray-500 hover:text-gray-900 transition-colors">
               <IoDownloadOutline className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
@@ -93,18 +93,18 @@ export function SpendingTab({ data }: SpendingTabProps) {
 
       {/* Savings Over Time Chart */}
       {savingsOverTime.length > 0 && (
-        <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3 sm:p-4">
+        <div className="bg-gray-100 rounded-lg border border-gray-200 p-3 sm:p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xs sm:text-sm font-medium text-white">
               Savings Over Time
             </h3>
             <div className="flex items-center gap-2 sm:gap-3 text-[9px] sm:text-[10px]">
-              <span className="flex items-center gap-1 text-[#888]">
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500" />
+              <span className="flex items-center gap-1 text-gray-500">
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-500" />
                 Total
               </span>
-              <span className="flex items-center gap-1 text-[#888]">
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-600" />
+              <span className="flex items-center gap-1 text-gray-500">
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-600" />
                 DIY
               </span>
             </div>
@@ -117,8 +117,8 @@ export function SpendingTab({ data }: SpendingTabProps) {
               >
                 <defs>
                   <linearGradient id="savingsGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3ECF8E" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#3ECF8E" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#2563EB" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#2563EB" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis
@@ -147,7 +147,7 @@ export function SpendingTab({ data }: SpendingTabProps) {
                 <Area
                   type="monotone"
                   dataKey="savings"
-                  stroke="#3ECF8E"
+                  stroke="#2563EB"
                   strokeWidth={2}
                   fill="url(#savingsGradient)"
                 />
@@ -165,32 +165,32 @@ export function SpendingTab({ data }: SpendingTabProps) {
       )}
 
       {/* Monthly Summary Card */}
-      <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3 sm:p-4">
-        <h3 className="text-xs sm:text-sm font-medium text-white mb-3">
+      <div className="bg-gray-100 rounded-lg border border-gray-200 p-3 sm:p-4">
+        <h3 className="text-xs sm:text-sm font-medium text-gray-900 mb-3">
           Monthly Summary
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="p-2.5 rounded-lg bg-[#0f0f0f] border border-[#2a2a2a]">
-            <p className="text-[10px] text-[#888] mb-1">Income</p>
+          <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200">
+            <p className="text-[10px] text-gray-500 mb-1">Income</p>
             <p className="text-sm sm:text-base font-semibold text-white">
               ${financials.monthlyIncome.toLocaleString()}
             </p>
           </div>
-          <div className="p-2.5 rounded-lg bg-[#0f0f0f] border border-[#2a2a2a]">
-            <p className="text-[10px] text-[#888] mb-1">Spent</p>
+          <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200">
+            <p className="text-[10px] text-gray-500 mb-1">Spent</p>
             <p className="text-sm sm:text-base font-semibold text-white">
               ${financials.totalSpent.toLocaleString()}
             </p>
           </div>
-          <div className="p-2.5 rounded-lg bg-[#0f0f0f] border border-[#2a2a2a]">
-            <p className="text-[10px] text-[#888] mb-1">Budget</p>
+          <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200">
+            <p className="text-[10px] text-gray-500 mb-1">Budget</p>
             <p className="text-sm sm:text-base font-semibold text-white">
               ${financials.totalBudget.toLocaleString()}
             </p>
           </div>
-          <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-            <p className="text-[10px] text-emerald-400 mb-1">Remaining</p>
-            <p className="text-sm sm:text-base font-semibold text-emerald-400">
+          <div className="p-2.5 rounded-lg bg-blue-50 border border-blue-500/20">
+            <p className="text-[10px] text-blue-600 mb-1">Remaining</p>
+            <p className="text-sm sm:text-base font-semibold text-blue-600">
               ${financials.remaining.toLocaleString()}
             </p>
           </div>

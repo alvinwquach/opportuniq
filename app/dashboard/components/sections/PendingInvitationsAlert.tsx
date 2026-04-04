@@ -22,10 +22,10 @@ export function PendingInvitationsAlert({ pendingGroups }: PendingInvitationsAle
           <IoPeople className="h-4 w-4 text-amber-400" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm text-white font-medium">
+          <p className="text-sm text-gray-900 font-medium">
             {pendingGroups.length} pending invitation{pendingGroups.length > 1 ? "s" : ""}
           </p>
-          <p className="text-xs text-[#9a9a9a]">
+          <p className="text-xs text-gray-400">
             {pendingGroups.map((g) => g.group.name).join(", ")}
           </p>
         </div>

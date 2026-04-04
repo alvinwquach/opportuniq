@@ -100,21 +100,21 @@ export default function PartsFinderPage() {
         <div className="max-w-4xl mx-auto text-center">
           {/* Breadcrumb */}
           <nav className="flex items-center justify-center gap-2 text-sm text-neutral-500 mb-6">
-            <Link href="/product" className="hover:text-teal-400 transition-colors">
+            <Link href="/product" className="hover:text-blue-400 transition-colors">
               Product
             </Link>
             <IoChevronForward className="w-3 h-3" />
             <span className="text-neutral-300">Parts Finder</span>
           </nav>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-500/40 text-teal-400 text-xs font-mono mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-400 text-xs font-mono mb-6">
             <IoCartOutline className="w-4 h-4" />
             Parts Finder
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             Find parts{" "}
-            <span className="text-teal-400">
+            <span className="text-blue-400">
               at the best price
             </span>
           </h1>
@@ -125,7 +125,7 @@ export default function PartsFinderPage() {
           </p>
 
           <WaitlistModal>
-            <Button className="h-12 px-8 font-mono font-bold bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
+            <Button className="h-12 px-8 font-mono font-bold bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
               Get Early Access
             </Button>
           </WaitlistModal>
@@ -138,7 +138,7 @@ export default function PartsFinderPage() {
           <div className="grid md:grid-cols-2 gap-8">
             {FEATURES.map((feature, i) => (
               <div key={i} className="p-6 rounded-xl bg-neutral-900 border border-neutral-700">
-                <div className="w-12 h-12 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 mb-4">
+                <div className="w-12 h-12 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 mb-4">
                   <feature.icon className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
@@ -174,7 +174,7 @@ export default function PartsFinderPage() {
               <ul className="space-y-3">
                 {BENEFITS.slice(0, 4).map((benefit, i) => (
                   <li key={i} className="flex items-center gap-3 text-neutral-300">
-                    <IoCheckmarkCircle className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                    <IoCheckmarkCircle className="w-5 h-5 text-blue-400 flex-shrink-0" />
                     {benefit}
                   </li>
                 ))}
@@ -184,7 +184,7 @@ export default function PartsFinderPage() {
             <div className="bg-neutral-950/80 rounded-xl border border-neutral-800 p-4">
               <div className="flex items-center justify-between mb-4 px-2">
                 <span className="text-sm font-medium text-neutral-400">Parts for: Kitchen Faucet Repair</span>
-                <span className="text-xs text-teal-400">${totalCost.toFixed(2)} total</span>
+                <span className="text-xs text-blue-400">${totalCost.toFixed(2)} total</span>
               </div>
               <div className="space-y-2">
                 {SAMPLE_PARTS.map((part, i) => (
@@ -219,7 +219,7 @@ export default function PartsFinderPage() {
                       </div>
                     </div>
                     {part.inStock && (
-                      <button className="w-full mt-2 py-1.5 text-xs text-teal-400 hover:text-teal-300 border border-teal-500/30 hover:border-teal-500/50 rounded-lg transition-colors flex items-center justify-center gap-1">
+                      <button className="w-full mt-2 py-1.5 text-xs text-blue-400 hover:text-blue-300 border border-blue-500/30 hover:border-blue-500/50 rounded-lg transition-colors flex items-center justify-center gap-1">
                         <IoOpenOutline className="w-3 h-3" />
                         View at {part.store}
                       </button>
@@ -243,7 +243,7 @@ export default function PartsFinderPage() {
               { value: "1-click", label: "To store cart" },
             ].map((stat, i) => (
               <div key={i}>
-                <p className="text-3xl font-bold text-teal-400 mb-1">{stat.value}</p>
+                <p className="text-3xl font-bold text-blue-400 mb-1">{stat.value}</p>
                 <p className="text-sm text-neutral-400">{stat.label}</p>
               </div>
             ))}
@@ -261,7 +261,7 @@ export default function PartsFinderPage() {
             Join the waitlist and get the right parts, at the right price, the first time.
           </p>
           <WaitlistModal>
-            <Button className="h-14 px-8 font-mono font-bold text-lg bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
+            <Button className="h-14 px-8 font-mono font-bold text-lg bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
               Join the Waitlist
             </Button>
           </WaitlistModal>

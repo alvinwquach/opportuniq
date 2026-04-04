@@ -228,7 +228,6 @@ export function GroupsClient() {
       // Invalidate the groups cache so TanStack Query re-fetches the updated list.
       queryClient.invalidateQueries({ queryKey: queryKeys.groups.pageData() });
     } catch (error) {
-      console.error("Failed to create group:", error);
     }
   };
 
@@ -250,7 +249,6 @@ export function GroupsClient() {
       setShowInviteModal(false);
       queryClient.invalidateQueries({ queryKey: queryKeys.groups.pageData() });
     } catch (error) {
-      console.error("Failed to invite member:", error);
     }
   };
 
@@ -276,7 +274,6 @@ export function GroupsClient() {
       setShowSettingsModal(false);
       queryClient.invalidateQueries({ queryKey: queryKeys.groups.pageData() });
     } catch (error) {
-      console.error("Failed to update group:", error);
     }
   };
 
@@ -284,7 +281,6 @@ export function GroupsClient() {
   // A real deleteGroup mutation would be called here; for now it just logs and closes.
   const handleDeleteGroup = () => {
     // Would need a deleteGroup mutation
-    console.log("Delete group:", selectedGroupId);
     setShowSettingsModal(false);
   };
 
@@ -309,7 +305,6 @@ export function GroupsClient() {
       setShowRoleModal(null);
       queryClient.invalidateQueries({ queryKey: queryKeys.groups.pageData() });
     } catch (error) {
-      console.error("Failed to update role:", error);
     }
   };
 
@@ -325,7 +320,6 @@ export function GroupsClient() {
       });
       queryClient.invalidateQueries({ queryKey: queryKeys.groups.pageData() });
     } catch (error) {
-      console.error("Failed to remove member:", error);
     }
   };
 
@@ -337,11 +331,11 @@ export function GroupsClient() {
   // Guard: if the request failed, show a centered error message.
   if (error) {
     return (
-      <div className="min-h-[calc(100vh-48px)] bg-[#0f0f0f] flex items-center justify-center">
+      <div className="min-h-[calc(100vh-48px)] bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-400 mb-2">Error loading groups</p>
           {/* Show the specific server error message so the user (or developer) knows why. */}
-          <p className="text-sm text-[#666]">{error.message}</p>
+          <p className="text-sm text-gray-500">{error.message}</p>
         </div>
       </div>
     );
@@ -372,7 +366,7 @@ export function GroupsClient() {
   return (
     <>
       {/* Full-height flex layout: sidebar on the left, detail panel on the right. */}
-      <div className="flex min-h-[calc(100vh-48px)] bg-[#0f0f0f]">
+      <div className="flex min-h-[calc(100vh-48px)] bg-gray-50">
         {/* Left sidebar: scrollable list of group cards and the "New" button.
             Passes totalSavings so the sidebar can show an aggregate savings badge. */}
         <GroupsSidebar
@@ -400,18 +394,18 @@ export function GroupsClient() {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center max-w-sm">
               {/* Large icon to visually represent the empty state. */}
-              <div className="w-16 h-16 rounded-2xl bg-[#1a1a1a] border border-[#2a2a2a] flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center mx-auto mb-4">
                 <IoPeople className="w-8 h-8 text-[#444]" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">No Group Selected</h3>
-              <p className="text-sm text-[#666] mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Group Selected</h3>
+              <p className="text-sm text-gray-500 mb-4">
                 Select a group from the sidebar to view members, budget, and activity, or create a new
                 group to get started.
               </p>
               {/* CTA button opens the same "Create New Group" modal as the sidebar button. */}
               <button
                 onClick={() => setShowNewGroupModal(true)}
-                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-900 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors"
               >
                 <IoAddOutline className="w-4 h-4" />
                 Create New Group

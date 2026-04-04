@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger, splitTextIntoWords } from "@/lib/gsap";
+import { gsap, ScrollTrigger, SplitText } from "@/lib/gsap";
 import {
   IoCamera,
   IoPricetag,
@@ -84,8 +84,8 @@ export function FeaturesSection() {
     const ctx = gsap.context(() => {
       // Word-by-word reveal for heading
       if (titleRef.current) {
-        const words = splitTextIntoWords(titleRef.current);
-        gsap.from(words, {
+        const split = new SplitText(titleRef.current, { type: "words" });
+        gsap.from(split.words, {
           opacity: 0,
           y: 20,
           rotateX: -90,

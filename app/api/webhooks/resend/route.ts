@@ -87,7 +87,6 @@ interface ResendWebhookEvent {
 export async function POST(req: Request) {
   const secret = process.env.RESEND_WEBHOOK_SECRET;
   if (!secret) {
-    console.error("[Resend Webhook] RESEND_WEBHOOK_SECRET not configured");
     return NextResponse.json(
       { error: "Webhook secret not configured" },
       { status: 500 }
@@ -206,7 +205,6 @@ export async function POST(req: Request) {
 
     default: {
       // Unknown event type — log and return 200 so Resend doesn't retry
-      console.log(`[Resend Webhook] Unknown event type: ${type}`);
     }
   }
 

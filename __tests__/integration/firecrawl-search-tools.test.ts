@@ -71,9 +71,8 @@ jest.mock("ai", () => ({
 }));
 
 import FirecrawlApp from "@mendable/firecrawl-js";
-import { createPermitLookupTool } from "@/app/api/chat/tools/permit-lookup";
+import { createLocalLookupTool } from "@/app/api/chat/tools/local-lookup";
 import { createRedditSearchTool } from "@/app/api/chat/tools/reddit-search";
-import { createUtilityRebatesTool } from "@/app/api/chat/tools/utility-rebates";
 import type { ToolContext } from "@/app/api/chat/tools/types";
 
 const firecrawl = new FirecrawlApp({ apiKey: "test" });
@@ -100,10 +99,10 @@ describe("permit lookup full flow", () => {
       ],
     });
 
-    const toolDef = createPermitLookupTool(ctx) as unknown as {
-      execute: (args: { projectType: string; city: string; state: string }) => Promise<unknown>;
+    const toolDef = createLocalLookupTool(ctx) as unknown as {
+      execute: (args: { mode: "permits" | "rebates"; projectType?: string; city?: string; state?: string }) => Promise<unknown>;
     };
-    const result = await toolDef.execute({ projectType: "deck construction", city: "Austin", state: "TX" }) as {
+    const result = await toolDef.execute({ mode: "permits", projectType: "deck construction", city: "Austin", state: "TX" }) as {
       projectType: string;
       location: string;
       searchResults: Array<{ url: string; title?: string }>;
@@ -112,7 +111,7 @@ describe("permit lookup full flow", () => {
     };
 
     expect(result.projectType).toBe("deck construction");
-    expect(result.location).toBe("Austin, TX");
+    expect(result.location).toBe("Austin TX");
     expect(Array.isArray(result.searchResults)).toBe(true);
     expect(result.searchResults).toHaveLength(2);
     expect(result.searchResults[0].url).toBe("https://austin.gov/permits");
@@ -125,10 +124,10 @@ describe("permit lookup full flow", () => {
     mockSearch.mockRejectedValue(new Error("timeout")); // causes firecrawlSearch to return null
     mockScrape.mockResolvedValue({ markdown: "Google search results about permits in Austin TX" });
 
-    const toolDef = createPermitLookupTool(ctx) as unknown as {
-      execute: (args: { projectType: string; city: string; state: string }) => Promise<unknown>;
+    const toolDef = createLocalLookupTool(ctx) as unknown as {
+      execute: (args: { mode: "permits" | "rebates"; projectType?: string; city?: string; state?: string }) => Promise<unknown>;
     };
-    const result = await toolDef.execute({ projectType: "electrical", city: "Austin", state: "TX" }) as {
+    const result = await toolDef.execute({ mode: "permits", projectType: "electrical", city: "Austin", state: "TX" }) as {
       projectType: string;
       searchResults: string;
     };
@@ -182,10 +181,10 @@ describe("utility rebates full flow", () => {
       ],
     });
 
-    const toolDef = createUtilityRebatesTool(ctx) as unknown as {
-      execute: (args: { upgradeType: string; zipCode: string }) => Promise<unknown>;
+    const toolDef = createLocalLookupTool(ctx) as unknown as {
+      execute: (args: { mode: "permits" | "rebates"; upgradeType?: string; zipCode?: string }) => Promise<unknown>;
     };
-    const result = await toolDef.execute({ upgradeType: "heat pump water heater", zipCode: "94102" }) as {
+    const result = await toolDef.execute({ mode: "rebates", upgradeType: "heat pump water heater", zipCode: "94102" }) as {
       upgradeType: string;
       zipCode: string;
       searchResults: Array<{ url: string }>;

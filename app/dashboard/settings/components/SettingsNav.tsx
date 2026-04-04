@@ -147,14 +147,14 @@ export function SettingsNav() {
             className={cn(
               "flex items-center gap-4 p-4 rounded-xl border transition-all",
               isActive
-                ? "bg-[#1a1a1a] border-[#333] shadow-lg"
-                : "bg-[#111] border-[#1f1f1f] hover:bg-[#161616] hover:border-[#2a2a2a]"
+                ? "bg-gray-100 border-[#333] shadow-lg"
+                : "bg-white border-gray-200 hover:bg-gray-50 hover:border-gray-200"
             )}
           >
             <div
               className={cn(
                 "w-10 h-10 rounded-lg flex items-center justify-center",
-                isActive ? "bg-[#00D4FF]/10 text-[#00D4FF]" : "bg-[#1f1f1f] text-[#666]"
+                isActive ? "bg-blue-50 text-blue-600" : "bg-gray-100 text-gray-500"
               )}
             >
               {link.icon}
@@ -163,17 +163,17 @@ export function SettingsNav() {
               <h3
                 className={cn(
                   "text-sm font-medium",
-                  isActive ? "text-white" : "text-[#ccc]"
+                  isActive ? "text-gray-900" : "text-[#ccc]"
                 )}
               >
                 {link.title}
               </h3>
-              <p className="text-xs text-[#666] mt-0.5">{link.description}</p>
+              <p className="text-xs text-gray-500 mt-0.5">{link.description}</p>
             </div>
             <svg
               className={cn(
                 "w-5 h-5 transition-colors",
-                isActive ? "text-[#00D4FF]" : "text-[#444]"
+                isActive ? "text-blue-600" : "text-[#444]"
               )}
               fill="none"
               viewBox="0 0 24 24"

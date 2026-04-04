@@ -77,7 +77,6 @@ export function EmailDraftCard({
           setGmailStatus(data);
         }
       } catch (error) {
-        console.error("Failed to check Gmail status:", error);
       } finally {
         setIsLoadingGmail(false);
       }
@@ -110,7 +109,6 @@ export function EmailDraftCard({
         contractorName: contractor.name,
       });
     } catch (err) {
-      console.error("Failed to copy:", err);
     }
   };
 
@@ -176,7 +174,6 @@ export function EmailDraftCard({
         }
       }
     } catch (error) {
-      console.error("Failed to send email:", error);
       setSendStatus("error");
       trackEmailSendFailed({
         conversationId,

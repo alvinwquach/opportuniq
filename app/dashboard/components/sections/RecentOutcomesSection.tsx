@@ -19,16 +19,16 @@ export function RecentOutcomesSection({ outcomes }: RecentOutcomesSectionProps) 
   if (outcomes.length === 0) return null;
 
   return (
-    <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+    <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
       <div className="flex items-center gap-2 mb-3">
         <IoLocate className="w-4 h-4 text-green-400" />
         <h3 className="text-sm font-medium text-white">Recent Outcomes</h3>
       </div>
       <div className="space-y-3">
         {outcomes.slice(0, 3).map((outcome, index) => (
-          <div key={index} className="p-2.5 -mx-1 rounded-lg bg-[#1a1a1a]">
+          <div key={index} className="p-2.5 -mx-1 rounded-lg bg-gray-100">
             <div className="flex items-center justify-between mb-1">
-              <p className="text-xs text-white truncate flex-1">{outcome.issueTitle}</p>
+              <p className="text-xs text-gray-900 truncate flex-1">{outcome.issueTitle}</p>
               {outcome.success ? (
                 <IoCheckmarkCircle className="w-3.5 h-3.5 text-green-400 flex-shrink-0 ml-2" />
               ) : (
@@ -39,10 +39,10 @@ export function RecentOutcomesSection({ outcomes }: RecentOutcomesSectionProps) 
               <span
                 className={`px-1.5 py-0.5 rounded ${
                   outcome.optionType === "diy"
-                    ? "bg-[#00D4FF]/10 text-[#00D4FF]"
+                    ? "bg-blue-50 text-blue-600"
                     : outcome.optionType === "hire"
                     ? "bg-purple-500/10 text-purple-400"
-                    : "bg-[#1f1f1f] text-[#9a9a9a]"
+                    : "bg-gray-100 text-gray-400"
                 }`}
               >
                 {outcome.optionType.toUpperCase()}

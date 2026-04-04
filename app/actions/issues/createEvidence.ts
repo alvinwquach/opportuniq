@@ -53,7 +53,6 @@ export async function createEvidenceEncrypted(
 
     return { success: true, evidenceId: evidence.id };
   } catch (error) {
-    console.error("[Create Evidence] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to create evidence",
@@ -96,7 +95,6 @@ export async function createEvidencePlaintext(
 
     return { success: true, evidenceId: evidence.id };
   } catch (error) {
-    console.error("[Create Evidence] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to create evidence",

@@ -124,7 +124,6 @@ export function LocationMap({
           });
         }
       } catch (err) {
-        console.error("Server-side geocoding failed:", err);
       }
     });
   }, [postalCode, userId, latitude, longitude]);
@@ -357,12 +356,12 @@ export function LocationMap({
     return (
       <div
         className={cn(
-          "rounded-lg bg-[#161616] border border-[#1f1f1f] flex flex-col items-center justify-center p-6",
+          "rounded-lg bg-gray-50 border border-gray-200 flex flex-col items-center justify-center p-6",
           className
         )}
       >
         <IoLocation className="w-8 h-8 text-[#333] mb-2" />
-        <p className="text-sm text-[#555] text-center">{error}</p>
+        <p className="text-sm text-gray-400 text-center">{error}</p>
         {postalCode && (
           <p className="text-[11px] text-[#444] mt-1">Location: {postalCode}</p>
         )}
@@ -378,20 +377,20 @@ export function LocationMap({
 
       {/* Skeleton placeholder while map initializes - no spinner */}
       {loading && (
-        <div className="absolute inset-0 bg-[#161616]" />
+        <div className="absolute inset-0 bg-gray-50" />
       )}
 
       {/* New user empty state overlay */}
       {!loading && isNewUser && !hasVendorsOrStores && (
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <div className="bg-[#0c0c0c]/90 backdrop-blur-sm rounded-xl p-4 mx-4 text-center border border-[#1f1f1f]">
-            <div className="w-10 h-10 rounded-full bg-[#00F0FF]/10 flex items-center justify-center mx-auto mb-3">
+          <div className="bg-gray-50/90 backdrop-blur-sm rounded-xl p-4 mx-4 text-center border border-gray-200">
+            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-3">
               <IoSearch className="w-5 h-5 text-[#00F0FF]" />
             </div>
-            <p className="text-sm text-white font-medium mb-1">
+            <p className="text-sm text-gray-900 font-medium mb-1">
               {searchRadius} mile search radius
             </p>
-            <p className="text-xs text-[#666] max-w-[200px]">
+            <p className="text-xs text-gray-500 max-w-[200px]">
               {emptyStateMessage || "Report an issue to discover nearby contractors & stores"}
             </p>
           </div>
@@ -400,7 +399,7 @@ export function LocationMap({
 
       {/* Location badge */}
       {postalCode && !loading && (
-        <div className="absolute bottom-2 left-2 flex items-center gap-1.5 px-2 py-1 rounded bg-[#0c0c0c]/80 backdrop-blur-sm border border-[#1f1f1f]">
+        <div className="absolute bottom-2 left-2 flex items-center gap-1.5 px-2 py-1 rounded bg-gray-50/80 backdrop-blur-sm border border-gray-200">
           <IoLocation className="w-3 h-3 text-[#00F0FF]" />
           <span className="text-[11px] text-white">{postalCode}</span>
         </div>
@@ -410,13 +409,13 @@ export function LocationMap({
       {!loading && hasVendorsOrStores && (
         <div className="absolute top-2 left-2 flex flex-col gap-1">
           {vendors.length > 0 && (
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-[#0c0c0c]/80 backdrop-blur-sm border border-[#1f1f1f]">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-gray-50/80 backdrop-blur-sm border border-gray-200">
               <div className="w-3 h-3 rounded-full bg-purple-500" />
               <span className="text-[10px] text-white">{vendors.length} Vendors</span>
             </div>
           )}
           {stores.length > 0 && (
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-[#0c0c0c]/80 backdrop-blur-sm border border-[#1f1f1f]">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-gray-50/80 backdrop-blur-sm border border-gray-200">
               <div className="w-3 h-3 rounded-full bg-orange-500" />
               <span className="text-[10px] text-white">{stores.length} Stores</span>
             </div>
@@ -430,7 +429,7 @@ export function LocationMap({
           href={`https://www.google.com/maps?q=${latitude},${longitude}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="absolute bottom-2 right-2 flex items-center gap-1.5 px-2 py-1 rounded bg-[#0c0c0c]/80 backdrop-blur-sm border border-[#1f1f1f] text-[#888] hover:text-white transition-colors"
+          className="absolute bottom-2 right-2 flex items-center gap-1.5 px-2 py-1 rounded bg-gray-50/80 backdrop-blur-sm border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors"
         >
           <IoNavigate className="w-3 h-3" />
           <span className="text-[11px]">Open</span>
@@ -457,7 +456,7 @@ export function LocationMapMini({
   }
 
   return (
-    <div className="flex items-center gap-1.5 text-[#666]">
+    <div className="flex items-center gap-1.5 text-gray-500">
       <IoLocation className="w-3.5 h-3.5 text-[#00F0FF]" />
       <span className="text-[11px]">{postalCode || "Location set"}</span>
     </div>

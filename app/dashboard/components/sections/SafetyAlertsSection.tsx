@@ -33,14 +33,14 @@ export function SafetyAlertsSection({ alerts }: SafetyAlertsSectionProps) {
           >
             <IoWarning className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-white group-hover:text-red-300 transition-colors truncate">
+              <p className="text-sm text-gray-900 group-hover:text-red-300 transition-colors truncate">
                 {alert.title}
               </p>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 uppercase">
                   {alert.severity}
                 </span>
-                <span className="text-[10px] text-[#9a9a9a]">{alert.groupName}</span>
+                <span className="text-[10px] text-gray-400">{alert.groupName}</span>
               </div>
               {alert.emergencyInstructions && (
                 <p className="text-[10px] text-red-400/80 mt-1.5 line-clamp-2">

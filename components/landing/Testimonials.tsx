@@ -113,9 +113,9 @@ export function Testimonials() {
     >
       <div className="container mx-auto px-6 max-w-6xl">
         <div className="testimonials-header text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 mb-6">
-            <IoCheckmarkCircle className="w-4 h-4 text-teal-600" />
-            <span className="text-sm font-medium text-teal-700">Trusted by Decision Makers</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 mb-6">
+            <IoCheckmarkCircle className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-medium text-blue-700">Trusted by Decision Makers</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-neutral-900 mb-4 tracking-tight">
             Real People, Real Insights
@@ -128,9 +128,9 @@ export function Testimonials() {
           {TESTIMONIALS.map((testimonial, index) => (
             <div
               key={index}
-              className="testimonial-card bg-white rounded-2xl border border-neutral-200 p-6 shadow-sm hover:shadow-md hover:border-teal-200 transition-all duration-300"
+              className="testimonial-card bg-white rounded-2xl border border-neutral-200 p-6 shadow-sm hover:shadow-md hover:border-blue-200 transition-all duration-300"
             >
-              <IoChatbox className="w-8 h-8 text-teal-500/20 mb-4" />
+              <IoChatbox className="w-8 h-8 text-blue-500/20 mb-4" />
               <div className="flex items-center gap-0.5 mb-4">
                 {Array.from({ length: testimonial.rating }).map((_, i) => (
                   <IoStar key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
@@ -149,7 +149,7 @@ export function Testimonials() {
                   </p>
                 </div>
                 {testimonial.highlight && (
-                  <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-teal-50 text-teal-700 border border-teal-200">
+                  <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-700 border border-blue-200">
                     {testimonial.highlight}
                   </span>
                 )}
@@ -165,7 +165,7 @@ export function Testimonials() {
             { value: "15+", label: "Risk Categories" },
           ].map((stat, i) => (
             <div key={i} className="text-center p-4 rounded-xl bg-neutral-50 border border-neutral-200">
-              <p className="text-2xl font-bold text-teal-600 mb-1">{stat.value}</p>
+              <p className="text-2xl font-bold text-blue-600 mb-1">{stat.value}</p>
               <p className="text-sm text-neutral-500">{stat.label}</p>
             </div>
           ))}

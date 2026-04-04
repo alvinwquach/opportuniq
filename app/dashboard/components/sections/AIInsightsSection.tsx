@@ -18,14 +18,14 @@ export function AIInsightsSection({ insights }: AIInsightsSectionProps) {
   if (insights.length === 0) return null;
 
   return (
-    <section className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+    <section className="p-4 rounded-xl bg-gray-50 border border-gray-200">
       <div className="flex items-center gap-2 mb-3">
         <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
           <IoBulb className="w-4 h-4 text-purple-400" />
         </div>
         <div>
           <h2 className="text-sm font-medium text-white">AI Insights</h2>
-          <p className="text-[10px] text-[#9a9a9a]">Patterns from your decisions</p>
+          <p className="text-[10px] text-gray-400">Patterns from your decisions</p>
         </div>
       </div>
       <div className="grid sm:grid-cols-2 gap-3">
@@ -38,7 +38,7 @@ export function AIInsightsSection({ insights }: AIInsightsSectionProps) {
                 ? "bg-green-500/5 border border-green-500/20"
                 : insight.trend === "declining"
                 ? "bg-amber-500/5 border border-amber-500/20"
-                : "bg-[#1a1a1a] border border-[#2a2a2a]"
+                : "bg-gray-100 border border-gray-200"
             )}
           >
             <div className="flex items-center justify-between mb-1">
@@ -66,7 +66,7 @@ export function AIInsightsSection({ insights }: AIInsightsSectionProps) {
                 ) : insight.trend === "declining" ? (
                   <IoTrendingDown className="w-3 h-3 text-amber-400" />
                 ) : (
-                  <IoPulse className="w-3 h-3 text-[#9a9a9a]" />
+                  <IoPulse className="w-3 h-3 text-gray-400" />
                 )}
                 <span
                   className={cn(
@@ -75,7 +75,7 @@ export function AIInsightsSection({ insights }: AIInsightsSectionProps) {
                       ? "text-green-400"
                       : insight.trend === "declining"
                       ? "text-amber-400"
-                      : "text-[#9a9a9a]"
+                      : "text-gray-400"
                   )}
                 >
                   {insight.trend === "improving"

@@ -18,7 +18,7 @@ export function ResourcesCard({ scenario }: ResourcesCardProps) {
             <div key={store.storeName} className="p-4 rounded-xl bg-neutral-50 border border-neutral-100">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-semibold text-neutral-900">{store.storeName}</span>
-                <span className="px-2 py-0.5 rounded-full bg-teal-100 text-teal-700 text-xs font-medium">
+                <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs font-medium">
                   {store.distance} mi away
                 </span>
               </div>

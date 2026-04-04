@@ -60,7 +60,6 @@ export async function logInvitationAction({
     });
   } catch (error) {
     // Log error but don't fail the main operation
-    console.error("[AuditLog] Failed to log invitation action:", error);
   }
 }
 
@@ -127,7 +126,6 @@ export async function getInvitationAuditLog(
   const { limit = 50, offset = 0 } = options;
 
   try {
-    console.log("[AuditLog] Fetching audit log for group:", groupId);
 
     const entries = await db
       .select({
@@ -150,7 +148,6 @@ export async function getInvitationAuditLog(
       .limit(limit)
       .offset(offset);
 
-    console.log("[AuditLog] Found entries:", entries.length, entries);
 
     const formattedEntries: InvitationAuditLogEntry[] = entries.map(
       (entry) => ({
@@ -183,7 +180,6 @@ export async function getInvitationAuditLog(
       hasMore: offset + limit < countResult.length,
     };
   } catch (error) {
-    console.error("[AuditLog] getInvitationAuditLog error:", error);
     return { success: false, error: "Failed to fetch audit log", entries: [] };
   }
 }
@@ -240,6 +236,5 @@ export async function logMemberAction({
     });
   } catch (error) {
     // Log error but don't fail the main operation
-    console.error("[AuditLog] Failed to log member action:", error);
   }
 }

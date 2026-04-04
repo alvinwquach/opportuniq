@@ -57,9 +57,6 @@ export async function POST(request: NextRequest) {
     // Auto-detect Chinese dialect if source is generic "zh"
     if (sourceLanguage === "zh") {
       sourceLanguage = detectChineseDialect(text);
-      console.log(
-        `[Translate API] Detected Chinese dialect: ${getLanguageName(sourceLanguage)}`
-      );
     }
 
     // Skip if same language
@@ -74,9 +71,6 @@ export async function POST(request: NextRequest) {
     const sourceName = getLanguageName(sourceLanguage);
     const targetName = getLanguageName(targetLanguage);
 
-    console.log(
-      `[Translate API] Translating ${text.length} chars from ${sourceName} to ${targetName}`
-    );
 
     // Build dialect-aware system prompt
     let dialectNote = "";
@@ -107,9 +101,6 @@ Rules:
       maxOutputTokens: 4000,
     });
 
-    console.log(
-      `[Translate API] Success: ${text.length} chars → ${translatedText.length} chars`
-    );
 
     return NextResponse.json({
       translatedText,
@@ -120,7 +111,6 @@ Rules:
         : undefined,
     });
   } catch (error) {
-    console.error("[Translate API] Error:", error);
     return NextResponse.json(
       { error: "Translation failed" },
       { status: 500 }

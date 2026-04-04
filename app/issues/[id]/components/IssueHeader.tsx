@@ -139,7 +139,6 @@ export function IssueHeader({ issue, onResolveClick }: IssueHeaderProps) {
         window.location.reload();
       }
     } catch (error) {
-      console.error("Failed to reopen issue:", error);
     } finally {
       setIsReopening(false);
     }

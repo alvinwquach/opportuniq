@@ -67,22 +67,22 @@ export function BudgetSettingsForm({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <form.Field name="monthlyBudget">
           {(field) => (
-            <div className="p-5 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+            <div className="p-5 rounded-xl bg-gray-50 border border-gray-200">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-[#5eead4]/10 flex items-center justify-center">
                   <IoWallet className="w-5 h-5 text-[#5eead4]" />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-white block">
+                  <label className="text-sm font-medium text-gray-900 block">
                     Monthly Budget
                   </label>
-                  <p className="text-[11px] text-[#555]">
+                  <p className="text-[11px] text-gray-400">
                     Max spending per month on repairs
                   </p>
                 </div>
               </div>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555] text-sm">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
                   $
                 </span>
                 <input
@@ -95,7 +95,7 @@ export function BudgetSettingsForm({
                     )
                   }
                   onBlur={field.handleBlur}
-                  className="w-full h-11 pl-7 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                  className="w-full h-11 pl-7 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                 />
               </div>
             </div>
@@ -103,22 +103,22 @@ export function BudgetSettingsForm({
         </form.Field>
         <form.Field name="emergencyBuffer">
           {(field) => (
-            <div className="p-5 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+            <div className="p-5 rounded-xl bg-gray-50 border border-gray-200">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
                   <IoShield className="w-5 h-5 text-amber-500" />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-white block">
+                  <label className="text-sm font-medium text-gray-900 block">
                     Emergency Buffer
                   </label>
-                  <p className="text-[11px] text-[#555]">
+                  <p className="text-[11px] text-gray-400">
                     Savings for unexpected repairs
                   </p>
                 </div>
               </div>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555] text-sm">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
                   $
                 </span>
                 <input
@@ -131,7 +131,7 @@ export function BudgetSettingsForm({
                     )
                   }
                   onBlur={field.handleBlur}
-                  className="w-full h-11 pl-7 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                  className="w-full h-11 pl-7 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                 />
               </div>
             </div>
@@ -147,25 +147,25 @@ export function BudgetSettingsForm({
           const currentLevel = riskToleranceLevels[sliderValue];
 
           return (
-            <div className="p-5 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+            <div className="p-5 rounded-xl bg-gray-50 border border-gray-200">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
                   <IoSpeedometer className="w-5 h-5 text-purple-500" />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-white block">
+                  <label className="text-sm font-medium text-gray-900 block">
                     DIY Risk Tolerance
                   </label>
-                  <p className="text-[11px] text-[#555]">
+                  <p className="text-[11px] text-gray-400">
                     How comfortable are you with DIY repairs?
                   </p>
                 </div>
               </div>
-              <div className="mb-6 p-4 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a]">
+              <div className="mb-6 p-4 rounded-lg bg-gray-50 border border-gray-200">
                 <p className="text-lg font-medium text-purple-400 mb-1">
                   {riskToleranceLabels[currentLevel]}
                 </p>
-                <p className="text-sm text-[#888]">
+                <p className="text-sm text-gray-500">
                   {riskToleranceDescriptions[currentLevel]}
                 </p>
               </div>
@@ -179,7 +179,7 @@ export function BudgetSettingsForm({
                   min={0}
                   max={riskToleranceLevels.length - 1}
                   step={1}
-                  className="[&_[data-slot=slider-track]]:bg-[#2a2a2a] [&_[data-slot=slider-range]]:bg-purple-500 [&_[data-slot=slider-thumb]]:border-purple-500 [&_[data-slot=slider-thumb]]:bg-white"
+                  className="[&_[data-slot=slider-track]]:bg-gray-200 [&_[data-slot=slider-range]]:bg-purple-500 [&_[data-slot=slider-thumb]]:border-purple-500 [&_[data-slot=slider-thumb]]:bg-white"
                 />
               </div>
               <div className="flex justify-between mt-3 px-1">
@@ -191,7 +191,7 @@ export function BudgetSettingsForm({
                     className={`text-[10px] transition-colors ${
                       index === sliderValue
                         ? "text-purple-400 font-medium"
-                        : "text-[#555] hover:text-[#888]"
+                        : "text-gray-400 hover:text-gray-500"
                     }`}
                   >
                     {riskToleranceLabels[level]}
@@ -206,7 +206,7 @@ export function BudgetSettingsForm({
         <button
           type="submit"
           disabled={isPending || isSubmitting}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-[#1f1f1f] disabled:text-[#555] text-[#0c0c0c] font-medium text-sm transition-colors"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-gray-100 disabled:text-gray-400 text-white font-medium text-sm transition-colors"
         >
           {isPending || isSubmitting ? (
             <ImSpinner8 className="w-4 h-4 animate-spin" />

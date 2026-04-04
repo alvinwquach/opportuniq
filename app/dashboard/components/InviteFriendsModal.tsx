@@ -146,7 +146,6 @@ export function InviteFriendsModal({
       });
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error("Failed to copy:", err);
     }
   };
 
@@ -214,7 +213,7 @@ export function InviteFriendsModal({
   const tierColor: Record<InviteTier, string> = {
     johatsu: "text-rose-400 bg-rose-500/10 border-rose-500/20",
     alpha: "text-amber-400 bg-amber-500/10 border-amber-500/20",
-    beta: "text-blue-400 bg-blue-500/10 border-blue-500/20",
+    beta: "text-blue-600 bg-blue-50 border-blue-500/20",
     public: "text-green-400 bg-green-500/10 border-green-500/20",
   };
 
@@ -259,7 +258,7 @@ export function InviteFriendsModal({
         buttonElement
       )}
       <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="bg-[#0c0c0c] border-[#1f1f1f] sm:max-w-lg max-h-[85vh] overflow-y-auto">
+      <DialogContent className="bg-gray-50 border-gray-200 sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-white flex items-center gap-2">
             <IoPersonAdd className="w-5 h-5 text-[#5eead4]" />
@@ -275,41 +274,41 @@ export function InviteFriendsModal({
           <div className="space-y-4 mt-2">
             {/* Stats */}
             <div className="grid grid-cols-4 gap-2">
-              <div className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
+              <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
                 <p className="text-xl font-semibold text-white">
                   {data.stats.totalSent}
                 </p>
-                <p className="text-[10px] text-[#666]">Total Sent</p>
+                <p className="text-[10px] text-gray-500">Total Sent</p>
               </div>
-              <div className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
+              <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
                 <p className="text-xl font-semibold text-green-400">
                   {data.stats.accepted}
                 </p>
-                <p className="text-[10px] text-[#666]">Accepted</p>
+                <p className="text-[10px] text-gray-500">Accepted</p>
               </div>
-              <div className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
+              <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
                 <p className="text-xl font-semibold text-amber-400">
                   {data.stats.pending}
                 </p>
-                <p className="text-[10px] text-[#666]">Pending</p>
+                <p className="text-[10px] text-gray-500">Pending</p>
               </div>
-              <div className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
-                <p className="text-xl font-semibold text-[#555]">
+              <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
+                <p className="text-xl font-semibold text-gray-400">
                   {data.stats.expired}
                 </p>
-                <p className="text-[10px] text-[#666]">Expired</p>
+                <p className="text-[10px] text-gray-500">Expired</p>
               </div>
             </div>
 
             {/* Referral Link */}
-            <div className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
+            <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
               <div className="flex items-center gap-2 mb-2">
                 <IoLink className="w-4 h-4 text-[#5eead4]" />
                 <h3 className="text-sm font-medium text-white">
                   Your Referral Link
                 </h3>
               </div>
-              <p className="text-[11px] text-[#666] mb-2">
+              <p className="text-[11px] text-gray-500 mb-2">
                 Share this link. When they sign up, they&apos;ll be a{" "}
                 <span
                   className={`px-1 py-0.5 rounded text-[9px] font-medium border ${tierColor[data.inviteTier]}`}
@@ -323,11 +322,11 @@ export function InviteFriendsModal({
                   type="text"
                   readOnly
                   value={referralUrl}
-                  className="flex-1 px-2.5 py-1.5 rounded-md bg-[#0c0c0c] border border-[#2a2a2a] text-white text-xs font-mono"
+                  className="flex-1 px-2.5 py-1.5 rounded-md bg-gray-50 border border-gray-200 text-gray-900 text-xs font-mono"
                 />
                 <button
                   onClick={handleCopyLink}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#5eead4] hover:bg-[#5eead4]/90 text-[#0c0c0c] font-medium text-xs transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#5eead4] hover:bg-[#5eead4]/90 text-white font-medium text-xs transition-colors"
                 >
                   {copied ? (
                     <>
@@ -345,7 +344,7 @@ export function InviteFriendsModal({
             </div>
 
             {/* Send Invite */}
-            <div className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
+            <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
               <div className="flex items-center gap-2 mb-2">
                 <IoSend className="w-4 h-4 text-[#5eead4]" />
                 <h3 className="text-sm font-medium text-white">
@@ -354,19 +353,19 @@ export function InviteFriendsModal({
               </div>
               <form onSubmit={handleSendInvite} className="flex gap-2">
                 <div className="relative flex-1">
-                  <IoMail className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#555]" />
+                  <IoMail className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                   <input
                     type="email"
                     placeholder="friend@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-8 pr-2.5 py-1.5 rounded-md bg-[#0c0c0c] border border-[#2a2a2a] text-white text-xs placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                    className="w-full pl-8 pr-2.5 py-1.5 rounded-md bg-gray-50 border border-gray-200 text-gray-900 text-xs placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-[#1f1f1f] disabled:text-[#555] text-[#0c0c0c] font-medium text-xs transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#5eead4] hover:bg-[#5eead4]/90 disabled:bg-gray-100 disabled:text-gray-400 text-white font-medium text-xs transition-colors"
                 >
                   {isPending ? (
                     <ImSpinner8 className="w-3.5 h-3.5 animate-spin" />
@@ -384,7 +383,7 @@ export function InviteFriendsModal({
 
             {/* Sent Invites */}
             {data.sentInvites.length > 0 && (
-              <div className="p-3 rounded-lg bg-[#161616] border border-[#1f1f1f]">
+              <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
                 <div className="flex items-center gap-2 mb-3">
                   <IoPeople className="w-4 h-4 text-[#5eead4]" />
                   <h3 className="text-sm font-medium text-white">
@@ -402,7 +401,7 @@ export function InviteFriendsModal({
                     return (
                       <div
                         key={invite.id}
-                        className="flex items-center justify-between p-2.5 rounded-md bg-[#0c0c0c] border border-[#1f1f1f]"
+                        className="flex items-center justify-between p-2.5 rounded-md bg-gray-50 border border-gray-200"
                       >
                         <div className="flex items-center gap-2">
                           <div
@@ -410,7 +409,7 @@ export function InviteFriendsModal({
                               isAccepted
                                 ? "bg-green-500/10 text-green-400"
                                 : isExpired
-                                  ? "bg-[#1f1f1f] text-[#555]"
+                                  ? "bg-gray-100 text-gray-400"
                                   : "bg-amber-500/10 text-amber-400"
                             }`}
                           >
@@ -424,7 +423,7 @@ export function InviteFriendsModal({
                           </div>
                           <div>
                             <p className="text-xs text-white">{invite.email}</p>
-                            <p className="text-[9px] text-[#666]">
+                            <p className="text-[9px] text-gray-500">
                               {isAccepted
                                 ? `Accepted ${new Date(invite.acceptedAt!).toLocaleDateString()}`
                                 : isExpired
@@ -443,7 +442,7 @@ export function InviteFriendsModal({
                             <button
                               onClick={() => handleResend(invite.id, invite.email)}
                               disabled={resendingId === invite.id}
-                              className="p-1 rounded text-[#555] hover:text-white hover:bg-[#1f1f1f] transition-colors"
+                              className="p-1 rounded text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                               title="Resend invite"
                             >
                               {resendingId === invite.id ? (
@@ -463,7 +462,7 @@ export function InviteFriendsModal({
           </div>
         ) : (
           <div className="py-8 text-center">
-            <p className="text-sm text-[#666]">Unable to load invite data</p>
+            <p className="text-sm text-gray-500">Unable to load invite data</p>
           </div>
         )}
       </DialogContent>

@@ -15,7 +15,7 @@ export function UpcomingExpenses({ expenses }: UpcomingExpensesProps) {
       case "important":
         return "text-amber-400 bg-amber-500/10";
       default:
-        return "text-[#888] bg-[#333]";
+        return "text-gray-500 bg-[#333]";
     }
   };
 
@@ -25,22 +25,22 @@ export function UpcomingExpenses({ expenses }: UpcomingExpensesProps) {
   };
 
   return (
-    <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
+    <div className="bg-gray-100 rounded-xl border border-gray-200 p-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-white">Upcoming Expenses</h3>
-        <IoCalendarOutline className="w-4 h-4 text-[#666]" />
+        <IoCalendarOutline className="w-4 h-4 text-gray-500" />
       </div>
 
       {expenses.length === 0 ? (
         <div className="text-center py-6">
-          <p className="text-sm text-[#666]">No upcoming expenses</p>
+          <p className="text-sm text-gray-500">No upcoming expenses</p>
         </div>
       ) : (
         <div className="space-y-3">
           {expenses.map((expense) => (
             <div
               key={expense.id}
-              className="flex items-center justify-between p-3 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a]"
+              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200"
             >
               <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-lg ${getUrgencyColor(expense.urgency)}`}>
@@ -52,7 +52,7 @@ export function UpcomingExpenses({ expenses }: UpcomingExpensesProps) {
                 </div>
                 <div>
                   <div className="text-sm font-medium text-white">{expense.description}</div>
-                  <div className="text-xs text-[#666]">
+                  <div className="text-xs text-gray-500">
                     {expense.category} • Due {formatDate(expense.dueDate)}
                   </div>
                 </div>

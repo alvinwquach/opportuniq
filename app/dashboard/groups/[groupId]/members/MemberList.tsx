@@ -63,7 +63,6 @@ export function MemberList({ groupId }: MemberListProps) {
       setMemberToRemove(null);
     } catch (error) {
       // Error is handled by the mutation
-      console.error("Failed to remove member:", error);
     }
   };
 

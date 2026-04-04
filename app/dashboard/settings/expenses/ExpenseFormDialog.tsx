@@ -106,7 +106,7 @@ export function ExpenseFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] sm:max-w-md">
+      <DialogContent className="bg-white border-gray-200 sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-[#f87171]/10 flex items-center justify-center">
@@ -116,7 +116,7 @@ export function ExpenseFormDialog({
                 <IoAdd className="w-4 h-4 text-[#f87171]" />
               )}
             </div>
-            <DialogTitle className="text-white">
+            <DialogTitle className="text-gray-900">
               {isEditing ? "Edit Expense" : "Add Expense"}
             </DialogTitle>
           </div>
@@ -144,16 +144,16 @@ export function ExpenseFormDialog({
               >
                 {(field) => (
                   <div>
-                    <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+                    <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                       Category
                     </label>
                     <div className="relative">
-                      <IoPricetag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555]" />
+                      <IoPricetag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                       <select
                         value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
                         onBlur={field.handleBlur}
-                        className="w-full h-10 pl-10 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-[#f87171]/50 transition-colors appearance-none cursor-pointer"
+                        className="w-full h-10 pl-10 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#f87171]/50 transition-colors appearance-none cursor-pointer"
                       >
                         <option value="">Select category</option>
                         {expenseCategories.map((cat) => (
@@ -187,11 +187,11 @@ export function ExpenseFormDialog({
               >
                 {(field) => (
                   <div>
-                    <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+                    <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                       Amount
                     </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555] text-sm">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
                         $
                       </span>
                       <input
@@ -203,7 +203,7 @@ export function ExpenseFormDialog({
                           field.handleChange(Number(e.target.value))
                         }
                         onBlur={field.handleBlur}
-                        className="w-full h-10 pl-7 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#f87171]/50 transition-colors"
+                        className="w-full h-10 pl-7 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-[#444] focus:outline-none focus:border-[#f87171]/50 transition-colors"
                       />
                     </div>
                     {field.state.meta.errors.length > 0 && (
@@ -219,7 +219,7 @@ export function ExpenseFormDialog({
               <form.Field name="frequency">
                 {(field) => (
                   <div>
-                    <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+                    <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                       Frequency
                     </label>
                     <select
@@ -227,7 +227,7 @@ export function ExpenseFormDialog({
                       onChange={(e) =>
                         field.handleChange(e.target.value as ExpenseFrequency)
                       }
-                      className="w-full h-10 px-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-[#f87171]/50 transition-colors appearance-none cursor-pointer"
+                      className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#f87171]/50 transition-colors appearance-none cursor-pointer"
                     >
                       {FREQUENCY_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>
@@ -253,17 +253,17 @@ export function ExpenseFormDialog({
                   const isOneTime = form.state.values.frequency === "one_time";
                   return (
                     <div>
-                      <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+                      <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                         {isOneTime ? "Date" : "Start Date"}
                       </label>
                       <div className="relative">
-                        <IoCalendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555]" />
+                        <IoCalendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <input
                           type="date"
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
                           onBlur={field.handleBlur}
-                          className="w-full h-10 pl-10 pr-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-[#f87171]/50 transition-colors"
+                          className="w-full h-10 pl-10 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#f87171]/50 transition-colors"
                         />
                       </div>
                       {field.state.meta.errors.length > 0 && (
@@ -281,7 +281,7 @@ export function ExpenseFormDialog({
             <form.Field name="description">
               {(field) => (
                 <div>
-                  <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+                  <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                     Description{" "}
                     {showOptionalLabels && (
                       <span className="text-[#444]">(optional)</span>
@@ -293,7 +293,7 @@ export function ExpenseFormDialog({
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
                     onBlur={field.handleBlur}
-                    className="w-full h-10 px-3 rounded-lg bg-[#0c0c0c] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#f87171]/50 transition-colors"
+                    className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-[#444] focus:outline-none focus:border-[#f87171]/50 transition-colors"
                   />
                 </div>
               )}
@@ -303,7 +303,7 @@ export function ExpenseFormDialog({
             <button
               type="submit"
               disabled={isPending || isSubmitting || isEncrypting}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#f87171] hover:bg-[#f87171]/90 disabled:bg-[#1f1f1f] disabled:text-[#555] text-white font-medium text-sm transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#f87171] hover:bg-[#f87171]/90 disabled:bg-gray-100 disabled:text-gray-400 text-gray-900 font-medium text-sm transition-colors"
             >
               {isPending || isSubmitting || isEncrypting ? (
                 <ImSpinner8 className="w-4 h-4 animate-spin" />
@@ -315,7 +315,7 @@ export function ExpenseFormDialog({
             <button
               type="button"
               onClick={handleCancel}
-              className="px-4 py-2 rounded-lg text-[#888] hover:text-white hover:bg-[#1f1f1f] text-sm transition-colors"
+              className="px-4 py-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 text-sm transition-colors"
             >
               Cancel
             </button>

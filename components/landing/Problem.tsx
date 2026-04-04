@@ -39,11 +39,11 @@ function ShowVisual() {
                 />
               </svg>
               {/* Focus reticle */}
-              <div className="w-16 h-16 border-2 border-teal-500 rounded-lg relative z-10">
-                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-1 bg-teal-500" />
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-1 bg-teal-500" />
-                <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-1 h-2 bg-teal-500" />
-                <div className="absolute top-1/2 -right-1 -translate-y-1/2 w-1 h-2 bg-teal-500" />
+              <div className="w-16 h-16 border-2 border-blue-500 rounded-lg relative z-10">
+                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-1 bg-blue-500" />
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-1 bg-blue-500" />
+                <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-1 h-2 bg-blue-500" />
+                <div className="absolute top-1/2 -right-1 -translate-y-1/2 w-1 h-2 bg-blue-500" />
               </div>
             </div>
             {/* Camera controls */}
@@ -53,7 +53,7 @@ function ShowVisual() {
                 className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-lg border-4 border-neutral-300"
                 aria-label="Take photo"
               >
-                <div className="w-11 h-11 rounded-full bg-teal-500 flex items-center justify-center">
+                <div className="w-11 h-11 rounded-full bg-blue-500 flex items-center justify-center">
                   <IoCamera className="w-5 h-5 text-white" aria-hidden="true" />
                 </div>
               </button>
@@ -84,7 +84,7 @@ function SayVisual() {
             {[3, 5, 8, 10, 7, 12, 9, 5, 8, 11, 6, 4, 7, 9, 5].map((h, i) => (
               <div
                 key={`bar-${i}-${h}`}
-                className="w-1 bg-teal-500 rounded-full"
+                className="w-1 bg-blue-500 rounded-full"
                 style={{ height: `${h * 1.5}px`, opacity: 0.5 + (h / 24) }}
               />
             ))}
@@ -176,7 +176,7 @@ export function Problem() {
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-4 leading-tight text-neutral-900 tracking-tight">
             Real-World Decisions Are Expensive.
             <br />
-            <span className="text-teal-700">We Make Them Simple.</span>
+            <span className="text-blue-700">We Make Them Simple.</span>
           </h2>
           <p className="text-base sm:text-lg max-w-xl mx-auto leading-relaxed text-neutral-600">
             The ceiling crack. The car noise. The appliance that stopped working.
@@ -195,12 +195,12 @@ export function Problem() {
                     <span className="text-xs font-medium uppercase tracking-wider text-neutral-500">
                       Step {step.number}
                     </span>
-                    <step.icon className="w-4 h-4 text-teal-500" />
+                    <step.icon className="w-4 h-4 text-blue-500" />
                   </div>
                   <h3 className="text-xl sm:text-2xl font-semibold text-neutral-900 mb-1.5">
                     {step.title}
                   </h3>
-                  <p className="text-sm sm:text-base font-medium text-teal-700 mb-3">
+                  <p className="text-sm sm:text-base font-medium text-blue-700 mb-3">
                     {step.subtitle}
                   </p>
                   <p className="text-neutral-600 leading-relaxed text-base sm:text-[17px]" style={{ lineHeight: 1.65 }}>

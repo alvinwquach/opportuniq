@@ -4,8 +4,7 @@ import { useEffect, useRef } from "react";
 import {
   gsap,
   ScrollTrigger,
-  animateCounter,
-  typewriter,
+  TextPlugin,
 } from "@/lib/gsap";
 import {
   IoWarning,
@@ -76,10 +75,13 @@ export function ProblemSection() {
         start: "top 85%",
         onEnter: () => {
           if (annualLossRef.current) {
-            animateCounter(annualLossRef.current, 4800, {
+            gsap.to({ value: 0 }, {
+              value: 4800,
               duration: 1.5,
-              prefix: "$",
-              suffix: "/year",
+              ease: "power2.out",
+              onUpdate() {
+                annualLossRef.current!.textContent = `$${Math.round(this.targets()[0].value).toLocaleString()}/year`;
+              },
             });
           }
         },
@@ -104,11 +106,16 @@ export function ProblemSection() {
                 const suffixes = ["", " hrs", "%", "x"];
                 const decimals = [0, 0, 0, 1];
                 setTimeout(() => {
-                  animateCounter(ref, values[i], {
+                  gsap.to({ value: 0 }, {
+                    value: values[i],
                     duration: 1.2,
-                    prefix: prefixes[i],
-                    suffix: suffixes[i],
-                    decimals: decimals[i],
+                    ease: "power2.out",
+                    onUpdate() {
+                      const current = decimals[i] > 0
+                        ? this.targets()[0].value.toFixed(decimals[i])
+                        : Math.round(this.targets()[0].value).toLocaleString();
+                      ref.textContent = `${prefixes[i]}${current}${suffixes[i]}`;
+                    },
                   });
                 }, i * 150);
               }
@@ -128,11 +135,12 @@ export function ProblemSection() {
           onEnter: () => {
             if (quoteTextRef.current) {
               setTimeout(() => {
-                typewriter(
-                  quoteTextRef.current!,
-                  "I wasted $200 and 30 hours of my life.",
-                  { duration: 1.5, cursor: false }
-                );
+                gsap.to(quoteTextRef.current!, {
+                  text: { value: "I wasted $200 and 30 hours of my life." },
+                  duration: 1.5,
+                  delay: 0,
+                  ease: "none",
+                });
               }, 800);
             }
           },

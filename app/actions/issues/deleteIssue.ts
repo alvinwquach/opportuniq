@@ -34,7 +34,6 @@ export async function deleteIssue(
 
     return { success: true, issueId: deleted.id };
   } catch (error) {
-    console.error("[Delete Issue] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to delete issue",

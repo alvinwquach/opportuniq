@@ -17,7 +17,7 @@ export function OpenIssuesSection({ issues }: OpenIssuesSectionProps) {
         <h2 className="text-sm font-medium text-white">Open Issues</h2>
         <Link
           href="/issues"
-          className="text-xs text-[#9a9a9a] hover:text-white transition-colors"
+          className="text-xs text-gray-400 hover:text-gray-900 transition-colors"
         >
           View all
         </Link>
@@ -27,20 +27,20 @@ export function OpenIssuesSection({ issues }: OpenIssuesSectionProps) {
           <Link
             key={issue.id}
             href={`/issues/${issue.id}`}
-            className="flex items-center gap-4 p-3 rounded-xl bg-[#161616] border border-[#1f1f1f] hover:border-[#2a2a2a] transition-colors group"
+            className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-200 transition-colors group"
           >
             <div className="w-9 h-9 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
               <IoAlertCircle className="w-4 h-4 text-orange-400" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-white truncate group-hover:text-[#00D4FF] transition-colors">
+              <p className="text-sm text-gray-900 truncate group-hover:text-blue-600 transition-colors">
                 {issue.title}
               </p>
-              <p className="text-xs text-[#9a9a9a]">
+              <p className="text-xs text-gray-400">
                 {group.name} · {issue.status === "investigating" ? "Analyzing..." : "Open"}
               </p>
             </div>
-            <IoArrowForward className="w-4 h-4 text-[#666] group-hover:text-[#00D4FF] transition-colors" />
+            <IoArrowForward className="w-4 h-4 text-gray-500 group-hover:text-blue-600 transition-colors" />
           </Link>
         ))}
       </div>

@@ -128,7 +128,7 @@ export function WaitlistModal({ children }: WaitlistModalProps) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg text-neutral-900 placeholder-neutral-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 focus:outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg text-neutral-900 placeholder-neutral-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all"
                   placeholder="you@example.com"
                 />
               </div>
@@ -139,7 +139,7 @@ export function WaitlistModal({ children }: WaitlistModalProps) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full px-6 py-3 bg-teal-600 hover:bg-teal-700 disabled:bg-teal-500 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+              className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-500 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
                 <>

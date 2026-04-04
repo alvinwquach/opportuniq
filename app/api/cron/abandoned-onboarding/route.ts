@@ -46,7 +46,6 @@ export async function GET(request: NextRequest) {
         )
       );
 
-    console.log(`Found ${abandonedUsers.length} users with abandoned onboarding`);
 
     const results = await Promise.allSettled(
       abandonedUsers.map((user) =>
@@ -70,7 +69,6 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Abandoned onboarding cron error:", error);
     return NextResponse.json(
       { error: "Failed to send abandoned onboarding emails" },
       { status: 500 }

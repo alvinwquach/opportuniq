@@ -25,11 +25,9 @@ export async function POST() {
     // Delete the Gmail tokens for this user
     await db.delete(gmailTokens).where(eq(gmailTokens.userId, user.id));
 
-    console.log("[Gmail Disconnect] Gmail disconnected for user:", user.id);
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("[Gmail Disconnect] Error:", error);
     return NextResponse.json(
       { error: "Failed to disconnect Gmail" },
       { status: 500 }

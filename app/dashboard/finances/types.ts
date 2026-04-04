@@ -111,7 +111,7 @@ export const expenseCategories = [
 ];
 
 export const categoryColors: Record<string, string> = {
-  Housing: "#3ECF8E",
+  Housing: "#2563EB",
   Utilities: "#249361",
   Repairs: "#f59e0b",
   Maintenance: "#84cc16",

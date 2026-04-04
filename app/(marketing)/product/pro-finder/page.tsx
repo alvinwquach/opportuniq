@@ -91,21 +91,21 @@ export default function ProFinderPage() {
         <div className="max-w-4xl mx-auto text-center">
           {/* Breadcrumb */}
           <nav className="flex items-center justify-center gap-2 text-sm text-neutral-500 mb-6">
-            <Link href="/product" className="hover:text-teal-400 transition-colors">
+            <Link href="/product" className="hover:text-blue-400 transition-colors">
               Product
             </Link>
             <IoChevronForward className="w-3 h-3" />
             <span className="text-neutral-300">Pro Finder</span>
           </nav>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-500/40 text-teal-400 text-xs font-mono mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-400 text-xs font-mono mb-6">
             <IoConstructOutline className="w-4 h-4" />
             Pro Finder
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             Find the right{" "}
-            <span className="text-teal-400">
+            <span className="text-blue-400">
               pro, fast
             </span>
           </h1>
@@ -116,7 +116,7 @@ export default function ProFinderPage() {
           </p>
 
           <WaitlistModal>
-            <Button className="h-12 px-8 font-mono font-bold bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
+            <Button className="h-12 px-8 font-mono font-bold bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
               Get Early Access
             </Button>
           </WaitlistModal>
@@ -129,7 +129,7 @@ export default function ProFinderPage() {
           <div className="grid md:grid-cols-2 gap-8">
             {FEATURES.map((feature, i) => (
               <div key={i} className="p-6 rounded-xl bg-neutral-900 border border-neutral-700">
-                <div className="w-12 h-12 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 mb-4">
+                <div className="w-12 h-12 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 mb-4">
                   <feature.icon className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
@@ -174,7 +174,7 @@ export default function ProFinderPage() {
                   "Price estimates upfront",
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-neutral-300">
-                    <IoCheckmarkCircle className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                    <IoCheckmarkCircle className="w-5 h-5 text-blue-400 flex-shrink-0" />
                     {item}
                   </li>
                 ))}
@@ -184,7 +184,7 @@ export default function ProFinderPage() {
             <div className="bg-neutral-950/80 rounded-xl border border-neutral-800 p-4">
               <div className="flex items-center justify-between mb-4 px-2">
                 <span className="text-sm font-medium text-neutral-400">Local Plumbers</span>
-                <span className="text-xs text-teal-400">4 found</span>
+                <span className="text-xs text-blue-400">4 found</span>
               </div>
               <div className="space-y-3">
                 {SAMPLE_PROS.map((pro, i) => (
@@ -217,7 +217,7 @@ export default function ProFinderPage() {
                     </div>
                     <div className="flex items-center justify-between pt-2 border-t border-neutral-800">
                       <span className="text-sm font-medium text-white">{pro.price}</span>
-                      <div className="flex items-center gap-1 text-teal-400">
+                      <div className="flex items-center gap-1 text-blue-400">
                         <IoTimeOutline className="w-3 h-3" />
                         <span className="text-xs">{pro.available}</span>
                       </div>
@@ -243,7 +243,7 @@ export default function ProFinderPage() {
           <div className="grid md:grid-cols-4 gap-6">
             {RFQ_STEPS.map((item, i) => (
               <div key={i} className="text-center">
-                <div className="w-10 h-10 rounded-full bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-mono font-bold mx-auto mb-4">
+                <div className="w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-mono font-bold mx-auto mb-4">
                   {item.step}
                 </div>
                 <h3 className="text-sm font-semibold mb-1">{item.title}</h3>
@@ -265,7 +265,7 @@ export default function ProFinderPage() {
               { value: "4.5+", label: "Avg pro rating" },
             ].map((stat, i) => (
               <div key={i}>
-                <p className="text-3xl font-bold text-teal-400 mb-1">{stat.value}</p>
+                <p className="text-3xl font-bold text-blue-400 mb-1">{stat.value}</p>
                 <p className="text-sm text-neutral-400">{stat.label}</p>
               </div>
             ))}
@@ -283,7 +283,7 @@ export default function ProFinderPage() {
             Join the waitlist and get access to vetted local contractors at fair prices.
           </p>
           <WaitlistModal>
-            <Button className="h-14 px-8 font-mono font-bold text-lg bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
+            <Button className="h-14 px-8 font-mono font-bold text-lg bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
               Join the Waitlist
             </Button>
           </WaitlistModal>

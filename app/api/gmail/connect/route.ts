@@ -34,7 +34,6 @@ export async function GET(req: Request) {
 
     return NextResponse.redirect(authUrl);
   } catch (error) {
-    console.error("[Gmail Connect] Error:", error);
     return NextResponse.json(
       { error: "Failed to initiate Gmail connection" },
       { status: 500 }

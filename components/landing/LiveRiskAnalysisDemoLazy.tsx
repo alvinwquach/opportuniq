@@ -30,7 +30,7 @@ function DemoSkeleton() {
           <div className="lg:col-span-5 space-y-4">
             <div className="bg-white rounded-2xl border border-neutral-300 overflow-hidden shadow-sm">
               <div className="p-3 border-b border-neutral-300 flex items-center gap-2">
-                <IoLocation className="w-4 h-4 text-teal-600" />
+                <IoLocation className="w-4 h-4 text-blue-600" />
                 <span className="text-sm font-medium text-neutral-900">Location Map</span>
               </div>
               <div className="h-72 w-full bg-neutral-200 animate-pulse flex items-center justify-center">
@@ -62,7 +62,7 @@ function DemoSkeleton() {
             </div>
             <div className="bg-white rounded-2xl border border-neutral-300 p-4 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
-                <IoThermometer className="w-4 h-4 text-teal-600" />
+                <IoThermometer className="w-4 h-4 text-blue-600" />
                 <span className="text-sm font-medium text-neutral-900">Weather Conditions</span>
               </div>
               <div className="grid grid-cols-3 gap-3">
@@ -78,7 +78,7 @@ function DemoSkeleton() {
           <div className="lg:col-span-7 space-y-4">
             <div className="bg-white rounded-2xl border border-neutral-300 overflow-hidden shadow-sm">
               <div className="p-3 border-b border-neutral-300 flex items-center gap-2">
-                <IoShield className="w-4 h-4 text-teal-600" />
+                <IoShield className="w-4 h-4 text-blue-600" />
                 <span className="text-sm font-medium text-neutral-900">Risk Analysis Stream</span>
               </div>
               <div className="p-4 h-40 bg-neutral-50">

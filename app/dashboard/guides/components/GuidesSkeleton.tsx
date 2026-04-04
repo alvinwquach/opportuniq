@@ -2,9 +2,9 @@
 
 export function GuidesSkeleton() {
   return (
-    <div className="p-6 min-h-[calc(100vh-48px)] bg-[#0f0f0f] animate-pulse">
+    <div className="p-6 min-h-[calc(100vh-48px)] bg-gray-50 animate-pulse">
       {/* Header skeleton */}
-      <div className="bg-gradient-to-r from-emerald-600/50 to-emerald-700/50 rounded-2xl p-6 mb-4">
+      <div className="bg-gradient-to-r from-blue-600/50 to-blue-700/50 rounded-2xl p-6 mb-4">
         <div className="flex items-center justify-between">
           <div>
             <div className="h-8 w-32 bg-white/20 rounded mb-2" />
@@ -20,9 +20,9 @@ export function GuidesSkeleton() {
 
       {/* Search skeleton */}
       <div className="flex items-center gap-3 mb-4">
-        <div className="flex-1 max-w-lg h-11 bg-[#1a1a1a] rounded-xl" />
-        <div className="w-24 h-11 bg-emerald-600/50 rounded-xl" />
-        <div className="w-24 h-11 bg-[#1a1a1a] rounded-xl" />
+        <div className="flex-1 max-w-lg h-11 bg-gray-100 rounded-xl" />
+        <div className="w-24 h-11 bg-blue-600/50 rounded-xl" />
+        <div className="w-24 h-11 bg-gray-100 rounded-xl" />
       </div>
 
       {/* Two column layout */}
@@ -30,14 +30,14 @@ export function GuidesSkeleton() {
         {/* Main content */}
         <div className="space-y-6">
           {/* Tabs skeleton */}
-          <div className="flex items-center gap-1 bg-[#1a1a1a] rounded-t-xl px-2 pt-2 pb-3 border-b border-[#2a2a2a]">
+          <div className="flex items-center gap-1 bg-gray-100 rounded-t-xl px-2 pt-2 pb-3 border-b border-gray-200">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="h-8 w-20 bg-[#333] rounded-lg" />
             ))}
           </div>
 
           {/* Filters skeleton */}
-          <div className="bg-[#1a1a1a] p-4 rounded-xl border border-[#2a2a2a]">
+          <div className="bg-gray-100 p-4 rounded-xl border border-gray-200">
             <div className="flex items-center gap-2 mb-3">
               <div className="h-4 w-16 bg-[#333] rounded" />
               {[1, 2, 3, 4].map((i) => (
@@ -57,7 +57,7 @@ export function GuidesSkeleton() {
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4 h-48"
+                className="bg-gray-100 rounded-xl border border-gray-200 p-4 h-48"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -78,7 +78,7 @@ export function GuidesSkeleton() {
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="h-5 w-20 bg-[#333] rounded-full" />
-                  <div className="h-8 w-20 bg-emerald-600/50 rounded-lg" />
+                  <div className="h-8 w-20 bg-blue-600/50 rounded-lg" />
                 </div>
               </div>
             ))}
@@ -88,17 +88,17 @@ export function GuidesSkeleton() {
         {/* Sidebar skeleton */}
         <div className="space-y-4">
           {/* Stats card */}
-          <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
+          <div className="bg-gray-100 rounded-xl border border-gray-200 p-4">
             <div className="h-5 w-32 bg-[#333] rounded mb-3" />
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-12 bg-emerald-500/10 rounded-lg" />
+                <div key={i} className="h-12 bg-blue-50 rounded-lg" />
               ))}
             </div>
           </div>
 
           {/* Completion rate */}
-          <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
+          <div className="bg-gray-100 rounded-xl border border-gray-200 p-4">
             <div className="h-5 w-32 bg-[#333] rounded mb-3" />
             <div className="flex items-center gap-3">
               <div className="w-20 h-20 bg-[#333] rounded-full" />
@@ -110,7 +110,7 @@ export function GuidesSkeleton() {
           </div>
 
           {/* Savings chart */}
-          <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
+          <div className="bg-gray-100 rounded-xl border border-gray-200 p-4">
             <div className="h-5 w-40 bg-[#333] rounded mb-3" />
             <div className="h-32 bg-[#333]/30 rounded" />
           </div>

@@ -39,7 +39,7 @@ export function RiskCard({ scenario, riskChartRef }: RiskCardProps) {
           <div className="grid md:grid-cols-2 gap-4 pt-4 border-t border-neutral-100">
             <div>
               <h4 className="text-xs font-semibold text-neutral-700 mb-2 flex items-center gap-1.5">
-                <IoHardwareChip className="w-3.5 h-3.5 text-teal-700" />
+                <IoHardwareChip className="w-3.5 h-3.5 text-blue-700" />
                 Safety Equipment
               </h4>
               <div className="space-y-1.5">

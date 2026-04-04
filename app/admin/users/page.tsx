@@ -24,7 +24,6 @@ export default async function UsersPage() {
     userGrowthData = result.userGrowthData || [];
   } catch (err: unknown) {
     error = (err as Error)?.message || "Failed to load users";
-    console.error("[Admin Users] Error loading users:", err);
   }
 
   if (error || !userStats) {

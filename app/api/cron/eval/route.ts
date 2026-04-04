@@ -135,7 +135,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     Sentry.captureException(error);
-    console.error("Eval cron error:", error);
     return NextResponse.json({ error: "Eval run failed" }, { status: 500 });
   }
 }

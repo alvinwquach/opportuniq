@@ -7,7 +7,7 @@ function Shimmer({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "animate-pulse bg-gradient-to-r from-[#1a1a1a] via-[#252525] to-[#1a1a1a] bg-[length:200%_100%]",
+        "animate-pulse bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 bg-[length:200%_100%]",
         className
       )}
       style={{
@@ -36,7 +36,7 @@ export function ShimmerStyles() {
 // Cost summary skeleton
 export function CostSummarySkeleton() {
   return (
-    <div className="p-3 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a]">
+    <div className="p-3 bg-white rounded-xl border border-gray-200">
       <div className="flex items-center justify-between mb-2">
         <div>
           <Shimmer className="h-3 w-16 rounded mb-2" />
@@ -54,7 +54,7 @@ export function CostSummarySkeleton() {
 // Guide item skeleton
 export function GuideSkeleton() {
   return (
-    <div className="p-3 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a]">
+    <div className="p-3 bg-white rounded-xl border border-gray-200">
       <div className="flex items-start gap-3">
         <Shimmer className="w-9 h-9 rounded-lg flex-shrink-0" />
         <div className="flex-1">
@@ -69,7 +69,7 @@ export function GuideSkeleton() {
 // Part item skeleton
 export function PartSkeleton() {
   return (
-    <div className="p-3 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a]">
+    <div className="p-3 bg-white rounded-xl border border-gray-200">
       <div className="flex items-start justify-between mb-2">
         <Shimmer className="h-4 w-32 rounded" />
         <Shimmer className="h-4 w-16 rounded" />
@@ -85,7 +85,7 @@ export function PartSkeleton() {
 // Tool checklist skeleton
 export function ToolChecklistSkeleton() {
   return (
-    <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-3">
+    <div className="bg-white rounded-xl border border-gray-200 p-3">
       <div className="flex items-center gap-2">
         <Shimmer className="w-8 h-8 rounded-lg" />
         <div>
@@ -100,7 +100,7 @@ export function ToolChecklistSkeleton() {
 // Pro card skeleton
 export function ProSkeleton() {
   return (
-    <div className="p-3 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a]">
+    <div className="p-3 bg-white rounded-xl border border-gray-200">
       <div className="flex items-start gap-3 mb-3">
         <Shimmer className="w-5 h-5 rounded flex-shrink-0" />
         <div className="flex-1">
@@ -113,7 +113,7 @@ export function ProSkeleton() {
         <Shimmer className="h-3 w-16 rounded" />
         <Shimmer className="h-3 w-20 rounded" />
       </div>
-      <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
+      <div className="flex items-center justify-between pt-2 border-t border-gray-200">
         <Shimmer className="h-5 w-12 rounded" />
         <div className="flex gap-2">
           <Shimmer className="h-8 w-16 rounded-lg" />
@@ -129,8 +129,8 @@ export function ResourcePanelSkeleton({ message }: { message?: string }) {
   return (
     <div className="space-y-4">
       {message && (
-        <div className="flex items-center justify-center gap-2 py-4 text-sm text-[#666]">
-          <div className="w-4 h-4 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
+        <div className="flex items-center justify-center gap-2 py-4 text-sm text-gray-500">
+          <div className="w-4 h-4 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin" />
           <span>{message}</span>
         </div>
       )}
@@ -158,10 +158,10 @@ export function AnalyzingIndicator({ message = "Analyzing..." }: { message?: str
   return (
     <div className="flex flex-col items-center justify-center py-8 gap-3">
       <div className="relative">
-        <div className="w-12 h-12 rounded-full border-2 border-emerald-500/20" />
-        <div className="absolute inset-0 w-12 h-12 rounded-full border-2 border-transparent border-t-emerald-500 animate-spin" />
+        <div className="w-12 h-12 rounded-full border-2 border-blue-200" />
+        <div className="absolute inset-0 w-12 h-12 rounded-full border-2 border-transparent border-t-blue-500 animate-spin" />
       </div>
-      <p className="text-sm text-[#888]">{message}</p>
+      <p className="text-sm text-gray-500">{message}</p>
     </div>
   );
 }
@@ -175,11 +175,11 @@ export function ResearchingIndicator({
   subMessage?: string;
 }) {
   return (
-    <div className="flex items-center gap-3 p-3 bg-emerald-500/5 rounded-xl border border-emerald-500/20">
-      <div className="w-8 h-8 rounded-full border-2 border-emerald-500/20 border-t-emerald-500 animate-spin flex-shrink-0" />
+    <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl border border-blue-200">
+      <div className="w-8 h-8 rounded-full border-2 border-blue-200 border-t-blue-500 animate-spin flex-shrink-0" />
       <div>
-        <p className="text-sm text-emerald-400">{message}</p>
-        {subMessage && <p className="text-xs text-[#666] mt-0.5">{subMessage}</p>}
+        <p className="text-sm text-blue-600">{message}</p>
+        {subMessage && <p className="text-xs text-gray-500 mt-0.5">{subMessage}</p>}
       </div>
     </div>
   );

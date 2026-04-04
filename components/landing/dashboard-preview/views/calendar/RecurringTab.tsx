@@ -99,11 +99,11 @@ const getTypeIcon = (type: string) => {
 
 const getTypeColor = (type: string) => {
   switch (type) {
-    case "contractor": return "bg-blue-500/20 text-blue-400 border-blue-500/30";
-    case "diy": return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
-    case "reminder": return "bg-amber-500/20 text-amber-400 border-amber-500/30";
-    case "expense": return "bg-red-500/20 text-red-400 border-red-500/30";
-    default: return "bg-[#333] text-[#888] border-[#444]";
+    case "contractor": return "bg-blue-100 text-blue-600 border-blue-200";
+    case "diy": return "bg-blue-100 text-blue-600 border-blue-200";
+    case "reminder": return "bg-amber-100 text-amber-600 border-amber-200";
+    case "expense": return "bg-red-100 text-red-600 border-red-200";
+    default: return "bg-gray-100 text-gray-500 border-gray-200";
   }
 };
 
@@ -118,10 +118,10 @@ export function RecurringTab() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-medium text-white">Recurring Events</h3>
-          <p className="text-xs text-[#666]">{activeCount} active, {pausedCount} paused</p>
+          <h3 className="text-sm font-medium text-gray-900">Recurring Events</h3>
+          <p className="text-xs text-gray-500">{activeCount} active, {pausedCount} paused</p>
         </div>
-        <button className="flex items-center gap-1.5 px-3 py-2 text-sm text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg transition-colors">
+        <button className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-900 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors">
           <IoAddOutline className="w-4 h-4" />
           Add Recurring
         </button>
@@ -129,29 +129,29 @@ export function RecurringTab() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3">
-          <p className="text-lg font-bold text-white">{recurringEvents.length}</p>
-          <p className="text-[10px] text-[#666]">Total Events</p>
+        <div className="bg-white rounded-lg border border-gray-200 p-3">
+          <p className="text-lg font-bold text-gray-900">{recurringEvents.length}</p>
+          <p className="text-[10px] text-gray-500">Total Events</p>
         </div>
-        <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3">
-          <p className="text-lg font-bold text-emerald-400">{activeCount}</p>
-          <p className="text-[10px] text-[#666]">Active</p>
+        <div className="bg-white rounded-lg border border-gray-200 p-3">
+          <p className="text-lg font-bold text-blue-600">{activeCount}</p>
+          <p className="text-[10px] text-gray-500">Active</p>
         </div>
-        <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3">
-          <p className="text-lg font-bold text-amber-400">{pausedCount}</p>
-          <p className="text-[10px] text-[#666]">Paused</p>
+        <div className="bg-white rounded-lg border border-gray-200 p-3">
+          <p className="text-lg font-bold text-amber-600">{pausedCount}</p>
+          <p className="text-[10px] text-gray-500">Paused</p>
         </div>
-        <div className="bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] p-3">
-          <p className="text-lg font-bold text-white">$165</p>
-          <p className="text-[10px] text-[#666]">Monthly Avg</p>
+        <div className="bg-white rounded-lg border border-gray-200 p-3">
+          <p className="text-lg font-bold text-gray-900">$165</p>
+          <p className="text-[10px] text-gray-500">Monthly Avg</p>
         </div>
       </div>
 
       {/* Recurring Events List */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#2a2a2a] flex items-center justify-between">
-          <h4 className="text-sm font-medium text-white">All Recurring Events</h4>
-          <select className="px-2 py-1 text-xs bg-[#0f0f0f] border border-[#2a2a2a] rounded text-[#888] focus:outline-none">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+          <h4 className="text-sm font-medium text-gray-900">All Recurring Events</h4>
+          <select className="px-2 py-1 text-xs bg-white border border-gray-200 rounded text-gray-500 focus:outline-none">
             <option>All Types</option>
             <option>DIY</option>
             <option>Pro Visits</option>
@@ -159,7 +159,7 @@ export function RecurringTab() {
           </select>
         </div>
 
-        <div className="divide-y divide-[#2a2a2a]">
+        <div className="divide-y divide-gray-200">
           {recurringEvents.map((event) => {
             const Icon = getTypeIcon(event.type);
             const isMenuOpen = openMenuId === event.id;
@@ -168,7 +168,7 @@ export function RecurringTab() {
             return (
               <div
                 key={event.id}
-                className={`p-4 hover:bg-[#1f1f1f] transition-colors ${isPaused ? "opacity-60" : ""}`}
+                className={`p-4 hover:bg-gray-50 transition-colors ${isPaused ? "opacity-60" : ""}`}
               >
                 <div className="flex items-start gap-3">
                   <div className={`w-10 h-10 rounded-lg flex items-center justify-center border ${getTypeColor(event.type)}`}>
@@ -179,45 +179,45 @@ export function RecurringTab() {
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h5 className="text-sm font-medium text-white">{event.title}</h5>
+                          <h5 className="text-sm font-medium text-gray-900">{event.title}</h5>
                           {isPaused && (
-                            <span className="text-[9px] px-1.5 py-0.5 bg-amber-500/20 text-amber-400 rounded">
+                            <span className="text-[9px] px-1.5 py-0.5 bg-amber-100 text-amber-600 rounded">
                               Paused
                             </span>
                           )}
                         </div>
                         <div className="flex items-center gap-2 mt-1">
-                          <IoRepeat className="w-3.5 h-3.5 text-[#555]" />
-                          <span className="text-xs text-[#888]">{event.pattern}</span>
+                          <IoRepeat className="w-3.5 h-3.5 text-gray-600" />
+                          <span className="text-xs text-gray-500">{event.pattern}</span>
                         </div>
                       </div>
 
                       <div className="relative">
                         <button
                           onClick={() => setOpenMenuId(isMenuOpen ? null : event.id)}
-                          className="p-1.5 text-[#555] hover:text-white hover:bg-[#333] rounded transition-colors"
+                          className="p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
                         >
                           <IoEllipsisVertical className="w-4 h-4" />
                         </button>
 
                         {isMenuOpen && (
-                          <div className="absolute right-0 top-8 w-36 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] shadow-lg py-1 z-50">
-                            <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[#888] hover:bg-[#252525] hover:text-white">
+                          <div className="absolute right-0 top-8 w-36 bg-white rounded-lg border border-gray-200 shadow-lg py-1 z-50">
+                            <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-500 hover:bg-gray-100 hover:text-gray-900">
                               <IoPencil className="w-3.5 h-3.5" />
                               Edit
                             </button>
                             {isPaused ? (
-                              <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-emerald-400 hover:bg-emerald-500/10">
+                              <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-blue-600 hover:bg-blue-50">
                                 <IoPlayCircle className="w-3.5 h-3.5" />
                                 Resume
                               </button>
                             ) : (
-                              <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-amber-400 hover:bg-amber-500/10">
+                              <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-amber-600 hover:bg-amber-50">
                                 <IoPauseCircle className="w-3.5 h-3.5" />
                                 Pause
                               </button>
                             )}
-                            <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-400 hover:bg-red-500/10">
+                            <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-600 hover:bg-red-50">
                               <IoTrash className="w-3.5 h-3.5" />
                               Delete
                             </button>
@@ -227,25 +227,25 @@ export function RecurringTab() {
                     </div>
 
                     {/* Details Row */}
-                    <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#2a2a2a]">
+                    <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-200">
                       <div>
-                        <p className="text-[10px] text-[#555]">Next</p>
-                        <p className="text-xs font-medium text-white">{event.nextDate}</p>
+                        <p className="text-[10px] text-gray-600">Next</p>
+                        <p className="text-xs font-medium text-gray-900">{event.nextDate}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] text-[#555]">Last Completed</p>
-                        <p className="text-xs text-[#888]">{event.lastCompleted}</p>
+                        <p className="text-[10px] text-gray-600">Last Completed</p>
+                        <p className="text-xs text-gray-500">{event.lastCompleted}</p>
                       </div>
                       {event.estimatedCost > 0 && (
                         <div>
-                          <p className="text-[10px] text-[#555]">Est. Cost</p>
-                          <p className="text-xs text-[#888]">${event.estimatedCost}</p>
+                          <p className="text-[10px] text-gray-600">Est. Cost</p>
+                          <p className="text-xs text-gray-500">${event.estimatedCost}</p>
                         </div>
                       )}
                     </div>
 
                     {event.notes && (
-                      <p className="text-xs text-[#666] mt-2">{event.notes}</p>
+                      <p className="text-xs text-gray-500 mt-2">{event.notes}</p>
                     )}
                   </div>
                 </div>

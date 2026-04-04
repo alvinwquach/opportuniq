@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 import {
   gsap,
   ScrollTrigger,
-  scrambleText,
-  splitTextIntoChars,
+  ScrambleTextPlugin,
+  SplitText,
 } from "@/lib/gsap";
 import { IoCamera, IoArrowForward } from "react-icons/io5";
 
@@ -23,8 +23,8 @@ export function FinalCTASection() {
     const ctx = gsap.context(() => {
       // Headline character animation
       if (headlineRef.current) {
-        const chars = splitTextIntoChars(headlineRef.current);
-        gsap.from(chars, {
+        const split = new SplitText(headlineRef.current, { type: "chars" });
+        gsap.from(split.chars, {
           opacity: 0,
           y: 50,
           rotateX: -90,
@@ -44,9 +44,9 @@ export function FinalCTASection() {
         start: "top 80%",
         onEnter: () => {
           if (accentRef.current) {
-            scrambleText(accentRef.current, "today", {
+            gsap.to(accentRef.current, {
+              scrambleText: { text: "today", chars: "abcdefghijklmnopqrstuvwxyz" },
               duration: 1,
-              chars: "abcdefghijklmnopqrstuvwxyz",
             });
           }
         },
@@ -133,7 +133,7 @@ export function FinalCTASection() {
         <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-8">
           <span
             ref={accentRef}
-            className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent"
+            className="bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent"
           >
             today
           </span>

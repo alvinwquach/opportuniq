@@ -33,9 +33,9 @@ export function getUrgencyColor(urgency?: string): string {
   switch (urgency) {
     case 'critical': return 'text-red-400 bg-red-500/10 border-red-500/20';
     case 'important': return 'text-amber-400 bg-amber-500/10 border-amber-500/20';
-    case 'normal': return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
-    case 'deferrable': return 'text-[#888] bg-[#333] border-[#444]';
-    default: return 'text-[#888] bg-[#333] border-[#444]';
+    case 'normal': return 'text-blue-600 bg-blue-50 border-blue-500/20';
+    case 'deferrable': return 'text-gray-500 bg-[#333] border-[#444]';
+    default: return 'text-gray-500 bg-[#333] border-[#444]';
   }
 }
 

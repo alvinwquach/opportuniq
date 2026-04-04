@@ -4,7 +4,7 @@ import { CalendarDay } from './types';
 
 // Consistent color scheme for event types
 export const eventColors = {
-  diy: '#3ECF8E',        // Emerald - DIY projects
+  diy: '#2563EB',        // Emerald - DIY projects
   contractor: '#3b82f6', // Blue - Pro visits
   reminder: '#f59e0b',   // Amber - Reminders
   income: '#22c55e',     // Green - Income
@@ -14,9 +14,9 @@ export const eventColors = {
 export const getEventColor = (type: string) => {
   switch (type) {
     case 'contractor':
-      return 'bg-blue-500/20 border-blue-500/30 text-blue-400';
+      return 'bg-blue-100 border-blue-500/30 text-blue-600';
     case 'diy':
-      return 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400';
+      return 'bg-blue-100 border-blue-500/30 text-blue-600';
     case 'reminder':
       return 'bg-amber-500/20 border-amber-500/30 text-amber-400';
     case 'income':
@@ -24,7 +24,7 @@ export const getEventColor = (type: string) => {
     case 'expense':
       return 'bg-red-500/20 border-red-500/30 text-red-400';
     default:
-      return 'bg-[#333] border-[#444] text-[#888]';
+      return 'bg-[#333] border-[#444] text-gray-500';
   }
 };
 

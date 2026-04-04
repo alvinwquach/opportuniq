@@ -44,8 +44,8 @@ const notificationIcons = {
 const notificationColors = {
   issue: "text-amber-400",
   decision: "text-purple-400",
-  reminder: "text-blue-400",
-  invite: "text-[#00D4FF]",
+  reminder: "text-blue-600",
+  invite: "text-blue-600",
   completed: "text-green-400",
 };
 
@@ -84,13 +84,13 @@ export function NotificationDropdown({
             className={cn(
               "p-1.5 rounded-md transition-colors relative",
               open
-                ? "bg-[#1f1f1f] text-white"
-                : "text-[#888] hover:text-white hover:bg-[#1f1f1f]"
+                ? "bg-gray-100 text-white"
+                : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
             )}
           >
             <IoNotifications className="h-4 w-4" />
             {unreadCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 flex items-center justify-center text-[9px] font-bold bg-[#00D4FF] text-[#0c0c0c] rounded-full">
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 flex items-center justify-center text-[9px] font-bold bg-blue-600 text-white rounded-full">
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
             )}
@@ -99,15 +99,15 @@ export function NotificationDropdown({
         <TooltipContent side="bottom">Notifications</TooltipContent>
       </Tooltip>
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-[#0c0c0c] border border-[#1f1f1f] rounded-lg shadow-xl z-50 overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
+        <div className="absolute right-0 top-full mt-2 w-80 bg-gray-50 border border-gray-200 rounded-lg shadow-md z-50 overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
             <h3 className="text-sm font-medium text-white">Notifications</h3>
             {unreadCount > 0 && (
               <button
                 onClick={() => {
                   onMarkAllAsRead?.();
                 }}
-                className="text-[11px] text-[#00D4FF] hover:text-[#00D4FF]/80 transition-colors"
+                className="text-[11px] text-blue-600 hover:text-blue-600/80 transition-colors"
               >
                 Mark all as read
               </button>
@@ -117,7 +117,7 @@ export function NotificationDropdown({
             {notifications.length === 0 ? (
               <div className="px-4 py-8 text-center">
                 <IoNotifications className="w-8 h-8 text-[#333] mx-auto mb-2" />
-                <p className="text-sm text-[#555]">No notifications yet</p>
+                <p className="text-sm text-gray-400">No notifications yet</p>
               </div>
             ) : (
               <div className="divide-y divide-[#1f1f1f]">
@@ -128,8 +128,8 @@ export function NotificationDropdown({
                   const content = (
                     <div
                       className={cn(
-                        "px-4 py-3 hover:bg-[#161616] transition-colors cursor-pointer relative group",
-                        !notification.read && "bg-[#00D4FF]/5"
+                        "px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer relative group",
+                        !notification.read && "bg-blue-50"
                       )}
                       onClick={() => {
                         if (!notification.read) {
@@ -144,23 +144,23 @@ export function NotificationDropdown({
                             "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
                             notification.type === "issue" && "bg-amber-500/10",
                             notification.type === "decision" && "bg-purple-500/10",
-                            notification.type === "reminder" && "bg-blue-500/10",
-                            notification.type === "invite" && "bg-[#00D4FF]/10",
+                            notification.type === "reminder" && "bg-blue-50",
+                            notification.type === "invite" && "bg-blue-50",
                             notification.type === "completed" && "bg-green-500/10"
                           )}
                         >
                           <Icon className={cn("w-4 h-4", iconColor)} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm text-white line-clamp-1">
+                          <p className="text-sm text-gray-900 line-clamp-1">
                             {notification.title}
                           </p>
-                          <p className="text-[11px] text-[#666] line-clamp-1 mt-0.5">
+                          <p className="text-[11px] text-gray-500 line-clamp-1 mt-0.5">
                             {notification.description}
                           </p>
                           <div className="flex items-center gap-2 mt-1">
                             <IoTime className="w-3 h-3 text-[#444]" />
-                            <span className="text-[10px] text-[#555]">
+                            <span className="text-[10px] text-gray-400">
                               {formatDistanceToNow(notification.timestamp, {
                                 addSuffix: true,
                               })}
@@ -168,7 +168,7 @@ export function NotificationDropdown({
                             {notification.groupName && (
                               <>
                                 <span className="text-[#333]">·</span>
-                                <span className="text-[10px] text-[#555]">
+                                <span className="text-[10px] text-gray-400">
                                   {notification.groupName}
                                 </span>
                               </>
@@ -176,7 +176,7 @@ export function NotificationDropdown({
                           </div>
                         </div>
                         {!notification.read && (
-                          <div className="w-2 h-2 rounded-full bg-[#00D4FF] shrink-0 mt-1.5" />
+                          <div className="w-2 h-2 rounded-full bg-blue-600 shrink-0 mt-1.5" />
                         )}
                       </div>
                       <button
@@ -184,7 +184,7 @@ export function NotificationDropdown({
                           e.stopPropagation();
                           onMarkAsRead?.(notification.id);
                         }}
-                        className="absolute right-2 top-2 p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-[#1f1f1f] text-[#555] hover:text-white transition-all"
+                        className="absolute right-2 top-2 p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-all"
                       >
                         <IoClose className="w-3 h-3" />
                       </button>
@@ -204,11 +204,11 @@ export function NotificationDropdown({
               </div>
             )}
           </div>
-          <div className="px-4 py-2 border-t border-[#1f1f1f]">
+          <div className="px-4 py-2 border-t border-gray-200">
             <Link
               href="/notifications"
               onClick={() => setOpen(false)}
-              className="block text-center text-[11px] text-[#666] hover:text-white transition-colors"
+              className="block text-center text-[11px] text-gray-500 hover:text-gray-900 transition-colors"
             >
               View all notifications
             </Link>

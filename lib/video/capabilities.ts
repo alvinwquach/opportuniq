@@ -134,11 +134,7 @@ export function logCapabilities(): void {
   const blocker = getClientProcessingBlocker();
 
   console.group("Video Processing Capabilities");
-  console.log("Strategy:", strategy);
-  console.log("Capabilities:", capabilities);
-  console.log("Cross-Origin Isolated:", isCrossOriginIsolated());
   if (blocker) {
-    console.log("Client Processing Blocker:", blocker);
   }
   console.groupEnd();
 }

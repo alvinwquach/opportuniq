@@ -23,16 +23,16 @@ export function QuickAction({ href, icon: Icon, label, description }: QuickActio
     <Link
       href={href}
       onClick={handleClick}
-      className="flex items-center gap-3 p-2.5 -mx-1 rounded-lg hover:bg-[#1f1f1f] transition-colors group"
+      className="flex items-center gap-3 p-2.5 -mx-1 rounded-lg hover:bg-gray-100 transition-colors group"
     >
-      <div className="w-8 h-8 rounded-lg bg-[#1f1f1f] group-hover:bg-[#2a2a2a] flex items-center justify-center transition-colors">
-        <Icon className="w-4 h-4 text-[#888] group-hover:text-white transition-colors" />
+      <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center transition-colors">
+        <Icon className="w-4 h-4 text-gray-500 group-hover:text-gray-900 transition-colors" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm text-white">{label}</p>
-        <p className="text-[10px] text-[#555]">{description}</p>
+        <p className="text-[10px] text-gray-400">{description}</p>
       </div>
-      <IoArrowUp className="w-3.5 h-3.5 text-[#333] group-hover:text-[#00D4FF] transition-colors rotate-45" />
+      <IoArrowUp className="w-3.5 h-3.5 text-[#333] group-hover:text-blue-600 transition-colors rotate-45" />
     </Link>
   );
 }

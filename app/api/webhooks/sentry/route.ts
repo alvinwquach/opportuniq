@@ -107,7 +107,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("[Sentry Webhook] Error processing payload:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

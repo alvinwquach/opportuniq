@@ -34,13 +34,11 @@ export async function sendBetaLaunchWeekendEmail({
     });
 
     if (error) {
-      console.error("Failed to send beta launch weekend email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending beta launch weekend email:", error);
     return { success: false, error };
   }
 }
@@ -77,13 +75,11 @@ export async function sendWaitlistLaunchEmail({
     });
 
     if (error) {
-      console.error("Failed to send waitlist launch email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending waitlist launch email:", error);
     return { success: false, error };
   }
 }
@@ -120,13 +116,11 @@ export async function sendPublicLaunchEmail({
     });
 
     if (error) {
-      console.error("Failed to send public launch email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending public launch email:", error);
     return { success: false, error };
   }
 }
@@ -166,13 +160,11 @@ export async function sendReferralReminderEmail({
     });
 
     if (error) {
-      console.error("Failed to send referral reminder email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending referral reminder email:", error);
     return { success: false, error };
   }
 }

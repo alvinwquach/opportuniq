@@ -18,7 +18,7 @@ export function PendingVendorsSection({ vendors }: PendingVendorsSectionProps) {
   if (vendors.length === 0) return null;
 
   return (
-    <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+    <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
       <div className="flex items-center gap-2 mb-3">
         <IoCall className="w-4 h-4 text-purple-400" />
         <h3 className="text-sm font-medium text-white">Get Quotes</h3>
@@ -27,7 +27,7 @@ export function PendingVendorsSection({ vendors }: PendingVendorsSectionProps) {
         {vendors.slice(0, 3).map((vendor) => (
           <div
             key={vendor.id}
-            className="p-2.5 -mx-1 rounded-lg hover:bg-[#1f1f1f] transition-colors"
+            className="p-2.5 -mx-1 rounded-lg hover:bg-gray-100 transition-colors"
           >
             <div className="flex items-center justify-between">
               <p className="text-xs text-white">{vendor.vendorName}</p>
@@ -39,9 +39,9 @@ export function PendingVendorsSection({ vendors }: PendingVendorsSectionProps) {
               )}
             </div>
             <div className="flex items-center justify-between mt-1">
-              <p className="text-[10px] text-[#9a9a9a] truncate">{vendor.issueTitle}</p>
+              <p className="text-[10px] text-gray-400 truncate">{vendor.issueTitle}</p>
               {vendor.quoteAmount && (
-                <span className="text-[10px] text-[#00D4FF]">
+                <span className="text-[10px] text-blue-600">
                   ~${vendor.quoteAmount.toLocaleString()}
                 </span>
               )}

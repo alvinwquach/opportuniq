@@ -144,7 +144,7 @@ export function GuidesClient() {
 
   // Apply all active filters (tab, search, source, category) to allGuides.
   // useMemo caches this so filtering only reruns when allGuides or any filter value changes.
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization
+   
   const filteredGuides = useMemo(() => {
     return filterGuides(allGuides, {
       searchQuery,
@@ -226,7 +226,7 @@ export function GuidesClient() {
   // Guard: if the server request failed, show a simple error message.
   if (error) {
     return (
-      <div className="p-6 min-h-[calc(100vh-48px)] bg-[#0f0f0f]">
+      <div className="p-6 min-h-[calc(100vh-48px)] bg-gray-50">
         <div className="text-center py-12">
           <p className="text-red-400">Failed to load guides. Please try again.</p>
         </div>
@@ -247,7 +247,7 @@ export function GuidesClient() {
 
   // Happy path: data loaded, filters applied — render the full guides page.
   return (
-    <div className="p-6 min-h-[calc(100vh-48px)] bg-[#0f0f0f]">
+    <div className="p-6 min-h-[calc(100vh-48px)] bg-gray-50">
       {/* Page header section */}
       <div className="mb-6">
         {/* GuidesHeader receives aggregate counts for the top banner display. */}

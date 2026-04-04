@@ -111,14 +111,14 @@ export function IncomeManager({
       </div>
       <button
         onClick={handleAdd}
-        className="w-full flex items-center justify-center gap-2 p-4 rounded-xl border border-dashed border-[#2a2a2a] text-[#666] hover:text-white hover:border-[#5eead4]/50 transition-colors"
+        className="w-full flex items-center justify-center gap-2 p-4 rounded-xl border border-dashed border-gray-200 text-gray-500 hover:text-gray-900 hover:border-[#5eead4]/50 transition-colors"
       >
         <IoAdd className="w-4 h-4" />
         Add Income Source
       </button>
       {inactiveStreams.length > 0 && (
         <div className="mt-8">
-          <h3 className="text-xs font-medium text-[#555] uppercase tracking-wider mb-3">
+          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">
             Inactive
           </h3>
           <div className="space-y-2">

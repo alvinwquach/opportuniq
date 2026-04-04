@@ -33,12 +33,12 @@ export interface CategoryColorConfig {
 
 // Category colors mapping
 export const categoryColors: Record<string, CategoryColorConfig> = {
-  Plumbing: { bg: "bg-emerald-500/20", text: "text-emerald-400", icon: "💧" },
-  HVAC: { bg: "bg-emerald-500/20", text: "text-emerald-400", icon: "❄️" },
+  Plumbing: { bg: "bg-blue-100", text: "text-blue-600", icon: "💧" },
+  HVAC: { bg: "bg-blue-100", text: "text-blue-600", icon: "❄️" },
   Garage: { bg: "bg-amber-500/20", text: "text-amber-400", icon: "🚗" },
   Electrical: { bg: "bg-red-500/20", text: "text-red-400", icon: "⚡" },
-  Appliances: { bg: "bg-emerald-500/20", text: "text-emerald-400", icon: "🔌" },
-  Automotive: { bg: "bg-blue-500/20", text: "text-blue-400", icon: "🚙" },
+  Appliances: { bg: "bg-blue-100", text: "text-blue-600", icon: "🔌" },
+  Automotive: { bg: "bg-blue-100", text: "text-blue-600", icon: "🚙" },
   Outdoor: { bg: "bg-green-500/20", text: "text-green-400", icon: "🌳" },
   Cleaning: { bg: "bg-cyan-500/20", text: "text-cyan-400", icon: "🧹" },
 };
@@ -46,13 +46,13 @@ export const categoryColors: Record<string, CategoryColorConfig> = {
 // Default category color config
 export const defaultCategoryColor: CategoryColorConfig = {
   bg: "bg-[#333]",
-  text: "text-[#888]",
+  text: "text-gray-500",
   icon: "📖",
 };
 
 // Difficulty badge configuration
 export const difficultyConfig: Record<DifficultyLevel, { label: string; color: string; bgColor: string }> = {
-  beginner: { label: "Easy", color: "text-emerald-400", bgColor: "bg-emerald-500/20" },
+  beginner: { label: "Easy", color: "text-blue-600", bgColor: "bg-blue-100" },
   intermediate: { label: "Medium", color: "text-amber-400", bgColor: "bg-amber-500/20" },
   advanced: { label: "Hard", color: "text-red-400", bgColor: "bg-red-500/20" },
 };

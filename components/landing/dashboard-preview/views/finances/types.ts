@@ -17,9 +17,12 @@ export interface Expense {
   date: Date;
   isRecurring: boolean;
   frequency?: IncomeFrequency;
+  recurringFrequency?: string;
   nextDueDate?: Date;
   issueTitle?: string;
+  issueId?: string;
   urgency?: 'critical' | 'important' | 'normal' | 'deferrable';
+  approvalStatus?: 'approved' | 'pending';
 }
 
 export type TabType = "overview" | "budget" | "trends" | "income" | "expenses";
@@ -50,7 +53,7 @@ export const expenseCategories = [
 ];
 
 export const categoryColors: Record<string, string> = {
-  Housing: "#3ECF8E",
+  Housing: "#2563EB",
   Utilities: "#249361",
   Repairs: "#f59e0b",
   Maintenance: "#84cc16",

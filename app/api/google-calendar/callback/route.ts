@@ -22,7 +22,6 @@ export async function GET(req: Request) {
 
   // Handle user denying access
   if (error) {
-    console.error("[Google Calendar Callback] OAuth error:", error);
     const redirectUrl = new URL(defaultRedirect, req.url);
     redirectUrl.searchParams.set("calendar_error", error);
     return NextResponse.redirect(redirectUrl);
@@ -57,7 +56,6 @@ export async function GET(req: Request) {
 
         // Verify the state belongs to this user
         if (stateData.userId !== user.id) {
-          console.error("[Google Calendar Callback] State user ID mismatch");
           return NextResponse.redirect(
             new URL(
               `${defaultRedirect}?calendar_error=invalid_state`,
@@ -66,7 +64,6 @@ export async function GET(req: Request) {
           );
         }
       } catch {
-        console.error("[Google Calendar Callback] Failed to parse state");
       }
     }
 
@@ -74,10 +71,6 @@ export async function GET(req: Request) {
     const tokens = await exchangeCodeForTokens(code);
 
     if (!tokens.access_token || !tokens.refresh_token) {
-      console.error("[Google Calendar Callback] Missing tokens:", {
-        hasAccessToken: !!tokens.access_token,
-        hasRefreshToken: !!tokens.refresh_token,
-      });
       return NextResponse.redirect(
         new URL(`${defaultRedirect}?calendar_error=missing_tokens`, req.url)
       );
@@ -121,17 +114,12 @@ export async function GET(req: Request) {
         },
       });
 
-    console.log("[Google Calendar Callback] Google Calendar connected:", {
-      userId: user.id,
-      email,
-    });
 
     // Redirect back with success
     const redirectUrl = new URL(redirectTo, req.url);
     redirectUrl.searchParams.set("calendar_connected", "true");
     return NextResponse.redirect(redirectUrl);
   } catch (error) {
-    console.error("[Google Calendar Callback] Error:", error);
     return NextResponse.redirect(
       new URL(`${defaultRedirect}?calendar_error=connection_failed`, req.url)
     );

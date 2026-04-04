@@ -118,9 +118,6 @@ export function createCalendarReminderTool(ctx: ToolContext) {
           day: "numeric",
         });
 
-        console.log(
-          `[scheduleReminder] Created event "${title}" for ${eventDate}`
-        );
 
         return {
           success: true,

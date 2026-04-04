@@ -13,28 +13,27 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0c0c0c] px-6">
+    <div className="min-h-screen flex items-center justify-center bg-white px-6">
       <div className="max-w-md w-full text-center">
         {/* Error icon */}
-        <div className="mx-auto w-16 h-16 mb-6 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center">
+        <div className="mx-auto w-16 h-16 mb-6 rounded-full bg-red-50 border border-red-200 flex items-center justify-center">
           <IoAlertCircle className="h-8 w-8 text-red-500" />
         </div>
 
         {/* Error message */}
-        <h2 className="text-2xl font-semibold text-white mb-2">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-2">
           Something went wrong
         </h2>
-        <p className="text-[#888888] mb-6">
+        <p className="text-gray-500 mb-6">
           We encountered an unexpected error. Please try again.
         </p>
 
         {error.digest && (
-          <div className="mb-6 p-3 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a]">
-            <p className="text-xs text-[#888888] font-mono">
+          <div className="mb-6 p-3 rounded-lg border border-gray-200 bg-gray-50">
+            <p className="text-xs text-gray-500 font-mono">
               Error ID: {error.digest}
             </p>
           </div>
@@ -44,7 +43,7 @@ export default function Error({
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button
             onClick={reset}
-            className="gap-2 bg-[#5eead4] hover:bg-[#5eead4]/90 text-black font-medium"
+            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium"
           >
             <IoRefresh className="h-4 w-4" />
             Try again
@@ -52,7 +51,7 @@ export default function Error({
           <Button
             asChild
             variant="outline"
-            className="gap-2 border-[#2a2a2a] bg-transparent hover:bg-[#1a1a1a] text-white"
+            className="gap-2 border-gray-200 bg-white hover:bg-gray-50 text-gray-700"
           >
             <Link href="/">
               <IoHome className="h-4 w-4" />
@@ -62,11 +61,11 @@ export default function Error({
         </div>
 
         {/* Support hint */}
-        <p className="mt-8 text-sm text-[#888888]">
+        <p className="mt-8 text-sm text-gray-500">
           If this error persists, please{" "}
           <a
             href="mailto:support@opportuniq.app"
-            className="text-[#5eead4] hover:underline"
+            className="text-blue-600 hover:underline"
           >
             contact support
           </a>

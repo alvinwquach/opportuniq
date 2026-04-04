@@ -33,17 +33,17 @@ const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const getEventColor = (type: string) => {
   switch (type) {
     case "contractor":
-      return "bg-emerald-500/20 border-emerald-500/30 text-emerald-400";
+      return "bg-blue-100 border-blue-500/30 text-blue-600";
     case "diy":
-      return "bg-emerald-500/20 border-emerald-500/30 text-emerald-400";
+      return "bg-blue-100 border-blue-500/30 text-blue-600";
     case "reminder":
       return "bg-amber-500/20 border-amber-500/30 text-amber-400";
     case "income":
-      return "bg-emerald-500/20 border-emerald-500/30 text-emerald-400";
+      return "bg-blue-100 border-blue-500/30 text-blue-600";
     case "expense":
       return "bg-red-500/20 border-red-500/30 text-red-400";
     default:
-      return "bg-[#333] border-[#444] text-[#888]";
+      return "bg-[#333] border-[#444] text-gray-500";
   }
 };
 
@@ -79,15 +79,15 @@ export function MonthGrid({
   onMenuToggle,
 }: MonthGridProps) {
   return (
-    <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] overflow-hidden">
+    <div className="bg-gray-100 rounded-xl border border-gray-200 overflow-hidden">
       {/* Week day headers */}
-      <div className="grid grid-cols-7 border-b border-[#2a2a2a] bg-[#0f0f0f]">
+      <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50">
         {weekDays.map((day, idx) => (
           <div
             key={day}
-            className={`px-3 py-2.5 text-center border-r border-[#2a2a2a] last:border-r-0 ${idx === 0 || idx === 6 ? "bg-[#0a0a0a]" : ""}`}
+            className={`px-3 py-2.5 text-center border-r border-gray-200 last:border-r-0 ${idx === 0 || idx === 6 ? "bg-gray-50" : ""}`}
           >
-            <p className="text-xs font-semibold text-[#888] uppercase tracking-wider">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               {day}
             </p>
           </div>
@@ -106,16 +106,16 @@ export function MonthGrid({
           return (
             <div
               key={index}
-              className={`min-h-[100px] p-2 border-r border-b border-[#2a2a2a] last:border-r-0 transition-colors ${
+              className={`min-h-[100px] p-2 border-r border-b border-gray-200 last:border-r-0 transition-colors ${
                 isDragOver
-                  ? "bg-emerald-500/20 ring-2 ring-emerald-500 ring-inset"
+                  ? "bg-blue-100 ring-2 ring-blue-500 ring-inset"
                   : isOtherMonth
-                    ? "bg-[#0a0a0a]"
+                    ? "bg-gray-50"
                     : isToday
-                      ? "bg-emerald-500/10"
+                      ? "bg-blue-50"
                       : isWeekend
-                        ? "bg-[#141414] hover:bg-[#1a1a1a]"
-                        : "bg-[#1a1a1a] hover:bg-[#252525]"
+                        ? "bg-gray-50 hover:bg-gray-100"
+                        : "bg-gray-100 hover:bg-gray-100"
               }`}
               onDragOver={(e) => !isOtherMonth && onDragOver(e, day.date)}
               onDragLeave={onDragLeave}
@@ -125,10 +125,10 @@ export function MonthGrid({
                 <span
                   className={`text-sm font-medium ${
                     isToday
-                      ? "w-7 h-7 flex items-center justify-center bg-emerald-500 text-white rounded-full"
+                      ? "w-7 h-7 flex items-center justify-center bg-blue-500 text-gray-900 rounded-full"
                       : isOtherMonth
                         ? "text-[#444]"
-                        : "text-white"
+                        : "text-gray-900"
                   }`}
                 >
                   {day.date}
@@ -176,14 +176,14 @@ export function MonthGrid({
                           </span>
                         )}
                         {openMenuId === event.id && (
-                          <div className="absolute right-0 top-6 z-20 w-28 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] shadow-lg py-1">
+                          <div className="absolute right-0 top-6 z-20 w-28 bg-gray-100 rounded-lg border border-gray-200 shadow-lg py-1">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 onEventClick(event.id);
                                 onMenuToggle(null);
                               }}
-                              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[#888] hover:bg-[#333] transition-colors"
+                              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-gray-500 hover:bg-[#333] transition-colors"
                             >
                               <IoCalendarOutline className="w-3 h-3" />
                               View
@@ -193,7 +193,7 @@ export function MonthGrid({
                                 e.stopPropagation();
                                 onMenuToggle(null);
                               }}
-                              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[#888] hover:bg-[#333] transition-colors"
+                              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-gray-500 hover:bg-[#333] transition-colors"
                             >
                               <IoPencil className="w-3 h-3" />
                               Edit
@@ -214,7 +214,7 @@ export function MonthGrid({
                     );
                   })}
                   {day.events.length > 2 && (
-                    <div className="text-[10px] text-[#666] font-medium px-1 cursor-pointer hover:text-emerald-400">
+                    <div className="text-[10px] text-gray-500 font-medium px-1 cursor-pointer hover:text-blue-600">
                       +{day.events.length - 2} more
                     </div>
                   )}

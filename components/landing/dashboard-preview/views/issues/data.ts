@@ -12,8 +12,8 @@ export const issuesHistoryData: Issue[] = [
     id: "1",
     title: "Leaky kitchen faucet",
     icon: IoWater,
-    iconColor: "text-emerald-400",
-    iconBg: "bg-emerald-500/20",
+    iconColor: "text-blue-600",
+    iconBg: "bg-blue-100",
     status: "investigating",
     priority: "medium",
     category: "Plumbing",
@@ -32,8 +32,8 @@ export const issuesHistoryData: Issue[] = [
     id: "2",
     title: "AC not cooling properly",
     icon: IoSnow,
-    iconColor: "text-emerald-400",
-    iconBg: "bg-emerald-500/20",
+    iconColor: "text-blue-600",
+    iconBg: "bg-blue-100",
     status: "in_progress",
     priority: "high",
     category: "HVAC",
@@ -117,8 +117,8 @@ export const issuesHistoryData: Issue[] = [
     id: "6",
     title: "Clogged bathroom drain",
     icon: IoWater,
-    iconColor: "text-emerald-400",
-    iconBg: "bg-emerald-500/20",
+    iconColor: "text-blue-600",
+    iconBg: "bg-blue-100",
     status: "completed",
     priority: "medium",
     category: "Plumbing",
@@ -159,8 +159,8 @@ export const issuesHistoryData: Issue[] = [
     id: "8",
     title: "Dishwasher not draining",
     icon: IoConstruct,
-    iconColor: "text-emerald-400",
-    iconBg: "bg-emerald-500/20",
+    iconColor: "text-blue-600",
+    iconBg: "bg-blue-100",
     status: "completed",
     priority: "medium",
     category: "Appliances",
@@ -180,8 +180,8 @@ export const issuesHistoryData: Issue[] = [
 ];
 
 export const categoryData: ChartDataItem[] = [
-  { name: "Plumbing", value: 4, color: "#3ECF8E" },
-  { name: "HVAC", value: 1, color: "#3ECF8E" },
+  { name: "Plumbing", value: 4, color: "#2563EB" },
+  { name: "HVAC", value: 1, color: "#2563EB" },
   { name: "Electrical", value: 1, color: "#f59e0b" },
   { name: "Appliances", value: 1, color: "#8b5cf6" },
   { name: "Security", value: 1, color: "#ef4444" },
@@ -197,6 +197,6 @@ export const savingsOverTimeData: SavingsDataItem[] = [
 ];
 
 export const resolutionData: ChartDataItem[] = [
-  { name: "DIY", value: 3, color: "#3ECF8E" },
+  { name: "DIY", value: 3, color: "#2563EB" },
   { name: "Professional", value: 1, color: "#8b5cf6" },
 ];

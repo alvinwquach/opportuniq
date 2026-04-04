@@ -161,7 +161,6 @@ export async function POST(request: NextRequest) {
       resolutionType,
       wasSuccessful: success,
     }).catch((err) => {
-      console.error("[Outcomes] Embedding failed (non-fatal):", err);
     });
   }
 

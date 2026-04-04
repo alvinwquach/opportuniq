@@ -31,19 +31,11 @@ export function createCostLookupTool(ctx: ToolContext) {
         .describe("User's zip code for regional pricing"),
     }),
     execute: async ({ serviceType, zipCode }) => {
-      console.log("[CostLookup] Looking up cost for:", { serviceType, zipCode });
 
       try {
         const costData = await getCostEstimate(serviceType, zipCode);
 
         if (costData) {
-          console.log("[CostLookup] Found cost data:", {
-            serviceType: costData.serviceType,
-            region: costData.region,
-            source: costData.source,
-            hasDiy: !!costData.diy,
-            hasPro: !!costData.pro,
-          });
 
           return {
             success: true,
@@ -53,7 +45,6 @@ export function createCostLookupTool(ctx: ToolContext) {
         }
 
         // No data found - return helpful message
-        console.log("[CostLookup] No cost data found for:", serviceType);
         return {
           success: false,
           data: null,
@@ -61,7 +52,6 @@ export function createCostLookupTool(ctx: ToolContext) {
           suggestions: getSuggestedServiceTypes(serviceType),
         };
       } catch (error) {
-        console.error("[CostLookup] Error:", error);
         Sentry.captureException(error, { extra: { tool: "getCostEstimate", serviceType, zipCode } });
         return {
           success: false,

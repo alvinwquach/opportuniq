@@ -59,7 +59,7 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
         onClick={() => setOpen(!open)}
         className={cn(
           "flex items-center gap-2 pl-1 pr-2 py-1 rounded-md transition-colors",
-          open ? "bg-[#1f1f1f]" : "hover:bg-[#1f1f1f]"
+          open ? "bg-gray-100" : "hover:bg-gray-100"
         )}
       >
         {user.avatarUrl ? (
@@ -71,18 +71,18 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
             className="w-7 h-7 rounded-full"
           />
         ) : (
-          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-sm font-medium text-black">
+          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-teal-500 flex items-center justify-center text-sm font-medium text-black">
             {(user.name || user.email).charAt(0).toUpperCase()}
           </div>
         )}
         <IoChevronDown className={cn(
-          "w-3.5 h-3.5 text-[#666] hidden sm:block transition-transform duration-200",
+          "w-3.5 h-3.5 text-gray-500 hidden sm:block transition-transform duration-200",
           open && "rotate-180"
         )} />
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-72 bg-[#0c0c0c] border border-[#1f1f1f] rounded-lg shadow-xl z-50 overflow-hidden">
-          <div className="px-4 py-3 border-b border-[#1f1f1f]">
+        <div className="absolute right-0 top-full mt-2 w-72 bg-gray-50 border border-gray-200 rounded-lg shadow-md z-50 overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-200">
             <div className="flex items-center gap-3">
               {user.avatarUrl ? (
                 <Image
@@ -93,33 +93,33 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
                   className="w-10 h-10 rounded-full"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-base font-medium text-black">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-teal-500 flex items-center justify-center text-base font-medium text-black">
                   {(user.name || user.email).charAt(0).toUpperCase()}
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">
+                <p className="text-sm font-medium text-gray-900 truncate">
                   {user.name || "User"}
                 </p>
-                <p className="text-[11px] text-[#666] truncate">{user.email}</p>
+                <p className="text-[11px] text-gray-500 truncate">{user.email}</p>
               </div>
             </div>
           </div>
-          <div className="px-4 py-3 border-b border-[#1f1f1f]">
+          <div className="px-4 py-3 border-b border-gray-200">
             {financials && financials.monthlyIncome > 0 ? (
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-[#555] mb-0.5">
+                  <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">
                     Hourly Rate
                   </p>
-                  <p className="text-lg font-semibold text-[#00D4FF]">
+                  <p className="text-lg font-semibold text-blue-600">
                     ${financials.hourlyRate.toFixed(2)}/hr
                   </p>
                 </div>
                 <Link
                   href="/dashboard/settings/income"
                   onClick={() => setOpen(false)}
-                  className="p-2 rounded-md text-[#555] hover:text-white hover:bg-[#1f1f1f] transition-colors"
+                  className="p-2 rounded-md text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                 >
                   <IoSettings className="w-4 h-4" />
                 </Link>
@@ -130,7 +130,7 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
                   setOpen(false);
                   onAddIncome?.();
                 }}
-                className="w-full flex items-center justify-between p-2 rounded-lg bg-[#00D4FF]/10 text-[#00D4FF] hover:bg-[#00D4FF]/20 transition-colors"
+                className="w-full flex items-center justify-between p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
               >
                 <div className="flex items-center gap-2">
                   <IoCash className="w-4 h-4" />
@@ -141,14 +141,14 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
             )}
           </div>
           {user.postalCode && (
-            <div className="px-4 py-2 border-b border-[#1f1f1f]">
-              <div className="flex items-center gap-2 text-[#666]">
+            <div className="px-4 py-2 border-b border-gray-200">
+              <div className="flex items-center gap-2 text-gray-500">
                 <IoLocation className="w-3.5 h-3.5" />
                 <span className="text-[11px]">{user.postalCode}</span>
                 <Link
                   href="/dashboard/settings"
                   onClick={() => setOpen(false)}
-                  className="ml-auto text-[10px] text-[#555] hover:text-white transition-colors"
+                  className="ml-auto text-[10px] text-gray-400 hover:text-gray-900 transition-colors"
                 >
                   Change
                 </Link>
@@ -159,7 +159,7 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
             <Link
               href="/dashboard/settings"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-[#161616] transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors"
             >
               <IoPerson className="w-4 h-4" />
               <span className="text-sm">Profile</span>
@@ -167,7 +167,7 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
             <Link
               href="/dashboard/settings/income"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-[#161616] transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors"
             >
               <IoCard className="w-4 h-4" />
               <span className="text-sm">Income</span>
@@ -175,7 +175,7 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
             <Link
               href="/dashboard/settings/budget"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-[#161616] transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors"
             >
               <IoWallet className="w-4 h-4" />
               <span className="text-sm">Budget & Risk</span>
@@ -183,7 +183,7 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
             <Link
               href="/dashboard/settings"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-[#161616] transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors"
             >
               <IoSettings className="w-4 h-4" />
               <span className="text-sm">Settings</span>
@@ -191,14 +191,14 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
             <Link
               href="/help"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-white hover:bg-[#161616] transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors"
             >
               <IoHelpCircle className="w-4 h-4" />
               <span className="text-sm">Help & Support</span>
             </Link>
           </div>
           {isAdmin && (
-            <div className="border-t border-[#1f1f1f] py-1">
+            <div className="border-t border-gray-200 py-1">
               <Link
                 href="/admin"
                 onClick={() => setOpen(false)}
@@ -209,10 +209,10 @@ export function UserMenu({ user, isAdmin = false, financials, onAddIncome }: Use
               </Link>
             </div>
           )}
-          <div className="border-t border-[#1f1f1f] py-1">
+          <div className="border-t border-gray-200 py-1">
             <Link
               href="/auth/logout"
-              className="flex items-center gap-3 px-4 py-2 text-[#888] hover:text-red-400 hover:bg-red-500/10 transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
             >
               <IoLogOut className="w-4 h-4" />
               <span className="text-sm">Sign out</span>

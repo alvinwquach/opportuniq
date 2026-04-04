@@ -26,7 +26,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
     user = await Promise.race([getUserPromise, timeoutPromise]);
   } catch (error) {
-    console.error("[Login Page] Auth check error:", error);
     // Continue to login form on error
   }
 

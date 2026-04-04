@@ -16,6 +16,7 @@ jest.mock("@react-email/render", () => ({
   }),
 }));
 
+import React from "react";
 import { render } from "@react-email/render";
 
 // ---- Tests ---------------------------------------------------------------
@@ -95,10 +96,10 @@ describe("email template rendering", () => {
   });
 
   it("MagicLinkEmail renders with valid link", async () => {
-    const MagicLinkEmailMod = await import("@/emails/MagicLinkEmail") as { default?: (props: { magicLink: string }) => unknown; MagicLinkEmail?: (props: { magicLink: string }) => unknown };
+    const MagicLinkEmailMod = await import("@/emails/MagicLinkEmail") as { default?: (props: { magicLink: string }) => React.ReactNode; MagicLinkEmail?: (props: { magicLink: string }) => React.ReactNode };
     const MagicLinkEmail = MagicLinkEmailMod.default ?? MagicLinkEmailMod.MagicLinkEmail;
     expect(typeof MagicLinkEmail).toBe("function");
-    const html = await render(MagicLinkEmail({ magicLink: "https://opportuniq.app/auth/callback?token=xyz" }));
+    const html = await render(MagicLinkEmail!({ magicLink: "https://opportuniq.app/auth/callback?token=xyz" }));
     expect(html).toBeTruthy();
   });
 
@@ -136,7 +137,7 @@ describe("email template rendering", () => {
       const mod = await import(`@/emails/${name}`);
       const Component = mod[name] ?? mod.default;
       if (!Component) continue;
-      const html = await render((Component as (p: typeof props) => unknown)(props));
+      const html = await render((Component as (p: typeof props) => React.ReactNode)(props));
       expect(typeof html).toBe("string");
       expect(html.length).toBeGreaterThan(0);
     }
@@ -155,7 +156,7 @@ describe("email template rendering", () => {
       const Component = (mod as Record<string, unknown>)[moduleName] ?? mod.default;
       if (!Component || typeof Component !== "function") continue;
 
-      await expect(render((Component as (p: typeof props) => unknown)(props))).resolves.toBeTruthy();
+      await expect(render((Component as (p: typeof props) => React.ReactNode)(props))).resolves.toBeTruthy();
     }
   });
 });

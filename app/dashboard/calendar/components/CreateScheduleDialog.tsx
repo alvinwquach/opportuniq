@@ -73,13 +73,13 @@ export function CreateScheduleDialog({
 }: CreateScheduleDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#0c0c0c] border-[#1f1f1f] sm:max-w-md">
+      <DialogContent className="bg-gray-50 border-gray-200 sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-white flex items-center gap-2">
-            <IoCalendar className="w-5 h-5 text-[#00D4FF]" />
+            <IoCalendar className="w-5 h-5 text-blue-600" />
             Schedule DIY Task
           </DialogTitle>
-          <DialogDescription className="text-[#666]">
+          <DialogDescription className="text-gray-500">
             Schedule a time to work on a project with your group
           </DialogDescription>
         </DialogHeader>
@@ -87,7 +87,7 @@ export function CreateScheduleDialog({
         <div className="space-y-4 py-4">
           {/* Issue Selection */}
           <div className="space-y-2">
-            <Label htmlFor="issue" className="text-[#888]">
+            <Label htmlFor="issue" className="text-gray-500">
               Project/Issue
             </Label>
             <Select
@@ -96,19 +96,19 @@ export function CreateScheduleDialog({
                 onFormChange({ issueId: value, participants: [] })
               }
             >
-              <SelectTrigger className="bg-[#161616] border-[#1f1f1f] text-white">
+              <SelectTrigger className="bg-gray-50 border-gray-200 text-white">
                 <SelectValue placeholder="Select a project" />
               </SelectTrigger>
-              <SelectContent className="bg-[#161616] border-[#1f1f1f]">
+              <SelectContent className="bg-gray-50 border-gray-200">
                 {userIssues.map((issue) => (
                   <SelectItem
                     key={issue.id}
                     value={issue.id}
-                    className="text-white hover:bg-[#1f1f1f] focus:bg-[#1f1f1f]"
+                    className="text-white hover:bg-gray-100 focus:bg-gray-100"
                   >
                     <div className="flex items-center gap-2">
                       <span>{issue.title}</span>
-                      <span className="text-[#666] text-xs">
+                      <span className="text-gray-500 text-xs">
                         ({issue.groupName})
                       </span>
                     </div>
@@ -120,7 +120,7 @@ export function CreateScheduleDialog({
 
           {/* Date/Time */}
           <div className="space-y-2">
-            <Label htmlFor="datetime" className="text-[#888]">
+            <Label htmlFor="datetime" className="text-gray-500">
               Date & Time
             </Label>
             <Input
@@ -128,13 +128,13 @@ export function CreateScheduleDialog({
               type="datetime-local"
               value={formData.scheduledTime}
               onChange={(e) => onFormChange({ scheduledTime: e.target.value })}
-              className="bg-[#161616] border-[#1f1f1f] text-white"
+              className="bg-gray-50 border-gray-200 text-white"
             />
           </div>
 
           {/* Duration */}
           <div className="space-y-2">
-            <Label htmlFor="duration" className="text-[#888]">
+            <Label htmlFor="duration" className="text-gray-500">
               Estimated Duration
             </Label>
             <Select
@@ -143,43 +143,43 @@ export function CreateScheduleDialog({
                 onFormChange({ estimatedDuration: parseInt(value) })
               }
             >
-              <SelectTrigger className="bg-[#161616] border-[#1f1f1f] text-white">
+              <SelectTrigger className="bg-gray-50 border-gray-200 text-white">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-[#161616] border-[#1f1f1f]">
+              <SelectContent className="bg-gray-50 border-gray-200">
                 <SelectItem
                   value="30"
-                  className="text-white hover:bg-[#1f1f1f]"
+                  className="text-white hover:bg-gray-100"
                 >
                   30 minutes
                 </SelectItem>
                 <SelectItem
                   value="60"
-                  className="text-white hover:bg-[#1f1f1f]"
+                  className="text-white hover:bg-gray-100"
                 >
                   1 hour
                 </SelectItem>
                 <SelectItem
                   value="120"
-                  className="text-white hover:bg-[#1f1f1f]"
+                  className="text-white hover:bg-gray-100"
                 >
                   2 hours
                 </SelectItem>
                 <SelectItem
                   value="180"
-                  className="text-white hover:bg-[#1f1f1f]"
+                  className="text-white hover:bg-gray-100"
                 >
                   3 hours
                 </SelectItem>
                 <SelectItem
                   value="240"
-                  className="text-white hover:bg-[#1f1f1f]"
+                  className="text-white hover:bg-gray-100"
                 >
                   4 hours
                 </SelectItem>
                 <SelectItem
                   value="480"
-                  className="text-white hover:bg-[#1f1f1f]"
+                  className="text-white hover:bg-gray-100"
                 >
                   Full day (8 hours)
                 </SelectItem>
@@ -190,7 +190,7 @@ export function CreateScheduleDialog({
           {/* Participants */}
           {formData.issueId && groupMembers.length > 0 && (
             <div className="space-y-2">
-              <Label className="text-[#888] flex items-center gap-2">
+              <Label className="text-gray-500 flex items-center gap-2">
                 <IoPeople className="w-4 h-4" />
                 Participants
               </Label>
@@ -203,13 +203,13 @@ export function CreateScheduleDialog({
                     className={cn(
                       "w-full flex items-center gap-3 p-2 rounded-lg border transition-colors",
                       formData.participants.includes(member.memberId)
-                        ? "border-[#00D4FF] bg-[#00D4FF]/10"
-                        : "border-[#1f1f1f] bg-[#161616] hover:border-[#2a2a2a]"
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-200 bg-gray-50 hover:border-gray-200"
                     )}
                   >
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={member.avatarUrl || undefined} />
-                      <AvatarFallback className="bg-[#1f1f1f] text-white text-xs">
+                      <AvatarFallback className="bg-gray-100 text-gray-900 text-xs">
                         {member.name?.charAt(0) ||
                           member.email.charAt(0).toUpperCase()}
                       </AvatarFallback>
@@ -218,15 +218,15 @@ export function CreateScheduleDialog({
                       <p className="text-sm text-white">
                         {member.name || member.email}
                         {member.memberId === currentUserMemberId && (
-                          <span className="text-[#666] ml-1">(you)</span>
+                          <span className="text-gray-500 ml-1">(you)</span>
                         )}
                       </p>
-                      <p className="text-xs text-[#666] capitalize">
+                      <p className="text-xs text-gray-500 capitalize">
                         {member.role}
                       </p>
                     </div>
                     {formData.participants.includes(member.memberId) && (
-                      <IoCheckmark className="w-5 h-5 text-[#00D4FF]" />
+                      <IoCheckmark className="w-5 h-5 text-blue-600" />
                     )}
                   </button>
                 ))}
@@ -239,14 +239,14 @@ export function CreateScheduleDialog({
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="border-[#1f1f1f] text-[#888] hover:text-white hover:bg-[#1f1f1f]"
+            className="border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-100"
           >
             Cancel
           </Button>
           <Button
             onClick={onSubmit}
             disabled={!formData.issueId || !formData.scheduledTime || isLoading}
-            className="bg-[#00D4FF] text-black hover:bg-[#00D4FF]/90"
+            className="bg-blue-600 text-black hover:bg-blue-600/90"
           >
             {isLoading ? "Creating..." : "Schedule"}
           </Button>

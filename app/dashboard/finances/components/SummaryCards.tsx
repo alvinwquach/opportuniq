@@ -31,32 +31,32 @@ export function SummaryCards({
       label: "Monthly Income",
       value: `$${monthlyIncome.toLocaleString()}`,
       icon: IoTrendingUp,
-      color: "text-emerald-400",
-      bgColor: "bg-emerald-500/10",
+      color: "text-green-600",
+      bgColor: "bg-green-50",
     },
     {
       label: "Budget Used",
       value: `$${totalSpent.toLocaleString()}`,
       subtext: `${budgetUsedPercent.toFixed(0)}% of $${monthlyBudget.toLocaleString()}`,
       icon: IoWallet,
-      color: budgetUsedPercent > 80 ? "text-amber-400" : "text-emerald-400",
-      bgColor: budgetUsedPercent > 80 ? "bg-amber-500/10" : "bg-emerald-500/10",
+      color: budgetUsedPercent > 80 ? "text-amber-400" : "text-green-600",
+      bgColor: budgetUsedPercent > 80 ? "bg-amber-500/10" : "bg-green-50",
     },
     {
       label: "Emergency Fund",
       value: `${emergencyFundPercent}%`,
       subtext: "of 6-month target",
       icon: IoShieldCheckmark,
-      color: emergencyFundPercent >= 50 ? "text-emerald-400" : "text-amber-400",
-      bgColor: emergencyFundPercent >= 50 ? "bg-emerald-500/10" : "bg-amber-500/10",
+      color: emergencyFundPercent >= 50 ? "text-green-600" : "text-amber-400",
+      bgColor: emergencyFundPercent >= 50 ? "bg-green-50" : "bg-amber-500/10",
     },
     {
       label: "DIY Savings",
       value: `$${diySaved.toLocaleString()}`,
       subtext: "this year",
       icon: IoConstruct,
-      color: "text-emerald-400",
-      bgColor: "bg-emerald-500/10",
+      color: "text-green-600",
+      bgColor: "bg-green-50",
     },
   ];
 
@@ -65,17 +65,17 @@ export function SummaryCards({
       {cards.map((card, i) => (
         <div
           key={i}
-          className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4"
+          className="bg-gray-100 rounded-xl border border-gray-200 p-4"
         >
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs text-[#666]">{card.label}</span>
+            <span className="text-xs text-gray-500">{card.label}</span>
             <div className={`p-1.5 rounded-lg ${card.bgColor}`}>
               <card.icon className={`w-4 h-4 ${card.color}`} />
             </div>
           </div>
           <div className={`text-xl font-bold ${card.color}`}>{card.value}</div>
           {card.subtext && (
-            <div className="text-xs text-[#666] mt-1">{card.subtext}</div>
+            <div className="text-xs text-gray-500 mt-1">{card.subtext}</div>
           )}
         </div>
       ))}

@@ -6,10 +6,10 @@ import { savingsOverTime } from "../../mockData";
 
 export function DIYSavingsChart() {
   return (
-    <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-5">
+    <div className="bg-white rounded-xl border border-gray-200 p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-medium text-white">DIY Savings Trend</h3>
-        <span className="text-xs text-emerald-400 font-medium flex items-center gap-1">
+        <h3 className="text-sm font-medium text-gray-900">DIY Savings Trend</h3>
+        <span className="text-xs text-green-600 font-medium flex items-center gap-1">
           <IoTrendingUp className="w-3 h-3" />+23%
         </span>
       </div>
@@ -22,18 +22,18 @@ export function DIYSavingsChart() {
                 <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#666' }} tickLine={false} axisLine={false} />
-            <YAxis tick={{ fontSize: 10, fill: '#666' }} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v}`} />
+            <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#6b7280' }} tickLine={false} axisLine={false} />
+            <YAxis tick={{ fontSize: 10, fill: '#6b7280' }} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v}`} />
             <Tooltip
               wrapperStyle={{ zIndex: 1000 }}
               contentStyle={{
                 fontSize: 11,
                 borderRadius: 8,
-                backgroundColor: "#1a1a1a",
-                border: "1px solid #2a2a2a",
+                backgroundColor: "#ffffff",
+                border: "1px solid #e5e7eb",
               }}
-              itemStyle={{ color: "#fff" }}
-              labelStyle={{ color: "#888" }}
+              itemStyle={{ color: "#111827" }}
+              labelStyle={{ color: "#6b7280" }}
               formatter={(value: number) => [`$${value}`, "Saved"]}
             />
             <Area type="monotone" dataKey="savings" stroke="#10b981" strokeWidth={2} fill="url(#savingsGrad)" />

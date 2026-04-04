@@ -3,7 +3,7 @@
  */
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import type { DIYGuide } from "@/app/db/schema/diy-guides";
 
 interface UseDIYGuidesResult {
@@ -24,7 +24,7 @@ const fetcher = async (url: string) => {
 
 export function useDIYGuides(conversationId: string | null): UseDIYGuidesResult {
   const queryClient = useQueryClient();
-  const queryKey = ["guides", conversationId];
+  const queryKey = useMemo(() => ["guides", conversationId], [conversationId]);
 
   const { data, error, isLoading } = useQuery({
     queryKey,
@@ -36,7 +36,7 @@ export function useDIYGuides(conversationId: string | null): UseDIYGuidesResult 
 
   const mutate = useCallback(() => {
     queryClient.invalidateQueries({ queryKey });
-  }, [queryClient, conversationId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [queryClient, queryKey]);
 
   const updateGuide = useCallback(
     async (guideId: string, action: "clicked" | "bookmarked" | "helpful" | "not_helpful") => {
@@ -51,10 +51,10 @@ export function useDIYGuides(conversationId: string | null): UseDIYGuidesResult 
 
         queryClient.invalidateQueries({ queryKey });
       } catch (err) {
-        console.error("[useDIYGuides] Failed to update guide:", err);
+        void err;
       }
     },
-    [conversationId, queryClient] // eslint-disable-line react-hooks/exhaustive-deps
+    [conversationId, queryClient, queryKey]
   );
 
   const markClicked = useCallback(

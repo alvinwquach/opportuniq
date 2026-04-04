@@ -99,13 +99,13 @@ function getWeatherIcon(code: number, isDay: boolean = true, className: string =
     return <WiFog className={`${className} text-gray-400`} />;
   }
   if (code >= 51 && code <= 67) {
-    return <WiRain className={`${className} text-emerald-400`} />;
+    return <WiRain className={`${className} text-blue-600`} />;
   }
   if (code >= 71 && code <= 77) {
     return <WiSnow className={`${className} text-blue-200`} />;
   }
   if (code >= 80 && code <= 82) {
-    return <WiRain className={`${className} text-emerald-400`} />;
+    return <WiRain className={`${className} text-blue-600`} />;
   }
   if (code >= 85 && code <= 86) {
     return <WiSnow className={`${className} text-blue-200`} />;
@@ -132,16 +132,16 @@ function getUVLevel(uv: number): { label: string; color: string } {
   if (uv <= 2) return { label: "Low", color: "text-green-400" };
   if (uv <= 5) return { label: "Mod", color: "text-yellow-400" };
   if (uv <= 7) return { label: "High", color: "text-orange-400" };
-  if (uv <= 10) return { label: "V.High", color: "text-red-400" };
-  return { label: "Extreme", color: "text-emerald-400" };
+  if (uv <= 10) return { label: "V.High", color: "text-red-600" };
+  return { label: "Extreme", color: "text-blue-600" };
 }
 
 function getAQIColor(aqi: number): string {
   if (aqi <= 50) return "text-green-400";
   if (aqi <= 100) return "text-yellow-400";
   if (aqi <= 150) return "text-orange-400";
-  if (aqi <= 200) return "text-red-400";
-  return "text-emerald-400";
+  if (aqi <= 200) return "text-red-600";
+  return "text-blue-600";
 }
 
 function isGoodForOutdoorWork(day: DailyForecast): boolean {
@@ -170,47 +170,47 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
   const todayForecast = daily[0];
 
   return (
-    <div className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
+    <div className="rounded-xl bg-gray-50 border border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between p-3 sm:p-4 border-b border-[#1f1f1f]">
+      <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-200">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-            <IoLocationOutline className="w-4 h-4 text-emerald-400" />
+          <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+            <IoLocationOutline className="w-4 h-4 text-blue-600" />
           </div>
           <div>
-            <h3 className="text-sm font-medium text-white">Your Area</h3>
-            <p className="text-[10px] text-[#9a9a9a]">{[location.city, location.postalCode].filter(Boolean).join(", ") || "Your area"}</p>
+            <h3 className="text-sm font-medium text-gray-900">Your Area</h3>
+            <p className="text-[10px] text-gray-500">{[location.city, location.postalCode].filter(Boolean).join(", ") || "Your area"}</p>
           </div>
         </div>
       </div>
 
       {/* Current Weather */}
-      <div className="p-3 sm:p-4 border-b border-[#1f1f1f]">
+      <div className="p-3 sm:p-4 border-b border-gray-200">
         <div className="flex items-start justify-between mb-3 sm:mb-4">
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-[#1f1f1f] flex items-center justify-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gray-100 flex items-center justify-center">
               {getWeatherIcon(current.weatherCode, current.isDay)}
             </div>
             <div>
               <div className="flex items-baseline gap-1">
-                <span className="text-xl sm:text-2xl font-semibold text-white">
+                <span className="text-xl sm:text-2xl font-semibold text-gray-900">
                   {Math.round(current.temperature)}°
                 </span>
-                <span className="text-xs text-[#9a9a9a]">F</span>
+                <span className="text-xs text-gray-500">F</span>
               </div>
-              <p className="text-[10px] sm:text-xs text-[#a3a3a3]">{current.weatherDescription}</p>
+              <p className="text-[10px] sm:text-xs text-gray-600">{current.weatherDescription}</p>
             </div>
           </div>
           <div className="text-right space-y-0.5 sm:space-y-1">
-            <div className="flex items-center justify-end gap-1 text-[10px] sm:text-xs text-[#9a9a9a]">
+            <div className="flex items-center justify-end gap-1 text-[10px] sm:text-xs text-gray-500">
               <WiThermometer className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Feels {Math.round(current.feelsLike)}°</span>
             </div>
-            <div className="flex items-center justify-end gap-1 text-[10px] sm:text-xs text-[#9a9a9a]">
+            <div className="flex items-center justify-end gap-1 text-[10px] sm:text-xs text-gray-500">
               <WiStrongWind className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>{Math.round(current.windSpeed)} mph</span>
             </div>
-            <div className="flex items-center justify-end gap-1 text-[10px] sm:text-xs text-[#9a9a9a]">
+            <div className="flex items-center justify-end gap-1 text-[10px] sm:text-xs text-gray-500">
               <WiRaindrop className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>{current.humidity}%</span>
             </div>
@@ -219,8 +219,8 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
 
         {/* Stats Row */}
         <div className="flex gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-          <div className="flex-1 p-1.5 sm:p-2 rounded-lg bg-[#1a1a1a]">
-            <p className="text-[8px] sm:text-[10px] text-[#9a9a9a] mb-0.5 sm:mb-1">UV Index</p>
+          <div className="flex-1 p-1.5 sm:p-2 rounded-lg bg-white">
+            <p className="text-[8px] sm:text-[10px] text-gray-500 mb-0.5 sm:mb-1">UV Index</p>
             <div className="flex items-center gap-1">
               <WiDaySunny className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400" />
               <span className={cn("text-xs sm:text-sm font-medium", getUVLevel(current.uvIndex).color)}>
@@ -231,8 +231,8 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
               </span>
             </div>
           </div>
-          <div className="flex-1 p-1.5 sm:p-2 rounded-lg bg-[#1a1a1a]">
-            <p className="text-[8px] sm:text-[10px] text-[#9a9a9a] mb-0.5 sm:mb-1">Air Quality</p>
+          <div className="flex-1 p-1.5 sm:p-2 rounded-lg bg-white">
+            <p className="text-[8px] sm:text-[10px] text-gray-500 mb-0.5 sm:mb-1">Air Quality</p>
             <div className="flex items-center gap-1">
               <span className={cn("text-xs sm:text-sm font-medium", getAQIColor(airQuality.aqi))}>
                 {airQuality.aqi}
@@ -243,16 +243,16 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
             </div>
           </div>
           {todayForecast && (
-            <div className="flex-1 p-1.5 sm:p-2 rounded-lg bg-[#1a1a1a]">
-              <p className="text-[8px] sm:text-[10px] text-[#9a9a9a] mb-0.5 sm:mb-1">Sun</p>
+            <div className="flex-1 p-1.5 sm:p-2 rounded-lg bg-white">
+              <p className="text-[8px] sm:text-[10px] text-gray-500 mb-0.5 sm:mb-1">Sun</p>
               <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs">
                 <div className="flex items-center gap-0.5">
-                  <WiSunrise className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
-                  <span className="text-[#a3a3a3] hidden sm:inline">{todayForecast.sunrise}</span>
+                  <WiSunrise className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
+                  <span className="text-gray-600 hidden sm:inline">{todayForecast.sunrise}</span>
                 </div>
                 <div className="flex items-center gap-0.5">
                   <WiSunset className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500" />
-                  <span className="text-[#a3a3a3] hidden sm:inline">{todayForecast.sunset}</span>
+                  <span className="text-gray-600 hidden sm:inline">{todayForecast.sunset}</span>
                 </div>
               </div>
             </div>
@@ -284,15 +284,15 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
                 className={cn(
                   "p-1 sm:p-1.5 rounded-lg text-center transition-all",
                   isSelected
-                    ? "bg-emerald-500/20 border border-emerald-500/40"
+                    ? "bg-blue-100 border border-blue-200"
                     : isGood
                     ? "bg-green-500/10 border border-green-500/20 hover:bg-green-500/20"
-                    : "bg-[#1a1a1a] hover:bg-[#222] border border-transparent"
+                    : "bg-white hover:bg-gray-100 border border-transparent"
                 )}
               >
                 <p className={cn(
                   "text-[8px] sm:text-[10px] mb-0.5",
-                  isSelected ? "text-emerald-400" : "text-[#9a9a9a]"
+                  isSelected ? "text-blue-600" : "text-gray-500"
                 )}>
                   {getDayName(day.date)}
                 </p>
@@ -301,11 +301,11 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
                 </div>
                 <p className={cn(
                   "text-[10px] sm:text-xs font-medium",
-                  isSelected ? "text-white" : "text-[#a3a3a3]"
+                  isSelected ? "text-gray-900" : "text-gray-600"
                 )}>
                   {Math.round(day.temperatureMax)}°
                 </p>
-                <p className="text-[8px] sm:text-[10px] text-[#9a9a9a]">
+                <p className="text-[8px] sm:text-[10px] text-gray-500">
                   {Math.round(day.temperatureMin)}°
                 </p>
               </button>
@@ -315,71 +315,71 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
 
         {/* Selected Day Detail */}
         {daily[selectedDayIndex] && (
-          <div className="p-3 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a]">
+          <div className="p-3 rounded-lg bg-white border border-gray-200">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 {getWeatherIcon(daily[selectedDayIndex].weatherCode, true, "w-8 h-8")}
                 <div>
-                  <p className="text-sm font-medium text-white">
+                  <p className="text-sm font-medium text-gray-900">
                     {getDayName(daily[selectedDayIndex].date) === "Today" || getDayName(daily[selectedDayIndex].date) === "Tmrw"
                       ? getDayName(daily[selectedDayIndex].date)
                       : new Date(daily[selectedDayIndex].date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}
                   </p>
-                  <p className="text-xs text-[#9a9a9a]">{daily[selectedDayIndex].weatherDescription}</p>
+                  <p className="text-xs text-gray-500">{daily[selectedDayIndex].weatherDescription}</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-lg font-semibold text-white">
+                <p className="text-lg font-semibold text-gray-900">
                   {Math.round(daily[selectedDayIndex].temperatureMax)}°
-                  <span className="text-[#9a9a9a] text-sm ml-1">/ {Math.round(daily[selectedDayIndex].temperatureMin)}°</span>
+                  <span className="text-gray-500 text-sm ml-1">/ {Math.round(daily[selectedDayIndex].temperatureMin)}°</span>
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-4 gap-2 text-center mb-3">
-              <div className="p-2 rounded bg-[#0f0f0f]">
-                <WiRaindrop className="w-5 h-5 text-emerald-400 mx-auto mb-0.5" />
-                <p className="text-[10px] text-[#9a9a9a]">Precip</p>
-                <p className="text-xs font-medium text-white">{daily[selectedDayIndex].precipitationProbability}%</p>
+              <div className="p-2 rounded bg-white">
+                <WiRaindrop className="w-5 h-5 text-blue-600 mx-auto mb-0.5" />
+                <p className="text-[10px] text-gray-500">Precip</p>
+                <p className="text-xs font-medium text-gray-900">{daily[selectedDayIndex].precipitationProbability}%</p>
               </div>
-              <div className="p-2 rounded bg-[#0f0f0f]">
+              <div className="p-2 rounded bg-white">
                 <WiStrongWind className="w-5 h-5 text-slate-400 mx-auto mb-0.5" />
-                <p className="text-[10px] text-[#9a9a9a]">Wind</p>
-                <p className="text-xs font-medium text-white">{daily[selectedDayIndex].windSpeedMax} mph</p>
+                <p className="text-[10px] text-gray-500">Wind</p>
+                <p className="text-xs font-medium text-gray-900">{daily[selectedDayIndex].windSpeedMax} mph</p>
               </div>
-              <div className="p-2 rounded bg-[#0f0f0f]">
-                <WiSunrise className="w-5 h-5 text-amber-400 mx-auto mb-0.5" />
-                <p className="text-[10px] text-[#9a9a9a]">Sunrise</p>
-                <p className="text-xs font-medium text-white">{daily[selectedDayIndex].sunrise}</p>
+              <div className="p-2 rounded bg-white">
+                <WiSunrise className="w-5 h-5 text-amber-600 mx-auto mb-0.5" />
+                <p className="text-[10px] text-gray-500">Sunrise</p>
+                <p className="text-xs font-medium text-gray-900">{daily[selectedDayIndex].sunrise}</p>
               </div>
-              <div className="p-2 rounded bg-[#0f0f0f]">
+              <div className="p-2 rounded bg-white">
                 <WiSunset className="w-5 h-5 text-rose-400 mx-auto mb-0.5" />
-                <p className="text-[10px] text-[#9a9a9a]">Sunset</p>
-                <p className="text-xs font-medium text-white">{daily[selectedDayIndex].sunset}</p>
+                <p className="text-[10px] text-gray-500">Sunset</p>
+                <p className="text-xs font-medium text-gray-900">{daily[selectedDayIndex].sunset}</p>
               </div>
             </div>
 
             {/* 24-Hour Forecast */}
             {daily[selectedDayIndex].hourly && (
-              <div className="border-t border-[#2a2a2a] pt-3">
-                <p className="text-[10px] font-medium text-[#888] mb-2">24-HOUR FORECAST</p>
-                <div className="flex gap-1 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+              <div className="border-t border-gray-200 pt-3">
+                <p className="text-[10px] font-medium text-gray-500 mb-2">24-HOUR FORECAST</p>
+                <div className="flex gap-1 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
                   {daily[selectedDayIndex].hourly.map((hour) => (
                     <div
                       key={hour.hour}
                       className={cn(
                         "flex-shrink-0 w-12 p-1.5 rounded-lg text-center",
-                        hour.isDay ? "bg-[#0f0f0f]" : "bg-[#0a0a0a]"
+                        hour.isDay ? "bg-white" : "bg-gray-50"
                       )}
                     >
-                      <p className="text-[9px] text-[#666] mb-1">{hour.time}</p>
+                      <p className="text-[9px] text-gray-500 mb-1">{hour.time}</p>
                       <div className="flex justify-center mb-1">
                         {getWeatherIcon(hour.weatherCode, hour.isDay, "w-4 h-4")}
                       </div>
-                      <p className="text-[11px] font-medium text-white">{hour.temperature}°</p>
+                      <p className="text-[11px] font-medium text-gray-900">{hour.temperature}°</p>
                       <div className="flex items-center justify-center gap-0.5 mt-1">
-                        <WiRaindrop className="w-3 h-3 text-emerald-400/60" />
-                        <span className="text-[8px] text-[#666]">{hour.precipProbability}%</span>
+                        <WiRaindrop className="w-3 h-3 text-blue-600/60" />
+                        <span className="text-[8px] text-gray-500">{hour.precipProbability}%</span>
                       </div>
                     </div>
                   ))}
@@ -398,31 +398,31 @@ export function LocationWeatherCard({ weather, location }: LocationWeatherCardPr
       </div>
 
       {/* Compact Map Placeholder */}
-      <div className="relative h-20 sm:h-24 bg-[#1a1a1a] overflow-hidden">
+      <div className="relative h-20 sm:h-24 bg-white overflow-hidden">
         {/* Fake map tiles */}
         <div
           className="absolute inset-0 opacity-60"
           style={{
             backgroundImage: `
-              linear-gradient(to right, #252525 1px, transparent 1px),
-              linear-gradient(to bottom, #252525 1px, transparent 1px)
+              linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+              linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
             `,
             backgroundSize: '30px 30px',
           }}
         />
         {/* Streets */}
-        <div className="absolute top-1/3 left-0 right-0 h-0.5 bg-[#333]" />
-        <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-[#333]" />
+        <div className="absolute top-1/3 left-0 right-0 h-0.5 bg-gray-300" />
+        <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-300" />
 
         {/* Center pin */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <div className="w-5 h-5 rounded-full bg-emerald-500 border-2 border-white shadow-lg flex items-center justify-center">
+          <div className="w-5 h-5 rounded-full bg-blue-500 border-2 border-white shadow-lg flex items-center justify-center">
             <div className="w-1.5 h-1.5 rounded-full bg-white" />
           </div>
         </div>
 
         {/* Map attribution */}
-        <div className="absolute bottom-1 right-2 text-[8px] text-[#666]">
+        <div className="absolute bottom-1 right-2 text-[8px] text-gray-500">
           Demo Map
         </div>
       </div>

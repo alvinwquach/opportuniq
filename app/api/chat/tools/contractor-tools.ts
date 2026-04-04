@@ -41,7 +41,6 @@ export function createContractorVerificationTool(ctx: ToolContext) {
       // Try API-based search first if zip code is provided
       if (zipCode && availableProviders.length > 0) {
         try {
-          console.log("[verifyContractor] Using API chain for contractor search...");
           const apiResults = await searchContractorsAPI(contractorType, zipCode);
 
           if (apiResults.contractors.length > 0) {
@@ -68,20 +67,16 @@ export function createContractorVerificationTool(ctx: ToolContext) {
               });
             }
 
-            console.log(`[verifyContractor] Found ${apiResults.contractors.length} contractors via ${apiResults.source}`);
             if (apiResults.fallbacksUsed.length > 0) {
-              console.log(`[verifyContractor] Fallbacks used: ${apiResults.fallbacksUsed.join(", ")}`);
             }
           }
         } catch (error) {
-          console.error("[verifyContractor] API search failed:", error);
           Sentry.captureException(error, { extra: { tool: "verifyContractor", contractorName, zipCode } });
         }
       }
 
       // Fall back to Firecrawl scraping for additional verification sources
       if (ctx.firecrawl && results.length === 0) {
-        console.log("[verifyContractor] Falling back to Firecrawl scraping...");
 
         const verificationSources = [
           {
@@ -185,17 +180,14 @@ export function createContractorSearchTool(_ctx: ToolContext) {
       radius: z.number().optional().describe("Search radius in meters (default: 25000 = 15 miles)"),
     }),
     execute: async ({ serviceType, zipCode, radius }) => {
-      console.log(`[searchContractors] Execute started for ${serviceType} near ${zipCode}`);
       const availableProviders = getAvailableProviders();
 
       // Try API-based search first
       if (availableProviders.length > 0) {
         try {
-          console.log(`[searchContractors] Searching for ${serviceType} near ${zipCode}...`);
           const searchResults = await searchContractorsAPI(serviceType, zipCode, radius || 25000);
 
           if (searchResults.contractors.length > 0) {
-            console.log(`[searchContractors] Found ${searchResults.contractors.length} contractors via ${searchResults.source}`);
 
             const result = {
               serviceType,
@@ -214,13 +206,10 @@ export function createContractorSearchTool(_ctx: ToolContext) {
             };
 
             // Debug: log the result to check for serialization issues
-            console.log(`[searchContractors] Result size: ${JSON.stringify(result).length} bytes`);
-            console.log(`[searchContractors] Returning results...`);
 
             return result;
           }
         } catch (error) {
-          console.error("[searchContractors] API search failed:", error);
           Sentry.captureException(error, { extra: { tool: "searchContractors", serviceType, zipCode } });
         }
       }

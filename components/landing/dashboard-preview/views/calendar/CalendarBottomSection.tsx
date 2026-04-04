@@ -150,32 +150,32 @@ const getTypeIcon = (type: string) => {
 const getTypeColor = (type: string) => {
   switch (type) {
     case "contractor":
-      return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+      return "bg-blue-100 text-blue-600 border-blue-200";
     case "diy":
-      return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+      return "bg-blue-100 text-blue-600 border-blue-200";
     case "reminder":
-      return "bg-amber-500/20 text-amber-400 border-amber-500/30";
+      return "bg-amber-100 text-amber-600 border-amber-200";
     case "expense":
-      return "bg-red-500/20 text-red-400 border-red-500/30";
+      return "bg-red-100 text-red-600 border-red-200";
     case "income":
-      return "bg-green-500/20 text-green-400 border-green-500/30";
+      return "bg-green-100 text-green-600 border-green-200";
     default:
-      return "bg-[#333] text-[#888] border-[#444]";
+      return "bg-gray-100 text-gray-500 border-gray-200";
   }
 };
 
 const getStatusBadge = (status: string) => {
   switch (status) {
     case "confirmed":
-      return "bg-emerald-500/20 text-emerald-400";
+      return "bg-blue-100 text-blue-600";
     case "scheduled":
-      return "bg-blue-500/20 text-blue-400";
+      return "bg-blue-100 text-blue-600";
     case "pending":
-      return "bg-amber-500/20 text-amber-400";
+      return "bg-amber-100 text-amber-600";
     case "needs_scheduling":
-      return "bg-red-500/20 text-red-400";
+      return "bg-red-100 text-red-600";
     default:
-      return "bg-[#333] text-[#888]";
+      return "bg-gray-100 text-gray-500";
   }
 };
 
@@ -183,13 +183,13 @@ export function CalendarBottomSection() {
   return (
     <div className="grid md:grid-cols-3 gap-4 mt-4">
       {/* Upcoming Timeline */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#2a2a2a]">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
           <div className="flex items-center gap-2">
-            <IoCalendarOutline className="w-4 h-4 text-emerald-400" />
-            <h3 className="text-sm font-medium text-white">Upcoming Timeline</h3>
+            <IoCalendarOutline className="w-4 h-4 text-blue-600" />
+            <h3 className="text-sm font-medium text-gray-900">Upcoming Timeline</h3>
           </div>
-          <span className="text-[10px] text-[#666]">Next 7 days</span>
+          <span className="text-[10px] text-gray-500">Next 7 days</span>
         </div>
         <div className="p-3 space-y-2 max-h-[280px] overflow-y-auto">
           {upcomingTimeline.map((event, index) => {
@@ -197,22 +197,22 @@ export function CalendarBottomSection() {
             return (
               <div
                 key={event.id}
-                className="flex items-start gap-3 p-2.5 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a] hover:bg-[#151515] cursor-pointer transition-colors"
+                className="flex items-start gap-3 p-2.5 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer transition-colors"
               >
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center border ${getTypeColor(event.type)}`}>
                   <Icon className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-white truncate">{event.title}</p>
+                  <p className="text-xs font-medium text-gray-900 truncate">{event.title}</p>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[10px] text-[#888]">{event.date}</span>
-                    <span className="text-[10px] text-[#555]">·</span>
-                    <span className="text-[10px] text-[#888]">{event.time}</span>
+                    <span className="text-[10px] text-gray-500">{event.date}</span>
+                    <span className="text-[10px] text-gray-600">·</span>
+                    <span className="text-[10px] text-gray-500">{event.time}</span>
                   </div>
                   {event.location && (
                     <div className="flex items-center gap-1 mt-1">
-                      <IoLocationOutline className="w-3 h-3 text-[#555]" />
-                      <span className="text-[10px] text-[#666]">{event.location}</span>
+                      <IoLocationOutline className="w-3 h-3 text-gray-600" />
+                      <span className="text-[10px] text-gray-500">{event.location}</span>
                     </div>
                   )}
                 </div>
@@ -226,13 +226,13 @@ export function CalendarBottomSection() {
       </div>
 
       {/* Recurring Events */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#2a2a2a]">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
           <div className="flex items-center gap-2">
-            <IoRepeat className="w-4 h-4 text-emerald-400" />
-            <h3 className="text-sm font-medium text-white">Recurring Events</h3>
+            <IoRepeat className="w-4 h-4 text-blue-600" />
+            <h3 className="text-sm font-medium text-gray-900">Recurring Events</h3>
           </div>
-          <button className="text-[10px] text-emerald-400 hover:text-emerald-300 flex items-center gap-0.5">
+          <button className="text-[10px] text-blue-600 hover:text-blue-700 flex items-center gap-0.5">
             Manage <IoChevronForward className="w-3 h-3" />
           </button>
         </div>
@@ -242,28 +242,28 @@ export function CalendarBottomSection() {
             return (
               <div
                 key={event.id}
-                className="flex items-center gap-3 p-2.5 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a] hover:bg-[#151515] cursor-pointer transition-colors"
+                className="flex items-center gap-3 p-2.5 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer transition-colors"
               >
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center border ${getTypeColor(event.type)}`}>
                   <Icon className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-white truncate">{event.title}</p>
+                  <p className="text-xs font-medium text-gray-900 truncate">{event.title}</p>
                   <div className="flex items-center gap-2 mt-1">
-                    <IoRepeat className="w-3 h-3 text-[#555]" />
-                    <span className="text-[10px] text-[#888]">{event.pattern}</span>
+                    <IoRepeat className="w-3 h-3 text-gray-600" />
+                    <span className="text-[10px] text-gray-500">{event.pattern}</span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] text-[#666]">Next</p>
-                  <p className="text-xs font-medium text-white">{event.nextDate}</p>
+                  <p className="text-[10px] text-gray-500">Next</p>
+                  <p className="text-xs font-medium text-gray-900">{event.nextDate}</p>
                 </div>
               </div>
             );
           })}
         </div>
-        <div className="px-4 py-3 border-t border-[#2a2a2a] bg-[#0f0f0f]">
-          <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-colors border border-emerald-500/30">
+        <div className="px-4 py-3 border-t border-gray-200 bg-white">
+          <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-blue-200">
             <IoRepeat className="w-4 h-4" />
             Add Recurring Event
           </button>
@@ -271,39 +271,39 @@ export function CalendarBottomSection() {
       </div>
 
       {/* Linked Issues */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#2a2a2a]">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
           <div className="flex items-center gap-2">
-            <IoLinkOutline className="w-4 h-4 text-emerald-400" />
-            <h3 className="text-sm font-medium text-white">Linked Issues</h3>
+            <IoLinkOutline className="w-4 h-4 text-blue-600" />
+            <h3 className="text-sm font-medium text-gray-900">Linked Issues</h3>
           </div>
-          <span className="text-[10px] text-[#666]">{linkedIssues.length} issues</span>
+          <span className="text-[10px] text-gray-500">{linkedIssues.length} issues</span>
         </div>
         <div className="p-3 space-y-2 max-h-[280px] overflow-y-auto">
           {linkedIssues.map((item) => (
             <div
               key={item.id}
-              className="p-2.5 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a] hover:bg-[#151515] cursor-pointer transition-colors"
+              className="p-2.5 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer transition-colors"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-white truncate">{item.issueTitle}</p>
-                  <span className="text-[10px] text-[#666]">{item.category}</span>
+                  <p className="text-xs font-medium text-gray-900 truncate">{item.issueTitle}</p>
+                  <span className="text-[10px] text-gray-500">{item.category}</span>
                 </div>
                 <span className={`text-[9px] px-1.5 py-0.5 rounded capitalize flex-shrink-0 ${getStatusBadge(item.status)}`}>
                   {item.status.replace("_", " ")}
                 </span>
               </div>
               {item.eventTitle ? (
-                <div className="mt-2 pt-2 border-t border-[#2a2a2a] flex items-center gap-2">
-                  <IoCalendarOutline className="w-3 h-3 text-emerald-400" />
-                  <span className="text-[10px] text-emerald-400">{item.eventTitle}</span>
-                  <span className="text-[10px] text-[#555]">·</span>
-                  <span className="text-[10px] text-[#888]">{item.eventDate}</span>
+                <div className="mt-2 pt-2 border-t border-gray-200 flex items-center gap-2">
+                  <IoCalendarOutline className="w-3 h-3 text-blue-600" />
+                  <span className="text-[10px] text-blue-600">{item.eventTitle}</span>
+                  <span className="text-[10px] text-gray-600">·</span>
+                  <span className="text-[10px] text-gray-500">{item.eventDate}</span>
                 </div>
               ) : (
-                <div className="mt-2 pt-2 border-t border-[#2a2a2a]">
-                  <button className="flex items-center gap-1.5 text-[10px] text-amber-400 hover:text-amber-300">
+                <div className="mt-2 pt-2 border-t border-gray-200">
+                  <button className="flex items-center gap-1.5 text-[10px] text-amber-600 hover:text-amber-700">
                     <IoTimeOutline className="w-3 h-3" />
                     Schedule appointment
                   </button>
@@ -312,10 +312,10 @@ export function CalendarBottomSection() {
             </div>
           ))}
         </div>
-        <div className="px-4 py-3 border-t border-[#2a2a2a] bg-[#0f0f0f]">
+        <div className="px-4 py-3 border-t border-gray-200 bg-white">
           <div className="flex items-center justify-between text-[10px]">
-            <span className="text-[#666]">Issues needing scheduling</span>
-            <span className="font-medium text-amber-400">1</span>
+            <span className="text-gray-500">Issues needing scheduling</span>
+            <span className="font-medium text-amber-600">1</span>
           </div>
         </div>
       </div>

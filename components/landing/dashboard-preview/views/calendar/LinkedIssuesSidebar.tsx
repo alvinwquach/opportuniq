@@ -11,57 +11,57 @@ export function LinkedIssuesSidebar() {
   return (
     <div className="space-y-4">
       {/* Summary */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
-        <h3 className="text-sm font-medium text-white mb-3">Summary</h3>
+      <div className="bg-white rounded-xl border border-gray-200 p-4">
+        <h3 className="text-sm font-medium text-gray-900 mb-3">Summary</h3>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <IoCalendarOutline className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs text-[#888]">Scheduled</span>
+              <IoCalendarOutline className="w-4 h-4 text-blue-600" />
+              <span className="text-xs text-gray-500">Scheduled</span>
             </div>
-            <span className="text-sm font-semibold text-emerald-400">2</span>
+            <span className="text-sm font-semibold text-blue-600">2</span>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <IoAlertCircleOutline className="w-4 h-4 text-amber-400" />
-              <span className="text-xs text-[#888]">Need Scheduling</span>
+              <IoAlertCircleOutline className="w-4 h-4 text-amber-600" />
+              <span className="text-xs text-gray-500">Need Scheduling</span>
             </div>
-            <span className="text-sm font-semibold text-amber-400">2</span>
+            <span className="text-sm font-semibold text-amber-600">2</span>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <IoCheckmarkCircle className="w-4 h-4 text-[#888]" />
-              <span className="text-xs text-[#888]">Resolved</span>
+              <IoCheckmarkCircle className="w-4 h-4 text-gray-500" />
+              <span className="text-xs text-gray-500">Resolved</span>
             </div>
-            <span className="text-sm font-semibold text-[#888]">1</span>
+            <span className="text-sm font-semibold text-gray-500">1</span>
           </div>
         </div>
       </div>
 
       {/* Savings */}
-      <div className="bg-gradient-to-br from-emerald-500/10 to-[#1a1a1a] rounded-xl border border-emerald-500/20 p-4">
-        <h3 className="text-sm font-medium text-white mb-3">Potential Savings</h3>
+      <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl border border-blue-200 p-4">
+        <h3 className="text-sm font-medium text-gray-900 mb-3">Potential Savings</h3>
         <div className="text-center">
-          <p className="text-2xl font-bold text-emerald-400">$750</p>
-          <p className="text-[10px] text-[#666] mt-1">From scheduled repairs</p>
+          <p className="text-2xl font-bold text-blue-600">$750</p>
+          <p className="text-[10px] text-gray-500 mt-1">From scheduled repairs</p>
         </div>
-        <div className="mt-3 pt-3 border-t border-emerald-500/20">
+        <div className="mt-3 pt-3 border-t border-blue-200">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#888]">Already saved</span>
-            <span className="font-medium text-emerald-400">$95</span>
+            <span className="text-gray-500">Already saved</span>
+            <span className="font-medium text-blue-600">$95</span>
           </div>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-4">
-        <h3 className="text-sm font-medium text-white mb-3">Quick Actions</h3>
+      <div className="bg-white rounded-xl border border-gray-200 p-4">
+        <h3 className="text-sm font-medium text-gray-900 mb-3">Quick Actions</h3>
         <div className="space-y-2">
-          <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[#888] hover:bg-[#252525] hover:text-white rounded-lg transition-colors">
+          <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-500 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors">
             <IoLinkOutline className="w-4 h-4" />
             Link issue to event
           </button>
-          <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[#888] hover:bg-[#252525] hover:text-white rounded-lg transition-colors">
+          <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-500 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors">
             <IoCalendarOutline className="w-4 h-4" />
             Schedule all open issues
           </button>

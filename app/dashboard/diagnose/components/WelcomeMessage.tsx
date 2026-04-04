@@ -42,16 +42,16 @@ export function WelcomeMessage({ shouldAnimate }: WelcomeMessageProps) {
     <div className="flex justify-start">
       <div className="max-w-[90%]">
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-            <OpportunIQLogo className="w-5 h-5 text-emerald-400" />
+          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+            <OpportunIQLogo className="w-5 h-5 text-blue-600" />
           </div>
           <span className="text-sm font-medium text-white">OpportunIQ</span>
         </div>
         <div className="pl-10">
-          <p className="text-[15px] text-[#e0e0e0] leading-relaxed">
+          <p className="text-[15px] text-gray-700 leading-relaxed">
             {welcomeText}
             {isTyping && (
-              <span className="inline-block w-2 h-4 bg-emerald-400 ml-0.5 animate-pulse" />
+              <span className="inline-block w-2 h-4 bg-blue-400 ml-0.5 animate-pulse" />
             )}
           </p>
         </div>

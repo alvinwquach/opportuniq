@@ -59,7 +59,7 @@ export function ChatInput({
   };
 
   return (
-    <div className="p-4 border-t border-white/[0.06]">
+    <div className="p-4 border-t border-gray-200">
       {/* Hidden file input */}
       <input
         ref={fileInputRef}
@@ -79,21 +79,21 @@ export function ChatInput({
                 <img
                   src={URL.createObjectURL(file)}
                   alt={file.name}
-                  className="w-16 h-16 object-cover rounded-lg border border-[#2a2a2a]"
+                  className="w-16 h-16 object-cover rounded-lg border border-gray-200"
                 />
               ) : (
-                <div className="w-16 h-16 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] flex items-center justify-center">
-                  <IoVideocam className="w-6 h-6 text-[#666]" />
+                <div className="w-16 h-16 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center">
+                  <IoVideocam className="w-6 h-6 text-gray-500" />
                 </div>
               )}
               <button
                 type="button"
                 onClick={() => removeAttachment(index)}
-                className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 hover:bg-red-400 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 hover:bg-red-400 text-gray-900 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <IoClose className="w-3 h-3" />
               </button>
-              <p className="absolute bottom-0 left-0 right-0 text-[8px] text-center text-white bg-black/60 rounded-b-lg py-0.5 truncate px-1">
+              <p className="absolute bottom-0 left-0 right-0 text-[8px] text-center text-gray-900 bg-black/40 rounded-b-lg py-0.5 truncate px-1">
                 {file.type.startsWith("video/") ? "Video" : "Photo"}
               </p>
             </div>
@@ -102,14 +102,14 @@ export function ChatInput({
       )}
 
       <form onSubmit={handleSubmit}>
-        <div className="bg-[#1a1a1a] rounded-2xl border border-[#2a2a2a] focus-within:border-emerald-500/50 transition-colors">
+        <div className="bg-gray-100 rounded-2xl border border-gray-200 focus-within:border-blue-500/50 transition-colors">
           <input
             type="text"
             placeholder={placeholder}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={isStreaming}
-            className="w-full px-4 py-3 bg-transparent text-[15px] text-white placeholder:text-[#555] focus:outline-none disabled:opacity-50"
+            className="w-full px-4 py-3 bg-transparent text-[15px] text-gray-900 placeholder:text-gray-400 focus:outline-none disabled:opacity-50"
           />
           <div className="flex items-center justify-between px-3 pb-3">
             <Tooltip>
@@ -117,7 +117,7 @@ export function ChatInput({
                 <button
                   type="button"
                   onClick={handleAttachmentClick}
-                  className="p-2 text-[#555] hover:text-emerald-400 rounded-full hover:bg-emerald-500/10 transition-colors"
+                  className="p-2 text-gray-400 hover:text-blue-600 rounded-full hover:bg-blue-50 transition-colors"
                 >
                   <IoAttach className="w-5 h-5" />
                 </button>
@@ -144,7 +144,7 @@ export function ChatInput({
                     <TooltipTrigger asChild>
                       <button
                         type="button"
-                        className="p-2.5 text-[#555] hover:text-emerald-400 rounded-full hover:bg-emerald-500/10 transition-colors"
+                        className="p-2.5 text-gray-400 hover:text-blue-600 rounded-full hover:bg-blue-50 transition-colors"
                       >
                         <IoMic className="w-5 h-5" />
                       </button>
@@ -156,7 +156,7 @@ export function ChatInput({
                       <button
                         type="submit"
                         disabled={!input.trim() && attachments.length === 0}
-                        className="p-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="p-2.5 bg-blue-500 hover:bg-blue-400 text-gray-900 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                       >
                         <IoSend className="w-5 h-5" />
                       </button>

@@ -38,7 +38,7 @@ const FEATURES = [
 const SPENDING_CATEGORIES = [
   { category: "Plumbing", spent: 245, budget: 300, color: "bg-blue-500" },
   { category: "Electrical", spent: 0, budget: 200, color: "bg-amber-500" },
-  { category: "HVAC", spent: 150, budget: 400, color: "bg-teal-500" },
+  { category: "HVAC", spent: 150, budget: 400, color: "bg-blue-500" },
   { category: "Appliances", spent: 89, budget: 250, color: "bg-purple-500" },
   { category: "Outdoor", spent: 175, budget: 200, color: "bg-green-500" },
 ];
@@ -71,21 +71,21 @@ export default function BudgetPage() {
         <div className="max-w-4xl mx-auto text-center">
           {/* Breadcrumb */}
           <nav className="flex items-center justify-center gap-2 text-sm text-neutral-500 mb-6">
-            <Link href="/product" className="hover:text-teal-400 transition-colors">
+            <Link href="/product" className="hover:text-blue-400 transition-colors">
               Product
             </Link>
             <IoChevronForward className="w-3 h-3" />
             <span className="text-neutral-300">Budget Tracking</span>
           </nav>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-500/40 text-teal-400 text-xs font-mono mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-400 text-xs font-mono mb-6">
             <IoWalletOutline className="w-4 h-4" />
             Budget Tracking
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             Know where your{" "}
-            <span className="text-teal-400">
+            <span className="text-blue-400">
               money goes
             </span>
           </h1>
@@ -96,7 +96,7 @@ export default function BudgetPage() {
           </p>
 
           <WaitlistModal>
-            <Button className="h-12 px-8 font-mono font-bold bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
+            <Button className="h-12 px-8 font-mono font-bold bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
               Get Early Access
             </Button>
           </WaitlistModal>
@@ -109,7 +109,7 @@ export default function BudgetPage() {
           <div className="grid md:grid-cols-2 gap-8">
             {FEATURES.map((feature, i) => (
               <div key={i} className="p-6 rounded-xl bg-neutral-900 border border-neutral-700">
-                <div className="w-12 h-12 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 mb-4">
+                <div className="w-12 h-12 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 mb-4">
                   <feature.icon className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
@@ -215,7 +215,7 @@ export default function BudgetPage() {
           <div className="grid md:grid-cols-2 gap-4">
             {BENEFITS.map((benefit, i) => (
               <div key={i} className="flex items-center gap-3 p-4 rounded-lg bg-neutral-900 border border-neutral-700">
-                <IoCheckmarkCircle className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                <IoCheckmarkCircle className="w-5 h-5 text-blue-400 flex-shrink-0" />
                 <span className="text-neutral-300">{benefit}</span>
               </div>
             ))}
@@ -233,7 +233,7 @@ export default function BudgetPage() {
             Join the waitlist and take control of your home repair finances.
           </p>
           <WaitlistModal>
-            <Button className="h-14 px-8 font-mono font-bold text-lg bg-teal-500 hover:bg-teal-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
+            <Button className="h-14 px-8 font-mono font-bold text-lg bg-blue-500 hover:bg-blue-400 text-black rounded-lg transition-all duration-300 shadow-[0_0_30px_rgba(20,184,166,0.4)]">
               Join the Waitlist
             </Button>
           </WaitlistModal>

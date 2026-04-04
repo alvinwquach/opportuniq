@@ -72,7 +72,6 @@ export async function searchIFixitGuides(
       totalResults: data.totalResults || guides.length,
     };
   } catch (error) {
-    console.error("iFixit search error:", error);
     return {
       success: false,
       guides: [],
@@ -131,7 +130,6 @@ export async function getIFixitGuide(guideId: number): Promise<GuideDetailRespon
       guide,
     };
   } catch (error) {
-    console.error("iFixit get guide error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to get iFixit guide",
@@ -190,7 +188,6 @@ export async function getIFixitCategories(): Promise<{
       categories,
     };
   } catch (error) {
-    console.error("iFixit categories error:", error);
     return {
       success: false,
       categories: [],
@@ -246,7 +243,6 @@ export async function getIFixitGuidesByCategory(
       totalResults: guideIds.length,
     };
   } catch (error) {
-    console.error("iFixit category guides error:", error);
     return {
       success: false,
       guides: [],

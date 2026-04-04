@@ -17,17 +17,17 @@ const weekDayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const getEventColor = (type: string) => {
   switch (type) {
     case "contractor":
-      return "bg-emerald-500/20 border-emerald-500/30 text-emerald-400";
+      return "bg-blue-100 border-blue-500/30 text-blue-600";
     case "diy":
-      return "bg-emerald-500/20 border-emerald-500/30 text-emerald-400";
+      return "bg-blue-100 border-blue-500/30 text-blue-600";
     case "reminder":
       return "bg-amber-500/20 border-amber-500/30 text-amber-400";
     case "income":
-      return "bg-emerald-500/20 border-emerald-500/30 text-emerald-400";
+      return "bg-blue-100 border-blue-500/30 text-blue-600";
     case "expense":
       return "bg-red-500/20 border-red-500/30 text-red-400";
     default:
-      return "bg-[#333] border-[#444] text-[#888]";
+      return "bg-[#333] border-[#444] text-gray-500";
   }
 };
 
@@ -52,11 +52,11 @@ export function WeekGrid({
   };
 
   return (
-    <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] overflow-hidden">
+    <div className="bg-gray-100 rounded-xl border border-gray-200 overflow-hidden">
       {/* Week header */}
-      <div className="grid grid-cols-8 border-b border-[#2a2a2a] bg-[#0f0f0f]">
-        <div className="px-3 py-2.5 text-center border-r border-[#2a2a2a]">
-          <p className="text-xs font-semibold text-[#666]">Time</p>
+      <div className="grid grid-cols-8 border-b border-gray-200 bg-gray-50">
+        <div className="px-3 py-2.5 text-center border-r border-gray-200">
+          <p className="text-xs font-semibold text-gray-500">Time</p>
         </div>
         {weekDays.map((day, idx) => {
           const isToday = day.toDateString() === todayDate.toDateString();
@@ -64,13 +64,13 @@ export function WeekGrid({
           return (
             <div
               key={idx}
-              className={`px-3 py-2.5 text-center border-r border-[#2a2a2a] last:border-r-0 ${isWeekend ? "bg-[#0a0a0a]" : ""}`}
+              className={`px-3 py-2.5 text-center border-r border-gray-200 last:border-r-0 ${isWeekend ? "bg-gray-50" : ""}`}
             >
-              <p className="text-[10px] font-medium text-[#666] uppercase">
+              <p className="text-[10px] font-medium text-gray-500 uppercase">
                 {weekDayNames[idx]}
               </p>
               <p
-                className={`text-lg font-semibold ${isToday ? "text-emerald-400" : "text-white"}`}
+                className={`text-lg font-semibold ${isToday ? "text-blue-600" : "text-gray-900"}`}
               >
                 {day.getDate()}
               </p>
@@ -84,10 +84,10 @@ export function WeekGrid({
         {Array.from({ length: 14 }, (_, i) => i + 6).map((hour) => (
           <div
             key={hour}
-            className="grid grid-cols-8 border-b border-[#2a2a2a] min-h-[50px]"
+            className="grid grid-cols-8 border-b border-gray-200 min-h-[50px]"
           >
-            <div className="px-3 py-2 text-right border-r border-[#2a2a2a] bg-[#0f0f0f]">
-              <span className="text-xs text-[#666]">
+            <div className="px-3 py-2 text-right border-r border-gray-200 bg-gray-50">
+              <span className="text-xs text-gray-500">
                 {hour > 12 ? hour - 12 : hour}:00 {hour >= 12 ? "PM" : "AM"}
               </span>
             </div>
@@ -111,7 +111,7 @@ export function WeekGrid({
               return (
                 <div
                   key={idx}
-                  className={`border-r border-[#2a2a2a] last:border-r-0 p-1 ${isWeekend ? "bg-[#0a0a0a]" : "bg-[#1a1a1a] hover:bg-[#252525]"}`}
+                  className={`border-r border-gray-200 last:border-r-0 p-1 ${isWeekend ? "bg-gray-50" : "bg-gray-100 hover:bg-gray-100"}`}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => onDrop(e, day.getDate())}
                 >

@@ -293,9 +293,6 @@ export async function POST(request: NextRequest) {
     let estimatedCost: number;
 
     if (useGoogleTts && googleVoiceConfig) {
-      console.log(
-        `[Synthesize API] Google TTS (${googleVoiceConfig.name}): ${truncatedText.substring(0, 50)}... ${truncatedText.length} chars`
-      );
 
       const googleBuffer = await synthesizeWithGoogle(
         truncatedText,
@@ -307,9 +304,6 @@ export async function POST(request: NextRequest) {
       estimatedCost = (truncatedText.length / 1_000_000) * GOOGLE_TTS_PRICE_PER_1M_CHARS;
 
       const latencyMs = Date.now() - startTime;
-      console.log(
-        `[Synthesize API] Google TTS Success: ${truncatedText.length} chars, ${latencyMs}ms, $${estimatedCost.toFixed(6)}`
-      );
 
       // Log usage (non-blocking)
       db.insert(voiceApiUsage).values({
@@ -322,19 +316,13 @@ export async function POST(request: NextRequest) {
         costUsd: estimatedCost.toFixed(6),
         voiceName: googleVoiceConfig.voiceName,
         success: 1,
-      }).catch((err) => console.error("[Synthesize API] Failed to log usage:", err));
+      }).catch(() => {});
     } else {
       // Use OpenAI TTS for unsupported languages or no Google credentials
       if (language && !googleLangCode) {
-        console.log(`[Synthesize API] Unknown language "${language}", using OpenAI`);
       } else if (googleVoiceConfig && !process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-        console.log("[Synthesize API] Google credentials not set, using OpenAI");
       }
 
-      console.log(
-        `[Synthesize API] Using OpenAI TTS: ${truncatedText.substring(0, 50)}... ` +
-          `Voice: ${voice}, Speed: ${speed}, Length: ${truncatedText.length} chars`
-      );
 
       const mp3Response = await openaiClient.audio.speech.create({
         model: "tts-1",
@@ -348,10 +336,6 @@ export async function POST(request: NextRequest) {
       estimatedCost = (truncatedText.length / 1000) * OPENAI_TTS_PRICE_PER_1K_CHARS;
 
       const latencyMs = Date.now() - startTime;
-      console.log(
-        `[Synthesize API] OpenAI TTS Success: ${truncatedText.length} chars, ` +
-          `Latency: ${latencyMs}ms, Est. cost: $${estimatedCost.toFixed(4)}`
-      );
 
       // Log usage to database (non-blocking)
       db.insert(voiceApiUsage).values({
@@ -365,7 +349,7 @@ export async function POST(request: NextRequest) {
         model: "tts-1",
         voiceName: voice,
         success: 1,
-      }).catch((err) => console.error("[Synthesize API] Failed to log usage:", err));
+      }).catch(() => {});
     }
 
     // Return audio as response
@@ -378,7 +362,6 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("[Synthesize API] Error:", error);
 
     if (error instanceof OpenAI.APIError) {
       return NextResponse.json(

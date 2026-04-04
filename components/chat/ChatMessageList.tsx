@@ -34,11 +34,6 @@ export function ChatMessageList({
 }: ChatMessageListProps) {
   // Debug: log streaming state
   if (isStreaming || streamingContent) {
-    console.log("[ChatMessageList] Render:", {
-      isStreaming,
-      streamingContentLength: streamingContent?.length,
-      streamingContentPreview: streamingContent?.substring(0, 50)
-    });
   }
 
   return (

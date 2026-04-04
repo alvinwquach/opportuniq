@@ -36,12 +36,6 @@ export async function processVideoOnServer(
   file: File,
   onProgress?: ProgressCallback
 ): Promise<ServerProcessingResult> {
-  console.log("[ffmpeg-server] processVideoOnServer() - Starting");
-  console.log("[ffmpeg-server] File details:", {
-    name: file.name,
-    size: `${(file.size / 1024 / 1024).toFixed(2)}MB`,
-    type: file.type,
-  });
 
   onProgress?.("uploading", 0);
 
@@ -59,7 +53,6 @@ export async function processVideoOnServer(
   formData.append("maxFrameDimension", VIDEO_CONFIG.FRAME.MAX_DIMENSION.toString());
   formData.append("frameQuality", VIDEO_CONFIG.FRAME.QUALITY.toString());
 
-  console.log("[ffmpeg-server] Uploading to /api/video/process...");
   const uploadStart = performance.now();
 
   // Upload with progress tracking
@@ -72,12 +65,9 @@ export async function processVideoOnServer(
   );
 
   const uploadTime = performance.now() - uploadStart;
-  console.log("[ffmpeg-server] Upload completed in", uploadTime.toFixed(0), "ms");
-  console.log("[ffmpeg-server] Response status:", response.status, response.statusText);
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("[ffmpeg-server] Server error response:", errorText);
 
     let error;
     try {
@@ -88,7 +78,6 @@ export async function processVideoOnServer(
 
     // Check for specific error codes
     if (error.code === "VIDEO_PROCESSING_UNAVAILABLE") {
-      console.error("[ffmpeg-server] FFmpeg not available on server");
       throw new Error("Video processing is temporarily unavailable. Please try uploading a photo instead.");
     }
 
@@ -98,15 +87,7 @@ export async function processVideoOnServer(
   onProgress?.("uploading", 50);
 
   // Parse response - server returns multipart data or JSON with base64
-  console.log("[ffmpeg-server] Parsing server response...");
   const result = await response.json();
-  console.log("[ffmpeg-server] Response parsed:", {
-    hasCompressedVideo: !!result.compressedVideo,
-    hasThumbnail: !!result.thumbnail,
-    diagnosticFrames: result.diagnosticFrames?.length || 0,
-    hasAudio: result.hasAudio,
-    metadata: result.metadata,
-  });
 
   onProgress?.("uploading", 100);
 

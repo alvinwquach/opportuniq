@@ -18,7 +18,7 @@ export function ShoppingListSection({ items }: ShoppingListSectionProps) {
   if (items.length === 0) return null;
 
   return (
-    <div className="p-4 rounded-xl bg-[#161616] border border-[#1f1f1f]">
+    <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
       <div className="flex items-center gap-2 mb-3">
         <IoCart className="w-4 h-4 text-orange-400" />
         <h3 className="text-sm font-medium text-white">Shopping List</h3>
@@ -39,16 +39,16 @@ export function ShoppingListSection({ items }: ShoppingListSectionProps) {
               <span className="text-[#a3a3a3] truncate">{item.productName}</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-              <span className="text-[10px] text-[#9a9a9a]">{item.storeName}</span>
+              <span className="text-[10px] text-gray-400">{item.storeName}</span>
               {item.estimatedCost && (
-                <span className="text-white">${item.estimatedCost.toFixed(0)}</span>
+                <span className="text-gray-900">${item.estimatedCost.toFixed(0)}</span>
               )}
             </div>
           </div>
         ))}
       </div>
       {items.length > 5 && (
-        <p className="text-[10px] text-[#9a9a9a] mt-2">+{items.length - 5} more items</p>
+        <p className="text-[10px] text-gray-400 mt-2">+{items.length - 5} more items</p>
       )}
     </div>
   );

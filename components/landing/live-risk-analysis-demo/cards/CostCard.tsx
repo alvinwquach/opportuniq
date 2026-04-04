@@ -64,10 +64,10 @@ export function CostCard({ opportunityCost, userTimeValue, onTimeValueChange }: 
               </p>
               <p className="text-xs text-red-500 mt-1">If issues arise</p>
             </div>
-            <div className="text-center p-4 rounded-xl bg-teal-100 border border-teal-200">
-              <IoTrendingUp className="w-5 h-5 text-teal-700 mx-auto mb-2" />
-              <p className="text-xs text-teal-700 font-medium mb-1">Total Impact</p>
-              <p className="text-2xl font-bold text-teal-700">
+            <div className="text-center p-4 rounded-xl bg-blue-100 border border-blue-200">
+              <IoTrendingUp className="w-5 h-5 text-blue-700 mx-auto mb-2" />
+              <p className="text-xs text-blue-700 font-medium mb-1">Total Impact</p>
+              <p className="text-2xl font-bold text-blue-700">
                 ${opportunityCost.totalCost.toLocaleString()}
               </p>
             </div>

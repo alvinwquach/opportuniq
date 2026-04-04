@@ -27,9 +27,9 @@ export function BudgetGlanceCard({ financials, pendingDecisionsCount = 0, userId
   const isLowBudget = remaining > 0 && percentUsed > 75;
 
   return (
-    <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/5 to-transparent border border-[#1f1f1f]">
+    <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500/5 to-transparent border border-gray-200">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-[10px] uppercase tracking-wider text-[#9a9a9a]">This Month</p>
+        <p className="text-[10px] uppercase tracking-wider text-gray-400">This Month</p>
         {isOverBudget && (
           <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-500/10">
             <IoWarning className="w-3 h-3 text-red-400" />
@@ -46,9 +46,9 @@ export function BudgetGlanceCard({ financials, pendingDecisionsCount = 0, userId
 
       {/* Available Amount - Hero Display */}
       <div className="flex items-baseline gap-2 mb-1">
-        <p className="text-[10px] text-[#9a9a9a]">Available</p>
+        <p className="text-[10px] text-gray-400">Available</p>
         <p className={`text-2xl font-semibold ${
-          isOverBudget ? "text-red-400" : isLowBudget ? "text-amber-400" : "text-emerald-400"
+          isOverBudget ? "text-red-400" : isLowBudget ? "text-amber-400" : "text-blue-600"
         }`}>
           ${Math.abs(remaining).toLocaleString(undefined, { maximumFractionDigits: 0 })}
           {isOverBudget && <span className="text-sm ml-1">over</span>}
@@ -56,10 +56,10 @@ export function BudgetGlanceCard({ financials, pendingDecisionsCount = 0, userId
       </div>
 
       {/* Progress Bar */}
-      <div className="h-1.5 bg-[#1f1f1f] rounded-full overflow-hidden mb-3">
+      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden mb-3">
         <div
           className={`h-full rounded-full transition-all ${
-            isOverBudget ? "bg-red-500" : isLowBudget ? "bg-amber-500" : "bg-emerald-500"
+            isOverBudget ? "bg-red-500" : isLowBudget ? "bg-amber-500" : "bg-blue-500"
           }`}
           style={{ width: `${Math.min(percentUsed, 100)}%` }}
         />
@@ -68,16 +68,16 @@ export function BudgetGlanceCard({ financials, pendingDecisionsCount = 0, userId
       {/* Sub-stats */}
       <div className="grid grid-cols-2 gap-3 text-xs">
         <div>
-          <p className="text-[#9a9a9a]">Emergency buffer</p>
-          <p className="text-white font-medium">
+          <p className="text-gray-400">Emergency buffer</p>
+          <p className="text-gray-900 font-medium">
             ${(monthlyIncome * 0.2).toLocaleString(undefined, { maximumFractionDigits: 0 })}
           </p>
         </div>
         <div>
-          <p className="text-[#9a9a9a]">
+          <p className="text-gray-400">
             {pendingDecisionsCount > 0 ? "Pending decisions" : "Your time value"}
           </p>
-          <p className="text-white font-medium">
+          <p className="text-gray-900 font-medium">
             {pendingDecisionsCount > 0
               ? `${pendingDecisionsCount} awaiting`
               : `$${hourlyRate.toFixed(0)}/hr`

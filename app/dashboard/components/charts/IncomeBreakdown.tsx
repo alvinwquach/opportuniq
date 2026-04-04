@@ -103,14 +103,14 @@ export function IncomeBreakdown({ streams, monthlyTotal, size = 100 }: IncomeBre
                 className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: COLORS[i % COLORS.length] }}
               />
-              <span className="text-[11px] text-[#888]">
-                {stream.source} <span className="text-[#555]">({percent}%)</span>
+              <span className="text-[11px] text-gray-500">
+                {stream.source} <span className="text-gray-400">({percent}%)</span>
               </span>
             </div>
           );
         })}
         {streams.length > 4 && (
-          <span className="text-[10px] text-[#555]">+{streams.length - 4} more</span>
+          <span className="text-[10px] text-gray-400">+{streams.length - 4} more</span>
         )}
       </div>
     </div>

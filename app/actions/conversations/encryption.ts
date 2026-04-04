@@ -119,7 +119,6 @@ export async function encryptMessage(
       encryption: { scope: encryptionScope, keyVersion, algorithm },
     };
   } catch (error) {
-    console.error("[encryptMessage] Error:", error);
     return { error: "Internal Server Error" };
   }
 }
@@ -239,7 +238,6 @@ export async function encryptConversationMetadata(
       encryption: { scope: encryptionScope, keyVersion, algorithm },
     };
   } catch (error) {
-    console.error("[encryptConversationMetadata] Error:", error);
     return { error: "Internal Server Error" };
   }
 }
@@ -353,7 +351,6 @@ export async function batchEncryptMessages(
       encryption: { scope: encryptionScope, keyVersion, algorithm },
     };
   } catch (error) {
-    console.error("[batchEncryptMessages] Error:", error);
     return { error: "Internal Server Error" };
   }
 }
