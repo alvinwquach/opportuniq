@@ -45,11 +45,6 @@ export async function GET(request: Request) {
       const errorDescription = searchParams.get("error_description") || "Unknown error";
       const errorCode = searchParams.get("error_code");
 
-        error: errorParam,
-        errorCode,
-        description: errorDescription,
-      });
-
       // If flow state not found, the code expired - redirect to login with message
       if (errorParam === "server_error" && errorCode === "flow_state_not_found") {
         return NextResponse.redirect(`${origin}/auth/login?error=expired&message=${encodeURIComponent("Your login session expired. Please try again.")}`, { status: 302 });
@@ -337,10 +332,6 @@ export async function GET(request: Request) {
   } catch (error: unknown) {
     // Catch-all for any unhandled errors to prevent 500s
     const err = error as { message?: string; stack?: string };
-      message: err?.message,
-      stack: err?.stack,
-    });
-
     const errorMsg = err?.message || "An unexpected error occurred";
 
     // Check for PKCE-related errors

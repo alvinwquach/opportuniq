@@ -145,9 +145,6 @@ export async function POST(req: Request) {
 
       updated++;
     } catch (error) {
-        `[Firecrawl Webhook] Failed to process ${page.url}:`,
-        error
-      );
       Sentry.captureException(error, {
         extra: { tool: "firecrawl-webhook", url: page.url, jobId },
       });

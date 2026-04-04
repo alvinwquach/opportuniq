@@ -615,66 +615,68 @@ function DecisionDetail({ decision }: { decision: Decision }) {
 // ── Right panel: votes ────────────────────────────────────────────────────────
 
 function VotePanel({ decision }: { decision: Decision }) {
+  const dark = useDarkMode();
+  const b = dark ? "border-white/[0.06]" : "border-gray-100";
   const summary = voteSummary(decision.votes);
   const isPending = decision.status === "pending";
 
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
-        <IoPeopleOutline className="w-4 h-4 text-gray-500" />
-        <span className="text-xs font-semibold text-gray-700">Household Vote</span>
+      <div className={`px-4 py-3 border-b flex items-center gap-2 ${b}`}>
+        <IoPeopleOutline className={`w-4 h-4 ${dark ? "text-gray-500" : "text-gray-500"}`} />
+        <span className={`text-xs font-semibold ${dark ? "text-gray-200" : "text-gray-700"}`}>Household Vote</span>
       </div>
 
       {/* Member votes */}
-      <div className="px-4 py-3 border-b border-gray-100 space-y-2">
+      <div className={`px-4 py-3 border-b space-y-2 ${b}`}>
         {decision.votes.map((v) => (
           <div key={v.name} className="flex items-center gap-2.5">
             <span className="text-lg leading-none flex-shrink-0">{v.avatar}</span>
-            <span className="text-xs text-gray-700 flex-1 font-medium">{v.name}</span>
+            <span className={`text-xs flex-1 font-medium ${dark ? "text-gray-300" : "text-gray-700"}`}>{v.name}</span>
             {v.vote === "diy" ? (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">DIY</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-medium">DIY</span>
             ) : v.vote === "pro" ? (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 font-medium">Hire Pro</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 font-medium">Hire Pro</span>
             ) : (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-400 font-medium">Waiting</span>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${dark ? "bg-white/[0.06] text-gray-600" : "bg-gray-100 text-gray-400"}`}>Waiting</span>
             )}
           </div>
         ))}
       </div>
 
       {/* Vote summary */}
-      <div className="px-4 py-2.5 border-b border-gray-100">
-        <p className="text-[10px] text-gray-500 font-medium">{summary}</p>
+      <div className={`px-4 py-2.5 border-b ${b}`}>
+        <p className={`text-[10px] font-medium ${dark ? "text-gray-500" : "text-gray-500"}`}>{summary}</p>
       </div>
 
       {/* Vendor Quotes */}
       {decision.vendorContacts && decision.vendorContacts.length > 0 && (
-        <div className="px-4 py-3 border-b border-gray-100">
+        <div className={`px-4 py-3 border-b ${b}`}>
           <div className="flex items-center gap-1.5 mb-2">
-            <IoCallOutline className="w-3.5 h-3.5 text-gray-400" />
-            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Vendor Quotes</p>
+            <IoCallOutline className={`w-3.5 h-3.5 ${dark ? "text-gray-600" : "text-gray-400"}`} />
+            <p className={`text-[10px] font-semibold uppercase tracking-wide ${dark ? "text-gray-600" : "text-gray-400"}`}>Vendor Quotes</p>
           </div>
           <div className="space-y-2">
             {decision.vendorContacts.map((vendor) => (
               <div
                 key={vendor.name}
-                className="rounded-lg border border-gray-100 bg-white p-2.5 flex flex-col gap-1"
+                className={`rounded-lg border p-2.5 flex flex-col gap-1 ${dark ? "bg-[#252525] border-white/10" : "bg-white border-gray-100"}`}
               >
                 <div className="flex items-start justify-between gap-1">
-                  <p className="text-[10px] font-semibold text-gray-700 leading-tight">{vendor.name}</p>
+                  <p className={`text-[10px] font-semibold leading-tight ${dark ? "text-gray-300" : "text-gray-700"}`}>{vendor.name}</p>
                   {vendor.contacted ? (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-50 text-green-700 font-medium flex-shrink-0">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-500/20 text-green-500 font-medium flex-shrink-0">
                       Contacted
                     </span>
                   ) : (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium flex-shrink-0 cursor-pointer">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-medium flex-shrink-0 cursor-pointer">
                       Reach Out
                     </span>
                   )}
                 </div>
-                <p className="text-sm font-bold text-gray-900">${vendor.quote.toLocaleString()}</p>
-                <div className="flex items-center gap-2 text-[10px] text-gray-400">
+                <p className={`text-sm font-bold ${dark ? "text-gray-100" : "text-gray-900"}`}>${vendor.quote.toLocaleString()}</p>
+                <div className={`flex items-center gap-2 text-[10px] ${dark ? "text-gray-600" : "text-gray-400"}`}>
                   <span className="flex items-center gap-0.5">
                     <IoStarOutline className="w-2.5 h-2.5" />
                     {vendor.rating}
@@ -692,8 +694,8 @@ function VotePanel({ decision }: { decision: Decision }) {
 
       {/* Cast vote (pending only) */}
       {isPending && (
-        <div className="px-4 py-3 border-b border-gray-100 space-y-2">
-          <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-2">Cast your vote</p>
+        <div className={`px-4 py-3 border-b space-y-2 ${b}`}>
+          <p className={`text-[10px] font-semibold uppercase tracking-wide mb-2 ${dark ? "text-gray-600" : "text-gray-400"}`}>Cast your vote</p>
           <button className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors">
             Vote DIY
           </button>
@@ -706,22 +708,21 @@ function VotePanel({ decision }: { decision: Decision }) {
       {/* Outcome record (resolved only) */}
       {decision.outcome && (
         <div className="px-4 py-3">
-          <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-2">Outcome Record</p>
-          <div className="rounded-lg bg-green-50 border border-green-100 p-3 space-y-2">
+          <p className={`text-[10px] font-semibold uppercase tracking-wide mb-2 ${dark ? "text-gray-600" : "text-gray-400"}`}>Outcome Record</p>
+          <div className={`rounded-lg border p-3 space-y-2 ${dark ? "bg-green-500/10 border-green-500/20" : "bg-green-50 border-green-100"}`}>
             <div className="flex justify-between text-[10px]">
-              <span className="text-green-700">Chose</span>
-              <span className="font-semibold text-green-800 capitalize">{decision.outcome.chosen}</span>
+              <span className="text-green-500">Chose</span>
+              <span className="font-semibold text-green-400 capitalize">{decision.outcome.chosen}</span>
             </div>
-            {/* Actual vs Estimated (costDelta) */}
             {(() => {
               const delta = decision.outcome.actualCost - decision.outcome.estimatedCost;
               const under = delta <= 0;
               return (
                 <div className="flex justify-between text-[10px]">
-                  <span className="text-green-700">Actual vs Estimated</span>
-                  <span className={`font-semibold ${under ? "text-green-700" : "text-red-600"}`}>
+                  <span className="text-green-500">Actual vs Estimated</span>
+                  <span className={`font-semibold ${under ? "text-green-400" : "text-red-400"}`}>
                     ${decision.outcome.actualCost}{" "}
-                    <span className={`text-[9px] ${under ? "text-green-600" : "text-red-500"}`}>
+                    <span className={`text-[9px] ${under ? "text-green-500" : "text-red-500"}`}>
                       ({under ? "" : "+"}{delta})
                     </span>
                   </span>
@@ -729,12 +730,12 @@ function VotePanel({ decision }: { decision: Decision }) {
               );
             })()}
             <div className="flex justify-between text-[10px]">
-              <span className="text-green-700">Saved</span>
-              <span className="font-semibold text-green-800">${decision.outcome.savedVsPro}</span>
+              <span className="text-green-500">Saved</span>
+              <span className="font-semibold text-green-400">${decision.outcome.savedVsPro}</span>
             </div>
             <div className="flex justify-between text-[10px]">
-              <span className="text-green-700">Days taken</span>
-              <span className="font-semibold text-green-800">{decision.outcome.timeDays}</span>
+              <span className="text-green-500">Days taken</span>
+              <span className="font-semibold text-green-400">{decision.outcome.timeDays}</span>
             </div>
           </div>
 
@@ -743,30 +744,30 @@ function VotePanel({ decision }: { decision: Decision }) {
             decision.outcome.whatWentWrong ||
             decision.outcome.wouldDoAgain !== undefined ||
             decision.outcome.lessonsLearned) && (
-            <div className="mt-2 rounded-lg border border-gray-100 bg-white p-3 space-y-2">
-              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Retrospective</p>
+            <div className={`mt-2 rounded-lg border p-3 space-y-2 ${dark ? "bg-[#252525] border-white/10" : "bg-white border-gray-100"}`}>
+              <p className={`text-[10px] font-semibold uppercase tracking-wide ${dark ? "text-gray-600" : "text-gray-400"}`}>Retrospective</p>
               {decision.outcome.whatWentWell && (
                 <div className="flex items-start gap-1.5">
                   <IoCheckmarkCircle className="w-3 h-3 text-green-500 flex-shrink-0 mt-0.5" />
-                  <p className="text-[10px] text-gray-600 leading-tight">{decision.outcome.whatWentWell}</p>
+                  <p className={`text-[10px] leading-tight ${dark ? "text-gray-400" : "text-gray-600"}`}>{decision.outcome.whatWentWell}</p>
                 </div>
               )}
               {decision.outcome.whatWentWrong && (
                 <div className="flex items-start gap-1.5">
                   <IoCloseOutline className="w-3 h-3 text-red-400 flex-shrink-0 mt-0.5" />
-                  <p className="text-[10px] text-gray-600 leading-tight">{decision.outcome.whatWentWrong}</p>
+                  <p className={`text-[10px] leading-tight ${dark ? "text-gray-400" : "text-gray-600"}`}>{decision.outcome.whatWentWrong}</p>
                 </div>
               )}
               {decision.outcome.wouldDoAgain !== undefined && (
                 <div className="flex items-center justify-between text-[10px]">
-                  <span className="text-gray-500">Would do again</span>
+                  <span className={dark ? "text-gray-500" : "text-gray-500"}>Would do again</span>
                   {decision.outcome.wouldDoAgain ? (
-                    <span className="flex items-center gap-0.5 text-green-600 font-semibold">
+                    <span className="flex items-center gap-0.5 text-green-500 font-semibold">
                       <IoCheckmarkOutline className="w-3 h-3" />
                       Yes
                     </span>
                   ) : (
-                    <span className="flex items-center gap-0.5 text-red-500 font-semibold">
+                    <span className="flex items-center gap-0.5 text-red-400 font-semibold">
                       <IoCloseOutline className="w-3 h-3" />
                       No
                     </span>
@@ -774,9 +775,9 @@ function VotePanel({ decision }: { decision: Decision }) {
                 </div>
               )}
               {decision.outcome.lessonsLearned && (
-                <div className="pt-1 border-t border-gray-100">
-                  <p className="text-[10px] font-semibold text-gray-400 mb-0.5">Lesson learned</p>
-                  <p className="text-[10px] text-gray-500 leading-tight">{decision.outcome.lessonsLearned}</p>
+                <div className={`pt-1 border-t ${b}`}>
+                  <p className={`text-[10px] font-semibold mb-0.5 ${dark ? "text-gray-600" : "text-gray-400"}`}>Lesson learned</p>
+                  <p className={`text-[10px] leading-tight ${dark ? "text-gray-500" : "text-gray-500"}`}>{decision.outcome.lessonsLearned}</p>
                 </div>
               )}
             </div>
@@ -790,17 +791,19 @@ function VotePanel({ decision }: { decision: Decision }) {
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 export function DecisionsView() {
+  const dark = useDarkMode();
+  const b = dark ? "border-white/[0.06]" : "border-gray-100";
   const [selectedId, setSelectedId] = useState<string>(decisions[0].id);
   const selected = decisions.find((d) => d.id === selectedId) ?? decisions[0];
 
   return (
-    <div className="flex h-full overflow-hidden bg-white">
+    <div className={`flex h-full overflow-hidden ${dark ? "bg-[#111111]" : "bg-white"}`}>
 
       {/* Panel 1: Decision list */}
-      <div className="w-[220px] flex-shrink-0 border-r border-gray-100 flex flex-col h-full">
-        <div className="px-3 py-3 border-b border-gray-100 flex items-center justify-between">
-          <span className="text-xs font-semibold text-gray-900">Decisions</span>
-          <span className="text-[10px] text-gray-400">{decisions.length}</span>
+      <div className={`w-[220px] flex-shrink-0 border-r flex flex-col h-full ${b} ${dark ? "bg-[#141414]" : ""}`}>
+        <div className={`px-3 py-3 border-b flex items-center justify-between ${b}`}>
+          <span className={`text-xs font-semibold ${dark ? "text-gray-100" : "text-gray-900"}`}>Decisions</span>
+          <span className={`text-[10px] ${dark ? "text-gray-600" : "text-gray-400"}`}>{decisions.length}</span>
         </div>
 
         <div className="flex-1 overflow-y-auto">
@@ -814,7 +817,7 @@ export function DecisionsView() {
           ))}
         </div>
 
-        <div className="p-3 border-t border-gray-100">
+        <div className={`p-3 border-t ${b}`}>
           <button className="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">
             <IoAddOutline className="w-3.5 h-3.5" />
             New Decision
@@ -823,12 +826,12 @@ export function DecisionsView() {
       </div>
 
       {/* Panel 2: Decision detail */}
-      <div className="flex-1 min-w-0 border-r border-gray-100 h-full overflow-hidden">
+      <div className={`flex-1 min-w-0 border-r h-full overflow-hidden ${b}`}>
         <DecisionDetail decision={selected} />
       </div>
 
       {/* Panel 3: Vote tally */}
-      <div className="w-[220px] flex-shrink-0 h-full overflow-hidden">
+      <div className={`w-[220px] flex-shrink-0 h-full overflow-hidden ${dark ? "bg-[#141414]" : ""}`}>
         <VotePanel decision={selected} />
       </div>
     </div>

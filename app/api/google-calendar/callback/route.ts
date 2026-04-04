@@ -71,9 +71,6 @@ export async function GET(req: Request) {
     const tokens = await exchangeCodeForTokens(code);
 
     if (!tokens.access_token || !tokens.refresh_token) {
-        hasAccessToken: !!tokens.access_token,
-        hasRefreshToken: !!tokens.refresh_token,
-      });
       return NextResponse.redirect(
         new URL(`${defaultRedirect}?calendar_error=missing_tokens`, req.url)
       );

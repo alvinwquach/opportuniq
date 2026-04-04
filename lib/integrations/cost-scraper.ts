@@ -808,9 +808,6 @@ export async function bulkScrapeCostGuides(
       // Rate limit: 2 seconds between requests
       await new Promise((resolve) => setTimeout(resolve, 2000));
     } catch (error) {
-        `[CostScraper] Failed to scrape ${source}/${slug}:`,
-        error
-      );
       Sentry.captureException(error, {
         extra: { tool: "bulkScrapeCostGuides", source, slug, region },
       });

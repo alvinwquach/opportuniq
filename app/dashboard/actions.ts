@@ -59,16 +59,12 @@ export async function getDashboardData(userId: string) {
       errorMsg.includes("authentication") ||
       errorMsg.includes("password")
     ) {
-        error: errorMsg,
-        code: errorCode,
-      });
-      
       throw new Error(
         `Database connection failed. Please check your DATABASE_URL environment variable. ` +
         `Error: ${errorMsg}`
       );
     }
-    
+
     throw error;
   };
 
@@ -949,10 +945,6 @@ export async function getDashboardData(userId: string) {
       errorMsg.includes("authentication") ||
       errorMsg.includes("password")
     ) {
-        error: errorMsg,
-        code: errorCode,
-      });
-      
       throw new Error(
         `Database connection failed. Please check your DATABASE_URL environment variable. ` +
         `The database may be paused, or your connection string may be incorrect. ` +
