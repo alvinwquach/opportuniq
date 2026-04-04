@@ -67,7 +67,7 @@ function ConversationItem({
 
   return (
     <Link
-      href={`/dashboard/diagnose/${conversation.id}`}
+      href={`/dashboard/projects/${conversation.id}`}
       onClick={() => {
         trackDiagnosisConversationViewed({
           conversationId: conversation.id,
@@ -79,15 +79,15 @@ function ConversationItem({
       className={cn(
         "group relative flex items-center gap-2 px-3 py-2.5 rounded-lg cursor-pointer transition-colors",
         isActive
-          ? "bg-[#5eead4]/10 text-white"
-          : "text-[#888] hover:bg-[#1a1a1a] hover:text-white"
+          ? "bg-[#5eead4]/10 text-gray-900"
+          : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
       )}
     >
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium truncate">
           {conversation.title || "New Diagnosis"}
         </p>
-        <p className="text-xs text-[#666] truncate">
+        <p className="text-xs text-gray-400 truncate">
           {formatRelativeDate(conversation.lastMessageAt)}
         </p>
       </div>
@@ -101,7 +101,7 @@ function ConversationItem({
         className={cn(
           "p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity",
           showMenu && "opacity-100",
-          "hover:bg-[#2a2a2a]"
+          "hover:bg-gray-100"
         )}
       >
         <IoEllipsisVertical className="w-4 h-4" />
@@ -117,14 +117,14 @@ function ConversationItem({
               setConfirmDelete(false);
             }}
           />
-          <div className="absolute right-0 top-full mt-1 z-20 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg shadow-lg overflow-hidden">
+          <div className="absolute right-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
             <button
               onClick={handleDelete}
               className={cn(
                 "flex items-center gap-2 w-full px-3 py-2 text-sm transition-colors",
                 confirmDelete
-                  ? "bg-red-500/20 text-red-400"
-                  : "text-[#888] hover:bg-[#2a2a2a] hover:text-red-400"
+                  ? "bg-red-500/20 text-red-600"
+                  : "text-gray-500 hover:bg-gray-100 hover:text-red-600"
               )}
             >
               {confirmDelete ? (
@@ -173,23 +173,23 @@ export function ChatHistorySidebar({
     await deleteConversation.mutateAsync(conversationId);
     if (currentConversationId === conversationId) {
       // Navigate to new diagnosis page after deleting current conversation
-      router.push("/dashboard/diagnose");
+      router.push("/dashboard/projects");
     }
   };
 
   return (
-    <aside className="relative flex flex-col h-full bg-[#0c0c0c] border-l border-[#1f1f1f] overflow-hidden">
-      <div className="p-3 border-b border-[#1f1f1f] flex-shrink-0">
+    <aside className="relative flex flex-col h-full bg-gray-50 border-l border-gray-200 overflow-hidden">
+      <div className="p-3 border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center gap-2">
           <button
             onClick={onToggleCollapse}
-            className="p-2 rounded-lg text-[#888] hover:text-white hover:bg-[#1a1a1a] transition-colors"
+            className="p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors"
             title="Hide history"
           >
             <IoChevronForward className="w-4 h-4" />
           </button>
           <Link
-            href="/dashboard/diagnose"
+            href="/dashboard/projects"
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#5eead4] text-black font-medium text-sm hover:bg-[#4fd1c5] transition-colors"
           >
             <IoAdd className="w-5 h-5" />
@@ -203,11 +203,11 @@ export function ChatHistorySidebar({
             <div className="w-5 h-5 border-2 border-[#5eead4] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : error ? (
-          <p className="text-[#888] text-sm text-center py-4">
+          <p className="text-gray-500 text-sm text-center py-4">
             Failed to load conversations
           </p>
         ) : !data?.conversations.length ? (
-          <p className="text-[#666] text-sm text-center py-8 px-4">
+          <p className="text-gray-400 text-sm text-center py-8 px-4">
             No conversations yet. Start a new diagnosis!
           </p>
         ) : (

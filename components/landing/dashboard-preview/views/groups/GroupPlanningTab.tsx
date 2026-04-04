@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  IoSunnyOutline,
+  IoWarningOutline,
+  IoConstructOutline,
+} from "react-icons/io5";
 import { LocationWeatherCard } from "../dashboard";
 
 interface WeatherData {
@@ -68,7 +73,7 @@ export function GroupPlanningTab({ weather, location }: GroupPlanningTabProps) {
         <div className="space-y-3">
           <div className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
             <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-sm">🌤</span>
+              <IoSunnyOutline className="w-4 h-4" />
             </div>
             <div>
               <p className="text-sm font-medium text-gray-900">Best days for outdoor work</p>
@@ -77,7 +82,7 @@ export function GroupPlanningTab({ weather, location }: GroupPlanningTabProps) {
           </div>
           <div className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
             <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
-              <span className="text-sm">⚠️</span>
+              <IoWarningOutline className="w-4 h-4 text-amber-500" />
             </div>
             <div>
               <p className="text-sm font-medium text-gray-900">Rain expected Monday</p>
@@ -86,7 +91,7 @@ export function GroupPlanningTab({ weather, location }: GroupPlanningTabProps) {
           </div>
           <div className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
             <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-sm">🛠</span>
+              <IoConstructOutline className="w-4 h-4" />
             </div>
             <div>
               <p className="text-sm font-medium text-gray-900">Upcoming maintenance</p>

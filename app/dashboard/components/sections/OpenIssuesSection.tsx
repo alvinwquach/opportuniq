@@ -16,7 +16,7 @@ export function OpenIssuesSection({ issues }: OpenIssuesSectionProps) {
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-medium text-white">Open Issues</h2>
         <Link
-          href="/issues"
+          href="/dashboard/projects"
           className="text-xs text-gray-400 hover:text-gray-900 transition-colors"
         >
           View all
@@ -26,7 +26,7 @@ export function OpenIssuesSection({ issues }: OpenIssuesSectionProps) {
         {issues.map(({ issue, group }) => (
           <Link
             key={issue.id}
-            href={`/issues/${issue.id}`}
+            href={`/dashboard/projects/${issue.id}`}
             className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-200 transition-colors group"
           >
             <div className="w-9 h-9 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">

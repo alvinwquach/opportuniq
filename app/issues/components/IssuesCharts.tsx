@@ -82,9 +82,9 @@ export function IssuesCharts({
 
       {/* ── Chart 1: Savings Over Time ── */}
       {/* Dark card panel with a border and padding */}
-      <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4">
-        <h3 className="text-sm font-semibold text-white mb-1">Savings Over Time</h3>
-        <p className="text-xs text-[#666] mb-3">Cumulative savings from DIY repairs</p>
+      <div className="bg-white border border-gray-200 rounded-xl p-4">
+        <h3 className="text-sm font-semibold text-gray-900 mb-1">Savings Over Time</h3>
+        <p className="text-xs text-gray-400 mb-3">Cumulative savings from DIY repairs</p>
 
         {/* Fixed-height container for the chart — Recharts needs an explicit height to render */}
         <div className="h-32">
@@ -111,7 +111,7 @@ export function IssuesCharts({
                 dataKey="month"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#666", fontSize: 10 }}
+                tick={{ fill: "#9ca3af", fontSize: 10 }}
               />
 
               {/* Y-axis: hidden entirely so the chart is cleaner.
@@ -123,12 +123,12 @@ export function IssuesCharts({
                   formatter: converts the raw number to a dollar string like "$120" with "Saved" as the label. */}
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#1a1a1a",
-                  border: "1px solid #2a2a2a",
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e5e7eb",
                   borderRadius: "8px",
                   fontSize: "12px",
                 }}
-                labelStyle={{ color: "#888" }}
+                labelStyle={{ color: "#6b7280" }}
                 formatter={(value: number) => [`$${value.toFixed(0)}`, "Saved"]}
               />
 
@@ -151,9 +151,9 @@ export function IssuesCharts({
       </div>
 
       {/* ── Chart 2: Issues by Category ── */}
-      <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4">
-        <h3 className="text-sm font-semibold text-white mb-1">By Category</h3>
-        <p className="text-xs text-[#666] mb-3">Issue distribution</p>
+      <div className="bg-white border border-gray-200 rounded-xl p-4">
+        <h3 className="text-sm font-semibold text-gray-900 mb-1">By Category</h3>
+        <p className="text-xs text-gray-400 mb-3">Issue distribution</p>
 
         {/* Side-by-side layout: the donut chart on the left, the legend list on the right */}
         <div className="flex items-center gap-4">
@@ -210,10 +210,10 @@ export function IssuesCharts({
                     style={{ backgroundColor: cat.color }}
                   />
                   {/* Category name in muted grey */}
-                  <span className="text-[#888]">{cat.name}</span>
+                  <span className="text-gray-500">{cat.name}</span>
                 </div>
                 {/* Issue count in white, bold — the number of issues in this category */}
-                <span className="text-white font-medium">{cat.value}</span>
+                <span className="text-gray-900 font-medium">{cat.value}</span>
               </div>
             ))}
           </div>
@@ -221,9 +221,9 @@ export function IssuesCharts({
       </div>
 
       {/* ── Chart 3: Resolution Breakdown ── */}
-      <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4">
-        <h3 className="text-sm font-semibold text-white mb-1">How Issues Were Resolved</h3>
-        <p className="text-xs text-[#666] mb-3">DIY vs Professional</p>
+      <div className="bg-white border border-gray-200 rounded-xl p-4">
+        <h3 className="text-sm font-semibold text-gray-900 mb-1">How Issues Were Resolved</h3>
+        <p className="text-xs text-gray-400 mb-3">DIY vs Professional</p>
 
         {/* Fixed-height container for the horizontal bar chart */}
         <div className="h-32">
@@ -246,15 +246,15 @@ export function IssuesCharts({
                 dataKey="name"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#888", fontSize: 11 }}
+                tick={{ fill: "#6b7280", fontSize: 11 }}
                 width={80}
               />
 
               {/* Tooltip: shows the count and a "Issues" label when hovering over a bar */}
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#1a1a1a",
-                  border: "1px solid #2a2a2a",
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e5e7eb",
                   borderRadius: "8px",
                   fontSize: "12px",
                 }}
@@ -276,8 +276,8 @@ export function IssuesCharts({
         </div>
 
         {/* Summary footer below the chart: shows the calculated DIY success rate as a percentage */}
-        <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#2a2a2a]">
-          <span className="text-xs text-[#666]">DIY Success Rate</span>
+        <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
+          <span className="text-xs text-gray-400">DIY Success Rate</span>
           {/* The percentage is displayed in large green text to highlight it as a positive metric */}
           <span className="text-sm font-semibold text-emerald-400">
             {resolutionBreakdown.diySuccessRate}%

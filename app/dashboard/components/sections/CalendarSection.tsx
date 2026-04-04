@@ -49,7 +49,7 @@ export function CalendarSection({ events }: CalendarSectionProps) {
           {events.slice(0, 3).map((event) => (
             <Link
               key={event.id}
-              href={`/issues/${event.issueId}`}
+              href={`/dashboard/projects/${event.issueId}`}
               className="flex items-center gap-3 p-2 -mx-1 rounded-lg hover:bg-gray-100 transition-colors group"
             >
               <div
@@ -98,7 +98,7 @@ export function CalendarSection({ events }: CalendarSectionProps) {
         <div className="text-center py-4">
           <p className="text-xs text-gray-400">No upcoming events</p>
           <Link
-            href="/issues"
+            href="/dashboard/projects"
             className="text-[10px] text-blue-600 hover:text-blue-600/80 mt-1 inline-block"
           >
             Schedule a DIY project →

@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger, SplitText, CustomEase } from "@/lib/gsap";
 import {
   IoShieldCheckmark,
   IoAlarm,
@@ -68,73 +66,16 @@ const questions: {
 ];
 
 export function FiveQuestions() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const hasAnimated = useRef(false);
-
-  useEffect(() => {
-    if (!sectionRef.current) return;
-    if (hasAnimated.current) return;
-    hasAnimated.current = true;
-
-    const ctx = gsap.context(() => {
-      const ease = CustomEase.get("spring") ? "spring" : "power3.out";
-
-      if (headingRef.current) {
-        const split = new SplitText(headingRef.current, { type: "words" });
-        gsap.set(split.words, { clipPath: "inset(0 0 100% 0)", display: "inline-block" });
-        ScrollTrigger.create({
-          trigger: headingRef.current,
-          start: "top 80%",
-          onEnter: () => {
-            gsap.to(split.words, {
-              clipPath: "inset(0 0 0% 0)",
-              stagger: 0.06,
-              duration: 0.6,
-              ease,
-            });
-          },
-          once: true,
-        });
-      }
-
-      cardRefs.current.forEach((card, i) => {
-        if (!card) return;
-        gsap.set(card, { clipPath: "inset(0 0 100% 0)" });
-        ScrollTrigger.create({
-          trigger: card,
-          start: "top 88%",
-          onEnter: () => {
-            gsap.to(card, {
-              clipPath: "inset(0 0 0% 0)",
-              duration: 0.6,
-              delay: i * 0.08,
-              ease,
-            });
-          },
-          once: true,
-        });
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <section ref={sectionRef} id="what-you-can-do" className="py-24 sm:py-32 bg-gray-50">
+    <section id="what-you-can-do" className="py-24 sm:py-32 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Split layout: problem statement left, questions right */}
         <div className="grid lg:grid-cols-[2fr_3fr] gap-12 lg:gap-16">
           {/* Left — problem statement (sticky on desktop) */}
           <div className="lg:sticky lg:top-24 lg:self-start">
             <p className="text-sm font-medium text-blue-600 uppercase tracking-wider mb-3">
               The problem
             </p>
-            <h2
-              ref={headingRef}
-              className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 leading-tight"
-            >
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 leading-tight">
               Something breaks. You have five questions and zero answers.
             </h2>
             <p className="text-base text-gray-500 leading-relaxed">
@@ -149,14 +90,11 @@ export function FiveQuestions() {
             {questions.map((q, i) => (
               <div
                 key={i}
-                ref={(el) => { cardRefs.current[i] = el; }}
                 className={`flex items-start gap-4 p-5 rounded-2xl ${q.bg} border ${q.border} hover:shadow-sm transition-shadow duration-200 cursor-default`}
               >
                 <q.icon className={`w-6 h-6 flex-shrink-0 mt-0.5 ${q.iconColor}`} />
                 <div>
-                  <h3
-                    className={`text-lg font-bold ${q.color} mb-1`}
-                  >
+                  <h3 className={`text-lg font-bold ${q.color} mb-1`}>
                     {q.question}
                   </h3>
                   <p className="text-sm text-gray-600 leading-relaxed">

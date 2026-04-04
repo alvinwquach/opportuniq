@@ -29,7 +29,7 @@ export async function deleteIssue(
       return { success: false, error: "Issue not found" };
     }
 
-    revalidatePath("/dashboard/issues");
+    revalidatePath("/dashboard/projects");
     revalidatePath(`/dashboard/groups/${groupId}`);
 
     return { success: true, issueId: deleted.id };

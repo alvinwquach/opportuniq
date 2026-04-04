@@ -4,11 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   IoPersonOutline,
-  IoCashOutline,
   IoWalletOutline,
-  IoReceiptOutline,
   IoLocationOutline,
   IoLinkOutline,
+  IoNotificationsOutline,
   IoChevronForward,
   IoTimeOutline,
 } from "react-icons/io5";
@@ -18,56 +17,47 @@ const settingsSections = [
   {
     id: "profile",
     title: "Profile",
-    description: "Your personal information and preferences",
+    description: "Your personal information and account details",
     href: "/dashboard/settings/profile",
     icon: IoPersonOutline,
-    iconBg: "bg-blue-100",
-    iconColor: "text-blue-600",
-  },
-  {
-    id: "income",
-    title: "Income",
-    description: "Manage your income streams and hourly rate",
-    href: "/dashboard/settings/income",
-    icon: IoCashOutline,
-    iconBg: "bg-blue-100",
+    iconBg: "bg-blue-50",
     iconColor: "text-blue-600",
   },
   {
     id: "budget",
-    title: "Budget & Risk",
-    description: "Set spending limits and DIY comfort level",
+    title: "Budget",
+    description: "Spending limits, income, and DIY comfort level",
     href: "/dashboard/settings/budget",
     icon: IoWalletOutline,
-    iconBg: "bg-blue-100",
+    iconBg: "bg-blue-50",
     iconColor: "text-blue-600",
-  },
-  {
-    id: "expenses",
-    title: "Expenses",
-    description: "Track recurring and one-time expenses",
-    href: "/dashboard/settings/expenses",
-    icon: IoReceiptOutline,
-    iconBg: "bg-amber-500/20",
-    iconColor: "text-amber-400",
   },
   {
     id: "location",
     title: "Location",
-    description: "Set your ZIP code for local searches",
+    description: "Your ZIP code, search radius, and nearby services",
     href: "/dashboard/settings/location",
     icon: IoLocationOutline,
-    iconBg: "bg-blue-100",
+    iconBg: "bg-blue-50",
     iconColor: "text-blue-600",
   },
   {
     id: "integrations",
     title: "Integrations",
-    description: "Connect Gmail and other services",
+    description: "Connected services and data sources",
     href: "/dashboard/settings/integrations",
     icon: IoLinkOutline,
-    iconBg: "bg-pink-500/20",
-    iconColor: "text-pink-400",
+    iconBg: "bg-blue-50",
+    iconColor: "text-blue-600",
+  },
+  {
+    id: "notifications",
+    title: "Notifications",
+    description: "Choose what you get notified about",
+    href: "/dashboard/settings/notifications",
+    icon: IoNotificationsOutline,
+    iconBg: "bg-blue-50",
+    iconColor: "text-blue-600",
   },
 ];
 
@@ -94,7 +84,7 @@ export function SettingsPageClient({
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h2 className="text-lg font-semibold text-white">Settings</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Settings</h2>
           <p className="text-sm text-gray-500">
             Manage your account and preferences
           </p>
@@ -113,7 +103,7 @@ export function SettingsPageClient({
                   <IoTimeOutline className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-white">
+                  <h3 className="text-sm font-medium text-gray-900">
                     Your Time Value
                   </h3>
                   <p className="text-xs text-gray-500">
@@ -134,7 +124,7 @@ export function SettingsPageClient({
                   <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-1">
                     Monthly
                   </p>
-                  <p className="text-xl font-semibold text-white">
+                  <p className="text-xl font-semibold text-gray-900">
                     ${monthlyIncome.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </p>
                 </div>
@@ -142,12 +132,12 @@ export function SettingsPageClient({
                   <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-1">
                     Annual
                   </p>
-                  <p className="text-xl font-semibold text-white">
+                  <p className="text-xl font-semibold text-gray-900">
                     ${annualIncome.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </p>
                 </div>
               </div>
-              <div className="p-3 rounded-lg bg-blue-50 border border-blue-500/20">
+              <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
                 <p className="text-xs text-blue-600">
                   <span className="font-medium">Opportunity Cost:</span> A
                   4-hour DIY project needs to save you at least{" "}
@@ -176,7 +166,7 @@ export function SettingsPageClient({
                     className={cn(
                       "w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left",
                       isActive
-                        ? "bg-blue-50 border border-blue-500/20"
+                        ? "bg-blue-50 border border-blue-200"
                         : "hover:bg-gray-100"
                     )}
                   >
@@ -223,9 +213,9 @@ export function SettingsPageClient({
             </h3>
             <div className="space-y-3">
               <SetupItem
-                label="Income"
+                label="Budget"
                 isComplete={monthlyIncome > 0}
-                href="/dashboard/settings/income"
+                href="/dashboard/settings/budget"
               />
               <SetupItem
                 label="Location"
@@ -244,7 +234,7 @@ export function SettingsPageClient({
           {postalCode && (
             <div className="bg-gray-100 rounded-lg border border-gray-200 p-4">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-medium text-white">Location</h3>
+                <h3 className="text-sm font-medium text-gray-900">Location</h3>
                 <Link
                   href="/dashboard/settings/location"
                   className="text-xs text-blue-600 font-medium hover:text-blue-500"
@@ -266,7 +256,7 @@ export function SettingsPageClient({
           )}
 
           {/* Help Card */}
-          <div className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-lg border border-blue-500/20 p-4">
+          <div className="bg-blue-50 rounded-lg border border-blue-100 p-4">
             <h3 className="text-sm font-medium text-gray-900 mb-2">Need Help?</h3>
             <p className="text-xs text-gray-500 mb-3">
               Check out our guides on how to get the most out of OpportunIQ.
@@ -311,7 +301,7 @@ function SetupItem({
           Done
         </span>
       ) : (
-        <span className="text-xs text-amber-400">Set up →</span>
+        <span className="text-xs text-amber-600">Set up →</span>
       )}
     </Link>
   );

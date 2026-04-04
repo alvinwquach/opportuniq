@@ -61,14 +61,14 @@ const resolutionOptions: {
     label: "Replaced the item",
     description: "Bought a new one instead of repairing",
     icon: IoSwapHorizontal,
-    color: "text-purple-400",
+    color: "text-purple-600",
   },
   {
     type: "abandoned",
     label: "Gave up / Not worth it",
     description: "Decided not to pursue this further",
     icon: IoStopCircle,
-    color: "text-red-400",
+    color: "text-red-600",
   },
   {
     type: "deferred",
@@ -82,7 +82,7 @@ const resolutionOptions: {
     label: "Watching and waiting",
     description: "Keeping an eye on it to see if it worsens",
     icon: IoEye,
-    color: "text-[#666]",
+    color: "text-gray-400",
   },
 ];
 
@@ -157,9 +157,9 @@ export function ResolutionDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-lg bg-[#161616] border-[#1f1f1f]">
+      <DialogContent className="sm:max-w-lg bg-white border-gray-200">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-white">
+          <DialogTitle className="flex items-center gap-2 text-gray-900">
             <IoCheckmarkCircle className="w-5 h-5 text-green-500" />
             {step === "resolution" ? "Resolve Issue" : "Record Outcome"}
           </DialogTitle>
@@ -184,7 +184,7 @@ export function ResolutionDialog({
                 variant="ghost"
                 size="sm"
                 onClick={() => { onComplete(); onClose(); setStep("resolution"); }}
-                className="text-xs text-[#666] hover:text-[#9a9a9a]"
+                className="text-xs text-gray-400 hover:text-gray-500"
               >
                 Skip for now
               </Button>
@@ -193,7 +193,7 @@ export function ResolutionDialog({
         ) : (
           <>
             <div className="space-y-4 py-2">
-              <p className="text-sm text-[#9a9a9a]">
+              <p className="text-sm text-gray-500">
                 How was this issue resolved? This helps track outcomes and improve future recommendations.
               </p>
 
@@ -210,29 +210,29 @@ export function ResolutionDialog({
                       className={`w-full flex items-start gap-3 p-3 rounded-lg border transition-colors text-left ${
                         isSelected
                           ? "border-[#00D4FF] bg-[#00D4FF]/5"
-                          : "border-[#1f1f1f] hover:border-[#2a2a2a] hover:bg-[#1a1a1a]"
+                          : "border-gray-200 hover:border-gray-200 hover:bg-gray-50"
                       }`}
                     >
                       <div
                         className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                          isSelected ? "bg-[#00D4FF]/10" : "bg-[#1f1f1f]"
+                          isSelected ? "bg-[#00D4FF]/10" : "bg-gray-50"
                         }`}
                       >
                         <Icon
                           className={`w-4 h-4 ${
-                            isSelected ? option.color : "text-[#666]"
+                            isSelected ? option.color : "text-gray-400"
                           }`}
                         />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p
                           className={`text-sm font-medium ${
-                            isSelected ? "text-white" : "text-[#9a9a9a]"
+                            isSelected ? "text-gray-900" : "text-gray-500"
                           }`}
                         >
                           {option.label}
                         </p>
-                        <p className="text-xs text-[#666] mt-0.5">
+                        <p className="text-xs text-gray-400 mt-0.5">
                           {option.description}
                         </p>
                       </div>
@@ -240,7 +240,7 @@ export function ResolutionDialog({
                         className={`w-4 h-4 rounded-full border-2 shrink-0 mt-0.5 transition-colors flex items-center justify-center ${
                           isSelected
                             ? "border-[#00D4FF] bg-[#00D4FF]"
-                            : "border-[#2a2a2a]"
+                            : "border-gray-200"
                         }`}
                       >
                         {isSelected && (
@@ -254,7 +254,7 @@ export function ResolutionDialog({
 
               {/* Notes */}
               <div className="space-y-2">
-                <Label htmlFor="notes" className="text-xs font-medium text-[#666]">
+                <Label htmlFor="notes" className="text-xs font-medium text-gray-400">
                   Notes (optional)
                 </Label>
                 <Textarea
@@ -263,13 +263,13 @@ export function ResolutionDialog({
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Add any notes about the resolution, lessons learned, costs, etc."
                   rows={3}
-                  className="bg-[#0c0c0c] border-[#1f1f1f] text-white placeholder:text-[#666] focus:border-[#00D4FF]/50 resize-none"
+                  className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-[#00D4FF]/50 resize-none"
                 />
               </div>
 
               {/* Error message */}
               {error && (
-                <p className="text-xs text-red-400 px-1">{error}</p>
+                <p className="text-xs text-red-600 px-1">{error}</p>
               )}
             </div>
 
@@ -278,7 +278,7 @@ export function ResolutionDialog({
                 variant="ghost"
                 onClick={() => handleOpenChange(false)}
                 disabled={isSubmitting}
-                className="text-[#9a9a9a] hover:text-white hover:bg-[#1f1f1f]"
+                className="text-gray-500 hover:text-gray-900 hover:bg-gray-50"
               >
                 Cancel
               </Button>

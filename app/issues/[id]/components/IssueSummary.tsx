@@ -24,17 +24,17 @@ function getSeverityConfig(severity: string | null) {
     case "critical":
       return {
         label: "Critical",
-        className: "bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20",
+        className: "bg-red-500/10 text-red-600 border-red-500/20 hover:bg-red-500/20",
       };
     case "serious":
       return {
         label: "Serious",
-        className: "bg-orange-500/10 text-orange-400 border-orange-500/20 hover:bg-orange-500/20",
+        className: "bg-orange-500/10 text-orange-600 border-orange-500/20 hover:bg-orange-500/20",
       };
     case "moderate":
       return {
         label: "Moderate",
-        className: "bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/20",
+        className: "bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500/20",
       };
     case "minor":
       return {
@@ -44,7 +44,7 @@ function getSeverityConfig(severity: string | null) {
     case "cosmetic":
       return {
         label: "Cosmetic",
-        className: "bg-[#1f1f1f] text-[#666] border-[#2a2a2a] hover:bg-[#2a2a2a]",
+        className: "bg-gray-50 text-gray-400 border-gray-200 hover:bg-gray-100",
       };
     default:
       return null;
@@ -56,22 +56,22 @@ function getUrgencyConfig(urgency: string | null) {
     case "emergency":
       return {
         label: "Emergency - Call 911",
-        className: "bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20",
+        className: "bg-red-500/10 text-red-600 border-red-500/20 hover:bg-red-500/20",
       };
     case "now":
       return {
         label: "Immediate Action",
-        className: "bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20",
+        className: "bg-red-500/10 text-red-600 border-red-500/20 hover:bg-red-500/20",
       };
     case "today":
       return {
         label: "Today",
-        className: "bg-orange-500/10 text-orange-400 border-orange-500/20 hover:bg-orange-500/20",
+        className: "bg-orange-500/10 text-orange-600 border-orange-500/20 hover:bg-orange-500/20",
       };
     case "this_week":
       return {
         label: "This Week",
-        className: "bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/20",
+        className: "bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500/20",
       };
     case "this_month":
       return {
@@ -81,7 +81,7 @@ function getUrgencyConfig(urgency: string | null) {
     case "monitor":
       return {
         label: "Monitor",
-        className: "bg-[#1f1f1f] text-[#666] border-[#2a2a2a] hover:bg-[#2a2a2a]",
+        className: "bg-gray-50 text-gray-400 border-gray-200 hover:bg-gray-100",
       };
     default:
       return null;
@@ -98,10 +98,10 @@ export function IssueSummary({ issue }: IssueSummaryProps) {
   }
 
   return (
-    <Card className="bg-[#161616] border-[#1f1f1f] py-0">
-      <CardHeader className="flex-row items-center gap-2 px-4 py-3 border-b border-[#1f1f1f]">
+    <Card className="bg-white border-gray-200 py-0">
+      <CardHeader className="flex-row items-center gap-2 px-4 py-3 border-b border-gray-200">
         <IoMedkit className="w-4 h-4 text-[#00D4FF]" />
-        <CardTitle className="text-sm font-medium text-white">
+        <CardTitle className="text-sm font-medium text-gray-900">
           Assessment Summary
         </CardTitle>
       </CardHeader>
@@ -134,10 +134,10 @@ export function IssueSummary({ issue }: IssueSummaryProps) {
         {/* Category */}
         {issue.category && (
           <div>
-            <h3 className="text-xs font-medium text-[#666] mb-1">Category</h3>
+            <h3 className="text-xs font-medium text-gray-400 mb-1">Category</h3>
             <Badge
               variant="outline"
-              className="bg-[#1f1f1f] text-white border-[#2a2a2a] rounded-lg py-1 capitalize"
+              className="bg-gray-50 text-gray-900 border-gray-200 rounded-lg py-1 capitalize"
             >
               {issue.category.replace("_", " ")}
             </Badge>
@@ -147,11 +147,11 @@ export function IssueSummary({ issue }: IssueSummaryProps) {
         {/* Diagnosis */}
         {issue.diagnosis && (
           <div>
-            <h3 className="text-xs font-medium text-[#666] mb-1">AI Diagnosis</h3>
-            <Card className="bg-[#1a1a1a] border-[#2a2a2a] p-3 py-3">
+            <h3 className="text-xs font-medium text-gray-400 mb-1">AI Diagnosis</h3>
+            <Card className="bg-gray-50 border-gray-200 p-3 py-3">
               <div className="flex items-start gap-2">
                 <IoInformationCircle className="w-4 h-4 text-[#00D4FF] mt-0.5 shrink-0" />
-                <p className="text-sm text-[#9a9a9a] leading-relaxed">
+                <p className="text-sm text-gray-500 leading-relaxed">
                   {issue.diagnosis}
                 </p>
               </div>

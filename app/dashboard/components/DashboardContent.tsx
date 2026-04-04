@@ -119,7 +119,7 @@ export function DashboardContent({
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                onClick={() => router.push("/dashboard/diagnose?new=true")}
+                onClick={() => router.push("/dashboard/projects?new=true")}
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition-colors"
               >
                 <IoCamera className="w-3.5 h-3.5" />

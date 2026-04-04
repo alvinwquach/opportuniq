@@ -87,7 +87,7 @@ function getTimelineColors(type: TimelineEntry["type"], title?: string) {
     case "outcome":
       return { bg: "bg-green-500", icon: "text-white", line: "bg-green-500/30" };
     default:
-      return { bg: "bg-[#333]", icon: "text-[#9a9a9a]", line: "bg-[#333]" };
+      return { bg: "bg-gray-200", icon: "text-gray-500", line: "bg-gray-200" };
   }
 }
 
@@ -106,19 +106,19 @@ export function IssueTimeline({ entries }: IssueTimelineProps) {
 
   if (entries.length === 0) {
     return (
-      <section className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
+      <section className="rounded-xl bg-white border border-gray-200 overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
           <div className="flex items-center gap-2">
             <IoTime className="w-4 h-4 text-[#00D4FF]" />
-            <h2 className="text-sm font-medium text-white">Timeline</h2>
+            <h2 className="text-sm font-medium text-gray-900">Timeline</h2>
           </div>
         </div>
         <div className="p-8 text-center">
-          <div className="w-12 h-12 rounded-xl bg-[#1f1f1f] flex items-center justify-center mx-auto mb-3">
-            <IoTime className="w-6 h-6 text-[#666]" />
+          <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
+            <IoTime className="w-6 h-6 text-gray-400" />
           </div>
-          <p className="text-sm text-[#9a9a9a] mb-1">No activity yet</p>
-          <p className="text-xs text-[#666]">
+          <p className="text-sm text-gray-500 mb-1">No activity yet</p>
+          <p className="text-xs text-gray-400">
             Events will appear here as the issue progresses
           </p>
         </div>
@@ -129,12 +129,12 @@ export function IssueTimeline({ entries }: IssueTimelineProps) {
   const displayedEntries = expanded ? entries : entries.slice(0, 10);
 
   return (
-    <section className="rounded-xl bg-[#161616] border border-[#1f1f1f] overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
+    <section className="rounded-xl bg-white border border-gray-200 overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <IoTime className="w-4 h-4 text-[#00D4FF]" />
-          <h2 className="text-sm font-medium text-white">Timeline</h2>
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1f1f1f] text-[#666]">
+          <h2 className="text-sm font-medium text-gray-900">Timeline</h2>
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-50 text-gray-400">
             {entries.length}
           </span>
         </div>
@@ -166,9 +166,9 @@ export function IssueTimeline({ entries }: IssueTimelineProps) {
 
                 {/* Content */}
                 <div className="flex-1 min-w-0 pt-1">
-                  <p className="text-sm font-medium text-white">{entry.title}</p>
+                  <p className="text-sm font-medium text-gray-900">{entry.title}</p>
                   {entry.description && (
-                    <p className="text-xs text-[#9a9a9a] mt-1 line-clamp-2">
+                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">
                       {entry.description}
                     </p>
                   )}
@@ -184,25 +184,25 @@ export function IssueTimeline({ entries }: IssueTimelineProps) {
                             className="rounded-full"
                           />
                         ) : (
-                          <div className="w-4 h-4 rounded-full bg-[#2a2a2a] flex items-center justify-center text-[8px] font-medium text-[#9a9a9a]">
+                          <div className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px] font-medium text-gray-500">
                             {getInitials(entry.performer.name)}
                           </div>
                         )}
-                        <span className="text-xs text-[#666]">
+                        <span className="text-xs text-gray-400">
                           {entry.performer.name || "Unknown"}
                         </span>
-                        <span className="text-xs text-[#444]">·</span>
+                        <span className="text-xs text-gray-300">·</span>
                       </>
                     ) : (
                       <>
                         <div className="w-4 h-4 rounded-full bg-[#00D4FF]/20 flex items-center justify-center text-[8px] font-medium text-[#00D4FF]">
                           AI
                         </div>
-                        <span className="text-xs text-[#666]">System</span>
-                        <span className="text-xs text-[#444]">·</span>
+                        <span className="text-xs text-gray-400">System</span>
+                        <span className="text-xs text-gray-300">·</span>
                       </>
                     )}
-                    <span className="text-xs text-[#666]">
+                    <span className="text-xs text-gray-400">
                       {formatDistanceToNow(new Date(entry.timestamp), {
                         addSuffix: true,
                       })}
@@ -218,7 +218,7 @@ export function IssueTimeline({ entries }: IssueTimelineProps) {
       {entries.length > 10 && (
         <button
           onClick={() => setExpanded(!expanded)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs text-[#00D4FF] hover:bg-[#1a1a1a] transition-colors border-t border-[#1f1f1f]"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs text-[#00D4FF] hover:bg-gray-50 transition-colors border-t border-gray-200"
         >
           {expanded ? (
             <>

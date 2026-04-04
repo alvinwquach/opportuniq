@@ -10,11 +10,9 @@ interface BrowserChromeProps {
 const viewPaths: Record<ViewType, string> = {
   dashboard: 'dashboard',
   projects:  'projects',
-  diagnose:  'diagnose',
   calendar:  'calendar',
   finances:  'finances',
   guides:    'guides',
-  decisions: 'decisions',
   groups:    'groups',
   settings:  'settings',
 };

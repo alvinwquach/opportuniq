@@ -73,7 +73,7 @@ export function IssuesSidebar({
       </div>
 
       {/* Issues List */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 scrollbar-auto-hide">
         {filteredIssues.map(([id, issue]) => {
           const IssueIcon = issue.icon;
           const isActive = selectedIssue === id && !isCreatingNewIssue;

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gsap, ScrollTrigger, SplitText } from "@/lib/gsap";
 import {
   IoPeople,
   IoScale,
@@ -121,51 +120,9 @@ const tabs: { icon: IconType; label: string; description: string; visual: React.
 ];
 
 export function BeyondDiagnosis() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
   const [activeTab, setActiveTab] = useState(0);
-  const contentRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const pausedRef = useRef(false);
-  const hasAnimated = useRef(false);
-
-  const animateContent = () => {
-    if (!contentRef.current) return;
-    gsap.fromTo(
-      contentRef.current,
-      { clipPath: "inset(0 0 100% 0)" },
-      { clipPath: "inset(0 0 0% 0)", duration: 0.4, ease: "power3.out" }
-    );
-  };
-
-  // Heading entrance animation
-  useEffect(() => {
-    if (!sectionRef.current) return;
-    if (hasAnimated.current) return;
-    hasAnimated.current = true;
-
-    const ctx = gsap.context(() => {
-      if (headingRef.current) {
-        const split = new SplitText(headingRef.current, { type: "words" });
-        gsap.set(split.words, { clipPath: "inset(0 0 100% 0)", display: "inline-block" });
-        ScrollTrigger.create({
-          trigger: headingRef.current,
-          start: "top 80%",
-          onEnter: () => {
-            gsap.to(split.words, {
-              clipPath: "inset(0 0 0% 0)",
-              stagger: 0.05,
-              duration: 0.6,
-              ease: "spring",
-            });
-          },
-          once: true,
-        });
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
 
   // Auto-rotate tabs
   useEffect(() => {
@@ -179,11 +136,6 @@ export function BeyondDiagnosis() {
     };
   }, []);
 
-  useEffect(() => {
-    animateContent();
-     
-  }, [activeTab]);
-
   const handleTabClick = (i: number) => {
     setActiveTab(i);
     pausedRef.current = false;
@@ -191,23 +143,18 @@ export function BeyondDiagnosis() {
 
   return (
     <section
-      ref={sectionRef}
-      className="py-24 sm:py-32 bg-white"
+      className="py-24 sm:py-32 bg-gray-50"
       onMouseEnter={() => { pausedRef.current = true; }}
       onMouseLeave={() => { pausedRef.current = false; }}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Split layout: heading + tabs left, content right */}
         <div className="grid lg:grid-cols-[2fr_3fr] gap-12 lg:gap-16">
           {/* Left — sticky on desktop */}
           <div className="lg:sticky lg:top-24 lg:self-start">
             <p className="text-sm font-medium text-blue-600 uppercase tracking-wider mb-3">
               Beyond diagnosis
             </p>
-            <h2
-              ref={headingRef}
-              className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 leading-tight"
-            >
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 leading-tight">
               The AI diagnoses it. You manage the rest.
             </h2>
             <p className="text-base text-gray-500 mb-8">
@@ -253,10 +200,7 @@ export function BeyondDiagnosis() {
 
           {/* Right — tab content */}
           <div className="flex items-start pt-2 lg:pt-12">
-            <div
-              ref={contentRef}
-              className="bg-white border border-gray-200 rounded-2xl p-8 w-full shadow-sm"
-            >
+            <div className="bg-white border border-gray-200 rounded-2xl p-8 w-full shadow-sm">
               {(() => { const Icon = tabs[activeTab].icon; return <Icon className="w-7 h-7 text-blue-600 mb-4" />; })()}
               <h3 className="text-xl font-semibold text-gray-900 mb-3">
                 {tabs[activeTab].label}

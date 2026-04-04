@@ -30,7 +30,7 @@ export function GroupsSidebar({
   onNewGroup,
 }: GroupsSidebarProps) {
   return (
-    <div className="hidden lg:block w-[280px] shrink-0 overflow-y-auto p-4 border-r border-gray-200 bg-white">
+    <div className="hidden lg:block w-[280px] shrink-0 scrollbar-auto-hide p-4 border-r border-gray-200 bg-white">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>

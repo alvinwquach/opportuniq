@@ -28,19 +28,19 @@ export interface IssueFilters {
 }
 
 export const STATUS_CONFIG: Record<string, { label: string; color: string; dotColor: string }> = {
-  open: { label: "Open", color: "bg-emerald-500/20 text-emerald-400", dotColor: "bg-emerald-500" },
-  investigating: { label: "Investigating", color: "bg-amber-500/20 text-amber-400", dotColor: "bg-amber-500" },
-  options_generated: { label: "Options Ready", color: "bg-purple-500/20 text-purple-400", dotColor: "bg-purple-500" },
-  decided: { label: "Decided", color: "bg-amber-500/20 text-amber-400", dotColor: "bg-amber-500" },
-  in_progress: { label: "In Progress", color: "bg-emerald-500/20 text-emerald-400", dotColor: "bg-emerald-500" },
-  completed: { label: "Completed", color: "bg-emerald-500/20 text-emerald-400", dotColor: "bg-emerald-500" },
-  deferred: { label: "Deferred", color: "bg-gray-500/20 text-gray-400", dotColor: "bg-gray-500" },
+  open: { label: "Open", color: "bg-emerald-500/20 text-emerald-600", dotColor: "bg-emerald-500" },
+  investigating: { label: "Investigating", color: "bg-amber-500/20 text-amber-600", dotColor: "bg-amber-500" },
+  options_generated: { label: "Options Ready", color: "bg-purple-500/20 text-purple-600", dotColor: "bg-purple-500" },
+  decided: { label: "Decided", color: "bg-amber-500/20 text-amber-600", dotColor: "bg-amber-500" },
+  in_progress: { label: "In Progress", color: "bg-emerald-500/20 text-emerald-600", dotColor: "bg-emerald-500" },
+  completed: { label: "Completed", color: "bg-emerald-500/20 text-emerald-600", dotColor: "bg-emerald-500" },
+  deferred: { label: "Deferred", color: "bg-gray-500/20 text-gray-500", dotColor: "bg-gray-500" },
 };
 
 export const PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
-  low: { label: "Low", color: "text-[#666]" },
-  medium: { label: "Medium", color: "text-amber-400" },
-  high: { label: "High", color: "text-red-400" },
+  low: { label: "Low", color: "text-gray-400" },
+  medium: { label: "Medium", color: "text-amber-600" },
+  high: { label: "High", color: "text-red-600" },
   urgent: { label: "Urgent", color: "text-red-500" },
 };
 

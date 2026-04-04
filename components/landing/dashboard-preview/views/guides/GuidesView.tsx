@@ -62,12 +62,12 @@ function GuideRow({ guide }: { guide: MixedGuide }) {
             {diff.label}
           </span>
           {inProgress && (
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-500/20 text-blue-400">
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-600">
               In Progress
             </span>
           )}
           {completed && (
-            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-500/20 text-green-500">
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-50 text-green-600">
               <IoCheckmarkCircle className="w-2.5 h-2.5" />Done
             </span>
           )}
@@ -155,7 +155,7 @@ export function GuidesView() {
         </div>
 
         {/* Category list */}
-        <nav className="flex-1 overflow-y-auto py-2">
+        <nav className="flex-1 scrollbar-auto-hide py-2">
           {categories.map((cat) => {
             const count = cat === "All"
               ? mixedGuides.length
@@ -167,15 +167,15 @@ export function GuidesView() {
                 onClick={() => setActiveCategory(cat)}
                 className={`w-full flex items-center justify-between px-4 py-2 text-left transition-colors ${
                   isActive
-                    ? dark ? "bg-blue-600/10 text-blue-400" : "bg-blue-50 text-blue-600"
-                    : dark ? "text-gray-500 hover:bg-white/[0.04] hover:text-gray-300" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    ? dark ? "bg-blue-600/10 text-blue-400" : "bg-blue-100/60 text-gray-900"
+                    : dark ? "text-gray-500 hover:bg-white/[0.04] hover:text-gray-300" : "text-gray-700 hover:bg-blue-50"
                 }`}
               >
                 <span className={`text-sm ${isActive ? "font-semibold" : "font-medium"}`}>{cat}</span>
                 <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
                   isActive
-                    ? dark ? "bg-blue-500/20 text-blue-400" : "bg-blue-100 text-blue-600"
-                    : dark ? "bg-white/[0.06] text-gray-600" : "bg-gray-100 text-gray-400"
+                    ? dark ? "bg-blue-500/20 text-blue-400" : "bg-blue-100 text-blue-700"
+                    : dark ? "bg-white/[0.06] text-gray-600" : "bg-gray-100 text-gray-500"
                 }`}>{count}</span>
               </button>
             );
@@ -205,7 +205,7 @@ export function GuidesView() {
               <span className={`font-bold ${dark ? "text-gray-200" : "text-gray-900"}`}>{savedCount}</span>
             </div>
           </div>
-          <div className={`mt-2 p-2 rounded-lg border ${dark ? "bg-emerald-500/10 border-emerald-500/20" : "bg-emerald-50 border-emerald-100"}`}>
+          <div className={`mt-2 p-2 rounded-lg border ${dark ? "bg-emerald-50 border-emerald-100" : "bg-emerald-50 border-emerald-100"}`}>
             <p className="text-[10px] text-emerald-500 font-medium">DIY time saved</p>
             <p className="text-sm font-bold text-emerald-500">{guideAnalytics.timeSaved}</p>
           </div>
@@ -248,7 +248,7 @@ export function GuidesView() {
         )}
 
         {/* Guide list */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 scrollbar-auto-hide">
           {filtered.filter((g) => !(activeCategory === "All" && !search && isGuideInProgress(g))).map((g) => (
             <GuideRow key={g.id} guide={g} />
           ))}

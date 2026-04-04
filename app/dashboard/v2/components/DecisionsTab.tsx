@@ -45,7 +45,7 @@ export function DecisionsTab({ data }: DecisionsTabProps) {
             {pendingDecisions.slice(0, 5).map((decision) => (
               <Link
                 key={decision.id}
-                href={`/dashboard/issues/${decision.id}`}
+                href={`/dashboard/projects/${decision.id}`}
                 className="block p-2 sm:p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/15 transition-colors"
               >
                 <div className="flex items-start justify-between mb-1">
@@ -101,7 +101,7 @@ export function DecisionsTab({ data }: DecisionsTabProps) {
               Open Issues
             </h3>
             <Link
-              href="/dashboard/issues"
+              href="/dashboard/projects"
               className="text-[10px] sm:text-xs text-blue-600 cursor-pointer hover:text-blue-500"
             >
               View all
@@ -111,7 +111,7 @@ export function DecisionsTab({ data }: DecisionsTabProps) {
             {openIssues.slice(0, 5).map((issue) => (
               <Link
                 key={issue.id}
-                href={`/dashboard/issues/${issue.id}`}
+                href={`/dashboard/projects/${issue.id}`}
                 className="flex items-center gap-2 sm:gap-3 p-2 rounded-lg hover:bg-gray-100 transition-colors"
               >
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-orange-500/20 flex items-center justify-center flex-shrink-0">

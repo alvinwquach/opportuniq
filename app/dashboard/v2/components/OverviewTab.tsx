@@ -39,7 +39,7 @@ export function OverviewTab({ data }: OverviewTabProps) {
         issues={data.openIssues}
         onViewAll={() => {
           // Navigate to issues page
-          window.location.href = "/dashboard/issues";
+          window.location.href = "/dashboard/projects";
         }}
       />
 

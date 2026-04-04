@@ -49,7 +49,7 @@ export async function createEvidenceEncrypted(
       })
       .returning({ id: issueEvidence.id });
 
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath(`/dashboard/projects/${issueId}`);
 
     return { success: true, evidenceId: evidence.id };
   } catch (error) {
@@ -91,7 +91,7 @@ export async function createEvidencePlaintext(
       })
       .returning({ id: issueEvidence.id });
 
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath(`/dashboard/projects/${issueId}`);
 
     return { success: true, evidenceId: evidence.id };
   } catch (error) {

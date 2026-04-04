@@ -27,7 +27,7 @@ import { households, issues } from "../mockData";
 import { getRoleColor, getRoleLabel } from "./groups/config";
 import { useDarkMode } from "../DarkModeContext";
 
-type GroupTab = "overview" | "issues" | "budget";
+type GroupTab = "overview" | "issues" | "budget" | "activity";
 
 // ── Activity feed data ────────────────────────────────────────────────────────
 
@@ -114,7 +114,7 @@ function GroupList({
   const totalSavings = households.reduce((s, h) => s + h.savings, 0);
 
   return (
-    <div className={`w-[220px] flex-shrink-0 flex flex-col h-full border-r ${b} ${dark ? "bg-[#141414]" : "bg-white"}`}>
+    <div className={`w-[240px] flex-shrink-0 flex flex-col h-full border-r ${b} ${dark ? "bg-[#141414]" : "bg-white"}`}>
       {/* Header */}
       <div className={`flex items-center justify-between px-4 py-3 border-b ${b}`}>
         <div>
@@ -127,7 +127,7 @@ function GroupList({
       </div>
 
       {/* Group rows */}
-      <div className="flex-1 overflow-y-auto py-1">
+      <div className="flex-1 scrollbar-auto-hide py-1">
         {households.map((h) => {
           const isSelected = selectedId === h.id;
           return (
@@ -142,7 +142,7 @@ function GroupList({
                   : dark ? "hover:bg-white/[0.04]" : "hover:bg-gray-50"
               }`}
             >
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${dark ? "bg-blue-500/20" : "bg-blue-100"}`}>
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${dark ? "bg-blue-50" : "bg-blue-100"}`}>
                 <IoPeople className="w-4 h-4 text-blue-500" />
               </div>
               <div className="flex-1 min-w-0">
@@ -184,6 +184,7 @@ function GroupDetail({
     { id: "overview", label: "Members" },
     { id: "issues", label: "Issues" },
     { id: "budget", label: "Budget" },
+    { id: "activity", label: "Activity" },
   ];
 
   const groupIssues = issues.filter((_, i) => i < group.issueCount);
@@ -210,7 +211,7 @@ function GroupDetail({
             <button className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs border rounded-lg transition-colors ${dark ? "text-gray-500 border-white/10 hover:border-white/20" : "text-gray-500 border-gray-200 hover:border-gray-300"}`}>
               <IoSettingsOutline className="w-3.5 h-3.5" />
             </button>
-            <button className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-blue-500 border border-blue-500/30 rounded-lg transition-colors ${dark ? "hover:bg-blue-500/10" : "hover:bg-blue-50"}`}>
+            <button className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-blue-500 border border-blue-200 rounded-lg transition-colors ${dark ? "hover:bg-blue-50" : "hover:bg-blue-50"}`}>
               <IoPersonAddOutline className="w-3.5 h-3.5" />
               Invite
             </button>
@@ -220,10 +221,10 @@ function GroupDetail({
         {/* Stat pills */}
         <div className="flex items-center gap-2 mt-3">
           {[
-            { icon: IoConstruct, label: `${group.issueCount} open`, color: "text-amber-500 bg-amber-500/20" },
-            { icon: IoCheckmarkCircle, label: "8 resolved", color: "text-green-500 bg-green-500/20" },
-            { icon: IoWallet, label: "$1,250 balance", color: "text-blue-500 bg-blue-500/20" },
-            { icon: IoTrendingUp, label: `$${group.savings.toLocaleString()} saved`, color: "text-blue-500 bg-blue-500/20" },
+            { icon: IoConstruct, label: `${group.issueCount} open`, color: "text-amber-500 bg-amber-50" },
+            { icon: IoCheckmarkCircle, label: "8 resolved", color: "text-green-500 bg-green-50" },
+            { icon: IoWallet, label: "$1,250 balance", color: "text-blue-500 bg-blue-50" },
+            { icon: IoTrendingUp, label: `$${group.savings.toLocaleString()} saved`, color: "text-blue-500 bg-blue-50" },
           ].map(({ icon: Icon, label, color }) => (
             <div key={label} className={`flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium ${color}`}>
               <Icon className="w-3 h-3" />
@@ -251,12 +252,12 @@ function GroupDetail({
       </div>
 
       {/* Tab content */}
-      <div className="flex-1 overflow-y-auto p-5">
+      <div className="flex-1 scrollbar-auto-hide p-5">
         {activeTab === "overview" && (
           <div>
             <div className="flex items-center justify-between mb-3">
               <p className={`text-xs font-semibold uppercase tracking-wide ${dark ? "text-gray-600" : "text-gray-500"}`}>Members ({group.members.length})</p>
-              <button className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-400 transition-colors">
+              <button className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-600 transition-colors">
                 <IoPersonAddOutline className="w-3 h-3" />Add
               </button>
             </div>
@@ -299,28 +300,28 @@ function GroupDetail({
                 );
               })}
               {/* Pending invite 1 */}
-              <div className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border ${dark ? "bg-amber-500/10 border-amber-500/20" : "bg-amber-50 border-amber-100"}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${dark ? "bg-amber-500/20" : "bg-amber-100"}`}>
+              <div className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border ${dark ? "bg-amber-50 border-amber-200" : "bg-amber-50 border-amber-100"}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${dark ? "bg-amber-50" : "bg-amber-100"}`}>
                   <IoMailOutline className="w-4 h-4 text-amber-500" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className={`text-sm font-medium truncate ${dark ? "text-gray-200" : "text-gray-900"}`}>friend@example.com</p>
                   <p className="text-[10px] text-amber-500">Pending · Contributor · Expires in 3 days</p>
                 </div>
-                <button className="flex-shrink-0 px-2 py-0.5 text-[10px] font-medium text-amber-500 border border-amber-500/40 rounded-md hover:bg-amber-500/20 transition-colors">
+                <button className="flex-shrink-0 px-2 py-0.5 text-[10px] font-medium text-amber-500 border border-amber-500/40 rounded-md hover:bg-amber-50 transition-colors">
                   Resend
                 </button>
               </div>
               {/* Pending invite 2 */}
-              <div className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border ${dark ? "bg-amber-500/10 border-amber-500/20" : "bg-amber-50 border-amber-100"}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${dark ? "bg-amber-500/20" : "bg-amber-100"}`}>
+              <div className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border ${dark ? "bg-amber-50 border-amber-200" : "bg-amber-50 border-amber-100"}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${dark ? "bg-amber-50" : "bg-amber-100"}`}>
                   <IoMailOutline className="w-4 h-4 text-amber-500" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className={`text-sm font-medium truncate ${dark ? "text-gray-200" : "text-gray-900"}`}>neighbor@example.com</p>
                   <p className="text-[10px] text-amber-500">Pending · Observer · Expires in 1 day</p>
                 </div>
-                <button className="flex-shrink-0 px-2 py-0.5 text-[10px] font-medium text-amber-500 border border-amber-500/40 rounded-md hover:bg-amber-500/20 transition-colors">
+                <button className="flex-shrink-0 px-2 py-0.5 text-[10px] font-medium text-amber-500 border border-amber-500/40 rounded-md hover:bg-amber-50 transition-colors">
                   Resend
                 </button>
               </div>
@@ -332,15 +333,15 @@ function GroupDetail({
               <div className="flex flex-wrap gap-1.5">
                 <div className="flex items-center gap-1">
                   <span className={`text-[10px] ${dark ? "text-gray-600" : "text-gray-400"}`}>Risk:</span>
-                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-500 border border-amber-500/30">Moderate</span>
+                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-50 text-amber-500 border border-amber-200">Moderate</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className={`text-[10px] ${dark ? "text-gray-600" : "text-gray-400"}`}>DIY:</span>
-                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">Prefer DIY</span>
+                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">Prefer DIY</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className={`text-[10px] ${dark ? "text-gray-600" : "text-gray-400"}`}>Exclude:</span>
-                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 border border-red-500/30">Never DIY: Electrical</span>
+                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-red-50 text-red-600 border border-red-200">Never DIY: Electrical</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className={`text-[10px] ${dark ? "text-gray-600" : "text-gray-400"}`}>Radius:</span>
@@ -374,11 +375,30 @@ function GroupDetail({
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm truncate ${dark ? "text-gray-200" : "text-gray-900"}`}>{issue.title}</p>
                     <p className={`text-[10px] ${dark ? "text-gray-600" : "text-gray-400"}`}>{issue.category} · {issue.createdAt}</p>
+                    {issue.id === "1" && (
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <span className={`text-[9px] ${dark ? "text-gray-600" : "text-gray-400"}`}>Vote:</span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 font-medium border border-blue-200">DIY · 2</span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-gray-50 text-gray-500 font-medium border border-gray-200">Pro · 1</span>
+                      </div>
+                    )}
+                    {issue.id === "2" && (
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-50 text-amber-600 font-medium border border-amber-200">Your vote needed</span>
+                      </div>
+                    )}
+                    {issue.id === "3" && (
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <span className={`text-[9px] ${dark ? "text-gray-600" : "text-gray-400"}`}>Vote:</span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 font-medium border border-emerald-200">DIY · 3</span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 font-medium border border-blue-200">Unanimous</span>
+                      </div>
+                    )}
                   </div>
                   <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium flex-shrink-0 ${
                     issue.status === 'completed' ? dark ? 'bg-white/[0.06] text-gray-600' : 'bg-gray-100 text-gray-400'
-                    : issue.status === 'open' ? 'bg-blue-500/20 text-blue-400'
-                    : 'bg-amber-500/20 text-amber-500'
+                    : issue.status === 'open' ? 'bg-blue-50 text-blue-600'
+                    : 'bg-amber-50 text-amber-500'
                   }`}>
                     {issue.status === 'completed' ? 'Done' : issue.status === 'open' ? 'Open' : 'Active'}
                   </span>
@@ -390,14 +410,14 @@ function GroupDetail({
 
         {activeTab === "budget" && (
           <div className="space-y-4">
-            <div className={`rounded-xl p-4 border ${dark ? "bg-blue-500/10 border-blue-500/20" : "bg-blue-50 border-blue-100"}`}>
+            <div className={`rounded-xl p-4 border ${dark ? "bg-blue-50 border-blue-100" : "bg-blue-50 border-blue-100"}`}>
               <p className={`text-xs mb-1 ${dark ? "text-gray-500" : "text-gray-500"}`}>Monthly Budget</p>
               <p className={`text-2xl font-bold ${dark ? "text-gray-100" : "text-gray-900"}`}>$800</p>
               <div className="mt-3">
                 <div className={`flex justify-between text-[10px] mb-1 ${dark ? "text-gray-500" : "text-gray-500"}`}>
                   <span>Used</span><span>$340 / $800</span>
                 </div>
-                <div className={`h-1.5 rounded-full overflow-hidden ${dark ? "bg-blue-500/20" : "bg-blue-100"}`}>
+                <div className={`h-1.5 rounded-full overflow-hidden ${dark ? "bg-blue-50" : "bg-blue-100"}`}>
                   <div className="h-full bg-blue-500 rounded-full" style={{ width: "42.5%" }} />
                 </div>
               </div>
@@ -416,22 +436,22 @@ function GroupDetail({
             </div>
 
             {/* Emergency Buffer */}
-            <div className={`rounded-lg p-3 border flex items-center gap-3 ${dark ? "bg-green-500/10 border-green-500/20" : "bg-green-50 border-green-100"}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${dark ? "bg-green-500/20" : "bg-green-100"}`}>
+            <div className={`rounded-lg p-3 border flex items-center gap-3 ${dark ? "bg-green-50 border-green-100" : "bg-green-50 border-green-100"}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${dark ? "bg-green-50" : "bg-green-100"}`}>
                 <IoShieldCheckmarkOutline className="w-4 h-4 text-green-500" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-green-500">$2,000 Emergency Buffer</p>
-                <p className="text-[10px] text-green-500/70">Protected — not included in monthly budget</p>
+                <p className="text-[10px] text-green-600">Protected — not included in monthly budget</p>
               </div>
             </div>
 
             <div className="space-y-2">
               <p className={`text-xs font-semibold uppercase tracking-wide ${dark ? "text-gray-600" : "text-gray-500"}`}>Contributions</p>
               {[
-                { name: "Alex", amount: 150, avatar: "👤" },
-                { name: "Jamie", amount: 300, avatar: "👩" },
-                { name: "Sam", amount: 100, avatar: "🧑" },
+                { name: "Alex", amount: 150, avatar: "A" },
+                { name: "Jamie", amount: 300, avatar: "J" },
+                { name: "Sam", amount: 100, avatar: "S" },
               ].map((c) => (
                 <div key={c.name} className={`flex items-center gap-3 px-3 py-2 rounded-lg border ${dark ? "bg-[#252525] border-white/10" : "bg-white border-gray-100"}`}>
                   <div className={`w-7 h-7 rounded-full flex items-center justify-center text-sm ${dark ? "bg-white/[0.06]" : "bg-gray-100"}`}>{c.avatar}</div>
@@ -440,7 +460,7 @@ function GroupDetail({
                 </div>
               ))}
             </div>
-            <div className={`rounded-lg p-3 border flex items-center justify-between ${dark ? "bg-green-500/10 border-green-500/20" : "bg-green-50 border-green-100"}`}>
+            <div className={`rounded-lg p-3 border flex items-center justify-between ${dark ? "bg-green-50 border-green-100" : "bg-green-50 border-green-100"}`}>
               <span className={`text-xs ${dark ? "text-gray-400" : "text-gray-600"}`}>Total saved by group</span>
               <span className="text-sm font-bold text-green-500">${group.savings.toLocaleString()}</span>
             </div>
@@ -452,63 +472,54 @@ function GroupDetail({
             </div>
           </div>
         )}
-      </div>
 
-      {openMenuId && <div className="fixed inset-0 z-40" onClick={() => setOpenMenuId(null)} />}
-    </div>
-  );
-}
-
-// ── Right panel: activity feed ────────────────────────────────────────────────
-
-function ActivityPanel({ groupName }: { groupName: string }) {
-  const dark = useDarkMode();
-  const b = dark ? "border-white/[0.06]" : "border-gray-100";
-  return (
-    <div className={`w-[220px] flex-shrink-0 flex flex-col h-full border-l ${b} ${dark ? "bg-[#141414]" : "bg-white"}`}>
-      <div className={`px-4 py-3 border-b ${b}`}>
-        <p className={`text-sm font-semibold ${dark ? "text-gray-100" : "text-gray-900"}`}>Activity</p>
-        <p className={`text-[10px] ${dark ? "text-gray-600" : "text-gray-400"}`}>{groupName}</p>
-      </div>
-      <div className="flex-1 overflow-y-auto py-2">
-        {activityFeed.map((item, i) => {
-          const Icon = item.icon;
-          return (
-            <div key={item.id} className="flex gap-3 px-4 py-2.5 relative">
-              {/* Connector line */}
-              {i < activityFeed.length - 1 && (
-                <div className={`absolute left-[26px] top-10 bottom-0 w-px ${dark ? "bg-white/[0.04]" : "bg-gray-100"}`} />
-              )}
-              <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 z-10 ${item.iconBg}`}>
-                <Icon className={`w-3 h-3 ${item.iconColor}`} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className={`text-xs leading-snug ${dark ? "text-gray-300" : "text-gray-800"}`}>{item.text}</p>
-                <p className={`text-[10px] mt-0.5 ${dark ? "text-gray-600" : "text-gray-400"}`}>{item.sub}</p>
-                <p className={`text-[10px] mt-0.5 ${dark ? "text-gray-700" : "text-gray-300"}`}>{item.time}</p>
-              </div>
+        {activeTab === "activity" && (
+          <div>
+            <div className="space-y-0">
+              {activityFeed.map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.id} className="flex gap-3 px-1 py-2.5 relative">
+                    {/* Connector line */}
+                    {i < activityFeed.length - 1 && (
+                      <div className={`absolute left-[14px] top-10 bottom-0 w-px ${dark ? "bg-white/[0.04]" : "bg-gray-100"}`} />
+                    )}
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 z-10 ${item.iconBg}`}>
+                      <Icon className={`w-3 h-3 ${item.iconColor}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-xs leading-snug ${dark ? "text-gray-300" : "text-gray-800"}`}>{item.text}</p>
+                      <p className={`text-[10px] mt-0.5 ${dark ? "text-gray-600" : "text-gray-400"}`}>{item.sub}</p>
+                      <p className={`text-[10px] mt-0.5 ${dark ? "text-gray-700" : "text-gray-300"}`}>{item.time}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          );
-        })}
+          </div>
+        )}
       </div>
-      <div className={`p-3 border-t space-y-2 ${b}`}>
-        {/* Group Constraints summary */}
-        <div className="space-y-1">
+
+      {/* Footer cards: Group Constraints & Next Event */}
+      <div className={`px-5 py-3 border-t ${b} flex items-center gap-4`}>
+        <div className="flex-1 min-w-0 space-y-1">
           <p className={`text-[10px] font-semibold uppercase tracking-wide ${dark ? "text-gray-600" : "text-gray-400"}`}>Group Constraints</p>
           <div className="flex flex-wrap gap-1">
-            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">
+            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">
               DIY preferred
             </span>
-            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 border border-red-500/30">
-              ⚡ No electrical DIY
+            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-red-50 text-red-600 border border-red-200">
+              No electrical DIY
             </span>
           </div>
         </div>
-        <div className={`flex items-center gap-2 text-[10px] ${dark ? "text-gray-600" : "text-gray-400"}`}>
+        <div className={`flex items-center gap-2 text-[10px] flex-shrink-0 ${dark ? "text-gray-600" : "text-gray-400"}`}>
           <IoCalendarOutline className="w-3 h-3" />
           Next: AC inspection · Thu
         </div>
       </div>
+
+      {openMenuId && <div className="fixed inset-0 z-40" onClick={() => setOpenMenuId(null)} />}
     </div>
   );
 }
@@ -531,10 +542,7 @@ export function GroupsView() {
     <div className={`flex h-full overflow-hidden ${dark ? "bg-[#111111]" : "bg-white"}`}>
       <GroupList selectedId={selectedId} onSelect={handleSelect} />
       {selectedGroup && (
-        <>
-          <GroupDetail group={selectedGroup} activeTab={activeTab} onTabChange={setActiveTab} />
-          <ActivityPanel groupName={selectedGroup.name} />
-        </>
+        <GroupDetail group={selectedGroup} activeTab={activeTab} onTabChange={setActiveTab} />
       )}
     </div>
   );

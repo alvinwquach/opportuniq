@@ -206,12 +206,12 @@ export const mixedGuides: MixedGuide[] = [
 ];
 
 export const guideSourceInfo: Record<GuideSource, { name: string; color: string; bgColor: string; icon: string }> = {
-  ifixit: { name: 'iFixit', color: 'text-blue-700', bgColor: 'bg-blue-50', icon: '🔧' },
-  youtube: { name: 'YouTube', color: 'text-red-700', bgColor: 'bg-red-50', icon: '▶️' },
-  family_handyman: { name: 'Family Handyman', color: 'text-orange-700', bgColor: 'bg-orange-50', icon: '🏠' },
-  this_old_house: { name: 'This Old House', color: 'text-blue-700', bgColor: 'bg-blue-50', icon: '🏡' },
-  bob_vila: { name: 'Bob Vila', color: 'text-amber-700', bgColor: 'bg-amber-50', icon: '👷' },
-  ai_generated: { name: 'AI Generated', color: 'text-blue-700', bgColor: 'bg-blue-50', icon: '✨' },
+  ifixit: { name: 'iFixit', color: 'text-blue-700', bgColor: 'bg-blue-50', icon: 'iF' },
+  youtube: { name: 'YouTube', color: 'text-red-700', bgColor: 'bg-red-50', icon: 'YT' },
+  family_handyman: { name: 'Family Handyman', color: 'text-orange-700', bgColor: 'bg-orange-50', icon: 'FH' },
+  this_old_house: { name: 'This Old House', color: 'text-blue-700', bgColor: 'bg-blue-50', icon: 'TH' },
+  bob_vila: { name: 'Bob Vila', color: 'text-amber-700', bgColor: 'bg-amber-50', icon: 'BV' },
+  ai_generated: { name: 'AI Generated', color: 'text-blue-700', bgColor: 'bg-blue-50', icon: 'AI' },
 };
 
 export const activeGuides = [

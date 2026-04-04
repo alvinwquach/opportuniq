@@ -59,37 +59,37 @@ export function PipelineSummarySection({ summary }: PipelineSummarySectionProps)
           label="Open"
           count={summary.open}
           color="orange"
-          href="/issues?status=open"
+          href="/dashboard/projects?status=open"
         />
         <PipelineColumn
           label="Analyzing"
           count={summary.investigating}
           color="purple"
-          href="/issues?status=investigating"
+          href="/dashboard/projects?status=investigating"
         />
         <PipelineColumn
           label="Options Ready"
           count={summary.options_generated}
           color="blue"
-          href="/issues?status=options_generated"
+          href="/dashboard/projects?status=options_generated"
         />
         <PipelineColumn
           label="Decided"
           count={summary.decided}
           color="teal"
-          href="/issues?status=decided"
+          href="/dashboard/projects?status=decided"
         />
         <PipelineColumn
           label="In Progress"
           count={summary.in_progress}
           color="green"
-          href="/issues?status=in_progress"
+          href="/dashboard/projects?status=in_progress"
         />
         <PipelineColumn
           label="Completed"
           count={summary.completed}
           color="gray"
-          href="/issues?status=completed"
+          href="/dashboard/projects?status=completed"
         />
       </div>
     </section>

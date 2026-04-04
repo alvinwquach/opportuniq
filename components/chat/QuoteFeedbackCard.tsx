@@ -78,7 +78,7 @@ export function QuoteFeedbackCard({
   };
 
   return (
-    <Card className="mt-4 bg-[#141414] border-[#2a2a2a]">
+    <Card className="mt-4 bg-white border-gray-200">
       <CardHeader
         className="pb-3 cursor-pointer select-none"
         onClick={() => setIsExpanded((prev) => !prev)}
@@ -126,7 +126,7 @@ export function QuoteFeedbackCard({
                     placeholder="e.g. 350"
                     value={dollarAmount}
                     onChange={(e) => setDollarAmount(e.target.value)}
-                    className="h-8 text-sm bg-[#0c0c0c] border-[#1f1f1f]"
+                    className="h-8 text-sm bg-gray-50 border-gray-200"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -139,7 +139,7 @@ export function QuoteFeedbackCard({
                     placeholder="e.g. 90210"
                     value={zipCodeInput}
                     onChange={(e) => setZipCodeInput(e.target.value)}
-                    className="h-8 text-sm bg-[#0c0c0c] border-[#1f1f1f]"
+                    className="h-8 text-sm bg-gray-50 border-gray-200"
                   />
                 </div>
               </div>
@@ -152,7 +152,7 @@ export function QuoteFeedbackCard({
                     value={quoteType}
                     onValueChange={(v) => setQuoteType(v as "diy" | "professional")}
                   >
-                    <SelectTrigger className="h-8 text-sm bg-[#0c0c0c] border-[#1f1f1f]">
+                    <SelectTrigger className="h-8 text-sm bg-gray-50 border-gray-200">
                       <SelectValue placeholder="DIY / Professional" />
                     </SelectTrigger>
                     <SelectContent>
@@ -167,7 +167,7 @@ export function QuoteFeedbackCard({
                     value={wasAccepted}
                     onValueChange={(v) => setWasAccepted(v as "yes" | "no" | "pending")}
                   >
-                    <SelectTrigger className="h-8 text-sm bg-[#0c0c0c] border-[#1f1f1f]">
+                    <SelectTrigger className="h-8 text-sm bg-gray-50 border-gray-200">
                       <SelectValue placeholder="Accepted?" />
                     </SelectTrigger>
                     <SelectContent>
@@ -190,7 +190,7 @@ export function QuoteFeedbackCard({
                   placeholder="e.g. ABC Plumbing"
                   value={contractorName}
                   onChange={(e) => setContractorName(e.target.value)}
-                  className="h-8 text-sm bg-[#0c0c0c] border-[#1f1f1f]"
+                  className="h-8 text-sm bg-gray-50 border-gray-200"
                 />
               </div>
 
@@ -204,13 +204,13 @@ export function QuoteFeedbackCard({
                   placeholder="What was included in the quote?"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="text-sm bg-[#0c0c0c] border-[#1f1f1f] resize-none"
+                  className="text-sm bg-gray-50 border-gray-200 resize-none"
                   rows={2}
                 />
               </div>
 
               {validationError && (
-                <p className="text-xs text-red-400">{validationError}</p>
+                <p className="text-xs text-red-600">{validationError}</p>
               )}
 
               <Button

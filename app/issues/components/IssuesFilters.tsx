@@ -151,7 +151,7 @@ export function IssuesFilters({
         {/* flex-1 makes the search box grow to fill available space; min/max-width keeps it reasonable */}
         <div className="relative flex-1 min-w-[200px] max-w-md">
           {/* Magnifying glass icon absolutely positioned inside the left side of the input */}
-          <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555]" />
+          <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           {/* Controlled text input: value is always driven by the searchQuery prop from the parent.
               onChange fires on every keystroke, calling onSearchChange with the new text
               so the parent can update its state and re-filter the issues list. */}
@@ -160,7 +160,7 @@ export function IssuesFilters({
             placeholder="Search issues, diagnoses..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 text-sm border border-[#2a2a2a] rounded-xl bg-[#1a1a1a] text-white placeholder:text-[#555] focus:outline-none focus:border-emerald-500/50"
+            className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-emerald-500/50"
           />
         </div>
 
@@ -181,7 +181,7 @@ export function IssuesFilters({
               className={`flex items-center gap-2 px-3 py-2.5 text-xs font-medium border rounded-xl transition-colors ${
                 filters.status
                   ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                  : "bg-[#1a1a1a] border-[#2a2a2a] text-[#888] hover:border-[#333]"
+                  : "bg-white border-gray-200 text-gray-500 hover:border-gray-300"
               }`}
             >
               {/* Show the active filter's human-readable label, or the placeholder "Status" */}
@@ -195,12 +195,12 @@ export function IssuesFilters({
             {/* The dropdown panel: only rendered when "status" is the open dropdown.
                 z-index 9999 places it above the backdrop (9998) so it's clickable. */}
             {openFilterDropdown === "status" && (
-              <div className="absolute top-full left-0 mt-1 w-40 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] shadow-lg py-1 z-[9999]">
+              <div className="absolute top-full left-0 mt-1 w-40 bg-white rounded-xl border border-gray-200 shadow-lg py-1 z-[9999]">
                 {/* "All Status" option: clears the status filter (sets it back to null) */}
                 <button
                   onClick={() => updateFilter("status", null)}
-                  className={`w-full text-left px-3 py-2 text-xs hover:bg-[#252525] ${
-                    !filters.status ? "text-emerald-400" : "text-[#888]"
+                  className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 ${
+                    !filters.status ? "text-emerald-400" : "text-gray-500"
                   }`}
                 >
                   All Status
@@ -212,8 +212,8 @@ export function IssuesFilters({
                   <button
                     key={key}
                     onClick={() => updateFilter("status", key)}
-                    className={`w-full text-left px-3 py-2 text-xs hover:bg-[#252525] ${
-                      filters.status === key ? "text-emerald-400" : "text-[#888]"
+                    className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 ${
+                      filters.status === key ? "text-emerald-400" : "text-gray-500"
                     }`}
                   >
                     {config.label}
@@ -233,7 +233,7 @@ export function IssuesFilters({
               className={`flex items-center gap-2 px-3 py-2.5 text-xs font-medium border rounded-xl transition-colors ${
                 filters.group
                   ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                  : "bg-[#1a1a1a] border-[#2a2a2a] text-[#888] hover:border-[#333]"
+                  : "bg-white border-gray-200 text-gray-500 hover:border-gray-300"
               }`}
             >
               {/* Look up the selected group's name by finding the group object whose id matches.
@@ -246,12 +246,12 @@ export function IssuesFilters({
 
             {/* Group dropdown panel */}
             {openFilterDropdown === "group" && (
-              <div className="absolute top-full left-0 mt-1 w-44 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] shadow-lg py-1 z-[9999]">
+              <div className="absolute top-full left-0 mt-1 w-44 bg-white rounded-xl border border-gray-200 shadow-lg py-1 z-[9999]">
                 {/* "All Groups" option: clears the group filter */}
                 <button
                   onClick={() => updateFilter("group", null)}
-                  className={`w-full text-left px-3 py-2 text-xs hover:bg-[#252525] ${
-                    !filters.group ? "text-emerald-400" : "text-[#888]"
+                  className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 ${
+                    !filters.group ? "text-emerald-400" : "text-gray-500"
                   }`}
                 >
                   All Groups
@@ -261,8 +261,8 @@ export function IssuesFilters({
                   <button
                     key={grp.id}
                     onClick={() => updateFilter("group", grp.id)}
-                    className={`w-full text-left px-3 py-2 text-xs hover:bg-[#252525] ${
-                      filters.group === grp.id ? "text-emerald-400" : "text-[#888]"
+                    className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 ${
+                      filters.group === grp.id ? "text-emerald-400" : "text-gray-500"
                     }`}
                   >
                     {grp.name}
@@ -284,7 +284,7 @@ export function IssuesFilters({
               className={`flex items-center gap-2 px-3 py-2.5 text-xs font-medium border rounded-xl transition-colors ${
                 filters.category
                   ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                  : "bg-[#1a1a1a] border-[#2a2a2a] text-[#888] hover:border-[#333]"
+                  : "bg-white border-gray-200 text-gray-500 hover:border-gray-300"
               }`}
             >
               {/* Show the raw category string if one is selected, otherwise the placeholder */}
@@ -295,12 +295,12 @@ export function IssuesFilters({
             {/* Category dropdown panel: max-h-60 + overflow-y-auto allows it to scroll
                 if there are many categories, keeping the panel from going off screen */}
             {openFilterDropdown === "category" && (
-              <div className="absolute top-full left-0 mt-1 w-36 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] shadow-lg py-1 z-[9999] max-h-60 overflow-y-auto">
+              <div className="absolute top-full left-0 mt-1 w-36 bg-white rounded-xl border border-gray-200 shadow-lg py-1 z-[9999] max-h-60 overflow-y-auto">
                 {/* "All Categories" option: clears the category filter */}
                 <button
                   onClick={() => updateFilter("category", null)}
-                  className={`w-full text-left px-3 py-2 text-xs hover:bg-[#252525] ${
-                    !filters.category ? "text-emerald-400" : "text-[#888]"
+                  className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 ${
+                    !filters.category ? "text-emerald-400" : "text-gray-500"
                   }`}
                 >
                   All Categories
@@ -312,8 +312,8 @@ export function IssuesFilters({
                   <button
                     key={cat}
                     onClick={() => updateFilter("category", cat)}
-                    className={`w-full text-left px-3 py-2 text-xs hover:bg-[#252525] capitalize ${
-                      filters.category === cat ? "text-emerald-400" : "text-[#888]"
+                    className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 capitalize ${
+                      filters.category === cat ? "text-emerald-400" : "text-gray-500"
                     }`}
                   >
                     {cat.replace(/_/g, " ")}
@@ -335,7 +335,7 @@ export function IssuesFilters({
               className={`flex items-center gap-2 px-3 py-2.5 text-xs font-medium border rounded-xl transition-colors ${
                 filters.priority
                   ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                  : "bg-[#1a1a1a] border-[#2a2a2a] text-[#888] hover:border-[#333]"
+                  : "bg-white border-gray-200 text-gray-500 hover:border-gray-300"
               }`}
             >
               {/* Look up the human-readable label from PRIORITY_CONFIG, or fall back to the raw value */}
@@ -347,12 +347,12 @@ export function IssuesFilters({
 
             {/* Priority dropdown panel */}
             {openFilterDropdown === "priority" && (
-              <div className="absolute top-full left-0 mt-1 w-32 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] shadow-lg py-1 z-[9999]">
+              <div className="absolute top-full left-0 mt-1 w-32 bg-white rounded-xl border border-gray-200 shadow-lg py-1 z-[9999]">
                 {/* "All Priorities" option: clears the priority filter */}
                 <button
                   onClick={() => updateFilter("priority", null)}
-                  className={`w-full text-left px-3 py-2 text-xs hover:bg-[#252525] ${
-                    !filters.priority ? "text-emerald-400" : "text-[#888]"
+                  className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 ${
+                    !filters.priority ? "text-emerald-400" : "text-gray-500"
                   }`}
                 >
                   All Priorities
@@ -363,8 +363,8 @@ export function IssuesFilters({
                   <button
                     key={key}
                     onClick={() => updateFilter("priority", key)}
-                    className={`w-full text-left px-3 py-2 text-xs hover:bg-[#252525] ${
-                      filters.priority === key ? "text-emerald-400" : "text-[#888]"
+                    className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 ${
+                      filters.priority === key ? "text-emerald-400" : "text-gray-500"
                     }`}
                   >
                     {config.label}
@@ -379,7 +379,7 @@ export function IssuesFilters({
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
-              className="flex items-center gap-1 px-3 py-2.5 text-xs text-red-400 hover:bg-red-500/10 rounded-xl transition-colors"
+              className="flex items-center gap-1 px-3 py-2.5 text-xs text-red-600 hover:bg-red-500/10 rounded-xl transition-colors"
             >
               <IoClose className="w-3.5 h-3.5" />
               Clear
@@ -388,12 +388,12 @@ export function IssuesFilters({
 
           {/* Vertical divider line — a thin grey bar that visually separates the filter dropdowns
               from the view-mode toggle and sort controls to the right */}
-          <div className="h-6 w-px bg-[#2a2a2a] mx-1" />
+          <div className="h-6 w-px bg-gray-200 mx-1" />
 
           {/* ── View Mode Toggle ── */}
           {/* A pill-shaped container holding three icon buttons (Cards / List / Kanban).
               The active button is highlighted with a slightly lighter background. */}
-          <div className="flex items-center bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-1">
+          <div className="flex items-center bg-white border border-gray-200 rounded-xl p-1">
 
             {/* Cards view button — wrapped in a Tooltip so hovering shows "Card View" */}
             <Tooltip>
@@ -405,8 +405,8 @@ export function IssuesFilters({
                   onClick={() => onViewModeChange("cards")}
                   className={`p-2 rounded-lg transition-colors ${
                     viewMode === "cards"
-                      ? "bg-[#2a2a2a] text-white"
-                      : "text-[#666] hover:text-white"
+                      ? "bg-gray-100 text-gray-900"
+                      : "text-gray-400 hover:text-gray-900"
                   }`}
                 >
                   {/* Grid icon representing the card layout */}
@@ -424,8 +424,8 @@ export function IssuesFilters({
                   onClick={() => onViewModeChange("list")}
                   className={`p-2 rounded-lg transition-colors ${
                     viewMode === "list"
-                      ? "bg-[#2a2a2a] text-white"
-                      : "text-[#666] hover:text-white"
+                      ? "bg-gray-100 text-gray-900"
+                      : "text-gray-400 hover:text-gray-900"
                   }`}
                 >
                   {/* Lines icon representing the compact list layout */}
@@ -442,8 +442,8 @@ export function IssuesFilters({
                   onClick={() => onViewModeChange("kanban")}
                   className={`p-2 rounded-lg transition-colors ${
                     viewMode === "kanban"
-                      ? "bg-[#2a2a2a] text-white"
-                      : "text-[#666] hover:text-white"
+                      ? "bg-gray-100 text-gray-900"
+                      : "text-gray-400 hover:text-gray-900"
                   }`}
                 >
                   {/* Easel/board icon representing the Kanban column layout */}
@@ -461,7 +461,7 @@ export function IssuesFilters({
               onClick={() =>
                 setOpenFilterDropdown(openFilterDropdown === "sortBy" ? null : "sortBy")
               }
-              className="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-[#1a1a1a] border border-[#2a2a2a] text-[#888] rounded-xl hover:border-[#333] transition-colors"
+              className="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-white border border-gray-200 text-gray-500 rounded-xl hover:border-gray-300 transition-colors"
             >
               {/* Sort icon to visually identify this as a sort control */}
               <IoSwapVertical className="w-3.5 h-3.5" />
@@ -474,7 +474,7 @@ export function IssuesFilters({
             {/* Sort By dropdown panel: positioned to the right (right-0) so it doesn't overflow
                 off the left edge of the screen on small viewports */}
             {openFilterDropdown === "sortBy" && (
-              <div className="absolute top-full right-0 mt-1 w-32 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] shadow-lg py-1 z-[9999]">
+              <div className="absolute top-full right-0 mt-1 w-32 bg-white rounded-xl border border-gray-200 shadow-lg py-1 z-[9999]">
                 {/* One button per sort option (Updated / Created / Priority) */}
                 {SORT_BY_OPTIONS.map((option) => (
                   <button
@@ -485,8 +485,8 @@ export function IssuesFilters({
                       // Close the dropdown after selection
                       setOpenFilterDropdown(null);
                     }}
-                    className={`w-full text-left px-3 py-2 text-xs hover:bg-[#252525] ${
-                      sortBy === option.value ? "text-emerald-400" : "text-[#888]"
+                    className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 ${
+                      sortBy === option.value ? "text-emerald-400" : "text-gray-500"
                     }`}
                   >
                     {option.label}
@@ -504,7 +504,7 @@ export function IssuesFilters({
             <TooltipTrigger asChild>
               <button
                 onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
-                className="flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium bg-[#1a1a1a] border border-[#2a2a2a] text-[#888] rounded-xl hover:border-[#333] transition-colors"
+                className="flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium bg-white border border-gray-200 text-gray-500 rounded-xl hover:border-gray-300 transition-colors"
               >
                 {/* Context-sensitive label:
                     - When sorting by priority: "Low First" or "High First"

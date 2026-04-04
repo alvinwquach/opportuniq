@@ -183,7 +183,7 @@ export function ResourcePanel({ issue, isCreatingNewIssue }: ResourcePanelProps)
       </div>
 
       {/* Tab Content */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 scrollbar-auto-hide p-4">
         {/* Loading State */}
         {isLoading && activeTab === "diy" && (
           <div className="space-y-4 animate-pulse">

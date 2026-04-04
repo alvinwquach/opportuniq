@@ -26,7 +26,7 @@ export function PendingDecisionsSection({ decisions }: PendingDecisionsSectionPr
         {decisions.map(({ issue, option, group }) => (
           <Link
             key={issue.id}
-            href={`/issues/${issue.id}`}
+            href={`/dashboard/projects/${issue.id}`}
             className="block p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-200 transition-colors group"
           >
             <div className="flex items-start justify-between gap-4">

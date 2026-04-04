@@ -13,6 +13,7 @@ import {
   IoShieldCheckmarkOutline,
   IoPersonOutline,
   IoStorefrontOutline,
+  IoStar,
 } from "react-icons/io5";
 import { issuesHistoryData } from "./issues";
 import type { Issue } from "./issues/types";
@@ -96,7 +97,7 @@ function IssueDetail({ issue }: { issue: Issue }) {
   const st = statusConfig[issue.status];
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto">
+    <div className="flex flex-col h-full scrollbar-auto-hide">
       {/* Header */}
       <div className="px-6 py-5 border-b border-gray-100">
         <div className="flex items-start gap-3 mb-3">
@@ -199,7 +200,7 @@ function IssueResources({ issue }: { issue: Issue }) {
   const canDIY = issue.difficulty !== "Professional Required";
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto">
+    <div className="flex flex-col h-full scrollbar-auto-hide">
       {/* Tab bar */}
       <div className="flex border-b border-gray-100">
         {(["diy", "pro"] as const).map((t) => (
@@ -277,7 +278,7 @@ function IssueResources({ issue }: { issue: Issue }) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium text-gray-800 truncate">{g.title}</p>
-                      <p className="text-[10px] text-gray-400">{g.source} · {g.time} · ★ {g.rating}</p>
+                      <p className="text-[10px] text-gray-400">{g.source} · {g.time} · {g.rating}</p>
                     </div>
                   </div>
                 ))}
@@ -320,7 +321,7 @@ function IssueResources({ issue }: { issue: Issue }) {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 font-medium border border-blue-100">{c.tag}</span>
-                      <span className="text-xs font-semibold text-gray-700">{c.rating}★</span>
+                      <span className="text-xs font-semibold text-gray-700 flex items-center gap-0.5"><IoStar className="w-3 h-3 inline text-amber-500" />{c.rating}</span>
                     </div>
                   </div>
                 ))}
@@ -391,7 +392,7 @@ export function IssuesView(_props?: { onNavigateToIssue?: (id: string) => void }
         </div>
 
         {/* Rows */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 scrollbar-auto-hide">
           {active.length > 0 && (
             <>
               <div className="px-4 py-2 flex items-center gap-2">

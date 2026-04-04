@@ -25,7 +25,7 @@ export default async function IssuesLayout({
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/auth/login?redirect=/issues");
+    redirect("/auth/login?redirect=/dashboard/projects");
   }
 
   const [userData] = await db.select().from(users).where(eq(users.id, user.id));
@@ -60,7 +60,7 @@ export default async function IssuesLayout({
   return (
     <SidebarProvider>
       <ThemeSync savedTheme={savedTheme} />
-      <div className="min-h-screen bg-[#0c0c0c] flex">
+      <div className="min-h-screen bg-gray-50 flex">
         <DashboardSidebar
           user={{
             id: userData.id,

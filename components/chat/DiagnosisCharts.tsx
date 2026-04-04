@@ -516,17 +516,17 @@ export function DiagnosisCharts({ content, className }: DiagnosisChartsProps) {
       </div>
 
       {/* Charts container with distinct styling */}
-      <div className="rounded-xl bg-gradient-to-b from-[#0a0a0a] to-[#111111] border border-[#1f1f1f] p-4 shadow-lg">
+      <div className="rounded-xl bg-gradient-to-b from-gray-50 to-white border border-gray-200 p-4 shadow-lg">
         {/* Primary metrics - always show first if available */}
         {(severityData || diyFeasibilityData) && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             {severityData && (
-              <div className="bg-[#0c0c0c] rounded-lg p-4 border border-[#1a1a1a] hover:border-[#2a2a2a] transition-colors">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-gray-200 transition-colors">
                 <SeverityGauge data={severityData} />
               </div>
             )}
             {diyFeasibilityData && (
-              <div className="bg-[#0c0c0c] rounded-lg p-4 border border-[#1a1a1a] hover:border-[#2a2a2a] transition-colors">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-gray-200 transition-colors">
                 <DIYFeasibilityChart data={diyFeasibilityData} />
               </div>
             )}
@@ -537,12 +537,12 @@ export function DiagnosisCharts({ content, className }: DiagnosisChartsProps) {
         {(costData || costBreakdownData) && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             {costData && (
-              <div className="bg-[#0c0c0c] rounded-lg p-4 border border-[#1a1a1a] hover:border-[#2a2a2a] transition-colors">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-gray-200 transition-colors">
                 <CostComparisonChart data={costData} />
               </div>
             )}
             {costBreakdownData && (
-              <div className="bg-[#0c0c0c] rounded-lg p-4 border border-[#1a1a1a] hover:border-[#2a2a2a] transition-colors">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-gray-200 transition-colors">
                 <CostBreakdownChart data={costBreakdownData} />
               </div>
             )}
@@ -553,12 +553,12 @@ export function DiagnosisCharts({ content, className }: DiagnosisChartsProps) {
         {(skillsData || riskData) && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {skillsData && (
-              <div className="bg-[#0c0c0c] rounded-lg p-4 border border-[#1a1a1a] hover:border-[#2a2a2a] transition-colors">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-gray-200 transition-colors">
                 <SkillsRequiredChart data={skillsData} />
               </div>
             )}
             {riskData && (
-              <div className="bg-[#0c0c0c] rounded-lg p-4 border border-[#1a1a1a] hover:border-[#2a2a2a] transition-colors">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-gray-200 transition-colors">
                 <RiskAssessmentChart data={riskData} />
               </div>
             )}
@@ -568,9 +568,9 @@ export function DiagnosisCharts({ content, className }: DiagnosisChartsProps) {
 
       {/* Visual separator before markdown content */}
       <div className="mt-6 flex items-center gap-3">
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#2a2a2a] to-transparent" />
-        <span className="text-xs text-[#666666]">Details</span>
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#2a2a2a] to-transparent" />
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+        <span className="text-xs text-gray-400">Details</span>
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
       </div>
     </div>
   );

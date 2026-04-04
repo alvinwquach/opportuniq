@@ -34,16 +34,6 @@ export function Navbar() {
               OpportunIQ
             </span>
           </Link>
-
-          <div className="hidden md:flex items-center gap-1">
-            <Link
-              href="/help-center"
-              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
-            >
-              Help
-            </Link>
-          </div>
-
           <div className="hidden md:flex items-center gap-3">
             <Link
               href="/auth/login"
@@ -83,13 +73,7 @@ export function Navbar() {
           )}
         >
           <div className="flex flex-col space-y-1 pt-2 border-t border-gray-200">
-            <Link
-              href="/help-center"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
-            >
-              Help Center
-            </Link>
+            
             <Link
               href="/auth/login"
               onClick={() => setMobileMenuOpen(false)}

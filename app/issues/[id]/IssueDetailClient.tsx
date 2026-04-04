@@ -44,34 +44,34 @@ export function IssueDetailClient({
           <IssueTimeline entries={initialTimeline} />
         </div>
         <div className="hidden lg:block space-y-4">
-          <Card className="bg-[#161616] border-[#1f1f1f] py-0">
+          <Card className="bg-white border-gray-200 py-0">
             <CardHeader className="px-4 py-3">
-              <CardTitle className="text-sm font-medium text-white">
+              <CardTitle className="text-sm font-medium text-gray-900">
                 Quick Stats
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4 pt-0 space-y-2">
               <div className="flex justify-between">
-                <span className="text-xs text-[#666]">Evidence</span>
-                <span className="text-xs text-white">{currentIssue.evidenceCount}</span>
+                <span className="text-xs text-gray-400">Evidence</span>
+                <span className="text-xs text-gray-900">{currentIssue.evidenceCount}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-xs text-[#666]">Hypotheses</span>
-                <span className="text-xs text-white">{currentIssue.hypothesisCount}</span>
+                <span className="text-xs text-gray-400">Hypotheses</span>
+                <span className="text-xs text-gray-900">{currentIssue.hypothesisCount}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-xs text-[#666]">Comments</span>
-                <span className="text-xs text-white">{currentIssue.commentCount}</span>
+                <span className="text-xs text-gray-400">Comments</span>
+                <span className="text-xs text-gray-900">{currentIssue.commentCount}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-xs text-[#666]">Scheduled Tasks</span>
-                <span className="text-xs text-white">{currentIssue.scheduleCount}</span>
+                <span className="text-xs text-gray-400">Scheduled Tasks</span>
+                <span className="text-xs text-gray-900">{currentIssue.scheduleCount}</span>
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-[#161616] border-[#1f1f1f] py-0">
+          <Card className="bg-white border-gray-200 py-0">
             <CardHeader className="px-4 py-3">
-              <CardTitle className="text-sm font-medium text-white">
+              <CardTitle className="text-sm font-medium text-gray-900">
                 Activity
               </CardTitle>
             </CardHeader>
@@ -79,7 +79,7 @@ export function IssueDetailClient({
               <p className="text-2xl font-bold text-[#00D4FF]">
                 {initialTimeline.length}
               </p>
-              <p className="text-xs text-[#666]">timeline events</p>
+              <p className="text-xs text-gray-400">timeline events</p>
             </CardContent>
           </Card>
         </div>

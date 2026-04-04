@@ -255,7 +255,7 @@ export function ThisWeekSection({ events, postalCode }: ThisWeekSectionProps) {
             return (
               <Link
                 key={event.id}
-                href={event.issueId ? `/issues/${event.issueId}` : "/calendar"}
+                href={event.issueId ? `/dashboard/projects/${event.issueId}` : "/calendar"}
                 className="flex items-center gap-2 p-2 -mx-1 rounded-lg hover:bg-gray-100 transition-colors group"
               >
                 <div
@@ -314,7 +314,7 @@ export function ThisWeekSection({ events, postalCode }: ThisWeekSectionProps) {
         <div className="text-center py-3 border-t border-gray-200">
           <p className="text-xs text-gray-400">No events this week</p>
           <Link
-            href="/issues"
+            href="/dashboard/projects"
             className="text-[10px] text-blue-600 hover:text-blue-600/80 mt-1 inline-block"
           >
             Schedule a DIY project →

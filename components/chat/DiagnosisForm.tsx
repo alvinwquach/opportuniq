@@ -160,7 +160,7 @@ export function DiagnosisForm({
             alt="Selected"
             width={120}
             height={120}
-            className="h-24 w-24 object-cover rounded-lg border border-[#2a2a2a]"
+            className="h-24 w-24 object-cover rounded-lg border border-gray-200"
             unoptimized
           />
           <button
@@ -215,13 +215,13 @@ export function DiagnosisForm({
               }}
               onBlur={field.handleBlur}
               rows={hasMedia ? 2 : 3}
-              className="w-full px-4 py-3 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] text-white text-sm placeholder:text-[#666] focus:outline-none focus:border-[#5eead4]/50 resize-none transition-colors"
+              className="w-full px-4 py-3 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#5eead4]/50 resize-none transition-colors"
             />
           </div>
         )}
       </form.Field>
       <div>
-        <label className="text-[10px] uppercase tracking-wider text-[#555] mb-2 block">
+        <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-2 block">
           Issue Category
         </label>
         <form.Field name="issueCategory">
@@ -236,7 +236,7 @@ export function DiagnosisForm({
                     "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs transition-colors",
                     field.state.value === cat
                       ? "bg-[#5eead4] text-black"
-                      : "bg-[#1a1a1a] text-[#888] hover:bg-[#2a2a2a] hover:text-white border border-[#2a2a2a]"
+                      : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-900 border border-gray-200"
                   )}
                 >
                   {categoryIcons[cat]}
@@ -259,8 +259,8 @@ export function DiagnosisForm({
         >
           {(field) => (
             <div>
-              <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
-                ZIP Code <span className="text-red-400">*</span>
+              <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
+                ZIP Code <span className="text-red-600">*</span>
               </label>
               <input
                 type="text"
@@ -269,10 +269,10 @@ export function DiagnosisForm({
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 maxLength={10}
-                className="w-32 h-10 px-3 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                className="w-32 h-10 px-3 rounded-lg bg-white border border-gray-200 text-gray-900 text-sm placeholder:text-gray-300 focus:outline-none focus:border-[#5eead4]/50 transition-colors"
               />
               {field.state.meta.errors.length > 0 && (
-                <p className="text-xs text-red-400 mt-1">{field.state.meta.errors[0]?.toString()}</p>
+                <p className="text-xs text-red-600 mt-1">{field.state.meta.errors[0]?.toString()}</p>
               )}
             </div>
           )}
@@ -281,24 +281,24 @@ export function DiagnosisForm({
       <button
         type="button"
         onClick={() => setShowAdvanced(!showAdvanced)}
-        className="flex items-center gap-2 text-[#888] hover:text-white text-sm transition-colors"
+        className="flex items-center gap-2 text-gray-500 hover:text-gray-900 text-sm transition-colors"
       >
         {showAdvanced ? <IoChevronUp className="w-4 h-4" /> : <IoChevronDown className="w-4 h-4" />}
         {showAdvanced ? "Hide" : "Show"} advanced options
       </button>
       {showAdvanced && (
-        <div className="space-y-4 p-4 rounded-xl bg-[#0c0c0c] border border-[#1f1f1f]">
+        <div className="space-y-4 p-4 rounded-xl bg-gray-50 border border-gray-200">
           <div className="grid grid-cols-2 gap-4">
             <form.Field name="propertyType">
               {(field) => (
                 <div>
-                  <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+                  <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                     Property Type
                   </label>
                   <select
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value as PropertyType)}
-                    className="w-full h-10 px-3 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
+                    className="w-full h-10 px-3 rounded-lg bg-white border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
                   >
                     {propertyTypes.map((type) => (
                       <option key={type} value={type}>
@@ -313,8 +313,8 @@ export function DiagnosisForm({
               <form.Field name="yearBuilt">
                 {(field) => (
                   <div>
-                    <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
-                      Year Built <span className="text-[#444]">(optional)</span>
+                    <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
+                      Year Built <span className="text-gray-300">(optional)</span>
                     </label>
                     <input
                       type="number"
@@ -324,10 +324,10 @@ export function DiagnosisForm({
                       onBlur={field.handleBlur}
                       min={1800}
                       max={new Date().getFullYear()}
-                      className="w-full h-10 px-3 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                      className="w-full h-10 px-3 rounded-lg bg-white border border-gray-200 text-gray-900 text-sm placeholder:text-gray-300 focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                     />
                     {field.state.value && parseInt(field.state.value) < 1980 && (
-                      <p className="text-[10px] text-amber-400 mt-1">
+                      <p className="text-[10px] text-amber-600 mt-1">
                         Pre-1980 homes may have lead paint or asbestos
                       </p>
                     )}
@@ -340,13 +340,13 @@ export function DiagnosisForm({
             <form.Field name="diySkillLevel">
               {(field) => (
                 <div>
-                  <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+                  <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                     Your DIY Skill Level
                   </label>
                   <select
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value as SkillLevel)}
-                    className="w-full h-10 px-3 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
+                    className="w-full h-10 px-3 rounded-lg bg-white border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
                   >
                     {skillLevels.map((level) => (
                       <option key={level} value={level}>
@@ -360,13 +360,13 @@ export function DiagnosisForm({
             <form.Field name="urgency">
               {(field) => (
                 <div>
-                  <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
+                  <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
                     Urgency
                   </label>
                   <select
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value as UrgencyLevel)}
-                    className="w-full h-10 px-3 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
+                    className="w-full h-10 px-3 rounded-lg bg-white border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
                   >
                     {urgencyLevels.map((level) => (
                       <option key={level} value={level}>
@@ -382,15 +382,15 @@ export function DiagnosisForm({
             <form.Field name="budgetRange">
               {(field) => (
                 <div>
-                  <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
-                    Budget <span className="text-[#444]">(optional)</span>
+                  <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
+                    Budget <span className="text-gray-300">(optional)</span>
                   </label>
                   <select
                     value={field.state.value || ""}
                     onChange={(e) =>
                       field.handleChange((e.target.value as BudgetRange) || undefined)
                     }
-                    className="w-full h-10 px-3 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] text-white text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
+                    className="w-full h-10 px-3 rounded-lg bg-white border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-[#5eead4]/50 transition-colors appearance-none cursor-pointer"
                   >
                     <option value="">Select budget...</option>
                     {budgetRanges.map((range) => (
@@ -405,8 +405,8 @@ export function DiagnosisForm({
             <form.Field name="issueLocation">
               {(field) => (
                 <div>
-                  <label className="text-[10px] uppercase tracking-wider text-[#555] mb-1.5 block">
-                    Location <span className="text-[#444]">(optional)</span>
+                  <label className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 block">
+                    Location <span className="text-gray-300">(optional)</span>
                   </label>
                   <input
                     type="text"
@@ -414,7 +414,7 @@ export function DiagnosisForm({
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
                     onBlur={field.handleBlur}
-                    className="w-full h-10 px-3 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] text-white text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                    className="w-full h-10 px-3 rounded-lg bg-white border border-gray-200 text-gray-900 text-sm placeholder:text-gray-300 focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                   />
                 </div>
               )}
@@ -428,9 +428,9 @@ export function DiagnosisForm({
                     type="checkbox"
                     checked={field.state.value}
                     onChange={(e) => field.handleChange(e.target.checked)}
-                    className="w-4 h-4 rounded border-[#2a2a2a] bg-[#1a1a1a] text-[#5eead4] focus:ring-[#5eead4]/50 focus:ring-offset-0"
+                    className="w-4 h-4 rounded border-gray-200 bg-white text-[#5eead4] focus:ring-[#5eead4]/50 focus:ring-offset-0"
                   />
-                  <span className="text-sm text-[#888]">I have basic tools</span>
+                  <span className="text-sm text-gray-500">I have basic tools</span>
                 </label>
               )}
             </form.Field>
@@ -441,9 +441,9 @@ export function DiagnosisForm({
                     type="checkbox"
                     checked={field.state.value || false}
                     onChange={(e) => field.handleChange(e.target.checked || undefined)}
-                    className="w-4 h-4 rounded border-[#2a2a2a] bg-[#1a1a1a] text-[#5eead4] focus:ring-[#5eead4]/50 focus:ring-offset-0"
+                    className="w-4 h-4 rounded border-gray-200 bg-white text-[#5eead4] focus:ring-[#5eead4]/50 focus:ring-offset-0"
                   />
-                  <span className="text-sm text-[#888]">I prefer DIY if possible</span>
+                  <span className="text-sm text-gray-500">I prefer DIY if possible</span>
                 </label>
               )}
             </form.Field>
@@ -454,7 +454,7 @@ export function DiagnosisForm({
         <button
           type="button"
           onClick={onMediaSelect}
-          className="shrink-0 w-10 h-10 rounded-full bg-[#1a1a1a] text-[#888] hover:text-[#5eead4] hover:bg-[#2a2a2a] flex items-center justify-center transition-colors border border-[#2a2a2a]"
+          className="shrink-0 w-10 h-10 rounded-full bg-white text-gray-500 hover:text-[#5eead4] hover:bg-gray-100 flex items-center justify-center transition-colors border border-gray-200"
           title="Add photo"
         >
           <IoImage className="w-5 h-5" />
@@ -463,7 +463,7 @@ export function DiagnosisForm({
           <button
             type="button"
             onClick={onMediaSelect}
-            className="shrink-0 w-10 h-10 rounded-full bg-[#1a1a1a] text-[#888] hover:text-[#5eead4] hover:bg-[#2a2a2a] flex items-center justify-center transition-colors border border-[#2a2a2a]"
+            className="shrink-0 w-10 h-10 rounded-full bg-white text-gray-500 hover:text-[#5eead4] hover:bg-gray-100 flex items-center justify-center transition-colors border border-gray-200"
             title="Add video"
           >
             <IoVideocam className="w-5 h-5" />

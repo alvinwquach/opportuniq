@@ -46,7 +46,7 @@ export async function updateCommentEncrypted(
       return { success: false, error: "Comment not found or not owned by user" };
     }
 
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath(`/dashboard/projects/${issueId}`);
 
     return { success: true, commentId: comment.id };
   } catch (error) {
@@ -87,7 +87,7 @@ export async function updateCommentPlaintext(
       return { success: false, error: "Comment not found or not owned by user" };
     }
 
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath(`/dashboard/projects/${issueId}`);
 
     return { success: true, commentId: comment.id };
   } catch (error) {

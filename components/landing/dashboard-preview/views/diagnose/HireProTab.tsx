@@ -9,6 +9,7 @@ import {
   IoClose,
   IoSend,
   IoPeople,
+  IoStar,
 } from "react-icons/io5";
 import { FaYelp } from "react-icons/fa";
 import { SiGmail } from "react-icons/si";
@@ -131,7 +132,7 @@ export function HireProTab({ issue, onSwitchToDIY }: HireProTabProps) {
                   <div>
                     <p className={`text-sm font-semibold ${dark ? "text-gray-100" : "text-gray-900"}`}>{pro.name}</p>
                     <div className={`flex items-center gap-2 text-xs mt-0.5 ${dark ? "text-gray-500" : "text-gray-500"}`}>
-                      <span className="text-amber-500">★ {pro.rating.toFixed(1)}</span>
+                      <span className="text-amber-500 flex items-center gap-0.5"><IoStar className="w-3 h-3 inline" /> {pro.rating.toFixed(1)}</span>
                       <span>({pro.reviews} reviews)</span>
                     </div>
                   </div>

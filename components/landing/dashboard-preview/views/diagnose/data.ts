@@ -42,7 +42,7 @@ export const issuesData: Record<string, IssueData> = {
     research: [
       { type: "reddit", title: "r/Plumbing: Moen faucet drip fix - worked perfectly", meta: "234 upvotes · 47 comments", url: "reddit.com/r/Plumbing/..." },
       { type: "reddit", title: "r/HomeImprovement: Same issue, O-ring was the culprit", meta: "89 upvotes · 23 comments", url: "reddit.com/r/HomeImprovement/..." },
-      { type: "youtube", title: "How to Replace Moen Cartridge in 10 Minutes", meta: "1.2M views · 4.8★", url: "youtube.com/watch?v=..." },
+      { type: "youtube", title: "How to Replace Moen Cartridge in 10 Minutes", meta: "1.2M views · 4.8", url: "youtube.com/watch?v=..." },
     ],
     guides: [
       { source: "YouTube", title: "Moen Faucet Cartridge Replacement", duration: "12:34", rating: 4.8, icon: "youtube" },
@@ -118,7 +118,7 @@ export const issuesData: Record<string, IssueData> = {
     },
     research: [
       { type: "reddit", title: "r/HVAC: AC not cooling - how to know if it's refrigerant", meta: "456 upvotes · 89 comments", url: "reddit.com/r/HVAC/..." },
-      { type: "youtube", title: "Signs Your AC Needs Refrigerant (Don't DIY This)", meta: "890K views · 4.6★", url: "youtube.com/watch?v=..." },
+      { type: "youtube", title: "Signs Your AC Needs Refrigerant (Don't DIY This)", meta: "890K views · 4.6", url: "youtube.com/watch?v=..." },
       { type: "reddit", title: "r/HomeImprovement: When to call an HVAC pro vs DIY", meta: "123 upvotes · 34 comments", url: "reddit.com/r/HomeImprovement/..." },
     ],
     guides: [],
@@ -129,7 +129,7 @@ export const issuesData: Record<string, IssueData> = {
     ],
     chatMessages: [
       { role: "user", content: "My AC is running but not cooling the house. It's 85°F inside and thermostat is set to 72°F." },
-      { role: "assistant", content: "Based on your description - AC running but not cooling - this is typically caused by **low refrigerant levels**, which indicates a leak in the system.\n\n⚠️ **Important:** Refrigerant handling requires EPA 608 certification. This is **not a DIY repair** - it's actually illegal to handle refrigerants without proper certification.\n\nI found 3 highly-rated HVAC pros near you and sent quote requests to all of them. Cool Air HVAC has availability **today at 4pm** and excellent reviews." },
+      { role: "assistant", content: "Based on your description - AC running but not cooling - this is typically caused by **low refrigerant levels**, which indicates a leak in the system.\n\n**Important:** Refrigerant handling requires EPA 608 certification. This is **not a DIY repair** - it's actually illegal to handle refrigerants without proper certification.\n\nI found 3 highly-rated HVAC pros near you and sent quote requests to all of them. Cool Air HVAC has availability **today at 4pm** and excellent reviews." },
     ],
     permit: { required: false },
     seasonalTip: { tip: "Schedule AC maintenance in early spring before peak summer demand", season: "Spring", urgency: "high" },
@@ -174,7 +174,7 @@ export const issuesData: Record<string, IssueData> = {
       doNotProceed: ["Disconnect automatic opener before manual operation", "Never lubricate the tracks - door can slip off"],
     },
     research: [
-      { type: "youtube", title: "Garage Door Maintenance 101 - Stop the Squeak!", meta: "2.1M views · 4.9★", url: "youtube.com/watch?v=..." },
+      { type: "youtube", title: "Garage Door Maintenance 101 - Stop the Squeak!", meta: "2.1M views · 4.9", url: "youtube.com/watch?v=..." },
       { type: "reddit", title: "r/HomeImprovement: Best garage door lubricant?", meta: "312 upvotes · 67 comments", url: "reddit.com/r/HomeImprovement/..." },
       { type: "reddit", title: "r/garagedoors: Monthly maintenance checklist", meta: "189 upvotes · 42 comments", url: "reddit.com/r/garagedoors/..." },
     ],
@@ -202,7 +202,7 @@ export const issuesData: Record<string, IssueData> = {
     ],
     chatMessages: [
       { role: "user", content: "Here's a voice note about my garage door issue", hasVoice: true },
-      { role: "assistant", content: "I transcribed your voice note:\n\n*\"My garage door makes a loud squeaking noise when opening and closing\"*\n\nSqueaky garage doors are usually caused by **dry rollers, hinges, or springs** that need lubrication.\n\n**This is an easy 15-20 minute DIY fix!** You'll need white lithium grease for the hinges and springs, and silicone spray for the rollers.\n\n⚠️ **Safety note:** Disconnect the automatic opener before working on the door, and **never lubricate the tracks** - this can cause the door to slip off." },
+      { role: "assistant", content: "I transcribed your voice note:\n\n*\"My garage door makes a loud squeaking noise when opening and closing\"*\n\nSqueaky garage doors are usually caused by **dry rollers, hinges, or springs** that need lubrication.\n\n**This is an easy 15-20 minute DIY fix!** You'll need white lithium grease for the hinges and springs, and silicone spray for the rollers.\n\n**Safety note:** Disconnect the automatic opener before working on the door, and **never lubricate the tracks** - this can cause the door to slip off." },
     ],
     permit: { required: false },
     seasonalTip: { tip: "Lubricate garage door every 6 months - squeaks worsen in cold weather", season: "Fall/Spring", urgency: "low" },
@@ -229,7 +229,7 @@ export const issuesData: Record<string, IssueData> = {
     },
     research: [
       { type: "reddit", title: "r/electricians: Flickering lights - when to worry", meta: "567 upvotes · 123 comments", url: "reddit.com/r/electricians/..." },
-      { type: "youtube", title: "Diagnosing Flickering Lights Safely", meta: "450K views · 4.5★", url: "youtube.com/watch?v=..." },
+      { type: "youtube", title: "Diagnosing Flickering Lights Safely", meta: "450K views · 4.5", url: "youtube.com/watch?v=..." },
       { type: "reddit", title: "r/HomeImprovement: Fixed my flickering light - loose neutral", meta: "234 upvotes · 56 comments", url: "reddit.com/r/HomeImprovement/..." },
     ],
     guides: [
@@ -259,7 +259,7 @@ export const issuesData: Record<string, IssueData> = {
     ],
     chatMessages: [
       { role: "user", content: "The lights in my living room keep flickering, especially when the AC kicks on" },
-      { role: "assistant", content: "Flickering lights when high-draw appliances start can indicate:\n\n1. **Normal voltage drop** - minor flicker is common\n2. **Loose connection** - at switch, fixture, or panel (fire hazard)\n3. **Overloaded circuit** - too many devices on one circuit\n\n⚠️ **Warning:** Loose electrical connections are a leading cause of house fires. If flickering is persistent or you see/smell burning, call an electrician immediately.\n\nI've sent quote requests to 3 electricians and checked your calendar for availability. Spark Electric has same-day availability that matches your open slots." },
+      { role: "assistant", content: "Flickering lights when high-draw appliances start can indicate:\n\n1. **Normal voltage drop** - minor flicker is common\n2. **Loose connection** - at switch, fixture, or panel (fire hazard)\n3. **Overloaded circuit** - too many devices on one circuit\n\n**Warning:** Loose electrical connections are a leading cause of house fires. If flickering is persistent or you see/smell burning, call an electrician immediately.\n\nI've sent quote requests to 3 electricians and checked your calendar for availability. Spark Electric has same-day availability that matches your open slots." },
     ],
     permit: { required: true, type: "Electrical Permit", cost: 85, processingTime: "1-3 business days", municipality: "City of San Jose" },
     seasonalTip: { tip: "Holiday lights can overload circuits - check breaker capacity before decorating", season: "Winter", urgency: "medium" },

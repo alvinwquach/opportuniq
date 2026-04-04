@@ -55,7 +55,7 @@ export function ChatMessageList({
       {/* Streaming response */}
       {streamingContent && (
         <div className="flex justify-start">
-          <div className="max-w-[80%] rounded-2xl px-4 py-3 bg-[#1a1a1a] text-white">
+          <div className="max-w-[80%] rounded-2xl px-4 py-3 bg-white text-gray-900">
             <MessageContent content={streamingContent} conversationId={activeConversationId} />
           </div>
         </div>
@@ -100,7 +100,7 @@ function ChatMessage({
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div
         className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-          isUser ? "bg-[#5eead4] text-black" : "bg-[#1a1a1a] text-white"
+          isUser ? "bg-[#5eead4] text-black" : "bg-white text-gray-900"
         }`}
       >
         {message.attachments?.map((att, index) => {
@@ -167,7 +167,7 @@ function AssistantMessageContent({
   return (
     <div className="relative">
       <MessageContent content={displayContent} conversationId={activeConversationId} />
-      <div className="flex items-center gap-2 mt-3 pt-2 border-t border-[#2a2a2a]">
+      <div className="flex items-center gap-2 mt-3 pt-2 border-t border-gray-200">
         <AudioPlayButton
           text={displayContent}
           language={ttsLanguage}
@@ -175,10 +175,10 @@ function AssistantMessageContent({
           conversationId={activeConversationId}
           size="md"
         />
-        <span className="text-xs text-[#666]">Listen</span>
+        <span className="text-xs text-gray-400">Listen</span>
         {detectedLanguage && detectedLanguage !== "en" && (
           <>
-            <div className="w-px h-4 bg-[#2a2a2a] mx-1" />
+            <div className="w-px h-4 bg-gray-200 mx-1" />
             <TranslateButton
               text={message.content}
               originalLanguage={detectedLanguage}
@@ -193,7 +193,7 @@ function AssistantMessageContent({
               }}
               size="md"
             />
-            <span className="text-xs text-[#666]">
+            <span className="text-xs text-gray-400">
               {translation?.isTranslated ? "Original" : "Translate"}
             </span>
           </>
@@ -209,7 +209,7 @@ function AssistantMessageContent({
 function LoadingIndicator() {
   return (
     <div className="flex justify-start">
-      <div className="bg-[#1a1a1a] rounded-2xl px-4 py-3">
+      <div className="bg-white rounded-2xl px-4 py-3">
         <div className="flex items-center gap-2">
           <div
             className="w-2 h-2 bg-[#5eead4] rounded-full animate-bounce"
@@ -233,7 +233,7 @@ function ErrorMessage() {
   return (
     <div className="flex justify-center">
       <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">
-        <p className="text-red-400 text-sm">Something went wrong. Please try again.</p>
+        <p className="text-red-600 text-sm">Something went wrong. Please try again.</p>
       </div>
     </div>
   );

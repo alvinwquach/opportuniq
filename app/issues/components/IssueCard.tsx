@@ -154,8 +154,8 @@ export function IssueCard({ issue, variant = "active" }: IssueCardProps) {
       // The entire card is a Next.js Link so clicking anywhere navigates to the issue detail page.
       // Slightly dimmed (opacity-80) by default, brightens to full opacity on hover.
       <Link
-        href={`/issues/${issue.id}`}
-        className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4 hover:border-emerald-500/30 transition-all cursor-pointer group opacity-80 hover:opacity-100 block"
+        href={`/dashboard/projects/${issue.id}`}
+        className="bg-white border border-gray-200 rounded-xl p-4 hover:border-emerald-500/30 transition-all cursor-pointer group opacity-80 hover:opacity-100 block"
       >
         {/* Card header: checkmark icon on the left, title + group/category below it, open-link icon on the right */}
         <div className="flex items-start justify-between mb-3">
@@ -166,33 +166,33 @@ export function IssueCard({ issue, variant = "active" }: IssueCardProps) {
             </div>
             <div>
               {/* Issue title — slightly dimmed normally, brightens to white on card hover */}
-              <p className="text-sm font-medium text-[#ccc] group-hover:text-white transition-colors">
+              <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">
                 {issue.title}
               </p>
               {/* Property group name and category — shown as secondary metadata below the title */}
-              <p className="text-xs text-[#666]">
+              <p className="text-xs text-gray-400">
                 {issue.groupName} · {issue.category || "General"}
               </p>
             </div>
           </div>
           {/* Small "open" icon in the top-right corner; turns green on hover to hint the card is clickable */}
-          <IoOpenOutline className="w-4 h-4 text-[#444] group-hover:text-emerald-400 transition-colors" />
+          <IoOpenOutline className="w-4 h-4 text-gray-300 group-hover:text-emerald-400 transition-colors" />
         </div>
 
         {/* Resolution info box: shows who fixed it (DIY or professional) and how much was saved.
             Only the "Saved" dollar amount is conditionally shown — only if a non-zero amount was saved. */}
-        <div className="flex items-center justify-between p-3 bg-[#0f0f0f] rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
           <div>
-            <p className="text-xs text-[#666] mb-0.5">Resolved by</p>
+            <p className="text-xs text-gray-400 mb-0.5">Resolved by</p>
             {/* Show "DIY" if the user fixed it themselves, otherwise "Professional" */}
-            <p className="text-sm font-medium text-white">
+            <p className="text-sm font-medium text-gray-900">
               {issue.resolvedBy === "diy" ? "DIY" : "Professional"}
             </p>
           </div>
           {/* Only show the saved amount if it exists and is greater than $0 */}
           {issue.savedAmount && issue.savedAmount > 0 && (
             <div className="text-right">
-              <p className="text-xs text-[#666] mb-0.5">Saved</p>
+              <p className="text-xs text-gray-400 mb-0.5">Saved</p>
               {/* Display the saved amount in large green text, rounded to whole dollars */}
               <p className="text-lg font-bold text-emerald-400">
                 ${issue.savedAmount.toFixed(0)}
@@ -202,8 +202,8 @@ export function IssueCard({ issue, variant = "active" }: IssueCardProps) {
         </div>
 
         {/* Card footer: shows when the issue was resolved using human-readable relative time */}
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#2a2a2a]">
-          <div className="flex items-center gap-2 text-xs text-[#555]">
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200">
+          <div className="flex items-center gap-2 text-xs text-gray-400">
             {/* Small calendar icon next to the resolution date */}
             <IoCalendarOutline className="w-3.5 h-3.5" />
             {/* Show "Resolved X days ago" — if resolvedAt is missing, show an empty string */}
@@ -221,8 +221,8 @@ export function IssueCard({ issue, variant = "active" }: IssueCardProps) {
     // The entire card is a Next.js Link — clicking anywhere navigates to the issue detail page.
     // The background lightens slightly and the border turns green on hover.
     <Link
-      href={`/issues/${issue.id}`}
-      className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4 hover:border-emerald-500/30 hover:bg-[#1f1f1f] transition-all cursor-pointer group block"
+      href={`/dashboard/projects/${issue.id}`}
+      className="bg-white border border-gray-200 rounded-xl p-4 hover:border-emerald-500/30 hover:bg-gray-50 transition-all cursor-pointer group block"
     >
       {/* Card header: category icon on the left, title + group/category below it, arrow icon on the right */}
       <div className="flex items-start justify-between mb-3">
@@ -235,17 +235,17 @@ export function IssueCard({ issue, variant = "active" }: IssueCardProps) {
           </div>
           <div>
             {/* Issue title — white normally, turns green on card hover to signal interactivity */}
-            <p className="text-sm font-medium text-white group-hover:text-emerald-400 transition-colors">
+            <p className="text-sm font-medium text-gray-900 group-hover:text-emerald-400 transition-colors">
               {issue.title}
             </p>
             {/* Property group and category as secondary metadata */}
-            <p className="text-xs text-[#666]">
+            <p className="text-xs text-gray-400">
               {issue.groupName} · {issue.category || "General"}
             </p>
           </div>
         </div>
         {/* Right-pointing arrow — turns green on hover to reinforce that the card is a link */}
-        <IoArrowForward className="w-4 h-4 text-[#444] group-hover:text-emerald-400 transition-colors" />
+        <IoArrowForward className="w-4 h-4 text-gray-300 group-hover:text-emerald-400 transition-colors" />
       </div>
 
       {/* AI Diagnosis section — only rendered if the issue has a diagnosis text.
@@ -253,31 +253,31 @@ export function IssueCard({ issue, variant = "active" }: IssueCardProps) {
           to signal that analysis is ongoing, and a green scheme otherwise. */}
       {issue.diagnosis && (
         <div className={`mb-3 p-3 rounded-lg ${
-          issue.status === "investigating" ? "bg-amber-500/10" : "bg-[#0f0f0f]"
+          issue.status === "investigating" ? "bg-amber-500/10" : "bg-gray-50"
         }`}>
           {/* Header row of the diagnosis box: sparkle icon, label ("Analyzing" or "AI Diagnosis"), and confidence % */}
           <div className="flex items-center gap-2 mb-1">
             {/* Sparkle icon — amber if still analyzing, green if diagnosis is finalized */}
             <IoSparkles className={`w-3.5 h-3.5 ${
-              issue.status === "investigating" ? "text-amber-400" : "text-emerald-400"
+              issue.status === "investigating" ? "text-amber-600" : "text-emerald-400"
             }`} />
             {/* Label text changes based on whether analysis is still in progress */}
             <span className={`text-xs font-medium ${
-              issue.status === "investigating" ? "text-amber-400" : "text-emerald-400"
+              issue.status === "investigating" ? "text-amber-600" : "text-emerald-400"
             }`}>
               {issue.status === "investigating" ? "Analyzing" : "AI Diagnosis"}
             </span>
             {/* If the AI provided a confidence percentage, show it after a middot separator */}
             {issue.confidence && (
               <span className={`text-xs ${
-                issue.status === "investigating" ? "text-amber-400/70" : "text-[#555]"
+                issue.status === "investigating" ? "text-amber-600/70" : "text-gray-400"
               }`}>
                 · {issue.confidence}% confident
               </span>
             )}
           </div>
           {/* The diagnosis text itself — clamped to 2 lines so the cards stay a consistent height */}
-          <p className="text-xs text-[#999] line-clamp-2">{issue.diagnosis}</p>
+          <p className="text-xs text-gray-500 line-clamp-2">{issue.diagnosis}</p>
         </div>
       )}
 
@@ -300,7 +300,7 @@ export function IssueCard({ issue, variant = "active" }: IssueCardProps) {
             </span>
           )}
           {/* Show when the issue was last updated, using relative time (e.g., "3 days ago") */}
-          <span className="text-xs text-[#555]">{getRelativeTime(issue.updatedAt)}</span>
+          <span className="text-xs text-gray-400">{getRelativeTime(issue.updatedAt)}</span>
         </div>
       </div>
     </Link>

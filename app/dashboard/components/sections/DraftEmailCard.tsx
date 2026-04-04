@@ -116,7 +116,7 @@ Thank you,
       {/* View All Link */}
       {uncontactedVendors.length > 4 && (
         <Link
-          href="/issues"
+          href="/dashboard/projects"
           className="flex items-center justify-center gap-1 mt-3 pt-3 border-t border-gray-200 text-xs text-blue-600 hover:text-blue-600/80 transition-colors"
         >
           <span>View all {uncontactedVendors.length} vendors</span>

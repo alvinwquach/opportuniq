@@ -21,18 +21,18 @@ export interface CategoryColorConfig {
 
 // Category colors mapping
 export const categoryColors: Record<string, CategoryColorConfig> = {
-  Plumbing: { bg: "bg-blue-100", text: "text-blue-600", icon: "💧" },
-  HVAC: { bg: "bg-blue-100", text: "text-blue-600", icon: "❄️" },
-  Garage: { bg: "bg-amber-500/20", text: "text-amber-400", icon: "🚗" },
-  Electrical: { bg: "bg-red-500/20", text: "text-red-400", icon: "⚡" },
-  Appliances: { bg: "bg-blue-100", text: "text-blue-600", icon: "🔌" },
+  Plumbing: { bg: "bg-blue-100", text: "text-blue-600", icon: "P" },
+  HVAC: { bg: "bg-blue-100", text: "text-blue-600", icon: "H" },
+  Garage: { bg: "bg-amber-500/20", text: "text-amber-400", icon: "G" },
+  Electrical: { bg: "bg-red-500/20", text: "text-red-400", icon: "E" },
+  Appliances: { bg: "bg-blue-100", text: "text-blue-600", icon: "A" },
 };
 
 // Default category color config
 export const defaultCategoryColor: CategoryColorConfig = {
   bg: "bg-[#333]",
   text: "text-gray-500",
-  icon: "📖",
+  icon: "G",
 };
 
 // Difficulty badge configuration

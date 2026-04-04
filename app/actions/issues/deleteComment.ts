@@ -36,7 +36,7 @@ export async function deleteComment(
       return { success: false, error: "Comment not found or not owned by user" };
     }
 
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath(`/dashboard/projects/${issueId}`);
 
     return { success: true, commentId: deleted.id };
   } catch (error) {
