@@ -30,7 +30,7 @@ function getStatusConfig(status: string) {
     case "open":
       return {
         label: "Open",
-        color: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+        color: "bg-orange-500/10 text-orange-600 border-orange-500/20",
         icon: IoAlertCircle,
       };
     case "investigating":
@@ -42,7 +42,7 @@ function getStatusConfig(status: string) {
     case "options_generated":
       return {
         label: "Options Ready",
-        color: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+        color: "bg-purple-500/10 text-purple-600 border-purple-500/20",
         icon: IoTime,
       };
     case "decided":
@@ -54,7 +54,7 @@ function getStatusConfig(status: string) {
     case "in_progress":
       return {
         label: "In Progress",
-        color: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+        color: "bg-blue-500/10 text-blue-600 border-blue-500/20",
         icon: IoTime,
       };
     case "completed":
@@ -66,13 +66,13 @@ function getStatusConfig(status: string) {
     case "deferred":
       return {
         label: "Deferred",
-        color: "bg-[#666]/10 text-[#666] border-[#666]/20",
+        color: "bg-gray-500/10 text-gray-500 border-gray-500/20",
         icon: IoClose,
       };
     default:
       return {
         label: status,
-        color: "bg-[#1f1f1f] text-[#9a9a9a] border-[#2a2a2a]",
+        color: "bg-gray-50 text-gray-500 border-gray-200",
         icon: IoAlertCircle,
       };
   }
@@ -81,15 +81,15 @@ function getStatusConfig(status: string) {
 function getPriorityConfig(priority: string) {
   switch (priority) {
     case "urgent":
-      return { label: "Urgent", color: "text-red-400" };
+      return { label: "Urgent", color: "text-red-600" };
     case "high":
-      return { label: "High", color: "text-orange-400" };
+      return { label: "High", color: "text-orange-600" };
     case "medium":
-      return { label: "Medium", color: "text-amber-400" };
+      return { label: "Medium", color: "text-amber-600" };
     case "low":
-      return { label: "Low", color: "text-[#666]" };
+      return { label: "Low", color: "text-gray-400" };
     default:
-      return { label: priority, color: "text-[#666]" };
+      return { label: priority, color: "text-gray-400" };
   }
 }
 
@@ -145,8 +145,8 @@ export function IssueHeader({ issue, onResolveClick }: IssueHeaderProps) {
   };
 
   return (
-    <Card className="bg-[#161616] border-[#1f1f1f] py-0 gap-0">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1f1f1f]">
+    <Card className="bg-white border-gray-200 py-0 gap-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
         <div className="flex items-center gap-3">
           <Badge
             variant="outline"
@@ -177,7 +177,7 @@ export function IssueHeader({ issue, onResolveClick }: IssueHeaderProps) {
               size="sm"
               onClick={handleReopen}
               disabled={isReopening}
-              className="h-auto px-3 py-1.5 bg-[#1f1f1f] text-[#9a9a9a] hover:text-white hover:bg-[#2a2a2a] text-xs font-medium"
+              className="h-auto px-3 py-1.5 bg-gray-50 text-gray-500 hover:text-gray-900 hover:bg-gray-100 text-xs font-medium"
             >
               <IoRefresh className={`w-3.5 h-3.5 mr-1.5 ${isReopening ? "animate-spin" : ""}`} />
               Reopen
@@ -198,21 +198,21 @@ export function IssueHeader({ issue, onResolveClick }: IssueHeaderProps) {
       <CardContent className="p-4 space-y-4">
         {issue.description && (
           <div>
-            <h3 className="text-xs font-medium text-[#666] mb-1.5">Description</h3>
-            <p className="text-sm text-[#9a9a9a] leading-relaxed">
+            <h3 className="text-xs font-medium text-gray-400 mb-1.5">Description</h3>
+            <p className="text-sm text-gray-500 leading-relaxed">
               {issue.description}
             </p>
           </div>
         )}
         {issue.resolutionNotes && (
           <div>
-            <h3 className="text-xs font-medium text-[#666] mb-1.5">Resolution Notes</h3>
-            <p className="text-sm text-[#9a9a9a] leading-relaxed">
+            <h3 className="text-xs font-medium text-gray-400 mb-1.5">Resolution Notes</h3>
+            <p className="text-sm text-gray-500 leading-relaxed">
               {issue.resolutionNotes}
             </p>
           </div>
         )}
-        <div className="flex items-center gap-6 pt-2 border-t border-[#1f1f1f]">
+        <div className="flex items-center gap-6 pt-2 border-t border-gray-200">
           <div className="flex items-center gap-2">
             {issue.createdBy.avatarUrl ? (
               <Image
@@ -223,11 +223,11 @@ export function IssueHeader({ issue, onResolveClick }: IssueHeaderProps) {
                 className="rounded-full"
               />
             ) : (
-              <div className="w-5 h-5 rounded-full bg-[#2a2a2a] flex items-center justify-center text-[8px] font-medium text-[#9a9a9a]">
+              <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center text-[8px] font-medium text-gray-500">
                 {getInitials(issue.createdBy.name)}
               </div>
             )}
-            <span className="text-xs text-[#666]">
+            <span className="text-xs text-gray-400">
               Created by {issue.createdBy.name || "Unknown"} on{" "}
               {format(new Date(issue.createdAt), "MMM d, yyyy")}
             </span>
@@ -243,11 +243,11 @@ export function IssueHeader({ issue, onResolveClick }: IssueHeaderProps) {
                   className="rounded-full"
                 />
               ) : (
-                <div className="w-5 h-5 rounded-full bg-[#2a2a2a] flex items-center justify-center text-[8px] font-medium text-[#9a9a9a]">
+                <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center text-[8px] font-medium text-gray-500">
                   {getInitials(issue.resolvedBy.name)}
                 </div>
               )}
-              <span className="text-xs text-[#666]">
+              <span className="text-xs text-gray-400">
                 Resolved by {issue.resolvedBy.name || "Unknown"} on{" "}
                 {format(new Date(issue.resolvedAt), "MMM d, yyyy")}
               </span>

@@ -93,8 +93,8 @@ export async function updateIssueEncrypted(
       .set(updateData)
       .where(and(eq(issues.id, issueId), eq(issues.groupId, groupId)));
 
-    revalidatePath("/dashboard/issues");
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath("/dashboard/projects");
+    revalidatePath(`/dashboard/projects/${issueId}`);
     revalidatePath(`/dashboard/groups/${groupId}`);
 
     return { success: true, issueId };
@@ -163,8 +163,8 @@ export async function updateIssuePlaintext(
       .set(updateData)
       .where(and(eq(issues.id, issueId), eq(issues.groupId, groupId)));
 
-    revalidatePath("/dashboard/issues");
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath("/dashboard/projects");
+    revalidatePath(`/dashboard/projects/${issueId}`);
     revalidatePath(`/dashboard/groups/${groupId}`);
 
     return { success: true, issueId };

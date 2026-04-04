@@ -216,13 +216,13 @@ export function MessageContent({ content, conversationId, showCharts = true }: M
       </a>
     ),
     h1: ({ children }: { children?: React.ReactNode }) => (
-      <h1 className="text-lg font-bold mt-4 mb-2 text-white">{children}</h1>
+      <h1 className="text-lg font-bold mt-4 mb-2 text-gray-900">{children}</h1>
     ),
     h2: ({ children }: { children?: React.ReactNode }) => (
-      <h2 className="text-base font-bold mt-3 mb-2 text-white">{children}</h2>
+      <h2 className="text-base font-bold mt-3 mb-2 text-gray-900">{children}</h2>
     ),
     h3: ({ children }: { children?: React.ReactNode }) => (
-      <h3 className="text-sm font-bold mt-2 mb-1 text-white">{children}</h3>
+      <h3 className="text-sm font-bold mt-2 mb-1 text-gray-900">{children}</h3>
     ),
     p: ({ children }: { children?: React.ReactNode }) => (
       <p className="mb-2 last:mb-0">{children}</p>
@@ -243,25 +243,25 @@ export function MessageContent({ content, conversationId, showCharts = true }: M
       <em className="italic">{children}</em>
     ),
     code: ({ children }: { children?: React.ReactNode }) => (
-      <code className="bg-[#2a2a2a] px-1 py-0.5 rounded text-[#5eead4] text-xs">{children}</code>
+      <code className="bg-gray-100 px-1 py-0.5 rounded text-[#5eead4] text-xs">{children}</code>
     ),
     pre: ({ children }: { children?: React.ReactNode }) => (
-      <pre className="bg-[#2a2a2a] p-2 rounded overflow-x-auto mb-2">{children}</pre>
+      <pre className="bg-gray-100 p-2 rounded overflow-x-auto mb-2">{children}</pre>
     ),
     table: ({ children }: { children?: React.ReactNode }) => (
       <table className="w-full my-2 text-sm border-collapse">{children}</table>
     ),
     thead: ({ children }: { children?: React.ReactNode }) => (
-      <thead className="bg-[#2a2a2a]">{children}</thead>
+      <thead className="bg-gray-100">{children}</thead>
     ),
     tbody: ({ children }: { children?: React.ReactNode }) => (
-      <tbody className="divide-y divide-[#2a2a2a]">{children}</tbody>
+      <tbody className="divide-y divide-gray-200">{children}</tbody>
     ),
     tr: ({ children }: { children?: React.ReactNode }) => (
-      <tr className="border-b border-[#2a2a2a]">{children}</tr>
+      <tr className="border-b border-gray-200">{children}</tr>
     ),
     th: ({ children }: { children?: React.ReactNode }) => (
-      <th className="px-2 py-1 text-left font-medium text-[#888888]">{children}</th>
+      <th className="px-2 py-1 text-left font-medium text-gray-500">{children}</th>
     ),
     td: ({ children }: { children?: React.ReactNode }) => (
       <td className="px-2 py-1">{children}</td>
@@ -287,7 +287,7 @@ export function MessageContent({ content, conversationId, showCharts = true }: M
       {showCharts && isStructuredResponse ? (
         <InlineChartRenderer content={displayContent} markdownComponents={markdownComponents} />
       ) : (
-        <div className="prose prose-sm prose-invert max-w-none">
+        <div className="prose prose-sm max-w-none">
           <ReactMarkdown components={markdownComponents}>
             {displayContent}
           </ReactMarkdown>

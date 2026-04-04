@@ -8,6 +8,7 @@ import {
   IoWalletOutline,
   IoTimeOutline,
   IoRibbonOutline,
+  IoFlame,
 } from "react-icons/io5";
 import {
   AreaChart,
@@ -163,7 +164,7 @@ export function CompletedGuidesSidebar({
             <IoTrendingUp className="w-4 h-4 text-amber-600" />
             <span className="text-sm font-medium text-gray-900">Learning Streak</span>
           </div>
-          <span className="text-xl font-bold text-amber-600">{streak} 🔥</span>
+          <span className="text-xl font-bold text-amber-600 flex items-center gap-1">{streak} <IoFlame className="w-5 h-5 inline text-amber-500" /></span>
         </div>
         <p className="text-[10px] text-gray-500 mt-2">
           {streak} guides completed this month. Keep it up!

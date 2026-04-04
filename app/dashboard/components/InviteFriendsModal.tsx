@@ -211,10 +211,10 @@ export function InviteFriendsModal({
   };
 
   const tierColor: Record<InviteTier, string> = {
-    johatsu: "text-rose-400 bg-rose-500/10 border-rose-500/20",
-    alpha: "text-amber-400 bg-amber-500/10 border-amber-500/20",
-    beta: "text-blue-600 bg-blue-50 border-blue-500/20",
-    public: "text-green-400 bg-green-500/10 border-green-500/20",
+    johatsu: "text-rose-600 bg-rose-50 border-rose-200",
+    alpha: "text-amber-600 bg-amber-50 border-amber-200",
+    beta: "text-blue-600 bg-blue-50 border-blue-200",
+    public: "text-green-600 bg-green-50 border-green-200",
   };
 
   // Render a static button during SSR to prevent hydration mismatch
@@ -260,7 +260,7 @@ export function InviteFriendsModal({
       <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="bg-gray-50 border-gray-200 sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-white flex items-center gap-2">
+          <DialogTitle className="text-gray-900 flex items-center gap-2">
             <IoPersonAdd className="w-5 h-5 text-[#5eead4]" />
             Invite Friends
           </DialogTitle>
@@ -275,19 +275,19 @@ export function InviteFriendsModal({
             {/* Stats */}
             <div className="grid grid-cols-4 gap-2">
               <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
-                <p className="text-xl font-semibold text-white">
+                <p className="text-xl font-semibold text-gray-900">
                   {data.stats.totalSent}
                 </p>
                 <p className="text-[10px] text-gray-500">Total Sent</p>
               </div>
               <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
-                <p className="text-xl font-semibold text-green-400">
+                <p className="text-xl font-semibold text-green-600">
                   {data.stats.accepted}
                 </p>
                 <p className="text-[10px] text-gray-500">Accepted</p>
               </div>
               <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
-                <p className="text-xl font-semibold text-amber-400">
+                <p className="text-xl font-semibold text-amber-600">
                   {data.stats.pending}
                 </p>
                 <p className="text-[10px] text-gray-500">Pending</p>
@@ -304,7 +304,7 @@ export function InviteFriendsModal({
             <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
               <div className="flex items-center gap-2 mb-2">
                 <IoLink className="w-4 h-4 text-[#5eead4]" />
-                <h3 className="text-sm font-medium text-white">
+                <h3 className="text-sm font-medium text-gray-900">
                   Your Referral Link
                 </h3>
               </div>
@@ -347,7 +347,7 @@ export function InviteFriendsModal({
             <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
               <div className="flex items-center gap-2 mb-2">
                 <IoSend className="w-4 h-4 text-[#5eead4]" />
-                <h3 className="text-sm font-medium text-white">
+                <h3 className="text-sm font-medium text-gray-900">
                   Send Direct Invite
                 </h3>
               </div>
@@ -359,7 +359,7 @@ export function InviteFriendsModal({
                     placeholder="friend@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-8 pr-2.5 py-1.5 rounded-md bg-gray-50 border border-gray-200 text-gray-900 text-xs placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                    className="w-full pl-8 pr-2.5 py-1.5 rounded-md bg-gray-50 border border-gray-200 text-gray-900 text-xs placeholder:text-gray-400 focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                   />
                 </div>
                 <button
@@ -377,7 +377,7 @@ export function InviteFriendsModal({
               </form>
               {error && <p className="mt-2 text-[11px] text-red-400">{error}</p>}
               {success && (
-                <p className="mt-2 text-[11px] text-green-400">{success}</p>
+                <p className="mt-2 text-[11px] text-green-600">{success}</p>
               )}
             </div>
 
@@ -386,7 +386,7 @@ export function InviteFriendsModal({
               <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
                 <div className="flex items-center gap-2 mb-3">
                   <IoPeople className="w-4 h-4 text-[#5eead4]" />
-                  <h3 className="text-sm font-medium text-white">
+                  <h3 className="text-sm font-medium text-gray-900">
                     Sent Invites
                   </h3>
                 </div>
@@ -407,10 +407,10 @@ export function InviteFriendsModal({
                           <div
                             className={`w-7 h-7 rounded-full flex items-center justify-center ${
                               isAccepted
-                                ? "bg-green-500/10 text-green-400"
+                                ? "bg-green-50 text-green-600"
                                 : isExpired
                                   ? "bg-gray-100 text-gray-400"
-                                  : "bg-amber-500/10 text-amber-400"
+                                  : "bg-amber-50 text-amber-600"
                             }`}
                           >
                             {isAccepted ? (
@@ -422,7 +422,7 @@ export function InviteFriendsModal({
                             )}
                           </div>
                           <div>
-                            <p className="text-xs text-white">{invite.email}</p>
+                            <p className="text-xs text-gray-900">{invite.email}</p>
                             <p className="text-[9px] text-gray-500">
                               {isAccepted
                                 ? `Accepted ${new Date(invite.acceptedAt!).toLocaleDateString()}`

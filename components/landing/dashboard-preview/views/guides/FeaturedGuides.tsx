@@ -33,7 +33,7 @@ export function FeaturedGuides({ guides }: FeaturedGuidesProps) {
                   <div
                     className={`w-10 h-10 rounded-lg ${catConfig.bg} flex items-center justify-center text-lg`}
                   >
-                    {guide.isVideo ? "▶️" : catConfig.icon}
+                    {guide.isVideo ? "YT" : catConfig.icon}
                   </div>
                   <div>
                     <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-100 text-gray-700">

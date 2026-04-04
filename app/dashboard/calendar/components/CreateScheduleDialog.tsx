@@ -75,7 +75,7 @@ export function CreateScheduleDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-gray-50 border-gray-200 sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-white flex items-center gap-2">
+          <DialogTitle className="text-gray-900 flex items-center gap-2">
             <IoCalendar className="w-5 h-5 text-blue-600" />
             Schedule DIY Task
           </DialogTitle>
@@ -96,7 +96,7 @@ export function CreateScheduleDialog({
                 onFormChange({ issueId: value, participants: [] })
               }
             >
-              <SelectTrigger className="bg-gray-50 border-gray-200 text-white">
+              <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900">
                 <SelectValue placeholder="Select a project" />
               </SelectTrigger>
               <SelectContent className="bg-gray-50 border-gray-200">
@@ -104,7 +104,7 @@ export function CreateScheduleDialog({
                   <SelectItem
                     key={issue.id}
                     value={issue.id}
-                    className="text-white hover:bg-gray-100 focus:bg-gray-100"
+                    className="text-gray-900 hover:bg-gray-100 focus:bg-gray-100"
                   >
                     <div className="flex items-center gap-2">
                       <span>{issue.title}</span>
@@ -128,7 +128,7 @@ export function CreateScheduleDialog({
               type="datetime-local"
               value={formData.scheduledTime}
               onChange={(e) => onFormChange({ scheduledTime: e.target.value })}
-              className="bg-gray-50 border-gray-200 text-white"
+              className="bg-gray-50 border-gray-200 text-gray-900"
             />
           </div>
 
@@ -143,43 +143,43 @@ export function CreateScheduleDialog({
                 onFormChange({ estimatedDuration: parseInt(value) })
               }
             >
-              <SelectTrigger className="bg-gray-50 border-gray-200 text-white">
+              <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-gray-50 border-gray-200">
                 <SelectItem
                   value="30"
-                  className="text-white hover:bg-gray-100"
+                  className="text-gray-900 hover:bg-gray-100"
                 >
                   30 minutes
                 </SelectItem>
                 <SelectItem
                   value="60"
-                  className="text-white hover:bg-gray-100"
+                  className="text-gray-900 hover:bg-gray-100"
                 >
                   1 hour
                 </SelectItem>
                 <SelectItem
                   value="120"
-                  className="text-white hover:bg-gray-100"
+                  className="text-gray-900 hover:bg-gray-100"
                 >
                   2 hours
                 </SelectItem>
                 <SelectItem
                   value="180"
-                  className="text-white hover:bg-gray-100"
+                  className="text-gray-900 hover:bg-gray-100"
                 >
                   3 hours
                 </SelectItem>
                 <SelectItem
                   value="240"
-                  className="text-white hover:bg-gray-100"
+                  className="text-gray-900 hover:bg-gray-100"
                 >
                   4 hours
                 </SelectItem>
                 <SelectItem
                   value="480"
-                  className="text-white hover:bg-gray-100"
+                  className="text-gray-900 hover:bg-gray-100"
                 >
                   Full day (8 hours)
                 </SelectItem>
@@ -215,7 +215,7 @@ export function CreateScheduleDialog({
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 text-left">
-                      <p className="text-sm text-white">
+                      <p className="text-sm text-gray-900">
                         {member.name || member.email}
                         {member.memberId === currentUserMemberId && (
                           <span className="text-gray-500 ml-1">(you)</span>
@@ -246,7 +246,7 @@ export function CreateScheduleDialog({
           <Button
             onClick={onSubmit}
             disabled={!formData.issueId || !formData.scheduledTime || isLoading}
-            className="bg-blue-600 text-black hover:bg-blue-600/90"
+            className="bg-blue-600 text-white hover:bg-blue-600/90"
           >
             {isLoading ? "Creating..." : "Schedule"}
           </Button>

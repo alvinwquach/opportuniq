@@ -191,7 +191,7 @@ export function CalendarBottomSection() {
           </div>
           <span className="text-[10px] text-gray-500">Next 7 days</span>
         </div>
-        <div className="p-3 space-y-2 max-h-[280px] overflow-y-auto">
+        <div className="p-3 space-y-2 max-h-[280px] scrollbar-auto-hide">
           {upcomingTimeline.map((event, index) => {
             const Icon = getTypeIcon(event.type);
             return (
@@ -236,7 +236,7 @@ export function CalendarBottomSection() {
             Manage <IoChevronForward className="w-3 h-3" />
           </button>
         </div>
-        <div className="p-3 space-y-2 max-h-[280px] overflow-y-auto">
+        <div className="p-3 space-y-2 max-h-[280px] scrollbar-auto-hide">
           {recurringEvents.map((event) => {
             const Icon = getTypeIcon(event.type);
             return (
@@ -279,7 +279,7 @@ export function CalendarBottomSection() {
           </div>
           <span className="text-[10px] text-gray-500">{linkedIssues.length} issues</span>
         </div>
-        <div className="p-3 space-y-2 max-h-[280px] overflow-y-auto">
+        <div className="p-3 space-y-2 max-h-[280px] scrollbar-auto-hide">
           {linkedIssues.map((item) => (
             <div
               key={item.id}

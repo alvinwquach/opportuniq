@@ -121,7 +121,7 @@ export function IssuesListView({ activeIssues, completedIssues }: IssuesListView
         // Bottom margin separates this section from the "Resolved" section below it.
         <div className="mb-8">
           {/* Section heading: small green dot + "Active Issues (N)" label */}
-          <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
             {/* Small filled green circle as a status indicator bullet */}
             <div className="w-2 h-2 rounded-full bg-emerald-500" />
             Active Issues ({activeIssues.length})
@@ -129,7 +129,7 @@ export function IssuesListView({ activeIssues, completedIssues }: IssuesListView
 
           {/* The list container: a single dark rounded box that wraps all the rows.
               overflow-hidden ensures the rounded corners clip the top and bottom rows. */}
-          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
             {/* Loop over every active issue and render one row per issue.
                 `idx` (the array index) is needed to determine whether to draw a bottom border
                 (we skip the border on the last row to avoid a double-border effect at the bottom). */}
@@ -146,9 +146,9 @@ export function IssuesListView({ activeIssues, completedIssues }: IssuesListView
                 // A bottom border is added between rows but not after the last one.
                 <Link
                   key={issue.id}
-                  href={`/issues/${issue.id}`}
-                  className={`flex items-center gap-4 p-4 hover:bg-[#1f1f1f] transition-colors cursor-pointer ${
-                    idx !== activeIssues.length - 1 ? "border-b border-[#2a2a2a]" : ""
+                  href={`/dashboard/projects/${issue.id}`}
+                  className={`flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors cursor-pointer ${
+                    idx !== activeIssues.length - 1 ? "border-b border-gray-200" : ""
                   }`}
                 >
                   {/* Category icon in a small green-tinted rounded box.
@@ -162,9 +162,9 @@ export function IssuesListView({ activeIssues, completedIssues }: IssuesListView
                       refuse to shrink below their content size, preventing truncation). */}
                   <div className="flex-1 min-w-0">
                     {/* Issue title — truncated with "..." if it overflows the available width */}
-                    <p className="text-sm font-medium text-white truncate">{issue.title}</p>
+                    <p className="text-sm font-medium text-gray-900 truncate">{issue.title}</p>
                     {/* Secondary line: shows the diagnosis summary if available, otherwise the group name */}
-                    <p className="text-xs text-[#666] truncate">
+                    <p className="text-xs text-gray-400 truncate">
                       {issue.diagnosis || issue.groupName}
                     </p>
                   </div>
@@ -179,12 +179,12 @@ export function IssuesListView({ activeIssues, completedIssues }: IssuesListView
 
                   {/* Last-updated time: right-aligned in a fixed-width column (w-20) so all
                       timestamps align vertically across rows for easy scanning. */}
-                  <span className="text-xs text-[#555] flex-shrink-0 w-20 text-right">
+                  <span className="text-xs text-gray-400 flex-shrink-0 w-20 text-right">
                     {getRelativeTime(issue.updatedAt)}
                   </span>
 
                   {/* Right-pointing chevron arrow — a subtle visual affordance that the row is clickable */}
-                  <IoChevronForward className="w-4 h-4 text-[#444] flex-shrink-0" />
+                  <IoChevronForward className="w-4 h-4 text-gray-300 flex-shrink-0" />
                 </Link>
               );
             })}
@@ -198,7 +198,7 @@ export function IssuesListView({ activeIssues, completedIssues }: IssuesListView
         <div>
           {/* Section heading: green checkmark icon + "Resolved (N)" label.
               Text is muted grey to visually de-emphasize completed issues. */}
-          <h2 className="text-sm font-semibold text-[#888] mb-4 flex items-center gap-2">
+          <h2 className="text-sm font-semibold text-gray-500 mb-4 flex items-center gap-2">
             <IoCheckmarkCircle className="w-4 h-4 text-emerald-400" />
             Resolved ({completedIssues.length})
           </h2>
@@ -206,16 +206,16 @@ export function IssuesListView({ activeIssues, completedIssues }: IssuesListView
           {/* The resolved-issues list container.
               opacity-80 makes the entire section slightly dimmed to distinguish it from
               the active section above. Individual rows brighten on hover via hover:opacity-100. */}
-          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl overflow-hidden opacity-80">
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden opacity-80">
             {/* Loop over every completed issue and render one row per issue */}
             {completedIssues.map((issue, idx) => (
               // Clickable row — border between rows, none after the last row.
               // hover:opacity-100 overrides the container's opacity-80 so hovered rows look crisp.
               <Link
                 key={issue.id}
-                href={`/issues/${issue.id}`}
-                className={`flex items-center gap-4 p-4 hover:bg-[#1f1f1f] hover:opacity-100 transition-all cursor-pointer ${
-                  idx !== completedIssues.length - 1 ? "border-b border-[#2a2a2a]" : ""
+                href={`/dashboard/projects/${issue.id}`}
+                className={`flex items-center gap-4 p-4 hover:bg-gray-50 hover:opacity-100 transition-all cursor-pointer ${
+                  idx !== completedIssues.length - 1 ? "border-b border-gray-200" : ""
                 }`}
               >
                 {/* Green checkmark icon box — always shown on completed rows instead of a category icon */}
@@ -226,10 +226,10 @@ export function IssuesListView({ activeIssues, completedIssues }: IssuesListView
                 {/* Title and resolution summary */}
                 <div className="flex-1 min-w-0">
                   {/* Issue title in slightly dimmed text — truncated if too long */}
-                  <p className="text-sm font-medium text-[#ccc] truncate">{issue.title}</p>
+                  <p className="text-sm font-medium text-gray-700 truncate">{issue.title}</p>
                   {/* Shows "DIY · 3 days ago" or "Professional · 1 week ago".
                       The middot (·) acts as a separator between the resolution method and the date. */}
-                  <p className="text-xs text-[#666]">
+                  <p className="text-xs text-gray-400">
                     {issue.resolvedBy === "diy" ? "DIY" : "Professional"} ·{" "}
                     {issue.resolvedAt ? getRelativeTime(issue.resolvedAt) : ""}
                   </p>
@@ -245,12 +245,12 @@ export function IssuesListView({ activeIssues, completedIssues }: IssuesListView
 
                 {/* Property group name: right-aligned in a fixed-width column (w-24)
                     so it lines up consistently across all rows */}
-                <span className="text-xs text-[#555] flex-shrink-0 w-24 text-right">
+                <span className="text-xs text-gray-400 flex-shrink-0 w-24 text-right">
                   {issue.groupName}
                 </span>
 
                 {/* Right-pointing chevron arrow indicating the row is a link */}
-                <IoChevronForward className="w-4 h-4 text-[#444] flex-shrink-0" />
+                <IoChevronForward className="w-4 h-4 text-gray-300 flex-shrink-0" />
               </Link>
             ))}
           </div>

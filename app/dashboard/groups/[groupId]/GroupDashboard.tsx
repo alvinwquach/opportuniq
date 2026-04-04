@@ -107,9 +107,9 @@ function getRoleColor(role: string) {
     case "coordinator":
       return "bg-blue-50 text-blue-600";
     case "collaborator":
-      return "bg-purple-500/10 text-purple-400";
+      return "bg-purple-50 text-purple-600";
     case "contributor":
-      return "bg-green-500/10 text-green-400";
+      return "bg-green-50 text-green-600";
     default:
       return "bg-gray-100 text-gray-400";
   }
@@ -172,7 +172,7 @@ export function GroupDashboard({
                 <IoPeople className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <h1 className="text-lg font-semibold text-white">
+                <h1 className="text-lg font-semibold text-gray-900">
                   {group.name}
                 </h1>
                 <div className="flex items-center gap-3 text-xs text-gray-500">
@@ -210,7 +210,7 @@ export function GroupDashboard({
                     groupId={group.id}
                     groupName={group.name}
                     trigger={
-                      <button className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 text-sm text-purple-400 hover:bg-purple-500/10 rounded-lg transition-colors">
+                      <button className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 text-sm text-purple-600 hover:bg-purple-50 rounded-lg transition-colors">
                         <IoPeople className="w-4 h-4" />
                         Bulk
                       </button>
@@ -246,7 +246,7 @@ export function GroupDashboard({
                     Open Issues
                   </span>
                 </div>
-                <div className="text-2xl font-semibold text-white">0</div>
+                <div className="text-2xl font-semibold text-gray-900">0</div>
               </div>
               <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
                 <div className="flex items-center gap-2 mb-2">
@@ -255,7 +255,7 @@ export function GroupDashboard({
                     Resolved
                   </span>
                 </div>
-                <div className="text-2xl font-semibold text-white">0</div>
+                <div className="text-2xl font-semibold text-gray-900">0</div>
               </div>
               <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
                 <div className="flex items-center gap-2 mb-2">
@@ -264,27 +264,27 @@ export function GroupDashboard({
                     Balance
                   </span>
                 </div>
-                <div className="text-2xl font-semibold text-white">
+                <div className="text-2xl font-semibold text-gray-900">
                   ${sharedBalance.toLocaleString()}
                 </div>
               </div>
               <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
                 <div className="flex items-center gap-2 mb-2">
-                  <IoTrendingUp className="w-4 h-4 text-purple-400" />
+                  <IoTrendingUp className="w-4 h-4 text-purple-600" />
                   <span className="text-[10px] text-gray-500">
                     Saved
                   </span>
                 </div>
-                <div className="text-2xl font-semibold text-white">$0</div>
+                <div className="text-2xl font-semibold text-gray-900">$0</div>
               </div>
             </div>
             <section className="rounded-xl bg-gray-50 border border-gray-200 overflow-hidden">
               <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-                <h2 className="text-sm font-medium text-white">
+                <h2 className="text-sm font-medium text-gray-900">
                   Recent Issues
                 </h2>
                 <Link
-                  href="/dashboard/diagnose"
+                  href="/dashboard/projects"
                   className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-600/80 transition-colors"
                 >
                   <IoAdd className="w-3.5 h-3.5" />
@@ -300,8 +300,8 @@ export function GroupDashboard({
                   Create your first diagnosis to get started
                 </p>
                 <Link
-                  href="/dashboard/diagnose"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-black text-sm font-medium hover:bg-blue-600/90 transition-colors"
+                  href="/dashboard/projects"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-600/90 transition-colors"
                 >
                   <IoAdd className="w-4 h-4" />
                   New Diagnosis
@@ -310,7 +310,7 @@ export function GroupDashboard({
             </section>
             <section className="rounded-xl bg-gray-50 border border-gray-200 overflow-hidden">
               <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-                <h2 className="text-sm font-medium text-white">Activity</h2>
+                <h2 className="text-sm font-medium text-gray-900">Activity</h2>
               </div>
               <div className="p-8 text-center">
                 <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center mx-auto mb-3">
@@ -326,7 +326,7 @@ export function GroupDashboard({
           <div className="space-y-6">
             <section className="rounded-xl bg-gray-50 border border-gray-200 overflow-hidden">
               <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-                <h2 className="text-sm font-medium text-white">
+                <h2 className="text-sm font-medium text-gray-900">
                   Members ({memberCount})
                 </h2>
                 {isCollaborator && (
@@ -342,7 +342,7 @@ export function GroupDashboard({
                   />
                 )}
               </div>
-              <div className="divide-y divide-[#1f1f1f]">
+              <div className="divide-y divide-gray-200">
                 {members.map((member) => (
                   <div
                     key={member.id}
@@ -415,7 +415,7 @@ export function GroupDashboard({
             </section>
             <section className="rounded-xl bg-gray-50 border border-gray-200 overflow-hidden">
               <div className="px-4 py-3 border-b border-gray-200">
-                <h2 className="text-sm font-medium text-white">Group Info</h2>
+                <h2 className="text-sm font-medium text-gray-900">Group Info</h2>
               </div>
               <div className="p-4 space-y-3">
                 {group.postalCode && (
@@ -427,7 +427,7 @@ export function GroupDashboard({
                       <p className="text-[10px] text-gray-500">
                         Location
                       </p>
-                      <p className="text-sm text-white">{group.postalCode}</p>
+                      <p className="text-sm text-gray-900">{group.postalCode}</p>
                     </div>
                   </div>
                 )}
@@ -440,7 +440,7 @@ export function GroupDashboard({
                       <p className="text-[10px] text-gray-500">
                         Search Radius
                       </p>
-                      <p className="text-sm text-white">
+                      <p className="text-sm text-gray-900">
                         {group.defaultSearchRadius} miles
                       </p>
                     </div>
@@ -454,7 +454,7 @@ export function GroupDashboard({
                     <p className="text-[10px] text-gray-500">
                       Created
                     </p>
-                    <p className="text-sm text-white">
+                    <p className="text-sm text-gray-900">
                       {formatDistanceToNow(new Date(group.createdAt), {
                         addSuffix: true,
                       })}
@@ -469,14 +469,14 @@ export function GroupDashboard({
               </h2>
               <div className="space-y-2">
                 <Link
-                  href="/dashboard/diagnose"
+                  href="/dashboard/projects"
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition-colors group"
                 >
                   <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
                     <IoAdd className="w-4 h-4 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-white">New Diagnosis</p>
+                    <p className="text-sm text-gray-900">New Diagnosis</p>
                     <p className="text-xs text-gray-500">
                       Report an issue or problem
                     </p>
@@ -489,11 +489,11 @@ export function GroupDashboard({
                       groupName={group.name}
                       trigger={
                         <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition-colors group text-left">
-                          <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
-                            <IoPersonAdd className="w-4 h-4 text-purple-400" />
+                          <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center group-hover:bg-purple-100 transition-colors">
+                            <IoPersonAdd className="w-4 h-4 text-purple-600" />
                           </div>
                           <div>
-                            <p className="text-sm text-white">Invite Member</p>
+                            <p className="text-sm text-gray-900">Invite Member</p>
                             <p className="text-xs text-gray-500">
                               Add a person to this group
                             </p>
@@ -510,7 +510,7 @@ export function GroupDashboard({
                             <IoPeople className="w-4 h-4 text-blue-600" />
                           </div>
                           <div>
-                            <p className="text-sm text-white">Bulk Invite</p>
+                            <p className="text-sm text-gray-900">Bulk Invite</p>
                             <p className="text-xs text-gray-500">
                               Invite multiple people at once
                             </p>
@@ -529,7 +529,7 @@ export function GroupDashboard({
                           <IoSettings className="w-4 h-4 text-gray-400" />
                         </div>
                         <div>
-                          <p className="text-sm text-white">Edit Group</p>
+                          <p className="text-sm text-gray-900">Edit Group</p>
                           <p className="text-xs text-gray-500">
                             Update name, location, and settings
                           </p>
@@ -547,7 +547,7 @@ export function GroupDashboard({
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
               <div className="flex items-center gap-2">
                 <IoMailOutline className="w-4 h-4 text-amber-500" />
-                <h2 className="text-sm font-medium text-white">
+                <h2 className="text-sm font-medium text-gray-900">
                   Pending Invitations ({pendingInvitations.length})
                 </h2>
               </div>
@@ -573,7 +573,7 @@ export function GroupDashboard({
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#1f1f1f]">
+                <tbody className="divide-y divide-gray-200">
                   {pendingInvitations.map((invitation) => (
                     <tr
                       key={invitation.id}
@@ -581,7 +581,7 @@ export function GroupDashboard({
                     >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center text-xs font-medium text-amber-500 shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center text-xs font-medium text-amber-500 shrink-0">
                             {invitation.email[0].toUpperCase()}
                           </div>
                           <span className="text-sm text-gray-900 truncate max-w-[200px]">
@@ -602,7 +602,7 @@ export function GroupDashboard({
                           disabled={isUpdatingRole}
                         >
                           <SelectTrigger
-                            className={`h-7 w-auto min-w-[110px] text-xs px-2 py-1 rounded border-0 capitalize ${getRoleColor(invitation.role)} bg-transparent hover:bg-white/5 focus:ring-1 focus:ring-[#00D4FF]/50`}
+                            className={`h-7 w-auto min-w-[110px] text-xs px-2 py-1 rounded border-0 capitalize ${getRoleColor(invitation.role)} bg-transparent hover:bg-gray-100 focus:ring-1 focus:ring-blue-300`}
                           >
                             <SelectValue />
                           </SelectTrigger>
@@ -611,7 +611,7 @@ export function GroupDashboard({
                               <SelectItem
                                 key={option.value}
                                 value={option.value}
-                                className="text-xs text-gray-900 capitalize hover:bg-gray-200 focus:bg-gray-200 focus:text-white cursor-pointer"
+                                className="text-xs text-gray-900 capitalize hover:bg-gray-200 focus:bg-gray-200 focus:text-gray-900 cursor-pointer"
                               >
                                 {option.label}
                               </SelectItem>
@@ -656,7 +656,7 @@ export function GroupDashboard({
                               })
                             }
                             disabled={isResending}
-                            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-green-500 hover:bg-green-500/10 rounded transition-colors disabled:opacity-50"
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-green-500 hover:bg-green-50 rounded transition-colors disabled:opacity-50"
                             title="Resend invitation email"
                           >
                             <IoRefresh className="w-3.5 h-3.5" />
@@ -669,7 +669,7 @@ export function GroupDashboard({
                             currentExpiresAt={invitation.expiresAt}
                             trigger={
                               <button
-                                className="inline-flex items-center gap-1 px-2 py-1 text-xs text-amber-500 hover:bg-amber-500/10 rounded transition-colors"
+                                className="inline-flex items-center gap-1 px-2 py-1 text-xs text-amber-500 hover:bg-amber-50 rounded transition-colors"
                                 title="Extend invitation expiration"
                               >
                                 <IoCalendarOutline className="w-3.5 h-3.5" />
@@ -685,7 +685,7 @@ export function GroupDashboard({
                               })
                             }
                             disabled={isCancelling}
-                            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-400 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50"
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-400 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
                             title="Revoke invitation"
                           >
                             <IoClose className="w-3.5 h-3.5" />

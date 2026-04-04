@@ -42,21 +42,21 @@ export function DiagnosePageClient({
   }, [initialConversationId]);
 
   const handleNewChat = useCallback(() => {
-    router.push("/dashboard/diagnose");
+    router.push("/dashboard/projects");
   }, [router]);
 
   const handleSelectConversation = useCallback((conversationId: string | null) => {
     if (conversationId) {
-      router.push(`/dashboard/diagnose/${conversationId}`);
+      router.push(`/dashboard/projects/${conversationId}`);
     } else {
-      router.push("/dashboard/diagnose");
+      router.push("/dashboard/projects");
     }
   }, [router]);
 
   // Called when a new conversation is created
   const handleConversationCreated = useCallback((conversationId: string) => {
     // Navigate to the new conversation URL
-    router.push(`/dashboard/diagnose/${conversationId}`);
+    router.push(`/dashboard/projects/${conversationId}`);
     // Invalidate to refetch the conversations list
     invalidateConversations();
   }, [router, invalidateConversations]);
@@ -69,14 +69,14 @@ export function DiagnosePageClient({
   return (
     <div
       className={cn(
-        "fixed inset-0 flex overflow-hidden bg-[#0c0c0c] transition-[left] duration-200 ease-out",
+        "fixed inset-0 flex overflow-hidden bg-gray-50 transition-[left] duration-200 ease-out",
         "lg:top-12",
         isCollapsed ? "lg:left-17" : "lg:left-56"
       )}
     >
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="lg:hidden fixed top-20 right-4 z-50 p-2 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] text-white"
+        className="lg:hidden fixed top-20 right-4 z-50 p-2 bg-white rounded-lg border border-gray-200 text-gray-900"
       >
         {sidebarOpen ? <IoClose className="w-5 h-5" /> : <IoMenu className="w-5 h-5" />}
       </button>
@@ -104,7 +104,7 @@ export function DiagnosePageClient({
       {chatSidebarCollapsed && (
         <button
           onClick={() => setChatSidebarCollapsed(false)}
-          className="fixed top-1/2 -translate-y-1/2 right-0 z-[100] py-4 px-1 rounded-l-lg bg-[#1a1a1a] border border-r-0 border-[#2a2a2a] text-[#888] hover:text-[#5eead4] hover:bg-[#2a2a2a] transition-colors"
+          className="fixed top-1/2 -translate-y-1/2 right-0 z-[100] py-4 px-1 rounded-l-lg bg-white border border-r-0 border-gray-200 text-gray-500 hover:text-[#5eead4] hover:bg-gray-100 transition-colors"
           title="Show history"
         >
           <TbLayoutSidebarRightExpand className="w-4 h-4" />

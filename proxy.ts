@@ -7,9 +7,16 @@ export async function proxy(request: NextRequest) {
     request,
   });
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return supabaseResponse;
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY! || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    supabaseUrl,
+    supabaseKey,
     {
       cookies: {
         getAll() {
@@ -98,7 +105,7 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith("/api/") ||
     pathname.match(/\.(ico|png|jpg|jpeg|svg|gif|webp|css|js|woff|woff2|ttf|eot)$/);
   
-  const protectedRoutes = ["/dashboard", "/admin", "/groups", "/onboarding", "/projects", "/issues", "/calendar", "/guides", "/notifications"];
+  const protectedRoutes = ["/dashboard", "/admin", "/groups", "/onboarding", "/projects", "/dashboard/projects", "/calendar", "/guides", "/notifications"];
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
   );

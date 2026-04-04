@@ -37,7 +37,7 @@ const INPUT_METHODS: InputMethod[] = [
     label: "Take a Photo",
     description: "Snap a picture of the issue",
     available: true,
-    href: "/issues/new?mode=photo",
+    href: "/dashboard/projects/new?mode=photo",
   },
   {
     id: "voice",
@@ -45,7 +45,7 @@ const INPUT_METHODS: InputMethod[] = [
     label: "Voice Note",
     description: "Describe the problem verbally",
     available: true,
-    href: "/issues/new?mode=voice",
+    href: "/dashboard/projects/new?mode=voice",
   },
   {
     id: "video",
@@ -53,7 +53,7 @@ const INPUT_METHODS: InputMethod[] = [
     label: "Record Video",
     description: "Show the issue in motion",
     available: true,
-    href: "/issues/new?mode=video",
+    href: "/dashboard/projects/new?mode=video",
   },
   {
     id: "upload",
@@ -61,7 +61,7 @@ const INPUT_METHODS: InputMethod[] = [
     label: "Upload File",
     description: "Add existing photos or videos",
     available: true,
-    href: "/issues/new?mode=upload",
+    href: "/dashboard/projects/new?mode=upload",
   },
 ];
 
@@ -156,7 +156,7 @@ export function ReportIssueModal({ trigger, variant = "default" }: ReportIssueMo
 
         <div className="mt-4 pt-4 border-t border-gray-200">
           <Link
-            href="/issues/new"
+            href="/dashboard/projects/new"
             onClick={() => setOpen(false)}
             className="flex items-center justify-between p-3 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors group"
           >

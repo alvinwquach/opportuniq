@@ -167,7 +167,7 @@ export function BulkInviteMemberDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {trigger || (
-          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 text-sm transition-colors">
+          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-600 text-sm transition-colors">
             <IoPeople className="w-4 h-4" />
             Bulk Invite
           </button>
@@ -176,8 +176,8 @@ export function BulkInviteMemberDialog({
       <DialogContent className="bg-white border-gray-200 sm:max-w-lg">
         <DialogHeader>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-              <IoPeople className="w-4 h-4 text-purple-400" />
+            <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center">
+              <IoPeople className="w-4 h-4 text-purple-600" />
             </div>
             <DialogTitle className="text-gray-900">
               Bulk Invite to {groupName}
@@ -189,20 +189,20 @@ export function BulkInviteMemberDialog({
           <div className="py-4">
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-2">
+                <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-2">
                   <IoCheckmarkCircle className="w-6 h-6 text-green-500" />
                 </div>
-                <p className="text-2xl font-semibold text-white">
+                <p className="text-2xl font-semibold text-gray-900">
                   {summary.successful}
                 </p>
                 <p className="text-xs text-gray-500">Sent</p>
               </div>
               {summary.failed > 0 && (
                 <div className="text-center">
-                  <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-2">
+                  <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-2">
                     <IoCloseCircle className="w-6 h-6 text-red-500" />
                   </div>
-                  <p className="text-2xl font-semibold text-white">
+                  <p className="text-2xl font-semibold text-gray-900">
                     {summary.failed}
                   </p>
                   <p className="text-xs text-gray-500">Failed</p>
@@ -221,7 +221,7 @@ export function BulkInviteMemberDialog({
                     .map((result, index) => (
                       <div
                         key={index}
-                        className="flex items-center gap-2 text-sm text-green-400 py-1"
+                        className="flex items-center gap-2 text-sm text-green-600 py-1"
                       >
                         <IoCheckmark className="w-3.5 h-3.5 shrink-0" />
                         <span className="truncate">{result.email}</span>
@@ -267,7 +267,7 @@ export function BulkInviteMemberDialog({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-gray-900 text-sm transition-colors"
+                className="px-4 py-2 rounded-lg text-gray-400 hover:text-gray-900 text-sm transition-colors"
               >
                 Done
               </button>
@@ -360,7 +360,7 @@ export function BulkInviteMemberDialog({
                           className={`flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer transition-colors ${
                             field.state.value === option.value
                               ? "bg-blue-50 border-blue-500/30"
-                              : "bg-gray-50 border-gray-200 hover:border-[#3a3a3a]"
+                              : "bg-gray-50 border-gray-200 hover:border-gray-300"
                           } ${inviteMultiple.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
                         >
                           <input
@@ -422,7 +422,7 @@ export function BulkInviteMemberDialog({
                         <button
                           type="button"
                           disabled={inviteMultiple.isPending}
-                          className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm text-left flex items-center justify-between hover:border-[#3a3a3a] focus:outline-none focus:border-blue-500/50 transition-colors disabled:opacity-50"
+                          className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm text-left flex items-center justify-between hover:border-gray-300 focus:outline-none focus:border-blue-500/50 transition-colors disabled:opacity-50"
                         >
                           <span
                             className={
@@ -455,7 +455,7 @@ export function BulkInviteMemberDialog({
               </form.Field>
 
               {inviteMultiple.isError && (
-                <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                <div className="flex items-start gap-2 p-3 rounded-lg bg-red-50 border border-red-200">
                   <IoClose className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                   <p className="text-sm text-red-400">
                     {inviteMultiple.error?.message ||
@@ -493,7 +493,7 @@ export function BulkInviteMemberDialog({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="px-4 py-2 rounded-lg text-[#a3a3a3] hover:text-gray-900 hover:bg-gray-100 text-sm transition-colors"
+                className="px-4 py-2 rounded-lg text-gray-400 hover:text-gray-900 hover:bg-gray-100 text-sm transition-colors"
               >
                 Cancel
               </button>

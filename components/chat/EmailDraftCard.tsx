@@ -202,11 +202,11 @@ export function EmailDraftCard({
   };
 
   return (
-    <Card className="mt-4 bg-[#141414] border-[#2a2a2a]">
+    <Card className="mt-4 bg-white border-gray-200">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-            <IoMail className="w-4 h-4 text-blue-400" />
+            <IoMail className="w-4 h-4 text-blue-600" />
           </div>
           <div className="flex-1 min-w-0">
             <CardTitle className="text-sm truncate">
@@ -219,7 +219,7 @@ export function EmailDraftCard({
             </CardDescription>
           </div>
           {gmailStatus?.connected && (
-            <Badge variant="outline" className="text-[10px] text-green-400 border-green-400/30">
+            <Badge variant="outline" className="text-[10px] text-green-600 border-green-600/30">
               Gmail Connected
             </Badge>
           )}
@@ -242,7 +242,7 @@ export function EmailDraftCard({
                 setRecipientEmail(e.target.value);
                 if (sendStatus === "needs-email") setSendStatus("idle");
               }}
-              className="h-8 text-sm bg-[#0c0c0c] border-[#1f1f1f]"
+              className="h-8 text-sm bg-gray-50 border-gray-200"
             />
             {sendStatus === "needs-email" && (
               <p className="text-xs text-yellow-400">
@@ -257,7 +257,7 @@ export function EmailDraftCard({
           <Badge variant="outline" className="mb-1 text-[10px] uppercase">
             Subject
           </Badge>
-          <p className="text-sm text-white">{email.subject}</p>
+          <p className="text-sm text-gray-900">{email.subject}</p>
         </div>
 
         {/* Body Preview */}
@@ -265,7 +265,7 @@ export function EmailDraftCard({
           <Badge variant="outline" className="mb-1 text-[10px] uppercase">
             Message
           </Badge>
-          <div className="mt-1 p-3 rounded-lg bg-[#0c0c0c] border border-[#1f1f1f] max-h-48 overflow-y-auto">
+          <div className="mt-1 p-3 rounded-lg bg-gray-50 border border-gray-200 max-h-48 overflow-y-auto">
             <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-sans">
               {email.body}
             </pre>
@@ -275,7 +275,7 @@ export function EmailDraftCard({
         {/* Send Status Messages */}
         {sendStatus === "success" && (
           <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
-            <p className="text-sm text-green-400 flex items-center gap-2">
+            <p className="text-sm text-green-600 flex items-center gap-2">
               <IoCheckmark className="w-4 h-4" />
               Email sent successfully from {gmailStatus?.gmailAddress}
             </p>
@@ -283,7 +283,7 @@ export function EmailDraftCard({
         )}
         {sendStatus === "error" && (
           <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-            <p className="text-sm text-red-400">
+            <p className="text-sm text-red-600">
               Failed to send email. Please try again or use &quot;Open in Email&quot;.
             </p>
           </div>
@@ -333,8 +333,8 @@ export function EmailDraftCard({
         <Button onClick={handleCopy} variant="secondary" size="sm">
           {copied ? (
             <>
-              <IoCheckmark className="w-4 h-4 text-green-400" />
-              <span className="text-green-400">Copied!</span>
+              <IoCheckmark className="w-4 h-4 text-green-600" />
+              <span className="text-green-600">Copied!</span>
             </>
           ) : (
             <>
@@ -371,7 +371,7 @@ export function EmailDraftCard({
       </CardFooter>
 
       {/* Tips */}
-      <div className="px-6 py-2 border-t border-[#2a2a2a] bg-[#0c0c0c] rounded-b-xl">
+      <div className="px-6 py-2 border-t border-gray-200 bg-gray-50 rounded-b-xl">
         <p className="text-xs text-muted-foreground">
           {gmailStatus?.connected
             ? `Sending from ${gmailStatus.gmailAddress}`

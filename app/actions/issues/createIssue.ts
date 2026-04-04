@@ -68,7 +68,7 @@ export async function createIssueEncrypted(
       })
       .returning({ id: issues.id });
 
-    revalidatePath("/dashboard/issues");
+    revalidatePath("/dashboard/projects");
     revalidatePath(`/dashboard/groups/${groupId}`);
 
     return { success: true, issueId: issue.id };
@@ -131,7 +131,7 @@ export async function createIssuePlaintext(
       })
       .returning({ id: issues.id });
 
-    revalidatePath("/dashboard/issues");
+    revalidatePath("/dashboard/projects");
     revalidatePath(`/dashboard/groups/${groupId}`);
 
     return { success: true, issueId: issue.id };

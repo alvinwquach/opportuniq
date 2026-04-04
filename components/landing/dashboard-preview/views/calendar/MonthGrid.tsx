@@ -1,6 +1,6 @@
 "use client";
 
-import { IoEllipsisHorizontal, IoRepeat, IoCalendarOutline, IoPencil, IoTrash } from "react-icons/io5";
+import { IoEllipsisHorizontal, IoRepeat, IoCalendarOutline, IoPencil, IoTrash, IoSunnyOutline, IoRainyOutline } from "react-icons/io5";
 import { CalendarDay } from "./types";
 import { extendedEvents } from "./data";
 import { getEventColor, getEventIcon } from "./utils";
@@ -154,6 +154,19 @@ export function MonthGrid({
                   {day.events.length > 2 && (
                     <div className={`text-[10px] font-medium px-1 cursor-pointer ${dark ? "text-gray-600 hover:text-blue-400" : "text-gray-500 hover:text-blue-600"}`}>
                       +{day.events.length - 2} more
+                    </div>
+                  )}
+                  {/* Weather indicator for outdoor project days */}
+                  {day.date === 6 && day.events.length > 0 && (
+                    <div className="flex items-center gap-0.5 mt-1">
+                      <IoSunnyOutline className="w-2.5 h-2.5 text-amber-400" />
+                      <span className={`text-[8px] ${dark ? "text-gray-600" : "text-gray-400"}`}>72°F</span>
+                    </div>
+                  )}
+                  {day.date === 12 && day.events.length > 0 && (
+                    <div className="flex items-center gap-0.5 mt-1">
+                      <IoRainyOutline className="w-2.5 h-2.5 text-blue-400" />
+                      <span className="text-[8px] text-amber-500 font-medium">Rain</span>
                     </div>
                   )}
                 </div>

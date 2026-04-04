@@ -47,13 +47,13 @@ export function FollowUpInputBar({
   activeConversationId,
 }: FollowUpInputBarProps) {
   return (
-    <form onSubmit={onSubmit} className="p-4 border-t border-[#1f1f1f]">
+    <form onSubmit={onSubmit} className="p-4 border-t border-gray-200">
       {detectedLanguage && detectedLanguage !== "en" && (
         <div className="flex items-center gap-2 mb-2 text-xs">
           <span className="text-[#5eead4] bg-[#5eead4]/10 px-2 py-1 rounded-full">
             Language detected: {getLanguageName(detectedLanguage)}
           </span>
-          <span className="text-[#666]">
+          <span className="text-gray-400">
             Responses will be in {getLanguageName(detectedLanguage)}
           </span>
         </div>
@@ -65,7 +65,7 @@ export function FollowUpInputBar({
             alt="Attached"
             width={80}
             height={80}
-            className="rounded-lg object-cover border border-[#2a2a2a]"
+            className="rounded-lg object-cover border border-gray-200"
             unoptimized
           />
           <button
@@ -101,7 +101,7 @@ export function FollowUpInputBar({
           type="button"
           onClick={onPhotoSelect}
           disabled={isStreaming || hasMedia}
-          className="shrink-0 w-10 h-10 rounded-full bg-[#1a1a1a] text-[#888888] flex items-center justify-center hover:bg-[#2a2a2a] hover:text-[#5eead4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="shrink-0 w-10 h-10 rounded-full bg-white text-gray-500 flex items-center justify-center hover:bg-gray-100 hover:text-[#5eead4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           title="Add photo"
         >
           <IoImage className="w-5 h-5" />
@@ -111,7 +111,7 @@ export function FollowUpInputBar({
             type="button"
             onClick={onVideoSelect}
             disabled={isStreaming || hasMedia}
-            className="shrink-0 w-10 h-10 rounded-full bg-[#1a1a1a] text-[#888888] flex items-center justify-center hover:bg-[#2a2a2a] hover:text-[#5eead4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="shrink-0 w-10 h-10 rounded-full bg-white text-gray-500 flex items-center justify-center hover:bg-gray-100 hover:text-[#5eead4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title="Add video"
           >
             <IoVideocam className="w-5 h-5" />
@@ -123,7 +123,7 @@ export function FollowUpInputBar({
             onChange={(e) => onInputChange(e.target.value)}
             placeholder={hasMedia ? "Add details (optional)..." : "Ask a follow-up..."}
             rows={1}
-            className="w-full bg-[#1a1a1a] text-white rounded-2xl px-4 py-2.5 pr-12 resize-none focus:outline-none focus:ring-2 focus:ring-[#5eead4]/50 placeholder-[#666666] text-sm"
+            className="w-full bg-white text-gray-900 rounded-2xl px-4 py-2.5 pr-12 resize-none focus:outline-none focus:ring-2 focus:ring-[#5eead4]/50 placeholder-gray-400 text-sm"
             style={{ minHeight: "44px", maxHeight: "120px" }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {

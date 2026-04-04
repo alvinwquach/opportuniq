@@ -196,7 +196,7 @@ export function CategoryManager({
     <div className="p-5 rounded-xl bg-gray-50 border border-gray-200">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-sm font-medium text-white">Expense Categories</h3>
+          <h3 className="text-sm font-medium text-gray-900">Expense Categories</h3>
           <p className="text-[11px] text-gray-400">
             Configure approval rules per category
           </p>
@@ -232,7 +232,7 @@ export function CategoryManager({
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g., Groceries"
-                    className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                    className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                   />
                 </div>
 
@@ -250,7 +250,7 @@ export function CategoryManager({
                         className={`p-2.5 rounded-lg border transition-all ${
                           formData.icon === id
                             ? "bg-[#5eead4]/10 border-[#5eead4]/50"
-                            : "bg-gray-50 border-gray-200 hover:border-[#3a3a3a]"
+                            : "bg-gray-50 border-gray-200 hover:border-gray-300"
                         }`}
                         title={label}
                       >
@@ -273,11 +273,11 @@ export function CategoryManager({
                         onClick={() => setFormData({ ...formData, approvalRule: rule })}
                         className={`w-full p-3 rounded-lg border text-left transition-all ${
                           formData.approvalRule === rule
-                            ? "bg-purple-500/10 border-purple-500/50"
-                            : "bg-gray-50 border-gray-200 hover:border-[#3a3a3a]"
+                            ? "bg-purple-50 border-purple-200"
+                            : "bg-gray-50 border-gray-200 hover:border-gray-300"
                         }`}
                       >
-                        <span className="text-sm text-white">
+                        <span className="text-sm text-gray-900">
                           {categoryApprovalRuleLabels[rule]}
                         </span>
                       </button>
@@ -305,7 +305,7 @@ export function CategoryManager({
                           })
                         }
                         placeholder="e.g., 100"
-                        className="w-full h-10 pl-7 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-[#444] focus:outline-none focus:border-[#5eead4]/50 transition-colors"
+                        className="w-full h-10 pl-7 pr-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#5eead4]/50 transition-colors"
                       />
                     </div>
                   </div>
@@ -322,7 +322,7 @@ export function CategoryManager({
                       setIsDialogOpen(false);
                       resetForm();
                     }}
-                    className="flex-1 px-4 py-2 rounded-lg border border-gray-200 text-gray-500 hover:text-gray-900 hover:border-[#3a3a3a] text-sm transition-colors"
+                    className="flex-1 px-4 py-2 rounded-lg border border-gray-200 text-gray-500 hover:text-gray-900 hover:border-gray-300 text-sm transition-colors"
                   >
                     Cancel
                   </button>
@@ -350,7 +350,7 @@ export function CategoryManager({
         <div className="text-center py-8">
           <p className="text-sm text-gray-400">No categories yet</p>
           {canAdd && (
-            <p className="text-xs text-[#444] mt-1">
+            <p className="text-xs text-gray-400 mt-1">
               Add categories to organize and control expense approvals
             </p>
           )}
@@ -369,7 +369,7 @@ export function CategoryManager({
                     <Icon className="w-4 h-4 text-gray-500" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white">{category.name}</p>
+                    <p className="text-sm font-medium text-gray-900">{category.name}</p>
                     <p className="text-[11px] text-gray-400">
                       {getThresholdDisplay(category)}
                     </p>
@@ -387,7 +387,7 @@ export function CategoryManager({
                   {canDelete && (
                     <button
                       onClick={() => setDeletingCategory(category)}
-                      className="p-2 rounded-lg hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition-colors"
+                      className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-400 transition-colors"
                     >
                       <IoTrash className="w-4 h-4" />
                     </button>

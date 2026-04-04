@@ -1,5 +1,5 @@
 import { IoConstruct, IoWallet, IoTrendingUp, IoAlertCircle, IoPersonOutline } from "react-icons/io5";
-import { calendarEvents } from '../../mockData';
+import { extendedEvents } from './data';
 import { CalendarDay } from './types';
 
 // Consistent color scheme for event types
@@ -14,15 +14,15 @@ export const eventColors = {
 export const getEventColor = (type: string) => {
   switch (type) {
     case 'contractor':
-      return 'bg-blue-100 border-blue-500/30 text-blue-600';
+      return 'bg-indigo-50 border-indigo-200 text-indigo-600';
     case 'diy':
-      return 'bg-blue-100 border-blue-500/30 text-blue-600';
+      return 'bg-blue-50 border-blue-200 text-blue-600';
     case 'reminder':
-      return 'bg-amber-500/20 border-amber-500/30 text-amber-400';
+      return 'bg-amber-50 border-amber-200 text-amber-600';
     case 'income':
-      return 'bg-green-500/20 border-green-500/30 text-green-400';
+      return 'bg-green-50 border-green-200 text-green-600';
     case 'expense':
-      return 'bg-red-500/20 border-red-500/30 text-red-400';
+      return 'bg-red-50 border-red-200 text-red-600';
     default:
       return 'bg-[#333] border-[#444] text-gray-500';
   }
@@ -58,17 +58,11 @@ export const generateCalendarDays = (year: number, month: number): CalendarDay[]
 
   // Add days of the current month
   for (let date = 1; date <= daysInMonth; date++) {
-    const dayEvents = calendarEvents.filter((event) => {
-      if (year === 2025 && month === 0) {
-        if (date === 27) return event.id === '1';
-        if (date === 29) return event.id === '2';
-        if (date === 31) return event.id === '3';
-      }
-      if (month === 1 && date === 5) return event.id === '1';
-      if (month === 1 && date === 14) return event.id === '2';
-      return false;
+    const dayEvents = extendedEvents.filter((event) => {
+      const eventDate = new Date(event.date || '');
+      return eventDate.getFullYear() === year && eventDate.getMonth() === month && eventDate.getDate() === date;
     });
-    days.push({ date, events: dayEvents as typeof dayEvents, isOtherMonth: false });
+    days.push({ date, events: dayEvents, isOtherMonth: false });
   }
 
   // Add days from next month to fill the grid

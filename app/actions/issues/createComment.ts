@@ -33,7 +33,7 @@ export async function createCommentEncrypted(
       })
       .returning({ id: issueComments.id });
 
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath(`/dashboard/projects/${issueId}`);
 
     return { success: true, commentId: comment.id };
   } catch (error) {
@@ -63,7 +63,7 @@ export async function createCommentPlaintext(
       })
       .returning({ id: issueComments.id });
 
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath(`/dashboard/projects/${issueId}`);
 
     return { success: true, commentId: comment.id };
   } catch (error) {

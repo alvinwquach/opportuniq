@@ -120,9 +120,9 @@ function KanbanColumn({ title, count, dotColor, hoverColor, issues }: KanbanColu
             For example, "Open" uses green, "Investigating" uses amber. */}
         <div className={`w-2 h-2 rounded-full ${dotColor}`} />
         {/* Column title text */}
-        <h3 className="text-sm font-semibold text-white">{title}</h3>
+        <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
         {/* Issue count displayed as a small dark pill badge */}
-        <span className="text-xs text-[#666] bg-[#2a2a2a] px-2 py-0.5 rounded-full">
+        <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
           {count}
         </span>
       </div>
@@ -149,8 +149,8 @@ function KanbanColumn({ title, count, dotColor, hoverColor, issues }: KanbanColu
             // Completed cards are dimmed (opacity-75) to visually de-emphasize them.
             <Link
               key={issue.id}
-              href={`/issues/${issue.id}`}
-              className={`bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4 ${hoverColor} transition-all cursor-pointer group block ${
+              href={`/dashboard/projects/${issue.id}`}
+              className={`bg-white border border-gray-200 rounded-xl p-4 ${hoverColor} transition-all cursor-pointer group block ${
                 isCompleted ? "opacity-75 hover:opacity-100" : ""
               }`}
             >
@@ -175,13 +175,13 @@ function KanbanColumn({ title, count, dotColor, hoverColor, issues }: KanbanColu
                   {/* Issue title — dimmed on completed cards, turns green on hover */}
                   <p
                     className={`text-sm font-medium ${
-                      isCompleted ? "text-[#ccc]" : "text-white"
+                      isCompleted ? "text-gray-700" : "text-gray-900"
                     } group-hover:text-emerald-400 transition-colors line-clamp-2`}
                   >
                     {issue.title}
                   </p>
                   {/* Property group name shown in smaller muted text below the title */}
-                  <p className="text-xs text-[#666] mt-0.5">{issue.groupName}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{issue.groupName}</p>
                 </div>
               </div>
 
@@ -189,8 +189,8 @@ function KanbanColumn({ title, count, dotColor, hoverColor, issues }: KanbanColu
                   Displays the AI's current confidence percentage in an amber (warning) style box. */}
               {isInvestigating && issue.confidence && (
                 <div className="flex items-center gap-2 mb-3 p-2 bg-amber-500/10 rounded-lg">
-                  <IoSparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="text-xs text-amber-400">{issue.confidence}% confident</span>
+                  <IoSparkles className="w-3.5 h-3.5 text-amber-600" />
+                  <span className="text-xs text-amber-600">{issue.confidence}% confident</span>
                 </div>
               )}
 
@@ -206,9 +206,9 @@ function KanbanColumn({ title, count, dotColor, hoverColor, issues }: KanbanColu
               {/* "Completed" resolution info row: shows how the issue was resolved (DIY or Pro)
                   and how much money was saved, if any. Only shown on completed issues. */}
               {isCompleted && (
-                <div className="flex items-center justify-between p-2 bg-[#0f0f0f] rounded-lg mb-3">
+                <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg mb-3">
                   {/* "DIY" or "Pro" label on the left */}
-                  <span className="text-xs text-[#888]">
+                  <span className="text-xs text-gray-500">
                     {issue.resolvedBy === "diy" ? "DIY" : "Pro"}
                   </span>
                   {/* Savings amount on the right — only shown if a positive amount was saved */}
@@ -223,7 +223,7 @@ function KanbanColumn({ title, count, dotColor, hoverColor, issues }: KanbanColu
               {/* Diagnosis snippet: shown only on non-completed issues that have a diagnosis.
                   Clamped to 2 lines to keep card heights consistent. */}
               {issue.diagnosis && !isCompleted && (
-                <p className="text-xs text-[#888] line-clamp-2 mb-3">{issue.diagnosis}</p>
+                <p className="text-xs text-gray-500 line-clamp-2 mb-3">{issue.diagnosis}</p>
               )}
 
               {/* Card footer: shows the priority label for active issues,
@@ -231,7 +231,7 @@ function KanbanColumn({ title, count, dotColor, hoverColor, issues }: KanbanColu
               <div className="flex items-center justify-between">
                 {isCompleted ? (
                   // For completed issues: show when the issue was resolved (relative time)
-                  <span className="text-xs text-[#555]">
+                  <span className="text-xs text-gray-400">
                     {issue.resolvedAt ? getRelativeTime(issue.resolvedAt) : ""}
                   </span>
                 ) : (
@@ -248,9 +248,9 @@ function KanbanColumn({ title, count, dotColor, hoverColor, issues }: KanbanColu
         {/* Empty state placeholder shown when the column has no issues.
             The dashed border and low-opacity background visually distinguish it from an occupied card. */}
         {issues.length === 0 && (
-          <div className="bg-[#1a1a1a]/50 border border-dashed border-[#2a2a2a] rounded-xl p-6 text-center">
+          <div className="bg-white/50 border border-dashed border-gray-200 rounded-xl p-6 text-center">
             {/* The title is lowercased so it reads naturally: "No open issues", "No in progress issues", etc. */}
-            <p className="text-xs text-[#555]">No {title.toLowerCase()} issues</p>
+            <p className="text-xs text-gray-400">No {title.toLowerCase()} issues</p>
           </div>
         )}
       </div>
@@ -319,9 +319,9 @@ export function IssuesKanbanView({ issues }: IssuesKanbanViewProps) {
         {/* Column header — same structure as KanbanColumn's header */}
         <div className="flex items-center gap-2 mb-3 px-1">
           <div className="w-2 h-2 rounded-full bg-emerald-500" />
-          <h3 className="text-sm font-semibold text-white">Completed</h3>
+          <h3 className="text-sm font-semibold text-gray-900">Completed</h3>
           {/* Issue count badge */}
-          <span className="text-xs text-[#666] bg-[#2a2a2a] px-2 py-0.5 rounded-full">
+          <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
             {completedIssues.length}
           </span>
         </div>
@@ -341,8 +341,8 @@ export function IssuesKanbanView({ issues }: IssuesKanbanViewProps) {
               // full opacity on hover to let the user inspect them if needed.
               <Link
                 key={issue.id}
-                href={`/issues/${issue.id}`}
-                className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4 hover:border-emerald-500/30 transition-all cursor-pointer group opacity-75 hover:opacity-100 block"
+                href={`/dashboard/projects/${issue.id}`}
+                className="bg-white border border-gray-200 rounded-xl p-4 hover:border-emerald-500/30 transition-all cursor-pointer group opacity-75 hover:opacity-100 block"
               >
                 {/* Card header: checkmark icon + title + group name */}
                 <div className="flex items-start gap-3 mb-3">
@@ -352,18 +352,18 @@ export function IssuesKanbanView({ issues }: IssuesKanbanViewProps) {
                   </div>
                   <div className="flex-1 min-w-0">
                     {/* Issue title — dimmed by default, turns white on hover */}
-                    <p className="text-sm font-medium text-[#ccc] group-hover:text-white transition-colors line-clamp-2">
+                    <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors line-clamp-2">
                       {issue.title}
                     </p>
                     {/* Property group name */}
-                    <p className="text-xs text-[#666] mt-0.5">{issue.groupName}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{issue.groupName}</p>
                   </div>
                 </div>
 
                 {/* Resolution info row: how the issue was resolved and how much was saved */}
-                <div className="flex items-center justify-between p-2 bg-[#0f0f0f] rounded-lg mb-3">
+                <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg mb-3">
                   {/* "DIY" or "Pro" label */}
-                  <span className="text-xs text-[#888]">
+                  <span className="text-xs text-gray-500">
                     {issue.resolvedBy === "diy" ? "DIY" : "Pro"}
                   </span>
                   {/* Savings amount — only shown if positive */}
@@ -376,7 +376,7 @@ export function IssuesKanbanView({ issues }: IssuesKanbanViewProps) {
 
                 {/* Card footer: when the issue was resolved (relative time) */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-[#555]">
+                  <span className="text-xs text-gray-400">
                     {issue.resolvedAt ? getRelativeTime(issue.resolvedAt) : ""}
                   </span>
                 </div>
@@ -386,8 +386,8 @@ export function IssuesKanbanView({ issues }: IssuesKanbanViewProps) {
 
           {/* Empty state: shown when no issues have been completed yet */}
           {completedIssues.length === 0 && (
-            <div className="bg-[#1a1a1a]/50 border border-dashed border-[#2a2a2a] rounded-xl p-6 text-center">
-              <p className="text-xs text-[#555]">No completed issues</p>
+            <div className="bg-white/50 border border-dashed border-gray-200 rounded-xl p-6 text-center">
+              <p className="text-xs text-gray-400">No completed issues</p>
             </div>
           )}
         </div>

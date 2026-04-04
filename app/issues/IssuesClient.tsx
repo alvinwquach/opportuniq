@@ -215,7 +215,7 @@ export function IssuesClient() {
   // Define a helper function that navigates the user to the diagnose page
   // where they can report a new household issue.
   const handleReportIssue = () => {
-    router.push("/dashboard/diagnose");
+    router.push("/dashboard/projects");
   };
 
   // If the data is still loading from the server, render the skeleton placeholder
@@ -228,10 +228,10 @@ export function IssuesClient() {
   // so the user knows something went wrong.
   if (error) {
     return (
-      <div className="min-h-[calc(100vh-48px)] bg-[#0f0f0f] flex items-center justify-center">
+      <div className="min-h-[calc(100vh-48px)] bg-white flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 mb-2">Error loading issues</p>
-          <p className="text-sm text-[#666]">{error.message}</p>
+          <p className="text-red-600 mb-2">Error loading issues</p>
+          <p className="text-sm text-gray-400">{error.message}</p>
         </div>
       </div>
     );
@@ -248,17 +248,17 @@ export function IssuesClient() {
   // The data has loaded successfully, so render the full issues page.
   return (
     // Outer wrapper: full page height (minus the 48px top nav), dark background.
-    <div className="min-h-[calc(100vh-48px)] bg-[#0f0f0f]">
+    <div className="min-h-[calc(100vh-48px)] bg-white">
       {/* Header section: contains the page title, stats cards, charts, and filter controls */}
-      <div className="px-6 py-5 border-b border-[#1f1f1f]">
+      <div className="px-6 py-5 border-b border-gray-200">
         {/* Top row of the header: title/subtitle on the left, "Report Issue" button on the right */}
         <div className="flex items-center justify-between mb-4">
           <div>
             {/* Page title */}
-            <h1 className="text-xl font-semibold text-white">Issue History</h1>
+            <h1 className="text-xl font-semibold text-gray-900">Issue History</h1>
             {/* Subtitle showing a quick count of total, active, and resolved issues
                 so the user can see at a glance how many issues match the current filters */}
-            <p className="text-sm text-[#666] mt-0.5">
+            <p className="text-sm text-gray-400 mt-0.5">
               {filteredIssues.length} issues · {activeIssues.length} active ·{" "}
               {completedIssues.length} resolved
             </p>
@@ -266,7 +266,7 @@ export function IssuesClient() {
           {/* "Report Issue" button — navigates to the diagnose page.
               Rendered as a Next.js Link so the transition is instant (client-side navigation). */}
           <Link
-            href="/dashboard/diagnose"
+            href="/dashboard/projects"
             className="flex items-center gap-2 px-4 py-2.5 text-sm text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl transition-colors font-medium"
           >
             {/* Plus icon displayed to the left of the button label */}

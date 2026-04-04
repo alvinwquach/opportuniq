@@ -100,7 +100,7 @@ function UpcomingEvent({ event }: { event: typeof extendedEvents[0] }) {
               {participants.map((initials) => (
                 <span
                   key={initials}
-                  className="w-4 h-4 rounded-full bg-blue-500/30 text-blue-400 text-[8px] font-bold flex items-center justify-center flex-shrink-0"
+                  className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 text-[8px] font-bold flex items-center justify-center flex-shrink-0"
                 >
                   {initials}
                 </span>
@@ -279,7 +279,7 @@ export function CalendarView() {
         </div>
 
         {/* Calendar grid */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 scrollbar-auto-hide p-4">
           <MonthGrid
             calendarDays={calendarDays}
             today={today}
@@ -298,7 +298,7 @@ export function CalendarView() {
       </div>
 
       {/* ── Right panel ── */}
-      <div className={`w-[220px] flex-shrink-0 border-l flex flex-col h-full ${b} ${dark ? "bg-[#141414]" : "bg-white"}`}>
+      <div className={`w-[260px] flex-shrink-0 border-l flex flex-col h-full ${b} ${dark ? "bg-[#141414]" : "bg-white"}`}>
 
         {/* Google Calendar Sync status card */}
         <div className={`px-4 py-3 border-b flex items-center gap-2 ${b}`}>
@@ -325,7 +325,7 @@ export function CalendarView() {
           <p className={`text-xs font-semibold uppercase tracking-wide mb-0.5 ${dark ? "text-gray-600" : "text-gray-500"}`}>Upcoming</p>
           <p className={`text-[10px] ${dark ? "text-gray-700" : "text-gray-400"}`}>{monthNames[currentMonth]}</p>
         </div>
-        <div className="px-4 overflow-y-auto">
+        <div className="px-4 scrollbar-auto-hide">
           {upcomingEvents.map((e) => (
             <UpcomingEvent key={e.id} event={e} />
           ))}
@@ -345,7 +345,7 @@ export function CalendarView() {
                     {session.participants.map((initials) => (
                       <span
                         key={initials}
-                        className="w-4 h-4 rounded-full bg-blue-500/30 text-blue-400 text-[8px] font-bold flex items-center justify-center flex-shrink-0"
+                        className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 text-[8px] font-bold flex items-center justify-center flex-shrink-0"
                       >
                         {initials}
                       </span>

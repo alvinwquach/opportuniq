@@ -65,7 +65,7 @@ const roleColors: Record<string, string> = {
   participant: "bg-blue-100 text-blue-600",
   contributor: "bg-blue-100 text-blue-600",
   // Observers get a more muted grey style to visually distinguish their lower role.
-  observer: "bg-[#333] text-gray-500",
+  observer: "bg-gray-200 text-gray-500",
 };
 
 // Map each role string to a human-readable display label.
@@ -122,7 +122,7 @@ export function GroupDetails({
         return <IoPersonAddOutline className="w-4 h-4 text-blue-600" />;
       default:
         // Any unknown activity type defaults to the generic "work in progress" icon.
-        return <IoConstruct className="w-4 h-4 text-amber-400" />;
+        return <IoConstruct className="w-4 h-4 text-amber-600" />;
     }
   };
 
@@ -136,7 +136,7 @@ export function GroupDetails({
         return "bg-blue-100";
       default:
         // Unknown types get the amber/warning background.
-        return "bg-amber-500/20";
+        return "bg-amber-50";
     }
   };
 
@@ -166,7 +166,7 @@ export function GroupDetails({
         <div>
           {/* Group name + role badge */}
           <div className="flex items-center gap-2 mb-1">
-            <h2 className="text-lg font-semibold text-white">{group.name}</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{group.name}</h2>
             {/* Show the role badge using the colour and label lookup tables above.
                 Falls back to the "observer" style if the role is unrecognized. */}
             <span className={`text-[10px] px-2 py-0.5 rounded capitalize ${roleColors[group.role] || roleColors.observer}`}>
@@ -190,7 +190,7 @@ export function GroupDetails({
           {/* Settings button: triggers onOpenSettings callback → parent opens settings modal. */}
           <button
             onClick={onOpenSettings}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-500 border border-gray-200 hover:border-[#333] hover:text-gray-900 rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-500 border border-gray-200 hover:border-gray-300 hover:text-gray-900 rounded-lg transition-colors"
           >
             <IoSettingsOutline className="w-4 h-4" />
             Settings
@@ -212,10 +212,10 @@ export function GroupDetails({
         {/* Open issues count */}
         <div className="bg-gray-100 rounded-lg border border-gray-200 p-3">
           <div className="flex items-center gap-1.5 mb-1">
-            <IoConstruct className="w-4 h-4 text-amber-400" />
+            <IoConstruct className="w-4 h-4 text-amber-600" />
             <span className="text-[10px] text-gray-500 uppercase">Open</span>
           </div>
-          <div className="text-xl font-semibold text-white">{group.openIssueCount}</div>
+          <div className="text-xl font-semibold text-gray-900">{group.openIssueCount}</div>
         </div>
         {/* Resolved issues count */}
         <div className="bg-gray-100 rounded-lg border border-gray-200 p-3">
@@ -223,7 +223,7 @@ export function GroupDetails({
             <IoCheckmarkCircle className="w-4 h-4 text-blue-600" />
             <span className="text-[10px] text-gray-500 uppercase">Resolved</span>
           </div>
-          <div className="text-xl font-semibold text-white">{group.resolvedCount}</div>
+          <div className="text-xl font-semibold text-gray-900">{group.resolvedCount}</div>
         </div>
         {/* Available balance in the shared fund */}
         <div className="bg-gray-100 rounded-lg border border-gray-200 p-3">
@@ -232,7 +232,7 @@ export function GroupDetails({
             <span className="text-[10px] text-gray-500 uppercase">Balance</span>
           </div>
           {/* toLocaleString() adds thousands separators (e.g. 1000 → "1,000"). */}
-          <div className="text-xl font-semibold text-white">${group.balance.toLocaleString()}</div>
+          <div className="text-xl font-semibold text-gray-900">${group.balance.toLocaleString()}</div>
         </div>
         {/* Total money saved by the group through DIY and avoided costs */}
         <div className="bg-gray-100 rounded-lg border border-gray-200 p-3">
@@ -250,7 +250,7 @@ export function GroupDetails({
         {/* Section header row: title + "Add Member" shortcut link */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
           {/* Show the count in the heading so it's clear at a glance. */}
-          <h3 className="text-sm font-medium text-white">Members ({group.members.length})</h3>
+          <h3 className="text-sm font-medium text-gray-900">Members ({group.members.length})</h3>
           {/* "Add Member" link triggers the same invite callback as the header button. */}
           <button
             onClick={onOpenInvite}
@@ -275,12 +275,12 @@ export function GroupDetails({
                   className="relative flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group min-w-[200px] border border-gray-200"
                 >
                   {/* Avatar circle: shows the member's emoji avatar or "?" if none. */}
-                  <div className="w-10 h-10 rounded-full bg-[#333] border border-gray-200 flex items-center justify-center text-lg">
+                  <div className="w-10 h-10 rounded-full bg-gray-200 border border-gray-200 flex items-center justify-center text-lg">
                     {member.avatar || "?"}
                   </div>
                   <div className="flex-1 min-w-0">
                     {/* Member name; falls back to "Member" if name is missing. */}
-                    <p className="text-sm font-medium text-white">{member.name || "Member"}</p>
+                    <p className="text-sm font-medium text-gray-900">{member.name || "Member"}</p>
                     {/* Role badge using the same lookup tables as the group header. */}
                     <div className="flex items-center gap-1.5">
                       <span
@@ -299,7 +299,7 @@ export function GroupDetails({
                       // Toggle: if this menu is already open, close it; otherwise open it.
                       setOpenMenuId(isMenuOpen ? null : member.id);
                     }}
-                    className="p-1.5 text-gray-400 hover:text-gray-900 hover:bg-[#333] rounded transition-colors opacity-0 group-hover:opacity-100"
+                    className="p-1.5 text-gray-400 hover:text-gray-900 hover:bg-gray-200 rounded transition-colors opacity-0 group-hover:opacity-100"
                   >
                     <IoEllipsisVertical className="w-4 h-4" />
                   </button>
@@ -328,7 +328,7 @@ export function GroupDetails({
                             onRemoveMember(member.id);
                             setOpenMenuId(null);
                           }}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-400 hover:bg-red-500/10"
+                          className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-400 hover:bg-red-50"
                         >
                           <IoTrash className="w-3.5 h-3.5" />
                           Remove Member
@@ -344,17 +344,17 @@ export function GroupDetails({
             {group.pendingInvitations.map((inv) => (
               <div
                 key={inv.id}
-                className="flex items-center gap-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg min-w-[200px]"
+                className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg min-w-[200px]"
               >
                 {/* Email icon indicates this is a pending invitation, not an active member. */}
-                <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
-                  <IoMailOutline className="w-5 h-5 text-amber-400" />
+                <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
+                  <IoMailOutline className="w-5 h-5 text-amber-600" />
                 </div>
                 <div className="flex-1 min-w-0">
                   {/* Show the invitee's email address. truncate prevents overflow. */}
                   <p className="text-sm font-medium text-gray-900 truncate">{inv.email}</p>
                   {/* Show "Pending" status with the role they were invited as. */}
-                  <p className="text-[10px] text-amber-400">
+                  <p className="text-[10px] text-amber-600">
                     Pending · {roleLabels[inv.role] || inv.role}
                   </p>
                   {/* Show expiry date so coordinators know when to resend. */}
@@ -363,7 +363,7 @@ export function GroupDetails({
                   </p>
                 </div>
                 {/* Copy button: would copy the invitation link to the clipboard (not yet wired up). */}
-                <button className="p-1.5 text-amber-400 hover:bg-amber-500/20 rounded transition-colors">
+                <button className="p-1.5 text-amber-600 hover:bg-amber-50 rounded transition-colors">
                   <IoCopyOutline className="w-4 h-4" />
                 </button>
               </div>
@@ -376,11 +376,11 @@ export function GroupDetails({
       {/* Two charts side by side: Shared Budget (left) and Member Contributions pie (right). */}
       <div className="grid grid-cols-2 gap-4 mb-4">
         {/* Shared Budget card: shows available balance, monthly spend progress, and two bottom stats. */}
-        <div className="bg-gradient-to-br from-blue-500/10 to-[#1a1a1a] rounded-xl border border-blue-500/20 p-4">
+        <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl border border-blue-200 p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <IoWallet className="w-4 h-4 text-blue-600" />
-              <h3 className="text-sm font-medium text-white">Shared Budget</h3>
+              <h3 className="text-sm font-medium text-gray-900">Shared Budget</h3>
             </div>
             {/* "View History" link: triggers onOpenContributionHistory → parent opens the modal. */}
             <button
@@ -399,31 +399,31 @@ export function GroupDetails({
             </div>
             <div className="text-right">
               {/* Monthly spent / monthly budget. The budget uses "||" to show "0" if null. */}
-              <p className="text-sm font-semibold text-white">
+              <p className="text-sm font-semibold text-gray-900">
                 ${group.monthlySpent.toLocaleString()}{" "}
-                <span className="text-gray-400 font-normal">/ ${group.monthlyBudget?.toLocaleString() || "0"}</span>
+                <span className="text-gray-500 font-normal">/ ${group.monthlyBudget?.toLocaleString() || "0"}</span>
               </p>
               <p className="text-[10px] text-gray-500">Monthly spent</p>
             </div>
           </div>
           {/* Budget usage progress bar.
               Width is capped at 100% with Math.min to prevent overflow beyond the container. */}
-          <div className="h-2 bg-[#333] rounded-full overflow-hidden mb-3">
+          <div className="h-2 bg-gray-200 rounded-full overflow-hidden mb-3">
             <div
               className="h-full bg-blue-500 rounded-full"
               style={{ width: `${Math.min(group.budgetUsedPercent, 100)}%` }}
             />
           </div>
           {/* Two bottom stats: emergency fund and DIY rate */}
-          <div className="grid grid-cols-2 gap-3 pt-3 border-t border-blue-500/20">
+          <div className="grid grid-cols-2 gap-3 pt-3 border-t border-blue-200">
             <div className="text-center">
               {/* Emergency fund balance; shows "0" if none is set. */}
-              <p className="text-lg font-semibold text-white">${group.emergencyFund?.toLocaleString() || "0"}</p>
+              <p className="text-lg font-semibold text-gray-900">${group.emergencyFund?.toLocaleString() || "0"}</p>
               <p className="text-[10px] text-gray-500">Emergency Fund</p>
             </div>
             <div className="text-center">
               {/* DIY rate = percentage of issues resolved by doing it yourself. */}
-              <p className="text-lg font-semibold text-white">{group.diyRate}%</p>
+              <p className="text-lg font-semibold text-gray-900">{group.diyRate}%</p>
               <p className="text-[10px] text-gray-500">DIY Rate</p>
             </div>
           </div>
@@ -458,8 +458,8 @@ export function GroupDetails({
                       contentStyle={{
                         fontSize: 10,
                         borderRadius: 6,
-                        border: "1px solid #2a2a2a",
-                        backgroundColor: "#1a1a1a",
+                        border: "1px solid #e5e7eb",
+                        backgroundColor: "#ffffff",
                       }}
                       formatter={(value: number) => [`${value.toFixed(1)}%`, "Share"]}
                     />
@@ -476,7 +476,7 @@ export function GroupDetails({
                       <span className="text-xs text-gray-500">{member.name}</span>
                     </div>
                     {/* Percentage formatted to no decimal places (e.g. "45%"). */}
-                    <span className="text-xs font-medium text-white">{member.value.toFixed(0)}%</span>
+                    <span className="text-xs font-medium text-gray-900">{member.value.toFixed(0)}%</span>
                   </div>
                 ))}
               </div>
@@ -510,16 +510,16 @@ export function GroupDetails({
                   </linearGradient>
                 </defs>
                 {/* X-axis: month labels; minimal styling to match the dark theme. */}
-                <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#666" }} tickLine={false} axisLine={false} />
+                <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#9ca3af" }} tickLine={false} axisLine={false} />
                 {/* Y-axis: dollar amounts; same minimal styling. */}
-                <YAxis tick={{ fontSize: 10, fill: "#666" }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} tickLine={false} axisLine={false} />
                 <Tooltip
                   contentStyle={{
                     fontSize: 10,
                     borderRadius: 6,
                     border: "1px solid #2a2a2a",
                     backgroundColor: "#1a1a1a",
-                    color: "#fff",
+                    color: "#111827",
                   }}
                 />
                 {/* Green filled area representing accumulated savings per month. */}
@@ -558,15 +558,15 @@ export function GroupDetails({
             <ResponsiveContainer width="100%" height="100%">
               {/* resolutionData = array of { name (month), diy, hired } objects. */}
               <BarChart data={group.resolutionData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
-                <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#666" }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "#666" }} tickLine={false} axisLine={false} />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#9ca3af" }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} tickLine={false} axisLine={false} />
                 <Tooltip
                   contentStyle={{
                     fontSize: 10,
                     borderRadius: 6,
                     border: "1px solid #2a2a2a",
                     backgroundColor: "#1a1a1a",
-                    color: "#fff",
+                    color: "#111827",
                   }}
                 />
                 {/* DIY bar in bright emerald. radius rounds the top corners. */}
@@ -597,10 +597,10 @@ export function GroupDetails({
         {/* Recent Issues list */}
         <div className="bg-gray-100 rounded-xl border border-gray-200 overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-            <h3 className="text-sm font-medium text-white">Recent Issues</h3>
+            <h3 className="text-sm font-medium text-gray-900">Recent Issues</h3>
             {/* "New" link navigates to the Diagnose page to report a new issue. */}
             <Link
-              href="/dashboard/diagnose"
+              href="/dashboard/projects"
               className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-500 transition-colors"
             >
               <IoAddOutline className="w-3.5 h-3.5" />
@@ -614,16 +614,16 @@ export function GroupDetails({
                 // Link to the issue detail page using the issue's id in the URL.
                 <Link
                   key={issue.id}
-                  href={`/issues/${issue.id}`}
+                  href={`/dashboard/projects/${issue.id}`}
                   className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5">
                     {/* Small amber icon box to visually indicate this is an issue. */}
-                    <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center">
-                      <IoConstruct className="w-4 h-4 text-amber-400" />
+                    <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
+                      <IoConstruct className="w-4 h-4 text-amber-600" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-white">{issue.title}</p>
+                      <p className="text-sm font-medium text-gray-900">{issue.title}</p>
                       {/* Category + relative timestamp below the title. */}
                       <p className="text-[10px] text-gray-500">
                         {issue.category || "General"} · {formatTimestamp(issue.createdAt)}
@@ -644,7 +644,7 @@ export function GroupDetails({
         {/* Recent Activity feed */}
         <div className="bg-gray-100 rounded-xl border border-gray-200 overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-200">
-            <h3 className="text-sm font-medium text-white">Recent Activity</h3>
+            <h3 className="text-sm font-medium text-gray-900">Recent Activity</h3>
           </div>
           <div className="p-4 space-y-3">
             {group.recentActivity.length > 0 ? (
@@ -658,7 +658,7 @@ export function GroupDetails({
                   </div>
                   <div>
                     {/* Main activity description text. */}
-                    <p className="text-sm text-white">{activity.message}</p>
+                    <p className="text-sm text-gray-900">{activity.message}</p>
                     {/* Timestamp and optional savings amount below the message. */}
                     <p className="text-xs text-gray-400">
                       {formatTimestamp(activity.timestamp)}

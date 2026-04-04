@@ -18,6 +18,7 @@ import {
   IoCheckmarkDone,
   IoSquareOutline,
   IoCheckbox,
+  IoStar,
 } from "react-icons/io5";
 import type { IssueData, GuideItem } from "./types";
 import { useDarkMode } from "../../DarkModeContext";
@@ -411,7 +412,7 @@ export function DIYTab({
                           {guide.rating && (
                             <>
                               <span>·</span>
-                              <span className="text-amber-500">★ {guide.rating.toFixed(1)}</span>
+                              <span className="text-amber-500 flex items-center gap-0.5"><IoStar className="w-3 h-3 inline" /> {guide.rating.toFixed(1)}</span>
                             </>
                           )}
                         </div>

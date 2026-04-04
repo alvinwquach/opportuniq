@@ -6,7 +6,7 @@ import { OpportunIQLogo } from "@/components/landing/OpportunIQLogo";
 import {
   IoGridOutline,
   IoPeopleOutline,
-  IoAlertCircleOutline,
+  IoFolderOutline,
   IoSettingsOutline,
   IoLogOut,
   IoMenu,
@@ -15,7 +15,6 @@ import {
   IoNotifications,
   IoCalendarOutline,
   IoShield,
-  IoScanOutline,
   IoWalletOutline,
 } from "react-icons/io5";
 import { cn } from "@/lib/utils";
@@ -26,15 +25,14 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 
 const mainNavItems = [
   { href: "/dashboard", icon: IoGridOutline, label: "Dashboard", exact: true },
-  { href: "/dashboard/diagnose", icon: IoScanOutline, label: "Diagnose" },
-  { href: "/issues", icon: IoAlertCircleOutline, label: "Issues" },
-  { href: "/dashboard/groups", icon: IoPeopleOutline, label: "Groups" },
+  { href: "/dashboard/projects", icon: IoFolderOutline, label: "Projects" },
+  { href: "/dashboard/guides", icon: IoBookOutline, label: "Guides" },
   { href: "/dashboard/calendar", icon: IoCalendarOutline, label: "Calendar" },
   { href: "/dashboard/finances", icon: IoWalletOutline, label: "Finances" },
-  { href: "/dashboard/guides", icon: IoBookOutline, label: "Guides" },
 ];
 
 const bottomNavItems = [
+  { href: "/dashboard/groups", icon: IoPeopleOutline, label: "Groups" },
   { href: "/dashboard/settings", icon: IoSettingsOutline, label: "Settings" },
 ];
 
@@ -114,8 +112,8 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
                         className={cn(
                           "w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 mx-auto",
                           active
-                            ? "bg-blue-50 text-blue-600"
-                            : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+                            ? "bg-blue-100/60 text-gray-900 font-semibold"
+                            : "text-gray-700 hover:bg-blue-50"
                         )}
                       >
                         <Icon className="w-4 h-4 flex-shrink-0" />
@@ -144,8 +142,8 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
                         className={cn(
                           "w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 mx-auto",
                           active
-                            ? "bg-blue-50 text-blue-600"
-                            : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+                            ? "bg-blue-100/60 text-gray-900 font-semibold"
+                            : "text-gray-700 hover:bg-blue-50"
                         )}
                       >
                         <Icon className="w-4 h-4 flex-shrink-0" />
@@ -224,8 +222,8 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
                   className={cn(
                     "flex items-center gap-2.5 px-2.5 py-2 rounded-md transition-colors mb-0.5",
                     active
-                      ? "bg-blue-50 text-blue-600"
-                      : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+                      ? "bg-blue-100/60 text-gray-900 font-semibold"
+                      : "text-gray-700 hover:bg-blue-50"
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -248,8 +246,8 @@ export function DashboardSidebar({ user, isAdmin = false, accessTier }: Dashboar
                   className={cn(
                     "flex items-center gap-2.5 px-2.5 py-2 rounded-md transition-colors mb-0.5",
                     active
-                      ? "bg-blue-50 text-blue-600"
-                      : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+                      ? "bg-blue-100/60 text-gray-900 font-semibold"
+                      : "text-gray-700 hover:bg-blue-50"
                   )}
                 >
                   <Icon className="h-4 w-4" />

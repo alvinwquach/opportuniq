@@ -35,7 +35,7 @@ export function IssuesCardView({ activeIssues, completedIssues }: IssuesCardView
         // Bottom margin separates this section from the "Resolved" section below
         <div className="mb-8">
           {/* Section heading: small green dot + "Active Issues (N)" label */}
-          <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
             {/* A small filled green circle used as a visual status indicator bullet */}
             <div className="w-2 h-2 rounded-full bg-emerald-500" />
             Active Issues ({activeIssues.length})
@@ -59,7 +59,7 @@ export function IssuesCardView({ activeIssues, completedIssues }: IssuesCardView
         <div>
           {/* Section heading: green checkmark icon + "Resolved (N)" label.
               The text is a muted grey to visually de-emphasize resolved issues relative to active ones. */}
-          <h2 className="text-sm font-semibold text-[#888] mb-4 flex items-center gap-2">
+          <h2 className="text-sm font-semibold text-gray-500 mb-4 flex items-center gap-2">
             {/* Green checkmark icon signals that all issues in this section are done */}
             <IoCheckmarkCircle className="w-4 h-4 text-emerald-400" />
             Resolved ({completedIssues.length})

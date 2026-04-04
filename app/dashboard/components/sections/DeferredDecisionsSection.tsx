@@ -28,7 +28,7 @@ export function DeferredDecisionsSection({ decisions }: DeferredDecisionsSection
         {decisions.slice(0, 4).map((decision) => (
           <Link
             key={decision.id}
-            href={`/issues/${decision.issueId}`}
+            href={`/dashboard/projects/${decision.issueId}`}
             className="block p-2.5 -mx-1 rounded-lg hover:bg-gray-100 transition-colors group"
           >
             <p className="text-xs text-gray-900 group-hover:text-blue-600 transition-colors truncate">

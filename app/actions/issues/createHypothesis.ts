@@ -42,7 +42,7 @@ export async function createHypothesisEncrypted(
       })
       .returning({ id: issueHypotheses.id });
 
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath(`/dashboard/projects/${issueId}`);
 
     return { success: true, hypothesisId: hypothesis.id };
   } catch (error) {
@@ -77,7 +77,7 @@ export async function createHypothesisPlaintext(
       })
       .returning({ id: issueHypotheses.id });
 
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath(`/dashboard/projects/${issueId}`);
 
     return { success: true, hypothesisId: hypothesis.id };
   } catch (error) {

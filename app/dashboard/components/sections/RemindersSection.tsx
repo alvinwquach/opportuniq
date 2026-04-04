@@ -27,7 +27,7 @@ export function RemindersSection({ reminders }: RemindersSectionProps) {
         {reminders.slice(0, 3).map((reminder, index) => (
           <Link
             key={index}
-            href={`/issues/${reminder.issueId}`}
+            href={`/dashboard/projects/${reminder.issueId}`}
             className="block p-2.5 -mx-1 rounded-lg hover:bg-gray-100 transition-colors group"
           >
             <p className="text-xs text-gray-900 group-hover:text-blue-600 transition-colors truncate">

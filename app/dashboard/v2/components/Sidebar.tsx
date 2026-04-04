@@ -52,7 +52,7 @@ export function Sidebar({ activeTab, data }: SidebarProps) {
           )}
           <QuickActionsCard
             onReportIssue={() => {
-              window.location.href = "/dashboard/diagnose";
+              window.location.href = "/dashboard/projects";
             }}
             onScheduleDIY={() => {
               window.location.href = "/dashboard/calendar";
@@ -71,7 +71,7 @@ export function Sidebar({ activeTab, data }: SidebarProps) {
           <DraftEmailCard vendors={pendingVendors} />
           <QuickActionsCard
             onReportIssue={() => {
-              window.location.href = "/dashboard/diagnose";
+              window.location.href = "/dashboard/projects";
             }}
             onScheduleDIY={() => {
               window.location.href = "/dashboard/calendar";
@@ -89,7 +89,7 @@ export function Sidebar({ activeTab, data }: SidebarProps) {
           <ThisWeekCard events={calendarEvents} />
           <QuickActionsCard
             onReportIssue={() => {
-              window.location.href = "/dashboard/diagnose";
+              window.location.href = "/dashboard/projects";
             }}
             onScheduleDIY={() => {
               window.location.href = "/dashboard/calendar";

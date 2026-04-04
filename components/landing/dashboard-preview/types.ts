@@ -1,4 +1,4 @@
-export type ViewType = 'dashboard' | 'projects' | 'diagnose' | 'calendar' | 'finances' | 'guides' | 'decisions' | 'groups' | 'settings';
+export type ViewType = 'dashboard' | 'projects' | 'calendar' | 'finances' | 'guides' | 'groups' | 'settings';
 
 export interface NavItem {
   id: ViewType;

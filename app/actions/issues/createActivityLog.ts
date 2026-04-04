@@ -49,7 +49,7 @@ export async function createActivityLogEncrypted(
       })
       .returning({ id: issueActivityLog.id });
 
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath(`/dashboard/projects/${issueId}`);
 
     return { success: true, logId: log.id };
   } catch (error) {
@@ -91,7 +91,7 @@ export async function createActivityLogPlaintext(
       })
       .returning({ id: issueActivityLog.id });
 
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath(`/dashboard/projects/${issueId}`);
 
     return { success: true, logId: log.id };
   } catch (error) {

@@ -30,11 +30,9 @@ import {
 const simpleViewComponents: Partial<Record<ViewType, React.ComponentType>> = {
   dashboard: DashboardView,
   projects:  ProjectsView,
-  diagnose:  DiagnoseView,
   calendar:  CalendarView,
   finances:  FinancesView,
   guides:    GuidesView,
-  decisions: DecisionsView,
   groups:    GroupsView,
   settings:  SettingsView,
 };

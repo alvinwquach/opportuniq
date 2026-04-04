@@ -119,9 +119,9 @@ const decisions: Decision[] = [
     },
     proOption: { label: "Hire HVAC Pro", cost: 5200, time: "1 day", confidence: 94, risk: "Low", failureCost: 800 },
     votes: [
-      { name: "Jamie", avatar: "👩", vote: "pro" },
-      { name: "Mike", avatar: "👨", vote: "pro" },
-      { name: "Sam", avatar: "🧑", vote: null },
+      { name: "Jamie", avatar: "J", vote: "pro" },
+      { name: "Mike", avatar: "M", vote: "pro" },
+      { name: "Sam", avatar: "S", vote: null },
     ],
     outcome: null,
     scenarioSimulations: [
@@ -166,9 +166,9 @@ const decisions: Decision[] = [
     },
     proOption: { label: "Hire Plumber", cost: 320, time: "2 hours", confidence: 98, risk: "Very Low", failureCost: 400 },
     votes: [
-      { name: "Jamie", avatar: "👩", vote: "diy" },
-      { name: "Mike", avatar: "👨", vote: "diy" },
-      { name: "Sam", avatar: "🧑", vote: "diy" },
+      { name: "Jamie", avatar: "J", vote: "diy" },
+      { name: "Mike", avatar: "M", vote: "diy" },
+      { name: "Sam", avatar: "S", vote: "diy" },
     ],
     outcome: null,
     scenarioSimulations: [
@@ -213,9 +213,9 @@ const decisions: Decision[] = [
     },
     proOption: { label: "Hire Technician", cost: 350, time: "1 hour", confidence: 99, risk: "Very Low", failureCost: 200 },
     votes: [
-      { name: "Jamie", avatar: "👩", vote: "diy" },
-      { name: "Mike", avatar: "👨", vote: "pro" },
-      { name: "Sam", avatar: "🧑", vote: "diy" },
+      { name: "Jamie", avatar: "J", vote: "diy" },
+      { name: "Mike", avatar: "M", vote: "pro" },
+      { name: "Sam", avatar: "S", vote: "diy" },
     ],
     outcome: {
       chosen: "diy",

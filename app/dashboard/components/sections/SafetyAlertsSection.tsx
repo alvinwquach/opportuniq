@@ -28,7 +28,7 @@ export function SafetyAlertsSection({ alerts }: SafetyAlertsSectionProps) {
         {alerts.map((alert) => (
           <Link
             key={alert.id}
-            href={`/issues/${alert.id}`}
+            href={`/dashboard/projects/${alert.id}`}
             className="flex items-start gap-3 p-3 rounded-lg bg-red-500/5 hover:bg-red-500/10 transition-colors group"
           >
             <IoWarning className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />

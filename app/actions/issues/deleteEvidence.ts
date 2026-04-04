@@ -31,7 +31,7 @@ export async function deleteEvidence(
       return { success: false, error: "Evidence not found" };
     }
 
-    revalidatePath(`/dashboard/issues/${issueId}`);
+    revalidatePath(`/dashboard/projects/${issueId}`);
 
     return { success: true, evidenceId: deleted.id };
   } catch (error) {
